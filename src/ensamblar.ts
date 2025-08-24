@@ -13,7 +13,7 @@ import path from "node:path";
 import * as fs from "node:fs";
 
 const DIR_ENTRADA = "resoluciones_parseadas";
-async function main() {
+function main() {
     const base = process.argv[2];
     if (!base) {
         console.error("Uso: ensamblar <ruta a resolucion base>");
@@ -60,24 +60,124 @@ async function main() {
     console.log(textoFinal);
 }
 
+type IDArticulo = { resolucion: Parser.IDResolucion; articulo: number };
+
+type ID = {
+    tipo: "resolucion";
+    id: Parser.IDResolucion;
+} | {
+    tipo: "articulo";
+    id: IDArticulo;
+}
 
 function crearResoluciones(resolucionesParser: Parser.Normativa[]) {
     const articulosParserPorId = new Map<string, Parser.Articulo>()
     const resolucionesParserPorId = new Map<string, Parser.Normativa>()
 
-    type IDArticulo = { resolucion: Parser.IDResolucion; articulo: number };
-
     const articulosPorId = new Map<string, Articulo>();
     const resolucionesPorId = new Map<string, Resolucion>();
+    const {mapeoIds, orden} = ordenInstanciacion(resolucionesParser, resolucionesParserPorId, articulosParserPorId); // Es necesario instanciar los articulos modificados antes que los modificadores
+    orden.forEach(id_json => {
+        const id = mapeoIds.get(id_json);
+        if (!id) throw new Error(`ID no encontrado: ${id_json}`);
+        if (id.tipo == "articulo") {
+            const articuloParser = articulosParserPorId.get(JSON.stringify(id.id));
+            if (!articuloParser) throw new Error(`Articulo no encontrado: ${JSON.stringify(id.id)}`);
+            const art = instanciarArticulo(articuloParser, articulosPorId, id, resolucionesPorId);
+            articulosPorId.set(JSON.stringify(id.id), art);
 
-    type ID = {
-        tipo: "resolucion";
-        id: Parser.IDResolucion;
-    } | {
-        tipo: "articulo";
-        id: IDArticulo;
+        } else {
+            const resParser = resolucionesParserPorId.get(JSON.stringify(id.id));
+            if (!resParser) {
+                console.error(`Resolucion no encontrada: ${JSON.stringify(id.id)}. Omitiendo resolucion.`);
+                return;
+            }
+            const articulos: Articulo[] = [];
+            for (const [i, _] of resParser.articulos.entries()) {
+                const idArticulo: IDArticulo = {resolucion: resParser.id, articulo: i + 1};
+                const art = articulosPorId.get(JSON.stringify(idArticulo));
+                if (!art) {
+                    console.error(`Articulo no encontrado: ${JSON.stringify(idArticulo)}. Omitiendo articulo`);
+                    continue;
+                }
+                articulos.push(art);
+            }
+            const res = new Resolucion(resParser.id, articulos)
+            resolucionesPorId.set(JSON.stringify(id.id), res);
+        }
+    })
+    return Array.from(resolucionesPorId.values())
+}
+
+
+function instanciarArticulo(articuloParser: Parser.Articulo, articulosPorId: Map<string, Articulo>, id: ID & {tipo: "articulo"}, resolucionesPorId: Map<string, Resolucion>): Articulo {
+    let resObjetivo: Resolucion | undefined = undefined;
+    let artObjetivo: Articulo | undefined = undefined;
+    switch (articuloParser.tipo) {
+        case "forma": {
+            return new ArticuloForma(articuloParser.texto);
+        }
+        case "normativa": {
+            return new ArticuloNormativa(articuloParser.contenido);
+        }
+        case "derogar_resolucion": {
+            resObjetivo = resolucionesPorId.get(JSON.stringify(articuloParser.idObjetivo));
+            if (!resObjetivo) {
+                console.error(`Resolucion no encontrada: ${JSON.stringify(articuloParser.idObjetivo)}. Omitiendo articulo ${JSON.stringify(id.id)}`);
+                return new ArticuloInvalido(articuloParser.texto, "Falta resolución objetivo");
+            } else
+                return new ArticuloDerogaResolucion(resObjetivo, articuloParser.texto);
+        }
+        case "derogar_articulo": {
+            artObjetivo = articulosPorId.get(JSON.stringify(articuloParser.articulo));
+            if (!artObjetivo) {
+                console.error(`Articulo no encontrado: ${JSON.stringify(articuloParser.articulo)}. Omitiendo articulo ${JSON.stringify(id.id)}`);
+                return new ArticuloInvalido(articuloParser.texto, "Falta resolución/artículo objetivo");
+            } else
+                return new ArticuloDerogaArticulo(artObjetivo, articuloParser.texto);
+        }
+        case "modificar_articulo_completo": {
+            artObjetivo = articulosPorId.get(JSON.stringify(articuloParser.articulo));
+            if (!artObjetivo) {
+                console.error(`Articulo no encontrado: ${JSON.stringify(articuloParser.articulo)}. Omitiendo articulo ${JSON.stringify(id.id)}`);
+                return new ArticuloInvalido(articuloParser.texto, "Falta resolución/artículo objetivo");
+            } else
+                return new ArticuloReemplazaArticulo(artObjetivo, articuloParser.nuevoContenido, articuloParser.anexos, articuloParser.texto);
+        }
+        case "modificar_articulo_parcial": {
+            artObjetivo = articulosPorId.get(JSON.stringify(articuloParser.articulo));
+            if (!artObjetivo) {
+                console.error(`Articulo no encontrado: ${JSON.stringify(articuloParser.articulo)}. Omitiendo articulo ${JSON.stringify(id.id)}`);
+                return new ArticuloInvalido(articuloParser.texto, "Falta resolución/artículo objetivo");
+            } else
+                return new ArticuloModificaArticulo(artObjetivo, articuloParser.cambios, articuloParser.anexos, articuloParser.texto);
+        }
+        default:
+            let _: never = articuloParser;
+            return _;
     }
+}
 
+
+function procesarResolucion(resolucion: Resolucion) {
+    resolucion.afectadoPor.forEach((art) => {
+        procesarArticulo(art);
+    })
+    if (resolucion.vigente)
+        resolucion.articulos.forEach((art) => {
+            procesarArticulo(art);
+        })
+}
+
+function procesarArticulo(articulo: Articulo) {
+    articulo.afectadoPor.forEach((mod) => {
+        procesarArticulo(mod);
+    })
+    if (articulo.vigente && articulo instanceof ArticuloModificadorDeArticulos || articulo instanceof ArticuloDerogaResolucion) // TODO MEJORAR ESTO
+        articulo.aplicar();
+}
+
+function ordenInstanciacion(resolucionesParser: Parser.Normativa[], resolucionesParserPorId: Map<string, Parser.Normativa>, articulosParserPorId: Map<string, Parser.Articulo>) {
     const mapeoIds = new Map<string, ID>();
     const dependencias: [string, string][] = [];
 
@@ -118,110 +218,8 @@ function crearResoluciones(resolucionesParser: Parser.Normativa[]) {
         }
     }
     const orden = toposort(dependencias).reverse();
-    orden.forEach(id_json => {
-        const id = mapeoIds.get(id_json);
-        if (!id) throw new Error(`ID no encontrado: ${id_json}`);
-        if (id.tipo == "articulo") {
-            const articuloParser = articulosParserPorId.get(JSON.stringify(id.id));
-            if (!articuloParser) throw new Error(`Articulo no encontrado: ${JSON.stringify(id.id)}`);
-            let resObjetivo: Resolucion | undefined = undefined;
-            let artObjetivo: Articulo | undefined = undefined;
-            switch (articuloParser.tipo) {
-                case "forma": {
-                    const art = new ArticuloForma(articuloParser.texto);
-                    articulosPorId.set(JSON.stringify(id.id), art);
-                    break;
-                }
-                case "normativa": {
-                    const art = new ArticuloNormativa(articuloParser.contenido);
-                    articulosPorId.set(JSON.stringify(id.id), art);
-                    break;
-                }
-                case "derogar_resolucion": {
-                    resObjetivo = resolucionesPorId.get(JSON.stringify(articuloParser.idObjetivo));
-                    let art: Articulo;
-                    if (!resObjetivo) {
-                        console.error(`Resolucion no encontrada: ${JSON.stringify(articuloParser.idObjetivo)}. Omitiendo articulo ${JSON.stringify(id.id)}`);
-                        art = new ArticuloInvalido(articuloParser.texto, "Falta resolución objetivo");
-                    } else
-                        art = new ArticuloDerogaResolucion(resObjetivo, articuloParser.texto);
-                    articulosPorId.set(JSON.stringify(id.id), art);
-                    break;
-                }
-                case "derogar_articulo": {
-                    artObjetivo = articulosPorId.get(JSON.stringify(articuloParser.articulo));
-                    let art: Articulo;
-                    if (!artObjetivo) {
-                        console.error(`Articulo no encontrado: ${JSON.stringify(articuloParser.articulo)}. Omitiendo articulo ${JSON.stringify(id.id)}`);
-                        art = new ArticuloInvalido(articuloParser.texto, "Falta resolución/artículo objetivo");
-                    } else
-                        art = new ArticuloDerogaArticulo(artObjetivo, articuloParser.texto);
-                    articulosPorId.set(JSON.stringify(id.id), art);
-                    break;
-                }
-                case "modificar_articulo_completo": {
-                    artObjetivo = articulosPorId.get(JSON.stringify(articuloParser.articulo));
-                    let art: Articulo;
-                    if (!artObjetivo) {
-                        console.error(`Articulo no encontrado: ${JSON.stringify(articuloParser.articulo)}. Omitiendo articulo ${JSON.stringify(id.id)}`);
-                        art = new ArticuloInvalido(articuloParser.texto, "Falta resolución/artículo objetivo");                    } else
-                        art = new ArticuloReemplazaArticulo(artObjetivo, articuloParser.nuevoContenido, articuloParser.anexos, articuloParser.texto);
-                    articulosPorId.set(JSON.stringify(id.id), art);
-                    break;
-                }
-                case "modificar_articulo_parcial": {
-                    artObjetivo = articulosPorId.get(JSON.stringify(articuloParser.articulo));
-                    let art: Articulo;
-                    if (!artObjetivo) {
-                        console.error(`Articulo no encontrado: ${JSON.stringify(articuloParser.articulo)}. Omitiendo articulo ${JSON.stringify(id.id)}`);
-                        art = new ArticuloInvalido(articuloParser.texto, "Falta resolución/artículo objetivo");
-                    } else
-                        art = new ArticuloModificaArticulo(artObjetivo, articuloParser.cambios, articuloParser.anexos, articuloParser.texto);
-                    articulosPorId.set(JSON.stringify(id.id), art);
-                    break;
-                }
-                default:
-                    let _: never = articuloParser;
-            }
-        } else {
-            const resParser = resolucionesParserPorId.get(JSON.stringify(id.id));
-            if (!resParser) {
-                console.error(`Resolucion no encontrada: ${JSON.stringify(id.id)}. Omitiendo resolucion.`);
-                return;
-            }
-            const articulos: Articulo[] = [];
-            for (const [i, _] of resParser.articulos.entries()) {
-                const idArticulo: IDArticulo = {resolucion: resParser.id, articulo: i + 1};
-                const art = articulosPorId.get(JSON.stringify(idArticulo));
-                if (!art) {
-                    console.error(`Articulo no encontrado: ${JSON.stringify(idArticulo)}. Omitiendo articulo`);
-                    continue;
-                }
-                articulos.push(art);
-            }
-            const res = new Resolucion(resParser.id, articulos)
-            resolucionesPorId.set(JSON.stringify(id.id), res);
-        }
-    })
-    return Array.from(resolucionesPorId.values())
+    return {mapeoIds, orden};
 }
 
-function procesarResolucion(resolucion: Resolucion) {
-    resolucion.afectadoPor.forEach((art) => {
-        procesarArticulo(art);
-    })
-    if (resolucion.vigente)
-        resolucion.articulos.forEach((art) => {
-            procesarArticulo(art);
-        })
-}
-
-function procesarArticulo(articulo: Articulo) {
-    articulo.afectadoPor.forEach((mod) => {
-        procesarArticulo(mod);
-    })
-    if (articulo.vigente && articulo instanceof ArticuloModificadorDeArticulos || articulo instanceof ArticuloDerogaResolucion) // TODO MEJORAR ESTO
-        articulo.aplicar();
-}
 
 main()
