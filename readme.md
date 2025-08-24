@@ -1,3 +1,4 @@
+# Ensamblado de normativas de la UNS
 
 ## Requerimientos
 - Node.js
@@ -9,6 +10,6 @@
  
 ## Uso
 1. Agregar todas las resoluciones en la carpeta `resoluciones_input`
-2. Ejecutar `npx tsx src\parsear_pdf.ts`
-3. Ejecutar `npx tsx src\ensamblar.ts RES_BASE` (nombnre de la resolución base sin extensión)
+2. Ejecutar `npx tsx .\src\parsear_pdf.ts`
+3. Ejecutar `npx tsx .\src\ensamblar.ts RES_BASE` (nombnre de la resolución base sin extensión)
 4. El resultado se muestra en consola
