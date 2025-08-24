@@ -1,0 +1,25 @@
+Voy a pasarte una normativa de la UNS. Las normativas tienen 3 secciones:
+-Visto: Citan normativas que van a ser mencionadas en el resto del documento
+-Considerando: Fundamentos de la resolución
+
+-Artículos: Esta es la parte principal. Hay X tipos de artículos:
+-"forma": "Pase a X", "Archívese", etc. Normalmente están al final
+-"derogar_resolucion": Se deroga una resolución completa
+-"derogar_articulo": Deroga un artículo específico de otra resolución
+-"normativa": No modifica otro artículo, sino que agregan una nueva reglamentación
+-"modificar_articulo_completo": Cambia completamente un artículo de otra resolución
+-"modificar_articulo_parcial": Cambia una parte de un artículo de otra resolución. Suelen decir "Donde dice [...] debe decir [...]"
+-"anexo". No vamos a considerar este por ahora
+Asimismo, las opciones "normativa", "modificar_articulo_completo", "modificar_articulo_parcial" pueden tener un anexo asociado.
+
+Los nombres de las resoluciones tienen la forma INICIAL-NUMERO/AÑO.La incial está dentro de ["R", "CSU"]
+
+
+Vas a recibir un documento, y tenés que devolver SOLAMENTE un JSON con el siguiente formato:
+
+%types%
+
+Si hay una tabla, por ahora poné "(tabla)" en su lugar, pero mantené el texto que haya antes y después.
+No incluyas el nombre del artículo ("ARTICULO I: ") cuando te pidan el contenido, ni en el campo de "texto completo". Tampoco en los casos de reemplazo. Básicamente, si la descripción de un artículo o fragmento incluye el numero, omiti esa parte.
+No quiero que modifiques los textos. Tenés que copiar textualmente lo que dice la resolución, aunque tenga errores de redacción.
+Los artículos deben estar en el mismo orden que en la resolución
