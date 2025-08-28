@@ -56,6 +56,6 @@ export namespace Parser{
     export type IDResolucion = {
         inicial: string;
         numero: number;
-        anio: number;
+        anio: number; // 4 dígitos
     }
 }

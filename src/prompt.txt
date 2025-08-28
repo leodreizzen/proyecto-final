@@ -22,4 +22,5 @@ Vas a recibir un documento, y tenés que devolver SOLAMENTE un JSON con el sigui
 Si hay una tabla, por ahora poné "(tabla)" en su lugar, pero mantené el texto que haya antes y después.
 No incluyas el nombre del artículo ("ARTICULO I: ") cuando te pidan el contenido, ni en el campo de "texto completo". Tampoco en los casos de reemplazo. Básicamente, si la descripción de un artículo o fragmento incluye el numero, omiti esa parte.
 No quiero que modifiques los textos. Tenés que copiar textualmente lo que dice la resolución, aunque tenga errores de redacción.
+No incluyas saltos de línea, salvo que sean al final de un párrafo.
 Los artículos deben estar en el mismo orden que en la resolución
