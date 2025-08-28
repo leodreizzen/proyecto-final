@@ -13,6 +13,26 @@ import path from "node:path";
 import * as fs from "node:fs";
 
 const DIR_ENTRADA = "resoluciones_parseadas";
+
+function mostrarResultado(resBase: Resolucion) {
+    let textoFinal = "";
+    textoFinal += `Resolucion ${resBase.id_formateado}\n`;
+    if (!resBase.vigente) {
+        const derogante = resBase.derogadoPor ? resBase.derogadoPor.resolucion?.id_formateado : "desconocido";
+        textoFinal += `[Derogada por resolución ${derogante}]\n`;
+    }
+
+    textoFinal += `\n`;
+
+    resBase.articulos.forEach((articulo, index) => {
+        textoFinal += `Articulo ${index + 1}: `;
+        textoFinal += `${articulo.textoFinal}\n\n`;
+    })
+
+    console.log("----- TEXTO FINAL -----\n");
+    console.log(textoFinal);
+}
+
 function main() {
     const base = process.argv[2];
     if (!base) {
@@ -41,23 +61,7 @@ function main() {
     if (!resBase) throw new Error("No se encontró la resolucion base");
 
     procesarResolucion(resBase);
-
-    let textoFinal = "";
-    textoFinal += `Resolucion ${resBase.id_formateado}\n`;
-    if(!resBase.vigente){
-        const derogante = resBase.derogadoPor ? resBase.derogadoPor.resolucion?.id_formateado : "desconocido";
-        textoFinal += `[Derogada por resolución ${derogante}]\n`;
-    }
-
-    textoFinal += `\n`;
-
-    resBase.articulos.forEach((articulo, index) => {
-        textoFinal += `Articulo ${index + 1}: `;
-        textoFinal += `${articulo.textoFinal}\n\n`;
-    })
-
-    console.log("----- TEXTO FINAL -----\n");
-    console.log(textoFinal);
+    mostrarResultado(resBase);
 }
 
 type IDArticulo = { resolucion: Parser.IDResolucion; articulo: number };
