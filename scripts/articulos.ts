@@ -55,16 +55,36 @@ export abstract class Articulo {
         }
         return this.texto;
     }
+
+    comparar(a: Articulo) {
+        if (this.resolucion && a.resolucion) {
+            if(this.resolucion.id.anio !== a.resolucion.id.anio) {
+                return this.resolucion.id.anio - a.resolucion.id.anio;
+            }
+            if(this.resolucion.id.numero !== a.resolucion.id.numero) {
+                return this.resolucion.id.numero - a.resolucion.id.numero;
+            }
+            return 0; // TODO cambiar para que usen fecha porque pueden tener distinta inicial
+        }
+        return 0;
+    }
 }
 
 export abstract class ArticuloModificadorDeArticulos extends Articulo {
     objetivo: Articulo;
     abstract aplicar(): void;
+    aplicado: boolean = false;
 
     constructor(objetivo: Articulo, textoCompleto: string) {
         super(textoCompleto);
         this.objetivo = objetivo;
         objetivo.agregarModificador(this)
+    }
+    aplicarUnaVez(): void {
+        if(!this.aplicado){
+            this.aplicar();
+            this.aplicado = true;
+        }
     }
 }
 
@@ -84,11 +104,19 @@ export class ArticuloForma extends Articulo {
 
 export class ArticuloDerogaResolucion extends Articulo {
     objetivo: Resolucion;
+    aplicado: boolean = false;
 
     constructor(resolucionADerogar: Resolucion, textoCompleto: string) {
         super(textoCompleto);
         this.objetivo = resolucionADerogar;
         resolucionADerogar.agregarModificador(this);
+    }
+
+    aplicarUnaVez(): void {
+        if(!this.aplicado){
+            this.aplicar();
+            this.aplicado = true;
+        }
     }
 
     aplicar(): void {
