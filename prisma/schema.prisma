@@ -7,6 +7,7 @@
 generator client {
   provider = "prisma-client-js"
   output   = "../src/generated/prisma"
+  extensions = [pgvector(map: "vector")]
 }
 
 datasource db {
@@ -39,9 +40,9 @@ model Article {
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
 
-  embedding Unsupported("Vector")
   references  Article[] @relation("ArticleReferences")
   referencedBy Article[] @relation("ArticleReferences")
 
+  embeddding Unsupported("Vector")?
   @@unique([resolutionUuid, number])
 }

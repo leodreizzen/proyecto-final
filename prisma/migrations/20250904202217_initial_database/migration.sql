@@ -18,7 +18,7 @@ CREATE TABLE "public"."Article" (
     "content" TEXT NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
-    "embedding" Vector(3072) NOT NULL,
+    "embedding" Vector(3072),
 
     CONSTRAINT "Article_pkey" PRIMARY KEY ("uuid")
 );
