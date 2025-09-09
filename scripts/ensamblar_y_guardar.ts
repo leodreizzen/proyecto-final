@@ -11,12 +11,11 @@ import {GoogleGenAI} from "@google/genai";
 import {PrismaVectorStore} from "@langchain/community/vectorstores/prisma";
 import {Article, Prisma, Resolution} from "@/generated/prisma";
 import {GoogleGenerativeAIEmbeddings} from "@langchain/google-genai";
+import {fileURLToPath} from "url";
 
-const ai = new GoogleGenAI({
-    apiKey: process.env.GEMINI_API_KEY,
-});
 
-const DIR_ENTRADA = "resoluciones_parseadas";
+const dirname = path.dirname(fileURLToPath(import.meta.url));
+const DIR_ENTRADA = path.join(dirname, "resoluciones_parseadas");
 
 const vectorStore = PrismaVectorStore.withModel<Article>(prisma).create(
     new GoogleGenerativeAIEmbeddings({modelName: "gemini-embedding-001"}),

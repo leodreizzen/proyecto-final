@@ -2,14 +2,17 @@ import {
     GoogleGenAI,
 } from '@google/genai';
 import * as fs from "node:fs";
-import "dotenv/config"
-const INPUT_DIR = "resoluciones_input";
-const OUTPUT_DIR = "resoluciones_parseadas";
+import "dotenv/config";
+import path from "node:path";
+import {fileURLToPath} from "url";
+const dirname = path.dirname(fileURLToPath(import.meta.url));
 
+const INPUT_DIR = path.join(dirname, "resoluciones_input");
+const OUTPUT_DIR = path.join(dirname, "resoluciones_parseadas");
 
 async function main() {
-    const typescriptTypes = fs.readFileSync("src/parser_types.ts").toString()
-    let prompt = fs.readFileSync("src/prompt.txt").toString()
+    const typescriptTypes = fs.readFileSync(path.join(dirname, "parser_types.ts")).toString()
+    let prompt = fs.readFileSync(path.join(dirname, "prompt.txt")).toString()
     prompt = prompt.replace("%types%", "``` \n" + typescriptTypes + "\n```")
     const ai = new GoogleGenAI({
         apiKey: process.env.GEMINI_API_KEY,
