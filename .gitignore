@@ -17,3 +17,4 @@ scripts/resoluciones_parseadas/*
 /src/generated/prisma
 
 db/db_data
+.next
