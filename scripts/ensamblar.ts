@@ -7,8 +7,10 @@ import path from "node:path";
 import * as fs from "node:fs";
 import {crearResoluciones} from "./inicializacion";
 import {procesarResolucion} from "./ensamblado";
+import {fileURLToPath} from "url";
 
-const DIR_ENTRADA = "resoluciones_parseadas";
+const dirname = path.dirname(fileURLToPath(import.meta.url));
+const DIR_ENTRADA = path.join(dirname, "resoluciones_parseadas");
 
 function mostrarResultado(resBase: Resolucion) {
     let textoFinal = "";
@@ -23,6 +25,14 @@ function mostrarResultado(resBase: Resolucion) {
     resBase.articulos.forEach((articulo, index) => {
         textoFinal += `Articulo ${index + 1}: `;
         textoFinal += `${articulo.textoFinal}\n\n`;
+    })
+
+    resBase.anexos.forEach((anexo) => {
+        textoFinal += `Anexo ${anexo.numero + 1}:\n`;
+        anexo.articulos.forEach((articuloAnexo, idx) => {
+            textoFinal += `  Articulo ${idx + 1}: `;
+            textoFinal += `${articuloAnexo.textoFinal}\n\n`;
+        })
     })
 
     console.log("----- TEXTO FINAL -----\n");

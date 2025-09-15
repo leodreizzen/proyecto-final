@@ -6,7 +6,8 @@
     "dev": "next dev --turbopack",
     "build": "next build --turbopack",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "postinstall": "prisma generate"
   },
   "dependencies": {
     "@google/genai": "^1.17.0",
@@ -14,6 +15,7 @@
     "@langchain/core": "^0.3.75",
     "@langchain/google-genai": "^0.2.17",
     "@langchain/langgraph": "^0.4.9",
+    "@langchain/langgraph-checkpoint-postgres": "^0.1.2",
     "@langchain/openai": "^0.6.11",
     "@prisma/client": "6.15.0",
     "@radix-ui/react-avatar": "^1.1.10",
@@ -25,6 +27,8 @@
     "langchain": "^0.3.33",
     "lucide-react": "^0.542.0",
     "next": "15.5.2",
+    "pg": "^8.16.3",
+    "postinstall": "^0.11.2",
     "prisma": "^6.15.0",
     "react": "19.1.0",
     "react-dom": "19.1.0",
@@ -37,8 +41,10 @@
     "@eslint/eslintrc": "^3",
     "@tailwindcss/postcss": "^4",
     "@types/node": "^20",
+    "@types/pg": "^8.15.5",
     "@types/react": "^19",
     "@types/react-dom": "^19",
+    "dotenv-cli": "^10.0.0",
     "eslint": "^9",
     "eslint-config-next": "15.5.2",
     "tailwindcss": "^4",

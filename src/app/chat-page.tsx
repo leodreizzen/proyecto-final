@@ -156,7 +156,7 @@ export default function ChatPage() {
                                                 className="flex items-center gap-2 text-xs text-slate-500 dark:text-slate-400 bg-slate-100/80 dark:bg-slate-800/80 backdrop-blur-sm px-3 py-1.5 rounded-full border border-slate-200 dark:border-slate-700 w-fit"
                                             >
                                                 <Search className="w-3 h-3" />
-                                                <span>Buscó "{search}"</span>
+                                                <span>Buscó &quot;{search}&quot;</span>
                                             </div>
                                         ))}
                                     </div>

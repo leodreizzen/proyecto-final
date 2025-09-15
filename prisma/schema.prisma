@@ -5,8 +5,8 @@
 // Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
 
 generator client {
-  provider = "prisma-client-js"
-  output   = "../src/generated/prisma"
+  provider   = "prisma-client-js"
+  output     = "../src/generated/prisma"
   extensions = [pgvector(map: "vector")]
 }
 
@@ -22,27 +22,80 @@ model Resolution {
   number   Int
   year     Int
 
-  articles   Article[]
+  articles Article[]
 
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  appendices Appendix[]
+}
+
+model Appendix {
+  uuid String @id @default(uuid())
+
+  resolution     Resolution @relation(fields: [resolutionUuid], references: [uuid])
+  resolutionUuid String
+
+  number   Int
+  articles AppendixArticle[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([resolutionUuid, number])
 }
 
 model Article {
   uuid String @id @default(uuid())
 
-  resolution   Resolution @relation(fields: [resolutionUuid], references: [uuid])
+  resolution     Resolution @relation(fields: [resolutionUuid], references: [uuid])
   resolutionUuid String
 
-  number Int
+  number  Int
   content String
 
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
-  references  Article[] @relation("ArticleReferences")
+  references   Article[] @relation("ArticleReferences")
   referencedBy Article[] @relation("ArticleReferences")
 
-  embeddding Unsupported("Vector")?
+  embedding  Embedding[]
+
   @@unique([resolutionUuid, number])
+}
+
+model AppendixArticle {
+  uuid String @id @default(uuid())
+
+  appendix     Appendix @relation(fields: [appendixUuid], references: [uuid])
+  appendixUuid String
+
+  number  Int
+  content String
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  references   AppendixArticle[] @relation("AppendixArticleReferences")
+  referencedBy AppendixArticle[] @relation("AppendixArticleReferences")
+
+  embedding  Embedding[]
+
+  @@unique([appendixUuid, number])
+}
+
+model Embedding {
+  uuid String @id @default(uuid())
+
+  article         Article?         @relation(fields: [articleUuid], references: [uuid])
+  appendixArticle AppendixArticle? @relation(fields: [appendixArticleUuid], references: [uuid])
+
+  articleUuid         String?
+  appendixArticleUuid String?
+
+  createdAt DateTime @default(now())
+
+  vector Unsupported("Vector")?
+  content String
 }

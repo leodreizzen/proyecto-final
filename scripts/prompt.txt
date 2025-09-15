@@ -7,9 +7,12 @@ Voy a pasarte una normativa de la UNS. Las normativas tienen 3 secciones:
 -"derogar_resolucion": Se deroga una resolución completa
 -"derogar_articulo": Deroga un artículo específico de otra resolución
 -"normativa": No modifica otro artículo, sino que agregan una nueva reglamentación
--"modificar_articulo_completo": Cambia completamente un artículo de otra resolución
+-"reemplazar_articulo": Cambia completamente un artículo de otra resolución
 -"modificar_articulo_parcial": Cambia una parte de un artículo de otra resolución. Suelen decir "Donde dice [...] debe decir [...]"
--"anexo". No vamos a considerar este por ahora
+-"anexo". Hay dos tipos de anexos:
+    * Anexos de textos, que son textos largos o tablas que se agregan a la resolución. Por ahora solo tenés que indicar que hay un anexo de este tipo, pero sin pensar en su contenido.
+    * Formados por artículos, que son siempre artículos de normativa.
+    Para que un anexo se considere formado por artículos, tiene que estar formado explícitamente por artículos (ej. Artículo 1: ...)
 Asimismo, las opciones "normativa", "modificar_articulo_completo", "modificar_articulo_parcial" pueden tener un anexo asociado.
 
 Los nombres de las resoluciones tienen la forma INICIAL-NUMERO/AÑO.La incial está dentro de ["R", "CSU"]
@@ -20,7 +23,9 @@ Vas a recibir un documento, y tenés que devolver SOLAMENTE un JSON con el sigui
 %types%
 
 Si hay una tabla, devolvela en formato markdown, sin meterla adentro de un bloque. Mantené el texto que haya antes y después.
+Vas a ver que te piden un campo "texto" en los artículos. Debes poner ahí el texto COMPLETO del artículo, sin modificar, desde que comienza hasta que termina, solo eliminando el "ARTICULO X: " al principio. Esto incluye la parte de "Donde dice", etc.
 No incluyas el nombre del artículo ("ARTICULO I: ") cuando te pidan el contenido, ni en el campo de "texto completo". Tampoco en los casos de reemplazo. Básicamente, si la descripción de un artículo o fragmento incluye el numero, omiti esa parte.
 No quiero que modifiques los textos. Tenés que copiar textualmente lo que dice la resolución, aunque tenga errores de redacción.
-No incluyas saltos de línea, salvo que sean al final de un párrafo.
+No tenés permitido incluir saltos de línea (\n), salvo que sea entre párrafos.
 Los artículos deben estar en el mismo orden que en la resolución
+Importante: Si una resolución modifica un texto ordenado, no se refiere al artículo X de la resolución, sino al artículo X del anexo I, salvo que indique otro anexo. Por lo tanto, no indiques que modifica el artículo X de la resolución, sino del anexo I.

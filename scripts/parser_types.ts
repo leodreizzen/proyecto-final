@@ -1,4 +1,4 @@
-export namespace Parser{
+export namespace Parser {
     export type Normativa = {
         id: IDResolucion;
         referencias: [
@@ -8,6 +8,7 @@ export namespace Parser{
             }
         ];
         articulos: Articulo[];
+        anexos: Anexo[];
     }
     export type Articulo = {
         tipo: "forma";
@@ -25,7 +26,7 @@ export namespace Parser{
         contenido: string;
         anexos: ReferenciaAnexo[];
     } | {
-        tipo: "modificar_articulo_completo";
+        tipo: "reemplazar_articulo";
         articulo: ArticuloExterno;
         nuevoContenido: string;
         anexos: ReferenciaAnexo[];
@@ -36,26 +37,40 @@ export namespace Parser{
         cambios: CambioParcial[]
         anexos: ReferenciaAnexo[];
         texto: string; // Texto completo del articulo, sin incluir prefijos como "ARTICULO X:"
-        }
+    }
     export type ArticuloExterno = {
         resolucion: IDResolucion;
-        articulo: number;
-    }
+    } & ({
+        tipo: "normal";
+        numero: number;
+    } | {
+        tipo: "anexo";
+        anexo: number;
+        numero: number;
+    })
     export type CambioParcial = {
         antes: string; // No incluye prefijos como "ARTICULO X:"
         despues: string; // No incluye prefijos como "ARTICULO X:"
     }
     export type ReferenciaAnexo = {
-        tipo: "externo";
         anexo: number;
         resolucion: IDResolucion;
-    } | {
-        tipo: "actual";
-        anexo: number;
     }
     export type IDResolucion = {
         inicial: string;
         numero: number;
         anio: number; // 4 dígitos
+    }
+
+    export type Anexo = {
+        numero: number;
+        tipo: "texto";
+    } | {
+        numero: number;
+        tipo: "articulos"
+        articulos: ArticuloAnexo[];
+    }
+    export type ArticuloAnexo = {
+        texto: string; // Texto completo del articulo, sin incluir prefijos como "ARTICULO X:"
     }
 }

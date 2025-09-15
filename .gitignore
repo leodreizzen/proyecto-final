@@ -9,7 +9,7 @@ yarn-error.log*
 .pnp.js
 
 .vscode/*
-.env
+.env*
 .idea/*
 
 scripts/resoluciones_input/*
@@ -18,3 +18,4 @@ scripts/resoluciones_parseadas/*
 
 db/db_data
 .next
+.vercel
