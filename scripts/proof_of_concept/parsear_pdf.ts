@@ -2,9 +2,11 @@ import {
     GoogleGenAI,
 } from '@google/genai';
 import * as fs from "node:fs";
-import "dotenv/config";
+import "dotenv";
+dotenv.config({path: ".env.development"})
 import path from "node:path";
 import {fileURLToPath} from "url";
+import dotenv from "dotenv";
 const dirname = path.dirname(fileURLToPath(import.meta.url));
 
 const INPUT_DIR = path.join(dirname, "resoluciones_input");

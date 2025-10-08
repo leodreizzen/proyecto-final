@@ -12,8 +12,8 @@ yarn-error.log*
 .env*
 .idea/*
 
-scripts/resoluciones_input/*
-scripts/resoluciones_parseadas/*
+scripts/proof_of_concept/resoluciones_input/*
+scripts/proof_of_concept/resoluciones_parseadas/*
 /src/generated/prisma
 
 db/db_data
