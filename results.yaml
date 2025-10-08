@@ -1,0 +1,976 @@
+CSU_RES-506-2018.pdf:
+  file: CSU_RES-506-2018.pdf
+  result: ok
+CSU_RES-350-2016.pdf:
+  file: CSU_RES-350-2016.pdf
+  result: ok
+CSU_RES-80-2017.pdf:
+  file: CSU_RES-80-2017.pdf
+  result: ok
+CSU_RES-888-2024.pdf:
+  file: CSU_RES-888-2024.pdf
+  result: ok
+CSU_RES-381-2016.pdf:
+  file: CSU_RES-381-2016.pdf
+  result: ok
+CSU_RES-876-2015.pdf:
+  file: CSU_RES-876-2015.pdf
+  testCase:
+    description: art2 tiene una referencia no explícita a un anexo
+  result: ok
+CSU_RES-60-2019.pdf:
+  file: CSU_RES-60-2019.pdf
+  result: ok
+CSU_RES-83-2022.pdf:
+  file: CSU_RES-83-2022.pdf
+  result: ok
+CSU_RES-511-2018.pdf:
+  file: CSU_RES-511-2018.pdf
+  result: ok
+CSU_RES-940-2024.pdf:
+  file: CSU_RES-940-2024.pdf
+  result: ok
+CSU_RES-212-2017.pdf:
+  file: CSU_RES-212-2017.pdf
+  result: ok
+CSU_RES-831-2015.pdf:
+  file: CSU_RES-831-2015.pdf
+  result: ok
+CSU_RES-159-2025.pdf:
+  file: CSU_RES-159-2025.pdf
+  testCase:
+    description: Expandir los alcances debe contar como normativa
+  result: ok
+CSU_RES-998-2022.pdf:
+  file: CSU_RES-998-2022.pdf
+  testCase:
+    description: Art1 deroga
+  result: ok
+CSU_RES-26-2012.pdf:
+  file: CSU_RES-26-2012.pdf
+  result: ok
+CSU_RES-923-2019.pdf:
+  file: CSU_RES-923-2019.pdf
+  result: ok
+CSU_RES-75-2016.pdf:
+  file: CSU_RES-75-2016.pdf
+  result: ok
+CSU_RES-693-2014.pdf:
+  file: CSU_RES-693-2014.pdf
+  result: ok
+CSU_RES-605-2020.pdf:
+  file: CSU_RES-605-2020.pdf
+  result: ok
+CSU_RES-148-2005.pdf:
+  file: CSU_RES-148-2005.pdf
+  testCase:
+    description: Capítulos no explícitos
+  result: ok
+CSU_RES-599-2020.pdf:
+  file: CSU_RES-599-2020.pdf
+  result: ok
+CSU_RES-633-2022.pdf:
+  file: CSU_RES-633-2022.pdf
+  result: ok
+CSU_RES-809-2018.pdf:
+  file: CSU_RES-809-2018.pdf
+  result: ok
+CSU_RES-746-2019.pdf:
+  file: CSU_RES-746-2019.pdf
+  result: ok
+CSU_RES-710-2021.pdf:
+  file: CSU_RES-710-2021.pdf
+  result: ok
+CSU_RES-819-2022.pdf:
+  file: CSU_RES-819-2022.pdf
+  result: ok
+CSU_RES-162-2013.pdf:
+  file: CSU_RES-162-2013.pdf
+  result: ok
+CSU_RES-180-2025.pdf:
+  file: CSU_RES-180-2025.pdf
+  result: ok
+CSU_RES-127-2015.pdf:
+  file: CSU_RES-127-2015.pdf
+  result: ok
+CSU_RES-22-2015.pdf:
+  file: CSU_RES-22-2015.pdf
+  result: ok
+CSU_RES-17-2015.pdf:
+  file: CSU_RES-17-2015.pdf
+  result: ok
+CSU_RES-427-2017.pdf:
+  file: CSU_RES-427-2017.pdf
+  testCase:
+    description: firmas
+  result: ok
+CSU_RES-353-2015.pdf:
+  file: CSU_RES-353-2015.pdf
+  result: ok
+CSU_RES-386-2017.pdf:
+  file: CSU_RES-386-2017.pdf
+  result: ok
+CSU_RES-78-2019.pdf:
+  file: CSU_RES-78-2019.pdf
+  result: ok
+CSU_RES-302-2023.pdf:
+  file: CSU_RES-302-2023.pdf
+  result: ok
+CSU_RES-689-2017.pdf:
+  file: CSU_RES-689-2017.pdf
+  result: ok
+CSU_RES-406-2012.pdf:
+  file: CSU_RES-406-2012.pdf
+  testCase:
+    description: TOAE
+  result: ok
+CSU_RES-804-2022.pdf:
+  file: CSU_RES-804-2022.pdf
+  result: ok
+CSU_RES-521-2016.pdf:
+  file: CSU_RES-521-2016.pdf
+  testCase:
+    description: Muchas tablas
+  result: ok
+CSU_RES-883-2024.pdf:
+  file: CSU_RES-883-2024.pdf
+  result: ok
+CSU_RES-127-2013.pdf:
+  file: CSU_RES-127-2013.pdf
+  result: ok
+CSU_RES-840-2014.pdf:
+  file: CSU_RES-840-2014.pdf
+  result: ok
+CSU_RES-392-2019.pdf:
+  file: CSU_RES-392-2019.pdf
+  result: ok
+CSU_RES-1057-2023.pdf:
+  file: CSU_RES-1057-2023.pdf
+  result: fail
+  reason: Subanexos, gráficos para templates
+CSU_RES-4-2017.pdf:
+  file: CSU_RES-4-2017.pdf
+  result: ok
+CSU_RES-169-2020.pdf:
+  file: CSU_RES-169-2020.pdf
+  testCase:
+    description: Reemplazo muy grande + incorpora como anexo
+  result: ok
+CSU_RES-350-2017.pdf:
+  file: CSU_RES-350-2017.pdf
+  result: ok
+CSU_RES-777-2019.pdf:
+  file: CSU_RES-777-2019.pdf
+  testCase:
+    description: Tabla grande, multipagina
+  result: ok
+CSU_RES-673-2024.pdf:
+  file: CSU_RES-673-2024.pdf
+  result: ok
+CSU_RES-165-2013.pdf:
+  file: CSU_RES-165-2013.pdf
+  result: ok
+CSU_RES-243-2014.pdf:
+  file: CSU_RES-243-2014.pdf
+  result: ok
+CSU_RES-227-2018.pdf:
+  file: CSU_RES-227-2018.pdf
+  result: ok
+CSU_RES-566-2016.pdf:
+  file: CSU_RES-566-2016.pdf
+  testCase:
+    description: Anexo inexistente
+  result: ok
+CSU_RES-171-2016.pdf:
+  file: CSU_RES-171-2016.pdf
+  testCase:
+    description: Reglamento de concursos para profesores está nombrado en considerandos
+  result: ok
+CSU_RES-935-2019.pdf:
+  file: CSU_RES-935-2019.pdf
+  result: ok
+CSU_RES-574-2016.pdf:
+  file: CSU_RES-574-2016.pdf
+  result: ok
+CSU_RES-499-2013.pdf:
+  file: CSU_RES-499-2013.pdf
+  testCase:
+    description: Baja de inventario, sigue siendo normativa
+  result: ok
+CSU_RES-164-2015.pdf:
+  file: CSU_RES-164-2015.pdf
+  result: ok
+CSU_RES-391-2016.pdf:
+  file: CSU_RES-391-2016.pdf
+  result: ok
+CSU_RES-333-2021.pdf:
+  file: CSU_RES-333-2021.pdf
+  result: ok
+CSU_RES-742-2014.pdf:
+  file: CSU_RES-742-2014.pdf
+  testCase:
+    description: Tabla gigante. No automatizar porque sería muy caro
+  result: ok
+CSU_RES-228-1986.pdf:
+  file: CSU_RES-228-1986.pdf
+  testCase:
+    description: Derogaciones múltiples, inicial CU
+  result: ok
+CSU_RES-862-2013.pdf:
+  file: CSU_RES-862-2013.pdf
+  testCase:
+    description: Reglamento sin artículos explícitos pero sí implícitos. Tienen "titulos"
+  result: ok
+CSU_RES-680-2022.pdf:
+  file: CSU_RES-680-2022.pdf
+  result: ok
+CSU_RES-515-2015.pdf:
+  file: CSU_RES-515-2015.pdf
+  result: ok
+CSU_RES-540-2017.pdf:
+  file: CSU_RES-540-2017.pdf
+  result: ok
+CSU_RES-642-2022.pdf:
+  file: CSU_RES-642-2022.pdf
+  result: ok
+CSU_RES-334-2013.pdf:
+  file: CSU_RES-334-2013.pdf
+  result: ok
+CSU_RES-931-2019.pdf:
+  file: CSU_RES-931-2019.pdf
+  result: ok
+CSU_RES-609-2015.pdf:
+  file: CSU_RES-609-2015.pdf
+  result: ok
+CSU_RES-402-2025.pdf:
+  file: CSU_RES-402-2025.pdf
+  result: ok
+CSU_RES-94-2018.pdf:
+  file: CSU_RES-94-2018.pdf
+  result: ok
+CSU_RES-917-2019.pdf:
+  file: CSU_RES-917-2019.pdf
+  result: ok
+CSU_RES-656-2014.pdf:
+  file: CSU_RES-656-2014.pdf
+  result: ok
+CSU_RES-208-2014.pdf:
+  file: CSU_RES-208-2014.pdf
+  result: ok
+CSU_RES-149-2024.pdf:
+  file: CSU_RES-149-2024.pdf
+  result: ok
+CSU_RES-185-2022.pdf:
+  file: CSU_RES-185-2022.pdf
+  result: ok
+CSU_RES-769-2013.pdf:
+  file: CSU_RES-769-2013.pdf
+  result: ok
+CSU_RES-403-2014.pdf:
+  file: CSU_RES-403-2014.pdf
+  result: ok
+CSU_RES-77-2019.pdf:
+  file: CSU_RES-77-2019.pdf
+  result: ok
+CSU_RES-504-2020.pdf:
+  file: CSU_RES-504-2020.pdf
+  testCase:
+    description: deroga un derogador
+  result: ok
+CSU_RES-642-2008.pdf:
+  file: CSU_RES-642-2008.pdf
+  testCase:
+    description: Varias modificaciones parciales, no del todo estructurado
+  result: ok
+CSU_RES-121-2016.pdf:
+  file: CSU_RES-121-2016.pdf
+  result: ok
+CSU_RES-729-2018.pdf:
+  file: CSU_RES-729-2018.pdf
+  result: ok
+CSU_RES-186-2013.pdf:
+  file: CSU_RES-186-2013.pdf
+  result: ok
+CSU_RES-709-2013.pdf:
+  file: CSU_RES-709-2013.pdf
+  result: ok
+CSU_RES-317-2019.pdf:
+  file: CSU_RES-317-2019.pdf
+  result: ok
+CSU_RES-387-2022.pdf:
+  file: CSU_RES-387-2022.pdf
+  result: ok
+CSU_RES-622-2024.pdf:
+  file: CSU_RES-622-2024.pdf
+  result: ok
+CSU_RES-684-2013.pdf:
+  file: CSU_RES-684-2013.pdf
+  result: ok
+CSU_RES-626-2009.pdf:
+  file: CSU_RES-626-2009.pdf
+  testCase:
+    description: texto ordenado, con articulos no del todo explícitos
+  result: ok
+CSU_RES-15-2022.pdf:
+  file: CSU_RES-15-2022.pdf
+  result: ok
+CSU_RES-238-2025.pdf:
+  file: CSU_RES-238-2025.pdf
+  result: ok
+CSU_RES-299-2022.pdf:
+  file: CSU_RES-299-2022.pdf
+  result: ok
+CSU_RES-784-2019.pdf:
+  file: CSU_RES-784-2019.pdf
+  testCase:
+    description: deroga una resolución a la vez que hace lugar a un pedido. Se puede
+      modelar como un derogador directamente
+  result: ok
+CSU_RES-621-2014.pdf:
+  file: CSU_RES-621-2014.pdf
+  result: ok
+CSU_RES-541-2019.pdf:
+  file: CSU_RES-541-2019.pdf
+  result: ok
+CSU_RES-906-2024.pdf:
+  file: CSU_RES-906-2024.pdf
+  result: ok
+CSU_RES-361-2018.pdf:
+  file: CSU_RES-361-2018.pdf
+  result: ok
+CSU_RES-187-2021.pdf:
+  file: CSU_RES-187-2021.pdf
+  testCase:
+    description: documento (plan de estudios)
+  result: ok
+CSU_RES-62-2025.pdf:
+  file: CSU_RES-62-2025.pdf
+  result: ok
+CSU_RES-678-2016.pdf:
+  file: CSU_RES-678-2016.pdf
+  result: ok
+CSU_RES-42-2019.pdf:
+  file: CSU_RES-42-2019.pdf
+  result: ok
+CSU_RES-12-2024.pdf:
+  file: CSU_RES-12-2024.pdf
+  result: ok
+CSU_RES-185-2019.pdf:
+  file: CSU_RES-185-2019.pdf
+  result: ok
+CSU_RES-191-2021.pdf:
+  file: CSU_RES-191-2021.pdf
+  result: ok
+CSU_RES-780-2014.pdf:
+  file: CSU_RES-780-2014.pdf
+  result: ok
+CSU_RES-320-2017.pdf:
+  file: CSU_RES-320-2017.pdf
+  result: ok
+CSU_RES-87-2019.pdf:
+  file: CSU_RES-87-2019.pdf
+  result: ok
+CSU_RES-437-2017.pdf:
+  file: CSU_RES-437-2017.pdf
+  result: ok
+CSU_RES-792-2024.pdf:
+  file: CSU_RES-792-2024.pdf
+  result: ok
+CSU_RES-479-2024.pdf:
+  file: CSU_RES-479-2024.pdf
+  result: ok
+CSU_RES-701-2017.pdf:
+  file: CSU_RES-701-2017.pdf
+  result: ok
+CSU_RES-71-2025.pdf:
+  file: CSU_RES-71-2025.pdf
+  testCase:
+    description: archivo embebido inexistente
+  result: ok
+CSU_RES-470-2017.pdf:
+  file: CSU_RES-470-2017.pdf
+  result: ok
+CSU_RES-481-2019.pdf:
+  file: CSU_RES-481-2019.pdf
+  result: ok
+CSU_RES-884-2018.pdf:
+  file: CSU_RES-884-2018.pdf
+  result: ok
+CSU_RES-587-2017.pdf:
+  file: CSU_RES-587-2017.pdf
+  result: ok
+CSU_RES-55-2023.pdf:
+  file: CSU_RES-55-2023.pdf
+  result: ok
+CSU_RES-960-2024.pdf:
+  file: CSU_RES-960-2024.pdf
+  result: ok
+CSU_RES-547-2024.pdf:
+  file: CSU_RES-547-2024.pdf
+  result: ok
+CSU_RES-167-2021.pdf:
+  file: CSU_RES-167-2021.pdf
+  result: ok
+CSU_RES-721-2018.pdf:
+  file: CSU_RES-721-2018.pdf
+  result: ok
+CSU_RES-381-2019.pdf:
+  file: CSU_RES-381-2019.pdf
+  result: ok
+CSU_RES-289-2018.pdf:
+  file: CSU_RES-289-2018.pdf
+  result: ok
+CSU_RES-570-2013.pdf:
+  file: CSU_RES-570-2013.pdf
+  result: ok
+CSU_RES-549-2023.pdf:
+  file: CSU_RES-549-2023.pdf
+  result: ok
+CSU_RES-385-2019.pdf:
+  file: CSU_RES-385-2019.pdf
+  result: ok
+CSU_RES-53-2019.pdf:
+  file: CSU_RES-53-2019.pdf
+  result: ok
+CSU_RES-217-2025.pdf:
+  file: CSU_RES-217-2025.pdf
+  result: ok
+CSU_RES-30-2017.pdf:
+  file: CSU_RES-30-2017.pdf
+  result: ok
+CSU_RES-498-2022.pdf:
+  file: CSU_RES-498-2022.pdf
+  result: ok
+CSU_RES-235-2013.pdf:
+  file: CSU_RES-235-2013.pdf
+  result: ok
+CSU_RES-272-2019.pdf:
+  file: CSU_RES-272-2019.pdf
+  result: ok
+CSU_RES-362-2019.pdf:
+  file: CSU_RES-362-2019.pdf
+  testCase:
+    description: Reemplaza artículo
+  result: ok
+CSU_RES-342-2017.pdf:
+  file: CSU_RES-342-2017.pdf
+  result: ok
+CSU_RES-480-2018.pdf:
+  file: CSU_RES-480-2018.pdf
+  result: ok
+CSU_RES-777-2013.pdf:
+  file: CSU_RES-777-2013.pdf
+  result: ok
+CSU_RES-679-2021.pdf:
+  file: CSU_RES-679-2021.pdf
+  result: ok
+CSU_RES-206-2015.pdf:
+  file: CSU_RES-206-2015.pdf
+  result: ok
+CSU_RES-64-2016.pdf:
+  file: CSU_RES-64-2016.pdf
+  result: ok
+CSU_RES-397-2017.pdf:
+  file: CSU_RES-397-2017.pdf
+  result: ok
+CSU_RES-26-2017.pdf:
+  file: CSU_RES-26-2017.pdf
+  result: ok
+CSU_RES-586-2022.pdf:
+  file: CSU_RES-586-2022.pdf
+  result: ok
+CSU_RES-832-2014.pdf:
+  file: CSU_RES-832-2014.pdf
+  result: ok
+CSU_RES-207-2020.pdf:
+  file: CSU_RES-207-2020.pdf
+  result: ok
+CSU_RES-259-2025.pdf:
+  file: CSU_RES-259-2025.pdf
+  result: ok
+CSU_RES-31-2023.pdf:
+  file: CSU_RES-31-2023.pdf
+  testCase:
+    description: Dicho monto - Refiere al articulo 1
+  result: ok
+CSU_RES-361-2025.pdf:
+  file: CSU_RES-361-2025.pdf
+  result: ok
+CSU_RES-371-2020.pdf:
+  file: CSU_RES-371-2020.pdf
+  result: ok
+CSU_RES-12-2022.pdf:
+  file: CSU_RES-12-2022.pdf
+  result: ok
+CSU_RES-431-2013.pdf:
+  file: CSU_RES-431-2013.pdf
+  result: ok
+CSU_RES-846-2019.pdf:
+  file: CSU_RES-846-2019.pdf
+  result: ok
+CSU_RES-216-2016.pdf:
+  file: CSU_RES-216-2016.pdf
+  result: ok
+CSU_RES-551-2023.pdf:
+  file: CSU_RES-551-2023.pdf
+  result: ok
+CSU_RES-510-2013.pdf:
+  file: CSU_RES-510-2013.pdf
+  result: ok
+CSU_RES-369-2017.pdf:
+  file: CSU_RES-369-2017.pdf
+  testCase:
+    description: Se llama reglamento pero no tiene artículos como tal
+  result: ok
+CSU_RES-141-2014.pdf:
+  file: CSU_RES-141-2014.pdf
+  result: ok
+CSU_RES-946-2023.pdf:
+  file: CSU_RES-946-2023.pdf
+  result: ok
+CSU_RES-559-2013.pdf:
+  file: CSU_RES-559-2013.pdf
+  result: ok
+CSU_RES-608-2023.pdf:
+  file: CSU_RES-608-2023.pdf
+  result: ok
+CSU_RES-439-2016.pdf:
+  file: CSU_RES-439-2016.pdf
+  testCase:
+    description: Modificación avanzada en art 1
+  result: ok
+CSU_RES-309-2021.pdf:
+  file: CSU_RES-309-2021.pdf
+  result: ok
+CSU_RES-743-2014.pdf:
+  file: CSU_RES-743-2014.pdf
+  result: ok
+CSU_RES-344-2025.pdf:
+  file: CSU_RES-344-2025.pdf
+  result: ok
+CSU_RES-7-2013.pdf:
+  file: CSU_RES-7-2013.pdf
+  result: ok
+CSU_RES-83-2024.pdf:
+  file: CSU_RES-83-2024.pdf
+  result: ok
+CSU_RES-167-2018.pdf:
+  file: CSU_RES-167-2018.pdf
+  result: ok
+CSU_RES-209-2024.pdf:
+  file: CSU_RES-209-2024.pdf
+  result: ok
+CSU_RES-325-2024.pdf:
+  file: CSU_RES-325-2024.pdf
+  testCase:
+    description: Modifica TOAE. Habla de articulo 40 sin decir que es el anexo
+  result: ok
+CSU_RES-606-2015.pdf:
+  file: CSU_RES-606-2015.pdf
+  result: ok
+CSU_RES-985-2024.pdf:
+  file: CSU_RES-985-2024.pdf
+  result: ok
+CSU_RES-595-2019.pdf:
+  file: CSU_RES-595-2019.pdf
+  result: fail
+  reason: Incluye una resolución de rectorado incrustada. Se podría hacer que
+    simplemente se la ignore
+CSU_RES-192-2022.pdf:
+  file: CSU_RES-192-2022.pdf
+  result: ok
+CSU_RES-656-2017.pdf:
+  file: CSU_RES-656-2017.pdf
+  result: ok
+CSU_RES-637-2024.pdf:
+  file: CSU_RES-637-2024.pdf
+  result: ok
+CSU_RES-774-2024.pdf:
+  file: CSU_RES-774-2024.pdf
+  result: ok
+CSU_RES-110-2023.pdf:
+  file: CSU_RES-110-2023.pdf
+  result: ok
+CSU_RES-690-2021.pdf:
+  file: CSU_RES-690-2021.pdf
+  testCase:
+    description: Reglamento
+  result: ok
+CSU_RES-99-2018.pdf:
+  file: CSU_RES-99-2018.pdf
+  result: ok
+CSU_RES-222-2021.pdf:
+  file: CSU_RES-222-2021.pdf
+  result: ok
+CSU_RES-451-2018.pdf:
+  file: CSU_RES-451-2018.pdf
+  result: ok
+CSU_RES-1069-2023.pdf:
+  file: CSU_RES-1069-2023.pdf
+  result: ok
+CSU_RES-411-2020.pdf:
+  file: CSU_RES-411-2020.pdf
+  result: ok
+CSU_RES-585-2024.pdf:
+  file: CSU_RES-585-2024.pdf
+  result: ok
+CSU_RES-860-2022.pdf:
+  file: CSU_RES-860-2022.pdf
+  result: ok
+CSU_RES-264-2019.pdf:
+  file: CSU_RES-264-2019.pdf
+  result: ok
+CSU_RES-45-2014.pdf:
+  file: CSU_RES-45-2014.pdf
+  result: ok
+CSU_RES-712-2016.pdf:
+  file: CSU_RES-712-2016.pdf
+  result: ok
+CSU_RES-323-2018.pdf:
+  file: CSU_RES-323-2018.pdf
+  testCase:
+    description: Ratifica sin decir que cosa?
+  result: ok
+CSU_RES-584-2015.pdf:
+  file: CSU_RES-584-2015.pdf
+  result: ok
+CSU_RES-596-2015.pdf:
+  file: CSU_RES-596-2015.pdf
+  result: ok
+CSU_RES-91-2012.pdf:
+  file: CSU_RES-91-2012.pdf
+  testCase:
+    description: Deroga resolución
+  result: ok
+CSU_RES-442-2014.pdf:
+  file: CSU_RES-442-2014.pdf
+  result: ok
+CSU_RES-617-2013.pdf:
+  file: CSU_RES-617-2013.pdf
+  result: ok
+CSU_RES-452-2018.pdf:
+  file: CSU_RES-452-2018.pdf
+  result: ok
+CSU_RES-21-2017.pdf:
+  file: CSU_RES-21-2017.pdf
+  result: ok
+CSU_RES-624-2015.pdf:
+  file: CSU_RES-624-2015.pdf
+  result: ok
+CSU_RES-821-2022.pdf:
+  file: CSU_RES-821-2022.pdf
+  result: ok
+CSU_RES-325-2016.pdf:
+  file: CSU_RES-325-2016.pdf
+  result: ok
+CSU_RES-53-2013.pdf:
+  file: CSU_RES-53-2013.pdf
+  result: ok
+CSU_RES-366-2014.pdf:
+  file: CSU_RES-366-2014.pdf
+  result: ok
+CSU_RES-723-2021.pdf:
+  file: CSU_RES-723-2021.pdf
+  result: ok
+CSU_RES-557-2016.pdf:
+  file: CSU_RES-557-2016.pdf
+  result: ok
+CSU_RES-147-2023.pdf:
+  file: CSU_RES-147-2023.pdf
+  result: ok
+CSU_RES-509-2013.pdf:
+  file: CSU_RES-509-2013.pdf
+  result: ok
+CSU_RES-244-2017.pdf:
+  file: CSU_RES-244-2017.pdf
+  result: ok
+CSU_RES-486-2021.pdf:
+  file: CSU_RES-486-2021.pdf
+  result: fail
+  reason: Rectifica un visto
+CSU_RES-119-2018.pdf:
+  file: CSU_RES-119-2018.pdf
+  result: ok
+CSU_RES-614-2023.pdf:
+  file: CSU_RES-614-2023.pdf
+  result: ok
+CSU_RES-794-2022.pdf:
+  file: CSU_RES-794-2022.pdf
+  result: ok
+CSU_RES-176-2021.pdf:
+  file: CSU_RES-176-2021.pdf
+  result: ok
+CSU_RES-105-2017.pdf:
+  file: CSU_RES-105-2017.pdf
+  result: ok
+CSU_RES-875-2019.pdf:
+  file: CSU_RES-875-2019.pdf
+  result: ok
+CSU_RES-822-2015.pdf:
+  file: CSU_RES-822-2015.pdf
+  result: ok
+CSU_RES-466-2025.pdf:
+  file: CSU_RES-466-2025.pdf
+  result: ok
+CSU_RES-657-2014.pdf:
+  file: CSU_RES-657-2014.pdf
+  result: ok
+CSU_RES-743-2019.pdf:
+  file: CSU_RES-743-2019.pdf
+  result: ok
+CSU_RES-226-2014.pdf:
+  file: CSU_RES-226-2014.pdf
+  result: ok
+CSU_RES-239-2023.pdf:
+  file: CSU_RES-239-2023.pdf
+  result: ok
+CSU_RES-550-2016.pdf:
+  file: CSU_RES-550-2016.pdf
+  result: ok
+CSU_RES-20-2020.pdf:
+  file: CSU_RES-20-2020.pdf
+  result: ok
+CSU_RES-617-2018.pdf:
+  file: CSU_RES-617-2018.pdf
+  result: ok
+CSU_RES-121-2017.pdf:
+  file: CSU_RES-121-2017.pdf
+  result: ok
+CSU_RES-272-2025.pdf:
+  file: CSU_RES-272-2025.pdf
+  result: ok
+CSU_RES-740-2023.pdf:
+  file: CSU_RES-740-2023.pdf
+  result: ok
+CSU_RES-496-2018.pdf:
+  file: CSU_RES-496-2018.pdf
+  result: ok
+CSU_RES-77-2015.pdf:
+  file: CSU_RES-77-2015.pdf
+  result: ok
+CSU_RES-171-2025.pdf:
+  file: CSU_RES-171-2025.pdf
+  result: ok
+CSU_RES-516-2023.pdf:
+  file: CSU_RES-516-2023.pdf
+  result: ok
+CSU_RES-434-2023.pdf:
+  file: CSU_RES-434-2023.pdf
+  result: ok
+CSU_RES-386-2022.pdf:
+  file: CSU_RES-386-2022.pdf
+  result: ok
+CSU_RES-787-2013.pdf:
+  file: CSU_RES-787-2013.pdf
+  testCase:
+    description: Firmas en la otra página
+  result: ok
+CSU_RES-248-2021.pdf:
+  file: CSU_RES-248-2021.pdf
+  result: ok
+CSU_RES-438-2019.pdf:
+  file: CSU_RES-438-2019.pdf
+  result: ok
+CSU_RES-360-2018.pdf:
+  file: CSU_RES-360-2018.pdf
+  result: ok
+CSU_RES-432-2022.pdf:
+  file: CSU_RES-432-2022.pdf
+  result: ok
+CSU_RES-838-2018.pdf:
+  file: CSU_RES-838-2018.pdf
+  result: ok
+CSU_RES-705-2018.pdf:
+  file: CSU_RES-705-2018.pdf
+  result: ok
+CSU_RES-238-1992.pdf:
+  file: CSU_RES-238-1992.pdf
+  result: ok
+CSU_RES-889-2024.pdf:
+  file: CSU_RES-889-2024.pdf
+  testCase:
+    description: Incorporación de texto - Mod avanzada
+  result: ok
+CSU_RES-622-2021.pdf:
+  file: CSU_RES-622-2021.pdf
+  result: ok
+CSU_RES-920-2018.pdf:
+  file: CSU_RES-920-2018.pdf
+  result: ok
+CSU_RES-662-2019.pdf:
+  file: CSU_RES-662-2019.pdf
+  result: ok
+CSU_RES-127-2009.pdf:
+  file: CSU_RES-127-2009.pdf
+  result: ok
+CSU_RES-579-2014.pdf:
+  file: CSU_RES-579-2014.pdf
+  result: ok
+CSU_RES-476-2025.pdf:
+  file: CSU_RES-476-2025.pdf
+  result: ok
+CSU_RES-68-2022.pdf:
+  file: CSU_RES-68-2022.pdf
+  result: ok
+CSU_RES-568-2018.pdf:
+  file: CSU_RES-568-2018.pdf
+  result: ok
+CSU_RES-483-2024.pdf:
+  file: CSU_RES-483-2024.pdf
+  result: ok
+CSU_RES-227-2020.pdf:
+  file: CSU_RES-227-2020.pdf
+  result: ok
+CSU_RES-65-2023.pdf:
+  file: CSU_RES-65-2023.pdf
+  result: ok
+CSU_RES-489-2023.pdf:
+  file: CSU_RES-489-2023.pdf
+  testCase:
+    description: Mod avanzada art 1
+  result: ok
+CSU_RES-486-2013.pdf:
+  file: CSU_RES-486-2013.pdf
+  result: ok
+CSU_RES-351-2016.pdf:
+  file: CSU_RES-351-2016.pdf
+  result: ok
+CSU_RES-635-2018.pdf:
+  file: CSU_RES-635-2018.pdf
+  result: ok
+CSU_RES-470-2024.pdf:
+  file: CSU_RES-470-2024.pdf
+  result: ok
+CSU_RES-197-2019.pdf:
+  file: CSU_RES-197-2019.pdf
+  result: ok
+CSU_RES-426-2023.pdf:
+  file: CSU_RES-426-2023.pdf
+  result: ok
+CSU_RES-734-2015.pdf:
+  file: CSU_RES-734-2015.pdf
+  result: ok
+CSU_RES-287-2022.pdf:
+  file: CSU_RES-287-2022.pdf
+  result: ok
+CSU_RES-139-2020.pdf:
+  file: CSU_RES-139-2020.pdf
+  testCase:
+    description: Ratificaciones en una tabla. Deben interpretarse como múltiples cambios
+  result: ok
+CSU_RES-417-2022.pdf:
+  file: CSU_RES-417-2022.pdf
+  result: ok
+CSU_RES-162-2023.pdf:
+  file: CSU_RES-162-2023.pdf
+  result: ok
+CSU_RES-500-2018.pdf:
+  file: CSU_RES-500-2018.pdf
+  result: ok
+CSU_RES-262-2014.pdf:
+  file: CSU_RES-262-2014.pdf
+  result: ok
+CSU_RES-289-2014.pdf:
+  file: CSU_RES-289-2014.pdf
+  result: ok
+CSU_RES-525-2024.pdf:
+  file: CSU_RES-525-2024.pdf
+  result: ok
+CSU_RES-264-2018.pdf:
+  file: CSU_RES-264-2018.pdf
+  result: ok
+CSU_RES-644-2017.pdf:
+  file: CSU_RES-644-2017.pdf
+  result: ok
+CSU_RES-345-2019.pdf:
+  file: CSU_RES-345-2019.pdf
+  result: ok
+CSU_RES-160-2013.pdf:
+  file: CSU_RES-160-2013.pdf
+  result: ok
+CSU_RES-827-2014.pdf:
+  file: CSU_RES-827-2014.pdf
+  result: ok
+CSU_RES-877-2018.pdf:
+  file: CSU_RES-877-2018.pdf
+  result: ok
+CSU_RES-13-2025.pdf:
+  file: CSU_RES-13-2025.pdf
+  result: ok
+CSU_RES-337-2014.pdf:
+  file: CSU_RES-337-2014.pdf
+  result: ok
+CSU_RES-807-2018.pdf:
+  file: CSU_RES-807-2018.pdf
+  testCase:
+    description: Resolución gigante. No automatizar. Menciona Anexos sin decir
+      cuales son (pero están más adelante).
+  result: ok
+CSU_RES-501-2024.pdf:
+  file: CSU_RES-501-2024.pdf
+  result: ok
+CSU_RES-411-2022.pdf:
+  file: CSU_RES-411-2022.pdf
+  result: ok
+CSU_RES-880-2022.pdf:
+  file: CSU_RES-880-2022.pdf
+  result: ok
+CSU_RES-872-2024.pdf:
+  file: CSU_RES-872-2024.pdf
+  result: ok
+CSU_RES-775-2018.pdf:
+  file: CSU_RES-775-2018.pdf
+  result: ok
+CSU_RES-687-2023.pdf:
+  file: CSU_RES-687-2023.pdf
+  result: ok
+CSU_RES-10-2017.pdf:
+  file: CSU_RES-10-2017.pdf
+  result: ok
+CSU_RES-418-2015.pdf:
+  file: CSU_RES-418-2015.pdf
+  result: ok
+CSU_RES-548-2023.pdf:
+  file: CSU_RES-548-2023.pdf
+  result: ok
+CSU_RES-664-2023.pdf:
+  file: CSU_RES-664-2023.pdf
+  result: ok
+CSU_RES-96-2024.pdf:
+  file: CSU_RES-96-2024.pdf
+  result: ok
+CSU_RES-249-2015.pdf:
+  file: CSU_RES-249-2015.pdf
+  result: ok
+CSU_RES-634-2017.pdf:
+  file: CSU_RES-634-2017.pdf
+  result: ok
+CSU_RES-838-2015.pdf:
+  file: CSU_RES-838-2015.pdf
+  result: ok
+CSU_RES-429-2021.pdf:
+  file: CSU_RES-429-2021.pdf
+  result: ok
+CSU_RES-785-2019.pdf:
+  file: CSU_RES-785-2019.pdf
+  result: ok
+CSU_RES-171-2015.pdf:
+  file: CSU_RES-171-2015.pdf
+  result: ok
+CSU_RES-388-2025.pdf:
+  file: CSU_RES-388-2025.pdf
+  result: ok
+CSU_RES-664-2015.pdf:
+  file: CSU_RES-664-2015.pdf
+  result: ok
+CSU_RES-213-2016.pdf:
+  file: CSU_RES-213-2016.pdf
+  testCase:
+    description: Mod avanzada art 1
+  result: ok
+CSU_RES-724-2013.pdf:
+  file: CSU_RES-724-2013.pdf
+  result: ok
+CSU_RES-7-2015.pdf:
+  file: CSU_RES-7-2015.pdf
+  result: ok
