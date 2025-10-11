@@ -38,9 +38,6 @@ importers:
       '@radix-ui/react-slot':
         specifier: ^1.2.3
         version: 1.2.3(@types/react@19.1.12)(react@19.1.0)
-      '@techery/zod-to-vertex-schema':
-        specifier: ^0.1.4
-        version: 0.1.4
       '@types/toposort':
         specifier: ^2.0.7
         version: 2.0.7
@@ -92,6 +89,9 @@ importers:
       prisma:
         specifier: ^6.15.0
         version: 6.15.0(typescript@5.9.2)
+      python-shell:
+        specifier: ^5.0.0
+        version: 5.0.0
       react:
         specifier: 19.1.0
         version: 19.1.0
@@ -1581,10 +1581,6 @@ packages:
 
   '@tailwindcss/postcss@4.1.13':
     resolution: {integrity: sha512-HLgx6YSFKJT7rJqh9oJs/TkBFhxuMOfUKSBEPYwV+t78POOBsdQ7crhZLzwcH3T0UyUuOzU/GK5pk5eKr3wCiQ==}
-
-  '@techery/zod-to-vertex-schema@0.1.4':
-    resolution: {integrity: sha512-8FcCrKAmUDGkQhncq1q+9UbbMEN81wH9bxzKxACm2egnjSOQdXkba8ayXaX8nJtFSVYVDxt1/U2+wECZ9NtRyg==}
-    engines: {node: '>=16'}
 
   '@tokenizer/token@0.3.0':
     resolution: {integrity: sha512-OvjF+z51L3ov0OyAU0duzsYuvO01PH7x4t6DJx+guahgTnBHkhJdG7soQeTSFLWN3efnHyibZ4Z8l2EuWwJN3A==}
@@ -3824,6 +3820,10 @@ packages:
   pure-rand@6.1.0:
     resolution: {integrity: sha512-bVWawvoZoBYpp6yIoQtQXHZjmz35RSVHnUOTefl8Vcjr8snTPY1wnpSPMWekcFwbxI6gtmT7rSYPFvz71ldiOA==}
 
+  python-shell@5.0.0:
+    resolution: {integrity: sha512-RUOOOjHLhgR1MIQrCtnEqz/HJ1RMZBIN+REnpSUrfft2bXqXy69fwJASVziWExfFXsR1bCY0TznnHooNsCo0/w==}
+    engines: {node: '>=0.10'}
+
   querystringify@2.2.0:
     resolution: {integrity: sha512-FIqgj2EUvTa7R50u0rGsyTftzjYmv/a3hO345bZNrqabNqjtgiDMgmo4mkUjd+nzU5oF3dClKqFIPUKybUyqoQ==}
 
@@ -5382,10 +5382,6 @@ snapshots:
       '@tailwindcss/oxide': 4.1.13
       postcss: 8.5.6
       tailwindcss: 4.1.13
-
-  '@techery/zod-to-vertex-schema@0.1.4':
-    dependencies:
-      zod: 3.25.76
 
   '@tokenizer/token@0.3.0': {}
 
@@ -7956,6 +7952,8 @@ snapshots:
       - utf-8-validate
 
   pure-rand@6.1.0: {}
+
+  python-shell@5.0.0: {}
 
   querystringify@2.2.0: {}
 

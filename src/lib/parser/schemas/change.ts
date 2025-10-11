@@ -49,10 +49,21 @@ export const ChangeRatifyAdReferendum = z.object({
     resolutionToRatify: ResolutionReferenceSchema.describe("Resolución a ratificar"),
 }).meta({title: "CambioRatificarAdReferendum"});
 
+export const ReplaceAnnexNewContent = z.discriminatedUnion("type", [
+    z.object({
+        type: z.literal("Inline").describe("Contenido del anexo incluido en línea"),
+        content: AnnexSchema.describe("Contenido nuevo del anexo"),
+    }).meta({title: "ReemplazoAnexoContenidoNuevoInline"}),
+    z.object({
+        type: z.literal("Reference").describe("Referencia a un anexo de la resolución"),
+        reference: AnnexReferenceSchema.describe("Referencia al anexo. Debe ser de la resolución actual"),
+    }).meta({title: "ReemplazoAnexoContenidoNuevoReferencia"}),
+]).meta({title: "ReemplazoAnexoContenidoNuevo"});
+
 export const ChangeReplaceAnnex = z.object({
     type: z.literal("ReplaceAnnex").describe("Reemplazar un anexo"),
     targetAnnex: AnnexReferenceSchema.describe("Anexo a reemplazar"),
-    newContent: AnnexSchema.describe("Contenido nuevo del anexo"), //TODO may not be inline
+    newContent: ReplaceAnnexNewContent.describe("Contenido nuevo del anexo. Puede ser inline o una referencia a otro anexo"),
 }).meta({title: "CambioReemplazarAnexo"});
 
 export const ChangeAddAnnexToResolution = z.object({

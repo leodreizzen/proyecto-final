@@ -28,9 +28,9 @@ export function zodToLLMDescription(schema: ZodType): any {
             throw new Error(`Auxiliary type must have a title in meta()`);
         }
         if (schemas.has(title)) {
-            // if (JSON.stringify(schemas.get(title)) !== JSON.stringify(current)) {
-            //     throw new Error(`Duplicate type title with different schemas: ${title}`);
-            // } else TODO CHANGE THIS TO SUPPORT RECURSIVE
+            if (schemas.get(title)?.def !== current.def) {
+                throw new Error(`Duplicate type title with different schemas: ${title}`);
+            }
             continue;
         }
         schemas.set(title, current);
@@ -171,7 +171,7 @@ function _zodTypeToDescription(_schema: ZodType, auxiliaryTypes: ZodType[] = [])
         }
         primitive = false;
     } else if (schema instanceof ZodDiscriminatedUnion) {
-        typeName = `Unión discriminada por ${schema.def.discriminator}`;
+        typeName = `Unión discriminada por '${schema.def.discriminator}'`;
         for (const _option of schema.options) {
             let option = _option as ZodType;
             if (option instanceof ZodLazy) {

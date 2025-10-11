@@ -3,7 +3,7 @@ import {ArticleSchema} from "./article";
 import {AnnexSchema} from "./annex";
 import {TableSchema} from "./table";
 import {ResolutionIDSchema} from "./common";
-
+import {TextReference} from "@/lib/parser/schemas/reference";
 export const ResolutionSchema = z.object({
     id: ResolutionIDSchema.describe("ID de la resolución"),
     decisionBy: z.string().describe("Quien dicta la resolución"),
@@ -32,4 +32,4 @@ export const ResolutionSchema = z.object({
         name: z.string().describe("Nombre de la persona"),
         role: z.string().describe("Cargo o función"),
     }).meta({title: "Firma"})).describe("Firmas, puede estar vacío"),
-}).meta({title: "Resolución", schemaDescription: "Resolución completa"});
+}).meta({title: "Resolución", schemaDescription: "Resolución completa"}).overwrite(res => JSON.parse(JSON.stringify(res).replace("<br>", "\n")));

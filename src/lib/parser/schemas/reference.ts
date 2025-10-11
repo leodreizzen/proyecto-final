@@ -29,20 +29,14 @@ export const ArticleReferenceSchema = z.object({
     return (data.resolution || data.annex) && !(data.resolution && data.annex);
 }, {error: "Debe especificar resolución o anexo"}).meta({
     title: "ReferenciaArticulo",
-    schemaDescription: "Referencia a un artículo dentro de una resolución o anexo; incluir anexos si aplica. Obligatorio especificar resolución o anexo"
+    schemaDescription: "Referencia a un artículo dentro de una resolución o anexo; incluir anexos si aplica. Obligatorio especificar resolución o anexo, aunque sea la actual"
 });
-
-export const OtherReferenceSchema = z.object({
-    referenceType: z.literal("Other"),
-    referenceDescription: z.string().describe("Descripción de la referencia"),
-}).meta({title: "ReferenciaOtro", schemaDescription: "Referencia a un elemento que no es resolución, anexo, capítulo o artículo de la universidad"});
 
 export const ReferenceSchema = z.discriminatedUnion("referenceType", [
     ResolutionReferenceSchema,
     AnnexReferenceSchema,
     ChapterReferenceSchema,
     ArticleReferenceSchema,
-    OtherReferenceSchema
 ]).meta({title: "Referencia", schemaDescription: "Referencia a resolución, anexo, capítulo o artículo"});
 
 export const TextReference = z.object({

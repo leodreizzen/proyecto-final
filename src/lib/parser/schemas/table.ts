@@ -14,5 +14,5 @@ export const TableSchema = z.object({
     rows: z.array(TableRowSchema).describe("Filas de la tabla"),
 }).meta({
     title: "Tabla",
-    schemaDescription: "Tabla presente en la resolución. Se las referencia como {{table X}} en el texto"
+    schemaDescription: "Tabla presente en la resolución. Se las referencia como {{table X}} en el texto",
 });

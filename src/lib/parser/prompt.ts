@@ -28,6 +28,7 @@ A continuación se describe el formato esperado de la respuesta. No olvides que 
     -TODOS LOS CAMPOS SON OBLIGATORIOS salvo que se indique lo contrario. En todo caso un array podrá quedar vacío, pero debes incluirlo
     -Salvo que te lo indiquen en el esquema, ningún campo puede ser nulo. Si necesitas poner un string y no aplica ninguno, dejalo vacío (""). Si introduces valores nulos donde no debes, se considerará que tu respuesta es inválida
     -No agregues campos adicionales que no estén en el esquema
+    -Bajo ningún concepto moodifiques o resumas los textos. Debes copiarlos tal cual están en las imágenes que ves.
 Cuando termines, revisa que el JSON sea válido y siga el esquema. Si no es así, corrígelo.
 ----------------------------
 `;
