@@ -1,0 +1,43 @@
+Debes retornar un JSON con la siguiente estructura:
+Objeto principal: Resolución. Representa una resolución del consejo.
+Propiedades:
+- id: object. Identificador único de la resolución. Es un objeto con las siguientes propiedades:
+     -initial: string (ej. "CSU", "CU", "R")
+     -number: number (ej. 1024)
+     -year: number, 4 dígitos (ej. 2024)
+- decisionBy: string. Representa quién tomó la decisión (ej. "Consejo Superior Universitario")
+- metadata: object. Algunos metadatos que vas a generar:
+    - title: string. Título breve de la resolución. Ejemplos: 'Eleva Asamblea Universitaria creación Unidad Colección Paleontológica', 'Rectifica Anexo I CSU-418-25 Cargos docentes temporarios', 'Crea cargos Lic. en Matemática Aplicada'"
+    - summary: string. Resumen breve de la resolución. Máximo 40-50 palabras
+    - keywords: string[]. Palabras clave que describen la resolución
+- date: string. Fecha en formato ISO 8601 (ej. "2024-06-15"). Sin hora
+- caseFiles: string[]. Expedientes relacionados.
+- recitals: object[]. Considerandos de la resolución. Cada objeto tiene las siguientes propiedades:
+    - text: string. Texto completo del considerando
+    - references: object[]. Referencias dentro del considerando. Abajo hablaremos de eso ({TextReference}).
+
+
+
+{TextReference}: Son referencias de textos. La idea es que un fragmento de texto referencia a un artículo, resolución, capítulo, o anexo.
+Propiedades:
+- before: string. Texto que aparece antes de la referencia
+- text: string. Texto de la referencia en sí
+- after: string. Texto que aparece después de la referencia
+- reference: object. Destino de la referencia. Abajo hablamos de eso ({{ReferenceDetail}}). NO PUEDE SER NULL
+
+
+{{ReferenceDetail}}: Detalle de la referencia. Puede ser a diferentes tipos de documentos.
+Propiedades:
+- type: string. Tipo de documento referenciado. Puede ser uno de los siguientes valores:
+    - "resolution": Resolución del consejo
+    - "article": Artículo de una ley o reglamento
+    - "chapter": Capítulo de una ley o reglamento
+    - "annex": Anexo de una ley o reglamento
+- id: object. Identificador del documento referenciado. La estructura depende del tipo:
+    - Si type es "resolution":
+        - initial: string (ej. "CSU", "CU", "R")
+        - number: number (ej. 1024)
+        - year: number, 4 dígitos (ej. 2024)
+
+
+
