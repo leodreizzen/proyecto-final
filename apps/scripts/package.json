@@ -1,0 +1,24 @@
+{
+  "name": "scripts",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@types/node": "^22.15.3"
+  },
+  "dependencies": {
+    "@langchain/community": "^0.3.57",
+    "@langchain/google-genai": "^0.2.18",
+    "@repo/db": "workspace:*",
+    "inquirer": "^12.10.0",
+    "toposort": "^2.0.2",
+    "yaml": "^2.8.1"
+  }
+}

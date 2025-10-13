@@ -1,0 +1,101 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider   = "prisma-client"
+  output     = "../src/generated/prisma"
+  extensions = [pgvector(map: "vector")]
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Resolution {
+  uuid String @id @default(uuid())
+
+  initials String
+  number   Int
+  year     Int
+
+  articles Article[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  appendices Appendix[]
+}
+
+model Appendix {
+  uuid String @id @default(uuid())
+
+  resolution     Resolution @relation(fields: [resolutionUuid], references: [uuid])
+  resolutionUuid String
+
+  number   Int
+  articles AppendixArticle[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([resolutionUuid, number])
+}
+
+model Article {
+  uuid String @id @default(uuid())
+
+  resolution     Resolution @relation(fields: [resolutionUuid], references: [uuid])
+  resolutionUuid String
+
+  number  Int
+  content String
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  references   Article[] @relation("ArticleReferences")
+  referencedBy Article[] @relation("ArticleReferences")
+
+  embedding Embedding[]
+
+  @@unique([resolutionUuid, number])
+}
+
+model AppendixArticle {
+  uuid String @id @default(uuid())
+
+  appendix     Appendix @relation(fields: [appendixUuid], references: [uuid])
+  appendixUuid String
+
+  number  Int
+  content String
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  references   AppendixArticle[] @relation("AppendixArticleReferences")
+  referencedBy AppendixArticle[] @relation("AppendixArticleReferences")
+
+  embedding Embedding[]
+
+  @@unique([appendixUuid, number])
+}
+
+model Embedding {
+  uuid String @id @default(uuid())
+
+  article         Article?         @relation(fields: [articleUuid], references: [uuid])
+  appendixArticle AppendixArticle? @relation(fields: [appendixArticleUuid], references: [uuid])
+
+  articleUuid         String?
+  appendixArticleUuid String?
+
+  createdAt DateTime @default(now())
+
+  vector  Unsupported("Vector")?
+  content String
+}

@@ -1,0 +1,45 @@
+{
+  "name": "@repo/db",
+  "version": "1.0.0",
+  "description": "",
+  "type": "module",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "postinstall": "pnpm exec prisma generate"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@repo/eslint-config": "workspace:*",
+    "@repo/typescript-config": "workspace:*",
+    "prisma": "^6.17.1"
+  },
+  "dependencies": {
+    "@types/node": "^22.15.3",
+    "postinstall": "^0.11.2",
+    "@prisma/client": "^6.17.1"
+  },
+  "exports": {
+    "./prisma": {
+      "types": "./src/prisma.ts",
+      "import": "./src/prisma.ts",
+      "default": "./src/prisma.ts"
+    },
+    "./prisma/client": {
+      "types": "./src/generated/prisma/client.ts",
+      "import": "./src/generated/prisma/client.ts",
+      "default": "./src/generated/prisma/client.ts"
+    },
+    "./prisma/models": {
+      "types": "./src/generated/prisma/models.ts",
+      "import": "./src/generated/prisma/models.ts",
+      "default": "./src/generated/prisma/models.ts"
+    },
+    "./prisma/enums": {
+      "types": "./src/generated/prisma/enums.ts",
+      "import": "./src/generated/prisma/enums.ts",
+      "default": "./src/generated/prisma/enums.ts"
+    }
+  }
+}

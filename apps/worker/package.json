@@ -1,0 +1,32 @@
+{
+  "name": "worker",
+  "version": "0.1.0",
+  "type": "module",
+  "private": true,
+  "scripts": {
+    "check-types": "tsc --noEmit",
+    "build": "node build.js",
+    "script": "node run-script.js",
+    "python-setup": "python3 python_setup.py"
+  },
+  "dependencies": {
+    "@repo/db": "workspace:*",
+    "dotenv": "^17.2.3",
+    "jsonrepair": "^3.13.1",
+    "openai": "^6.3.0",
+    "pdf-to-img": "^5.0.0",
+    "postinstall": "^0.11.2",
+    "python-shell": "^5.0.0",
+    "sharp": "^0.34.4",
+    "zod": "^4.1.12"
+  },
+  "devDependencies": {
+    "@repo/eslint-config": "workspace:*",
+    "@repo/typescript-config": "workspace:*",
+    "@types/node": "^22.15.3",
+    "esbuild": "0.25.10",
+    "eslint": "^9.34.0",
+    "tsx": "^4.20.6",
+    "typescript": "5.9.2"
+  }
+}

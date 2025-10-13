@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<project version="4">
-  <component name="SqlDialectMappings">
-    <file url="file://$PROJECT_DIR$/old/prisma/migrations/20250904195428_enable_pgvector/migration.sql" dialect="PostgreSQL" />
-    <file url="file://$PROJECT_DIR$/old/prisma/migrations/20250904202217_initial_database/migration.sql" dialect="PostgreSQL" />
-    <file url="file://$PROJECT_DIR$/old/scripts/proof_of_concept/ensamblar_y_guardar.ts" dialect="GenericSQL" />
-  </component>
-</project>
