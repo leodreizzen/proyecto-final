@@ -6,6 +6,16 @@ import pluginReact from "eslint-plugin-react";
 import globals from "globals";
 import pluginNext from "@next/eslint-plugin-next";
 import {config as baseConfig} from "./base.js";
+import {fileURLToPath} from "url";
+import {dirname} from "path";
+import { FlatCompat } from "@eslint/eslintrc";
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
+
+const compat = new FlatCompat({
+    baseDirectory: __dirname,
+});
 
 /**
  * A custom ESLint configuration for libraries that use Next.js.
@@ -47,5 +57,16 @@ export const nextJsConfig = [
             // React scope no longer necessary with new JSX transform.
             "react/react-in-jsx-scope": "off",
         },
+    },
+    ...compat.extends("next/typescript"),
+    {
+        ignores: [
+            "src/generated/**",
+            "node_modules/**",
+            ".next/**",
+            "out/**",
+            "build/**",
+            "next-env.d.ts",
+        ],
     },
 ];

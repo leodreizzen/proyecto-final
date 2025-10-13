@@ -20,7 +20,7 @@ export const pdfBufferToImage = async (pdf_buffer: Buffer, targetWidth?: number,
     const imgs = [];
     for await (const image of document) {
         if (targetWidth) {
-            let resizedImage = sharp(Buffer.from(image))
+            const resizedImage = sharp(Buffer.from(image))
                 .resize(targetWidth, null, {
                     fit: 'inside',
                     withoutEnlargement: true

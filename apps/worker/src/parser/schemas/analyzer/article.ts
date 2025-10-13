@@ -1,5 +1,5 @@
 import {z} from "zod";
-import {AnnexReferenceSchema, ReferenceSchema, TextReference} from "./reference";
+import {AnnexReferenceSchema, TextReference} from "./reference";
 import {ChangeSchema} from "./change";
 
 const ArticleNormative = z.object({

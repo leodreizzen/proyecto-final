@@ -2,6 +2,9 @@
   "$schema": "https://turborepo.com/schema.json",
   "ui": "tui",
   "tasks": {
+    "worker:*": {
+      "env": ["NODE_ENV", "OPEN_ROUTER_KEY"]
+    },
     "build": {
       "dependsOn": ["^build"],
       "inputs": ["$TURBO_DEFAULT$", ".env*", "!**/*.tsbuildinfo"],

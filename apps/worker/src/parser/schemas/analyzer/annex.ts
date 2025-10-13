@@ -38,7 +38,7 @@ export const ModificationsAnnexSchema = z.object({
     articles: z.array(ModificationAnnexArticleSchema).describe("Artículos que forman parte del anexo de modificaciones. Deben ser modificadores"),
 }).meta({title: "AnexoModificaciones"});
 
-export const AnnexSchema: z.ZodType<any> = z.discriminatedUnion("type", [
+export const AnnexSchema = z.discriminatedUnion("type", [
     AnnexRegulationSchema,
     TextAnnexSchema,
     ModificationsAnnexSchema,

@@ -1,5 +1,4 @@
 import {
-    z,
     ZodObject,
     ZodArray,
     ZodOptional,
@@ -9,7 +8,7 @@ import {
     ZodType, ZodNumber, ZodString, ZodDate, ZodLazy, ZodBoolean, ZodEnum
 } from "zod";
 
-export function zodToLLMDescription(schema: ZodType): any {
+export function zodToLLMDescription(schema: ZodType): string {
     const mainTitle = schema.meta()?.title;
     if (!mainTitle) {
         throw new Error(`Main schema must have a title in meta()`);

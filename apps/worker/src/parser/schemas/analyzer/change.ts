@@ -127,7 +127,7 @@ export const ChangeRepealChapterAnnex = z.object({
 }).meta({title: "CambioDerogarCapituloAnexo"});
 
 
-export const ChangeSchema: z.ZodType<any> = z.discriminatedUnion("type", [
+export const ChangeSchema = z.discriminatedUnion("type", [
     ChangeModifyArticle,
     ChangeReplaceArticle,
     ChangeAdvanced,
