@@ -5,7 +5,7 @@ import {
     ChapterReferenceSchema,
     ResolutionReferenceSchema, TextReference
 } from "./reference";
-import {ArticleSchema} from "./article";
+import {ArticleSchema, ArticleSchemaType} from "./article";
 import {AnnexSchema} from "./annex";
 import {TextModel} from "./common";
 
@@ -92,7 +92,7 @@ export const ChangeAddArticleToResolution = z.object({
     targetResolution: ResolutionReferenceSchema.describe("Resolución destino"),
     targetNumber: z.coerce.number().optional().nullable().describe("Número destino opcional"),
     targetSuffix: z.string().optional().nullable().describe("Sufijo del artículo, ej. 'bis'"),
-    get articleToAdd() {
+    get articleToAdd(): ArticleSchemaType {
         return ArticleSchema.describe("Artículo a agregar")
     }
 }).meta({title: "CambioAgregarArticuloAResolucion"});
@@ -107,7 +107,7 @@ export const ChangeAddArticleToAnnex = z.object({
     },
     targetNumber: z.coerce.number().optional().nullable().describe("Número destino opcional"),
     targetSuffix: z.string().optional().nullable().describe("Sufijo del artículo, ej. 'bis'"),
-    get articleToAdd() {
+    get articleToAdd(): ArticleSchemaType {
         return ArticleSchema.describe("Artículo a agregar")
     }
 

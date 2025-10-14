@@ -14,7 +14,9 @@ const ArticleCreateDocument = z.object({
 
 const ArticleModifier = z.object({
     type: z.literal("Modifier").describe("Artículo que realiza cambios en otras resoluciones o artículos"),
-    changes: z.array(ChangeSchema).min(1).describe("Lista de cambios aplicables. Debe tener al menos uno"),
+    get changes() {
+        return ChangeSchema.array().min(1).describe("Lista de cambios aplicables. Debe tener al menos uno");
+    }
 }).meta({title: "ArticuloModificador"});
 
 const ArticleFormality = z.object({
@@ -27,3 +29,5 @@ export const ArticleSchema = z.discriminatedUnion("type", [
     ArticleModifier,
     ArticleCreateDocument,
 ]).meta({title: "Articulo"});
+
+export type ArticleSchemaType = z.ZodDiscriminatedUnion<[typeof ArticleNormative, typeof ArticleFormality, typeof ArticleModifier, typeof ArticleCreateDocument], "type">;
