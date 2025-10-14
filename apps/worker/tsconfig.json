@@ -1,19 +1,15 @@
 {
   "extends": "@repo/typescript-config/base.json",
   "compilerOptions": {
-    "resolvePackageJsonExports": true,
     "moduleResolution": "bundler",
     "module": "ES2022",
     "paths": {
       "@/*": ["./src/*"]
-    },
+    }
   },
   "include": [
     "**/*.ts",
     "**/*.tsx",
-    "next-env.d.ts",
-    "next.config.js",
-    ".next/types/**/*.ts"
   ],
   "exclude": [
     "node_modules"

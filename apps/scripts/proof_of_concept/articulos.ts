@@ -16,9 +16,9 @@ export class Resolucion {
         for (const art of this.articulos) {
             art.resolucion = this;
         }
-        anexos.entries().forEach(([numero, anexo]) => {
+        anexos.forEach((anexo, numero) => {
             anexo.resolucion = this;
-        })
+        });
         this.anexos = anexos;
     }
 
@@ -244,8 +244,8 @@ function reemplazarNoEstricto(texto: string, antes: string, despues: string): st
         let j = i;
         let matched = 0;
         while (j < texto.length && pAntes < antes.length) {
-            const tChar = texto[j].toLowerCase();
-            const aChar = antes[pAntes].toLowerCase();
+            const tChar = texto[j]!.toLowerCase();
+            const aChar = antes[pAntes]!.toLowerCase();
 
             if (tChar === aChar) {
                 j++;
@@ -260,7 +260,7 @@ function reemplazarNoEstricto(texto: string, antes: string, despues: string): st
                 break; // no coincide, salir del while
             }
         }
-        while (pAntes < antes.length && IGNORED_SYMBOLS.includes(antes[pAntes])) {
+        while (pAntes < antes.length && IGNORED_SYMBOLS.includes(antes[pAntes]!)) {
             pAntes++;
         }
 

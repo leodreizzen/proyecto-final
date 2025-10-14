@@ -53,7 +53,7 @@ export function crearResoluciones(resolucionesParser: Parser.Normativa[]) {
 
                 const anexos= new Map<number, Anexo>;
                 for (let i = 0; i < resParser.anexos.length; i++) {
-                    const anexoParser = resParser.anexos[i];
+                    const anexoParser = resParser.anexos[i]!;
                     if (anexoParser.tipo != "articulos")
                         continue;
                     const idAnexo = {resolucion: resParser.id, anexo: i + 1};
@@ -151,13 +151,13 @@ export function crearResoluciones(resolucionesParser: Parser.Normativa[]) {
                 }
             }
             for (let i = 0; i < resParser.anexos.length; i++) {
-                const anexo = resParser.anexos[i];
+                const anexo = resParser.anexos[i]!;
                 if (anexo.tipo != "articulos")
                     continue;
 
                 const idAnexo = {resolucion: resParser.id, anexo: i + 1};
                 for (let j = 0; j < anexo.articulos.length; j++) {
-                    const articulo = anexo.articulos[j];
+                    const articulo = anexo.articulos[j]!;
                     const idArticuloAnexo: IDArticuloAnexo = {resolucion: resParser.id, anexo: i + 1, articulo: j + 1};
                     registrarDependencia({tipo: "articulo_anexo", id: idArticuloAnexo}, {
                         tipo: "anexo",

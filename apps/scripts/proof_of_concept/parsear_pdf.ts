@@ -30,7 +30,7 @@ async function main() {
     if(process.argv.length < 3) {
         INPUT_FILES = fs.readdirSync(INPUT_DIR).map(f => `${INPUT_DIR}/${f}`).filter(f => f.endsWith(".pdf"));
     } else {
-        INPUT_FILES = [process.argv[2]];
+        INPUT_FILES = [process.argv[2]!];
     }
     for(const filePath of INPUT_FILES) {
         const fileBase64 = fs.readFileSync(filePath).toString("base64");
