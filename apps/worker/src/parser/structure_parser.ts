@@ -1,23 +1,23 @@
-import {ResolutionStructure} from "@/parser/schemas/parser/schemas";
-import {zodToLLMDescription} from "@/util/zod_to_llm";
-import {analyzerSystemPrompt} from "@/parser/prompt";
-import {ResolutionAnalysis, ResolutionAnalysisSchema} from "@/parser/schemas/analyzer/resolution";
 import OpenAI from "openai";
-import {parseLLMResponse} from "@/util/llm_response";
+import {ResolutionStructure, ResolutionStructureSchema} from "@/parser/schemas/parser/schemas";
+import {structureParserSystemPrompt} from "@/parser/prompt";
 import {LLMError, ResultWithData} from "@/definitions";
+import {zodToLLMDescription} from "@/util/zod_to_llm";
+import {parseLLMResponse} from "@/util/llm_response";
 
 const openai = new OpenAI({
     apiKey: process.env.OPEN_ROUTER_KEY,
     baseURL: "https://openrouter.ai/api/v1",
 });
 
-export async function analyzeResolution(resolution: ResolutionStructure): Promise<ResultWithData<ResolutionAnalysis, LLMError>> {
-    const schemaDescription = zodToLLMDescription(ResolutionAnalysisSchema);
-    console.log("calling analyzer model...");
-    let res
+
+export async function parseResolutionStructure(fileContent: string): Promise<ResultWithData<ResolutionStructure, LLMError>> {
+    console.log("calling structure parser model...");
+    const schemaDescription = zodToLLMDescription(ResolutionStructureSchema); //TODO CACHE
+    let res;
     try {
         res = await openai.chat.completions.create({
-            model: "google/gemini-2.5-flash",
+            model: "google/gemini-2.5-flash-lite",
             response_format: {
                 type: "json_object"
             },
@@ -29,7 +29,7 @@ export async function analyzeResolution(resolution: ResolutionStructure): Promis
                     content: [
                         {
                             type: "text",
-                            text: analyzerSystemPrompt + schemaDescription,
+                            text: structureParserSystemPrompt + schemaDescription,
                             cache_control: {
                                 type: "ephemeral"
                             }
@@ -40,17 +40,17 @@ export async function analyzeResolution(resolution: ResolutionStructure): Promis
                     role: "user",
                     content: [{
                         type: "text",
-                        text: JSON.stringify(resolution, null, 2)
+                        text: fileContent
                     }]
                 }
             ]
-        })
+        });
     } catch (e) {
         console.error("API error:", e);
         return {
             success: false,
-            error: {code: "api_error"}
+            error: { code: "api_error" }
         };
     }
-    return parseLLMResponse(res, ResolutionAnalysisSchema);
+    return parseLLMResponse(res, ResolutionStructureSchema);
 }

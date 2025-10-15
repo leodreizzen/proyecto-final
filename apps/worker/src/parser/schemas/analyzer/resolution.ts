@@ -48,3 +48,5 @@ export const ResolutionAnalysisSchema = z.object({
     tables: z.array(TableAnalysisSchema).describe("Análisis de las tablas presentes en la resolución"),
     annexes: z.array(AnnexSchema).describe("Análisis de los anexos presentes en la resolución"),
 }).meta({title: "AnalisisResolucion", schemaDescription: "Análisis de la resolución, incluyendo artículos y tablas"})
+
+export type ResolutionAnalysis = z.infer<typeof ResolutionAnalysisSchema>;

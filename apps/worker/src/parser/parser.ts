@@ -1,44 +1,28 @@
-import OpenAI from "openai";
-import {zodToLLMDescription} from "@/parser/util/zod_to_llm";
-import {ResolutionStructureSchema} from "@/parser/schemas/parser/schemas";
-import {structureParserSystemPrompt} from "@/parser/prompt";
+import {parseResolutionStructure} from "@/parser/structure_parser";
+import {ResultWithData} from "@/definitions";
+import {ResolutionAnalysis} from "@/parser/schemas/analyzer/resolution";
+import {analyzeResolution} from "@/parser/analyzer";
 
-const openai = new OpenAI({
-    apiKey: process.env.OPEN_ROUTER_KEY,
-    baseURL: "https://openrouter.ai/api/v1",
-});
+export async function parseTextResolution(fileContent: string): Promise<ResultWithData<ResolutionAnalysis>> {
+    const structureRes = await parseResolutionStructure(fileContent);
+    if(!structureRes.success) {
+        return {
+            success: false,
+            error: "Failed to parse resolution structure"
+        }
+    }
 
-export async function parseResolutionStructure(fileContent: string) {
-    const schemaDescription = zodToLLMDescription(ResolutionStructureSchema);
-    console.log("calling model...");
-    const res = await openai.chat.completions.create({
-        model: "google/gemini-2.5-flash-lite",
-        response_format: {
-            type: "json_object"
-        },
-        reasoning_effort: "low",
-        max_completion_tokens: 18000,
-        messages: [
-            {
-                role: "developer",
-                content: [
-                    {
-                        type: "text",
-                        text: structureParserSystemPrompt + schemaDescription,
-                        cache_control: {
-                            type: "ephemeral"
-                        }
-                    }
-                ],
-            },
-            {
-                role: "user",
-                content: [{
-                    type: "text",
-                    text: fileContent
-                }]
-            }
-        ]
-    });
-    return res;
+    const analysisRes = await analyzeResolution(structureRes.data);
+    if(!analysisRes.success) {
+        return {
+            success: false,
+            error: "Failed to analyze resolution" // TODO error codes
+        }
+    }
+
+    //TODO ASSEMBLE FINAL RESOLUTION
+    return {
+        success: true,
+        data: analysisRes.data
+    }
 }
