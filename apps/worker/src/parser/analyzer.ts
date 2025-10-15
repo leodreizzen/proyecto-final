@@ -11,8 +11,9 @@ const openai = new OpenAI({
     baseURL: "https://openrouter.ai/api/v1",
 });
 
+const schemaDescription = zodToLLMDescription(ResolutionAnalysisSchema);
+
 export async function analyzeResolution(resolution: ResolutionStructure): Promise<ResultWithData<ResolutionAnalysis, LLMError>> {
-    const schemaDescription = zodToLLMDescription(ResolutionAnalysisSchema);
     console.log("calling analyzer model...");
     let res
     try {

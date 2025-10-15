@@ -10,10 +10,10 @@ const openai = new OpenAI({
     baseURL: "https://openrouter.ai/api/v1",
 });
 
+const schemaDescription = zodToLLMDescription(ResolutionStructureSchema);
 
 export async function parseResolutionStructure(fileContent: string): Promise<ResultWithData<ResolutionStructure, LLMError>> {
     console.log("calling structure parser model...");
-    const schemaDescription = zodToLLMDescription(ResolutionStructureSchema); //TODO CACHE
     let res;
     try {
         res = await openai.chat.completions.create({
