@@ -2,10 +2,11 @@ import {parseResolutionStructure} from "@/parser/structure_parser";
 import {ResultWithData} from "@/definitions";
 import {ResolutionAnalysis} from "@/parser/schemas/analyzer/resolution";
 import {analyzeResolution} from "@/parser/analyzer";
+import {runPythonScript} from "@/util/python_scripts";
 
 export async function parseTextResolution(fileContent: string): Promise<ResultWithData<ResolutionAnalysis>> {
     const structureRes = await parseResolutionStructure(fileContent);
-    if(!structureRes.success) {
+    if (!structureRes.success) {
         return {
             success: false,
             error: "Failed to parse resolution structure"
@@ -13,7 +14,7 @@ export async function parseTextResolution(fileContent: string): Promise<ResultWi
     }
 
     const analysisRes = await analyzeResolution(structureRes.data);
-    if(!analysisRes.success) {
+    if (!analysisRes.success) {
         return {
             success: false,
             error: "Failed to analyze resolution" // TODO error codes
@@ -25,4 +26,9 @@ export async function parseTextResolution(fileContent: string): Promise<ResultWi
         success: true,
         data: analysisRes.data
     }
+}
+
+export async function parseFileResolution(filePath: string): Promise<ResultWithData<ResolutionAnalysis>> {
+    const file_markdown = await runPythonScript('src/parser/pdfparse.py', [filePath]); //TODO error handling
+    return parseTextResolution(file_markdown);
 }
