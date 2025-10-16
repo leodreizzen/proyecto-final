@@ -1,10 +1,10 @@
 import {z} from "zod";
-import {AnnexReferenceSchema, TextReference} from "./reference";
+import {AnnexReferenceSchema, TextReferenceSchema} from "./reference";
 import {ChangeSchema} from "./change";
 
 const ArticleNormative = z.object({
     type: z.literal("Normative").describe("Artículo con disposiciones válidas por sí solas"),
-    references: z.array(TextReference).describe("Referencias; incluir anexos"),
+    references: z.array(TextReferenceSchema).describe("Referencias; incluir anexos"),
 }).meta({title: "ArticuloNormativa"});
 
 const ArticleCreateDocument = z.object({
@@ -30,4 +30,5 @@ export const ArticleSchema = z.discriminatedUnion("type", [
     ArticleCreateDocument,
 ]).meta({title: "Articulo"});
 
-export type ArticleSchemaType = z.ZodDiscriminatedUnion<[typeof ArticleNormative, typeof ArticleFormality, typeof ArticleModifier, typeof ArticleCreateDocument], "type">;
+export type ArticleAnalysisSchema = z.ZodDiscriminatedUnion<[typeof ArticleNormative, typeof ArticleFormality, typeof ArticleModifier, typeof ArticleCreateDocument], "type">;
+export type ArticleAnalysis = z.infer<typeof ArticleSchema>;

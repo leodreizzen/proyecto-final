@@ -19,7 +19,7 @@ export function parseLLMResponse<T>(res: ChatCompletion, schema: z.ZodType<T>): 
         }
     const parseResult = parseLLMStringWithZodObject(message, schema);
     if (!parseResult.success) {
-        console.error("Parse error:\n" + JSON.stringify(parseResult.error, null, 2));
+        console.error("Parse error:\n" + JSON.stringify(parseResult.error, null, 2)); // TODO proper formatting
         return {
             success: false,
             error: {code: "parse_error"}

@@ -10,26 +10,31 @@ export const TableRowSchema = z.object({
     cells: z.array(TableCellSchema).describe("Celdas de la fila"),
 }).meta({title: "FilaTabla", schemaDescription: "Fila de la tabla"});
 
-export const TableSchema = z.object({
+export const TableStructureSchema = z.object({
     number: z.coerce.number().describe("Número de la tabla, en el documento (inferir de acuerdo al orden)"),
     rows: z.array(TableRowSchema).describe("Filas de la tabla"),
 }).meta({
     title: "Tabla",
-    schemaDescription: "Tabla presente en la resolución. Se las referencia como {{table X}} en el texto",
+    schemaDescription: "Tabla presente en la resolución. Se las referencia como {{tabla X}} en el texto",
 });
 
+export type TableStructure = z.infer<typeof TableStructureSchema>;
 
 const TextAnnexSchema = z.object({
     number: z.number().describe("Número del anexo"),
-    type: z.literal("AnexoTexto").describe("Anexo de texto o tablas"),
+    type: z.literal("TextOrTables").describe("Anexo de texto o tablas"),
     content: z.string().describe("Contenido textual del anexo, sin resumir, al pie de la letra")
 }).meta({title:"AnexoTexto", schemaDescription: "Anexo de texto o tablas"})
+
+export type TextAnnexStructure = z.infer<typeof TextAnnexSchema>;
 
 const ArticleSchema = z.object({
     number: z.number().describe("Número del artículo"),
     suffix: z.string().optional().nullable().describe("Sufijo del artículo, ej. 'bis'. Null si no tiene sufijo"),
-    content: z.string().describe("Contenido del artículo, sin numeración ni 'Art.'")
+    text: z.string().describe("Contenido del artículo, sin numeración ni 'Art.'")
 }).meta({title: "Articulo"});
+
+export type ArticleStructure = z.infer<typeof ArticleSchema>;
 
 const ChapterSchema = z.object({
     number: z.number().describe("Número del capítulo"),
@@ -37,21 +42,28 @@ const ChapterSchema = z.object({
     articles: z.array(ArticleSchema).describe("Artículos del capítulo")
 }).meta({title: "Capitulo", schemaDescription: "Capítulo que contiene artículos."});
 
+export type ChapterStructure = z.infer<typeof ChapterSchema>;
+
 const ArticleAnnexSchema = z.object({
     number: z.number().describe("Número del anexo"),
-    type: z.literal("AnexoArticulos").describe("Anexo compuesto por artículos (ej. reglamento, manual)."),
+    type: z.literal("Regulation").describe("Anexo compuesto por artículos (ej. reglamento, manual)."),
     looseArticles: z.array(ArticleSchema).describe("Artículos del anexo que no pertenecen a ningún capítulo"),
-    chapters: z.array(ChapterSchema).optional().nullable().describe("Capítulos del anexo; puede no haber ninguno"),
+    chapters: z.array(ChapterSchema).describe("Capítulos del anexo; puede no haber ninguno"),
     initialText: z.string().optional().nullable().describe("Texto inicial del anexo"),
     finalText: z.string().optional().nullable().describe("Texto final del anexo"),
 
 }).meta({title:"AnexoArticulos", schemaDescription: "Anexo compuesto por artículos (ej. reglamento, manual)."})
 
+export type AnnexRegulationStructure = z.infer<typeof ArticleAnnexSchema>;
+
 const ModificationsAnnexSchema = z.object({
     number: z.number().describe("Número del anexo"),
-    type: z.literal("AnexoModificaciones").describe("Anexo que detalla modificaciones a otras resoluciones. Cada artículo es una modificación"),
+    type: z.literal("Modifications").describe("Anexo que detalla modificaciones a otras resoluciones. Cada artículo es una modificación"),
     articles: z.array(ArticleSchema).describe("Artículos. Cada uno representa una modificación a otra resolución")
 }).meta({title: "AnexoModificaciones", schemaDescription: "Anexo que detalla modificaciones a otras resoluciones. Cada artículo es una modificación"})
+
+export type AnnexModificationsStructure = z.infer<typeof ModificationsAnnexSchema>;
+
 
 const AnnexSchema = z.discriminatedUnion("type", [
     TextAnnexSchema,
@@ -70,7 +82,7 @@ export const ResolutionStructureSchema = z.object({
     ).meta({title: "Considerando"}).describe("Considerandos"),
     articles: z.array(ArticleSchema).describe("Artículos presentes en la resolución"),
     annexes: z.array(AnnexSchema).describe("Anexos presentes en la resolución"),
-    tables: z.array(TableSchema).describe("Tablas presentes en la resolución"),
+    tables: z.array(TableStructureSchema).describe("Tablas presentes en la resolución"),
 }).meta({title: "Resolución", schemaDescription: "Resolución completa"});
 
 export type ResolutionStructure = z.infer<typeof ResolutionStructureSchema>;

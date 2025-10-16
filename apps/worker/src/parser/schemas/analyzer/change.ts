@@ -3,9 +3,9 @@ import {
     AnnexReferenceSchema,
     ArticleReferenceSchema,
     ChapterReferenceSchema,
-    ResolutionReferenceSchema, TextReference
+    ResolutionReferenceSchema, TextReferenceSchema
 } from "./reference";
-import {ArticleSchema, ArticleSchemaType} from "./article";
+import {ArticleSchema, ArticleAnalysisSchema} from "./article";
 import {AnnexSchema} from "./annex";
 import {TextModel} from "./common";
 
@@ -14,15 +14,15 @@ export const ChangeModifyArticle = z.object({
     targetArticle: ArticleReferenceSchema.describe("Artículo objetivo del cambio"),
     before: TextModel.describe("Fragmento de texto antes del cambio"),
     after: TextModel.describe("Fragmento de texto después del cambio"),
-    removedReferences: z.array(TextReference).describe("Referencias eliminadas"),
-    addedReferences: z.array(TextReference).describe("Referencias agregadas; incluir anexos"),
+    removedReferences: z.array(TextReferenceSchema).describe("Referencias eliminadas"),
+    addedReferences: z.array(TextReferenceSchema).describe("Referencias agregadas; incluir anexos"),
 }).meta({title: "CambioModificarArticulo"});
 
 export const ChangeReplaceArticle = z.object({
     type: z.literal("ReplaceArticle").describe("Reemplazo completo de un artículo"),
     targetArticle: ArticleReferenceSchema.describe("Artículo objetivo a reemplazar"),
     newContent: TextModel.describe("Nuevo contenido del artículo"),
-    references: z.array(TextReference).describe("Referencias del artículo; incluir anexos"),
+    references: z.array(TextReferenceSchema).describe("Referencias del artículo; incluir anexos"),
 }).meta({title: "CambioReemplazarArticulo"});
 
 export const ChangeAdvanced = z.object({
@@ -31,7 +31,7 @@ export const ChangeAdvanced = z.object({
     targetArticle: ArticleReferenceSchema.optional().nullable().describe("Artículo objetivo opcional"),
     targetAnnex: AnnexReferenceSchema.optional().nullable().describe("Anexo destino opcional"),
     targetChapter: ChapterReferenceSchema.optional().nullable().describe("Capítulo destino opcional"),
-    newReferences: z.array(TextReference).describe("Nuevas referencias; incluir anexos"),
+    newReferences: z.array(TextReferenceSchema).describe("Nuevas referencias; incluir anexos"),
 }).meta({title: "CambioAvanzado"});
 
 export const ChangeRepealArticle = z.object({
@@ -92,7 +92,7 @@ export const ChangeAddArticleToResolution = z.object({
     targetResolution: ResolutionReferenceSchema.describe("Resolución destino"),
     targetNumber: z.coerce.number().optional().nullable().describe("Número destino opcional"),
     targetSuffix: z.string().optional().nullable().describe("Sufijo del artículo, ej. 'bis'"),
-    get articleToAdd(): ArticleSchemaType {
+    get articleToAdd(): ArticleAnalysisSchema {
         return ArticleSchema.describe("Artículo a agregar")
     }
 }).meta({title: "CambioAgregarArticuloAResolucion"});
@@ -107,7 +107,7 @@ export const ChangeAddArticleToAnnex = z.object({
     },
     targetNumber: z.coerce.number().optional().nullable().describe("Número destino opcional"),
     targetSuffix: z.string().optional().nullable().describe("Sufijo del artículo, ej. 'bis'"),
-    get articleToAdd(): ArticleSchemaType {
+    get articleToAdd(): ArticleAnalysisSchema {
         return ArticleSchema.describe("Artículo a agregar")
     }
 

@@ -28,12 +28,20 @@ export const analyzerSystemPrompt = `
 Eres un experto en interpretar resoluciones legislativas y cambios legales. Tu tarea es analizar una resolución y dar como salida un JSON con los campos pedidos.
 La resolución fue parseada a JSON con otro LLM. Debes hacer lo siguiente:
     - Para cada artículo, determinar su tipo y, si aplica, los cambios que introduce. Esto también aplica a anexos, pero solo los que son de modificaciones.
+    - Debes generar algunos metadatos, como título, resumen y palabras clave.
     - Para las tablas, debes determinar si hay que juntar filas.
     - Determinar las referencias presentes en los artículos, anexos, considerandos y vistos.
     - Para los anexos de modificaciones, debes determinar los cambios que hace cada artículo.
     - Para los anexos de texto y regulaciones, solo debes determinar las referencias que hay en el texto.
     
 Reglas importantes:
+    - Siempre que te pidan vistos, considerandos, artículos o anexos, debes incluir una respuesta por cada uno que haya en el JSON de entrada, en el mismo orden. No debes omitir ninguno.
+    - Sobre los metadatos:
+        - Para título o resumen, usa sujeto tácito. No empieces (ni incluyas) con "Resolución que...", "Resolución para...", "Esta resolución...", etc.
+         * "Traslada un cargo Cat 7 del Agrupamiento Administrativo desde la Dir Gral de Asuntos Jurídicos a la Dir de Mantenimiento (Sec Gral de Servicios Técnicos y Transformación Digital). Cambia de agrupamiento el cargo de Administrativo a Mantenimiento" para resumen
+         * "Traslado cargo Nodocente Asuntos Jurídicos a Mantenimiento – Cambio agrupamiento" para título
+         * ["Traslado cargo", "Asuntos Jurídicos", "Mantenimiento", "Cambio agrupamiento"] para palabras clave 
+        
     - Sobre los artículos:
         - En el before y after de los cambios, debes omitir las partes que digan "Artículo X", "Art. X", "Artículo X bis", etc. Solo debe ir el contenido del artículo.
         - Los siguientes tipos de cambios deben simplemente ser considerados cambios avanzados, y serán realizado por completo por otro llm. Esta lista NO es exhaustiva:

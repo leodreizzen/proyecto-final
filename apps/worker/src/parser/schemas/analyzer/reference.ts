@@ -39,9 +39,11 @@ export const ReferenceSchema = z.discriminatedUnion("referenceType", [
     ArticleReferenceSchema,
 ]).meta({title: "Referencia", schemaDescription: "Referencia a resolución, anexo, capítulo o artículo"});
 
-export const TextReference = z.object({
+export const TextReferenceSchema = z.object({
     before: z.string().describe("Texto antes de la referencia. No más de 5 palabras, salvo que en el mismo artículo haya otra referencia igual"),
     after: z.string().describe("Texto después de la referencia. No más de 5 palabras, salvo que en el mismo artículo haya otra referencia igual"),
     text: z.string().describe("Texto con la referencia"),
     reference: ReferenceSchema.describe("Elemento referenciado"),
 }).meta({title: "ReferenciaTexto", schemaDescription: "Referencia dentro de un texto, con contexto antes y después. Solo se puede referenciar a resoluciones de la UNS y su contenido"});
+
+export type TextReference = z.infer<typeof TextReferenceSchema>;

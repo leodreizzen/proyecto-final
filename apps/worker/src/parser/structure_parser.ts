@@ -12,6 +12,7 @@ const openai = new OpenAI({
 
 const schemaDescription = zodToLLMDescription(ResolutionStructureSchema);
 
+// TODO ADD OPTION FOR LLM TO REJECT PARSING
 export async function parseResolutionStructure(fileContent: string): Promise<ResultWithData<ResolutionStructure, LLMError>> {
     console.log("calling structure parser model...");
     let res;
@@ -49,7 +50,7 @@ export async function parseResolutionStructure(fileContent: string): Promise<Res
         console.error("API error:", e);
         return {
             success: false,
-            error: { code: "api_error" }
+            error: {code: "api_error"}
         };
     }
     return parseLLMResponse(res, ResolutionStructureSchema);
