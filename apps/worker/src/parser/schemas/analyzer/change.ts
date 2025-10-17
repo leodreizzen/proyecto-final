@@ -8,6 +8,7 @@ import {
 import {ArticleSchema, ArticleAnalysisSchema} from "./article";
 import {AnnexSchema} from "./annex";
 import {TextModel} from "./common";
+import {ResolutionIDSchema} from "@/parser/schemas/common";
 
 export const ChangeModifyArticle = z.object({
     type: z.literal("ModifyArticle").describe("Cambio parcial de un artículo"),
@@ -41,12 +42,12 @@ export const ChangeRepealArticle = z.object({
 
 export const ChangeRepealResolution = z.object({
     type: z.literal("RepealResolution").describe("Derogar una resolución completa"),
-    targetResolution: ResolutionReferenceSchema.describe("Resolución objetivo"),
+    targetResolution: ResolutionIDSchema.describe("Resolución objetivo"),
 }).meta({title: "CambioDerogarResolucion"});
 
 export const ChangeRatifyAdReferendum = z.object({
     type: z.literal("RatifyAdReferendum").describe("Ratificar una resolución ad referéndum"),
-    resolutionToRatify: ResolutionReferenceSchema.describe("Resolución a ratificar"),
+    resolutionToRatify: ResolutionIDSchema.describe("Resolución a ratificar"),
 }).meta({title: "CambioRatificarAdReferendum"});
 
 export const ReplaceAnnexNewContent = z.discriminatedUnion("type", [

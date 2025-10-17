@@ -83,7 +83,7 @@ export const ResolutionStructureSchema = z.object({
     ).meta({title: "Considerando"}).describe("Considerandos"),
     articles: z.array(ArticleSchema).describe("Artículos presentes en la resolución"),
     annexes: z.array(AnnexSchema).describe("Anexos presentes en la resolución"),
-    tables: z.array(TableStructureSchema).describe("Tablas presentes en la resolución"),
+    tables: z.array(TableStructureSchema).describe("Tablas presentes en la resolución. DEBEN ser referenciadas en el texto como {{tabla X}}"),
 }).meta({title: "Resolución", schemaDescription: "Resolución completa"});
 
 export type ResolutionStructure = z.infer<typeof ResolutionStructureSchema>;

@@ -9,7 +9,7 @@ export const ResolutionReferenceSchema = z.object({
 
 export const AnnexReferenceSchema = z.object({
     referenceType: z.literal("Annex"),
-    resolution: z.string().describe("ID de la resolución que contiene el anexo"),
+    resolutionId: ResolutionIDSchema.describe("ID de la resolución que contiene el anexo"),
     number: z.coerce.number().describe("Número del anexo"),
 }).meta({title: "ReferenciaAnexo", schemaDescription: "Referencia a un anexo dentro de una resolución"});
 
@@ -21,15 +21,15 @@ export const ChapterReferenceSchema = z.object({
 
 export const ArticleReferenceSchema = z.object({
     referenceType: z.literal("Article"),
-    resolution: ResolutionReferenceSchema.optional().nullable().describe("Referencia a la resolución que contiene el artículo; usar si no está en un anexo"),
+    resolutionId: ResolutionIDSchema.optional().nullable().describe("Referencia a la resolución que contiene el artículo; usar si no está en un anexo"),
     annex: AnnexReferenceSchema.optional().nullable().describe("Referencia al anexo que contiene el artículo; usar si no está en la resolución principal"),
     number: z.coerce.number().describe("Número del artículo"),
     suffix: z.string().optional().nullable().describe("Sufijo del artículo, ej. 'bis'; opcional"),
 }).refine((data) => {
-    return (data.resolution || data.annex) && !(data.resolution && data.annex);
-}, {error: "Debe especificar resolución o anexo"}).meta({
+    return (data.resolutionId || data.annex) && !(data.resolutionId && data.annex);
+}, {error: "Must specify resolution or annex"}).meta({
     title: "ReferenciaArticulo",
-    schemaDescription: "Referencia a un artículo dentro de una resolución o anexo; incluir anexos si aplica. Obligatorio especificar resolución o anexo, aunque sea la actual"
+    schemaDescription: "Referencia a un artículo dentro de una resolución o anexo, siempre de la universidad; incluir anexos si aplica. Obligatorio especificar resolución o anexo, aunque sea la actual"
 });
 
 export const ReferenceSchema = z.discriminatedUnion("referenceType", [

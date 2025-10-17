@@ -25,7 +25,9 @@ Reglas importantes:
 - No incluyas la parte de "Articulo X" en el contenido del artículo.
 - Si, como parte de un texto, hay una lista (ya sea numerada, con viñetas, guiones, etc), aplica indentación en los items usando 4 espacios por nivel. Todo esto dentro del campo json correspondinete
 - Si hay una tabla, no la incluyas como texto, sino que debes usar el indicador {{tabla X}} para indicar que ahí va una tabla, y luego debes incluir la tabla en el campo "tablas" del artículo. X es el número de tabla (empieza en 1).
+- Si una celda de una tabla está vacía, pon "" en la celda, no null.
 - Si hay una imágen, simplemente usa {{imagen X}} para indicar que ahí va una imágen.
+- Es obligatorio indicar {{tabla X}} en el texto del artículo si hay una tabla en el mismo, aunque el texto no la mencione explícitamente.
 Siempre devuelve JSON válido siguiendo el esquema, sin explicaciones ni texto adicional.
 `
 
@@ -48,6 +50,7 @@ La resolución fue parseada a JSON con otro LLM. Debes hacer lo siguiente:
     
 Reglas importantes:
     - Siempre que te pidan vistos, considerandos, artículos o anexos, debes incluir una respuesta por cada uno que haya en el JSON de entrada, en el mismo orden. No debes omitir ninguno.
+    - Si no tienes nada que poner sobre un artículo, anexo, visto o considerando y te piden un objeto, ponelo igual siguiendo el formato y dejando vacíos los campos que no correspondan.
     - Sobre los metadatos:
         - Para título o resumen, usa sujeto tácito. No empieces (ni incluyas) con "Resolución que...", "Resolución para...", "Esta resolución...", etc.
          * "Traslada un cargo Cat 7 del Agrupamiento Administrativo desde la Dir Gral de Asuntos Jurídicos a la Dir de Mantenimiento (Sec Gral de Servicios Técnicos y Transformación Digital). Cambia de agrupamiento el cargo de Administrativo a Mantenimiento" para resumen
@@ -67,6 +70,9 @@ Reglas importantes:
          - Debes incluir todos los artículos presentes, y todos los cambios
     - Sobre las referencias:   
         - Solo interesan las referencias a resoluciones de la UNS y su contenido (anexos, capítulos, artículos). No incluyas referencias a leyes nacionales, provinciales, decretos, etc.
+        - Si ves una referencia a un decreto, o algo que no sea de la universidad, no la incluyas en el arreglo.
+        - No debes incluir una referencia cuando hay una tabla. Solo cuando refiere a artículos, resoluciones, anexos, etc.
+        - Cuando en el título de un anexo se lo nombra a si mismo (Ej. En el título del anexo dice "Anexo I - Reglamento de Exámenes"), no debes incluir una referencia a si mismo en el texto del anexo.
         - La palabra "Resolución" debe ir dentro del texto de la referencia, no en el before o after. Lo mismo aplica para "Anexo", "Capítulo" y "Artículo".
         - Si la referencia está al principio o al final de un texto, el before o after puede quedar vacío, respectivamente. Pero usa un string vacío y no null.
         - Siempre que se referencien artículos, anexos, etc, el campo reference debe completarse. Si se refiere a la resolución actual, pon la referencia a la misma.

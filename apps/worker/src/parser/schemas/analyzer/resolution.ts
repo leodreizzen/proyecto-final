@@ -14,14 +14,14 @@ export const ResolutionAnalysisSchema = z.object({
     recitals: z.array(z.object({
             references: z.array(TextReferenceSchema).describe("Referencias encontradas en los vistos"),
         }).meta({title: "AnalisisVisto"})
-    ),
+    ).describe("Análisis de los vistos presentes en la resolución. Incluir un objeto por cada uno, aunque no tengan información relevante"),
     considerations: z.array(z.object({
             references: z.array(TextReferenceSchema).describe("Referencias encontradas en los considerandos"),
         }).meta({title: "AnalisisConsiderando"})
-    ),
+    ).describe("Análisis de los considerandos presentes en la resolución. Incluir un objeto por cada uno, aunque no tengan información relevante"),
     articles: z.array(ArticleSchema).describe("Análisis de los artículos presentes en la resolución"),
     tables: z.array(TableAnalysisSchema).describe("Análisis de las tablas presentes en la resolución"),
-    annexes: z.array(AnnexSchema).describe("Análisis de los anexos presentes en la resolución"),
+    annexes: z.array(AnnexSchema).describe("Análisis de los anexos presentes en la resolución. Incluir un objeto por cada anexo, aunque no tengan información relevante"),
 }).meta({title: "AnalisisResolucion", schemaDescription: "Análisis de la resolución, incluyendo artículos y tablas"})
 
 export type ResolutionAnalysis = z.infer<typeof ResolutionAnalysisSchema>;

@@ -218,6 +218,7 @@ function _zodTypeToDescription(_schema: ZodType, auxiliaryTypes: ZodType[] = [])
         }
     } else if (schema instanceof ZodDate) {
         typeName = "Fecha";
+        description += "Formato YYYY-MM-DD\n";
     } else if (schema instanceof ZodBoolean) {
         typeName = "Boolean";
     }
