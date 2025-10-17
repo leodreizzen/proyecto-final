@@ -1,17 +1,18 @@
 import {ResolutionStructure} from "@/parser/schemas/parser/schemas";
 import {zodToLLMDescription} from "@/util/zod_to_llm";
 import {analyzerSystemPrompt} from "@/parser/prompt";
-import {ResolutionAnalysis, ResolutionAnalysisSchema} from "@/parser/schemas/analyzer/resolution";
+import {ResolutionAnalysis} from "@/parser/schemas/analyzer/resolution";
 import OpenAI from "openai";
 import {parseLLMResponse} from "@/util/llm_response";
 import {LLMError, ResultWithData} from "@/definitions";
+import {ResolutionAnalysisResultSchema} from "@/parser/schemas/analyzer/result";
 
 const openai = new OpenAI({
     apiKey: process.env.OPEN_ROUTER_KEY,
     baseURL: "https://openrouter.ai/api/v1",
 });
 
-const schemaDescription = zodToLLMDescription(ResolutionAnalysisSchema);
+const schemaDescription = zodToLLMDescription(ResolutionAnalysisResultSchema);
 
 export async function analyzeResolution(resolution: ResolutionStructure): Promise<ResultWithData<ResolutionAnalysis, LLMError>> {
     console.log("calling analyzer model...");
@@ -53,5 +54,21 @@ export async function analyzeResolution(resolution: ResolutionStructure): Promis
             error: {code: "api_error"}
         };
     }
-    return parseLLMResponse(res, ResolutionAnalysisSchema);
-}
+    const jsonParseRes = parseLLMResponse(res, ResolutionAnalysisResultSchema);
+    if (!jsonParseRes.success) {
+        return jsonParseRes
+    }
+
+    const LLMResult = jsonParseRes.data;
+        if (LLMResult.processSuccess) {
+        return {
+            success: true,
+            data: LLMResult.data
+        }
+    }
+        else {
+        return {
+            success: false,
+            error: { code: "llm_error", llmCode: LLMResult.error.code, llmMessage: LLMResult.error.message}
+        };
+    }}

@@ -33,6 +33,7 @@ export async function parseTextResolution(fileContent: string): Promise<ResultWi
 
     const analysisRes = await analyzeResolution(structureRes.data);
     if (!analysisRes.success) {
+        console.error(JSON.stringify(analysisRes.error));
         return {
             success: false,
             error: "Failed to analyze resolution" // TODO error codes

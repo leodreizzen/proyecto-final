@@ -1,5 +1,8 @@
 import OpenAI from "openai";
-import {ResolutionStructure, ResolutionStructureSchema} from "@/parser/schemas/parser/schemas";
+import {
+    ResolutionStructure,
+    ResolutionStructureResultSchema,
+} from "@/parser/schemas/parser/schemas";
 import {structureParserSystemPrompt} from "@/parser/prompt";
 import {LLMError, ResultWithData} from "@/definitions";
 import {zodToLLMDescription} from "@/util/zod_to_llm";
@@ -10,9 +13,8 @@ const openai = new OpenAI({
     baseURL: "https://openrouter.ai/api/v1",
 });
 
-const schemaDescription = zodToLLMDescription(ResolutionStructureSchema);
+const schemaDescription = zodToLLMDescription(ResolutionStructureResultSchema);
 
-// TODO ADD OPTION FOR LLM TO REJECT PARSING
 export async function parseResolutionStructure(fileContent: string): Promise<ResultWithData<ResolutionStructure, LLMError>> {
     console.log("calling structure parser model...");
     let res;
@@ -53,5 +55,22 @@ export async function parseResolutionStructure(fileContent: string): Promise<Res
             error: {code: "api_error"}
         };
     }
-    return parseLLMResponse(res, ResolutionStructureSchema);
+    const jsonParseRes = parseLLMResponse(res, ResolutionStructureResultSchema);
+    if (!jsonParseRes.success) {
+        return jsonParseRes
+    }
+
+    const LLMResult = jsonParseRes.data;
+    if(LLMResult.processSuccess){
+        return {
+            success: true,
+            data: LLMResult.data
+        }
+    }
+    else{
+        return {
+            success: false,
+            error: { code: "llm_error", llmCode: LLMResult.error.code, llmMessage: LLMResult.error.message}
+        };
+    }
 }

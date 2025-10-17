@@ -16,6 +16,7 @@ type MoveTablesResolutionOutput<T extends MoveTablesResolutionInput> = Omit<T, "
     articles: WithTables<T["articles"][number]>[]
     annexes: Annex[]
 }
+
 export function moveTablesInResolution<T extends MoveTablesResolutionInput>(resolution: T): ResultWithData<MoveTablesResolutionOutput<T>> {
     let usedTableNumbers = new Set<number>();
     const moveRecitalsRes = moveTablesToObjectArray(resolution.recitals, resolution.tables, usedTableNumbers);

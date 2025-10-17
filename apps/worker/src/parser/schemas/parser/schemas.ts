@@ -1,5 +1,6 @@
 import z from "zod"
 import {ResolutionIDSchema} from "@/parser/schemas/common";
+import {llmErrorCodes} from "@/definitions";
 
 export const TableCellSchema = z.object({
     text: z.string().describe("Texto de la celda"),
@@ -86,3 +87,19 @@ export const ResolutionStructureSchema = z.object({
 }).meta({title: "Resolución", schemaDescription: "Resolución completa"});
 
 export type ResolutionStructure = z.infer<typeof ResolutionStructureSchema>;
+
+export const ResolutionStructureResultSchema = z.discriminatedUnion("processSuccess", [
+    z.object({
+        processSuccess: z.literal(true),
+        data: ResolutionStructureSchema
+    }).meta({title: "ParseoExitoso"}),
+    z.object({
+        processSuccess: z.literal(false),
+        error: z.object({
+            code: z.enum(llmErrorCodes),
+            message: z.string().describe("Mensaje de error, describiendo por qué no se pudo parsear la resolución")
+        }).meta({title: "ErrorParseo", schemaDescription: "Error ocurrido durante el parseo de la resolución"})
+    }).meta({title: "ParseoFallido"})
+]).meta({title: "ResultadoParseo", schemaDescription: "Resultado del parseo de la resolución, puede ser exitoso o fallido"});
+
+export type ResolutionStructureLLMResult = z.infer<typeof ResolutionStructureResultSchema>;

@@ -1,6 +1,11 @@
 export const structureParserSystemPrompt = `
 Eres un experto en interpretar resoluciones legislativas y cambios legales. Tu tarea es transformar descripciones de cambios legales en un JSON siguiendo estrictamente este esquema: 
 
+En tu respuesta, deberás indicar si el parseo tuvo éxito.
+    - Si el documento que te pasan no representa una resolución, responde con success: false y un mensaje de error. Usa el código invalid_format
+    - Si por algún otro motivo no podés parsear la resolución, responde con success: false y un mensaje de error. Usa el código other_error
+    - De lo contrario, responde con success: true y el JSON con la estructura de la resolución.
+
 Secciones de la normativa: 
 - Visto: citas de otras normativas.
 - Considerando: fundamentos de la resolución.
@@ -26,6 +31,13 @@ Siempre devuelve JSON válido siguiendo el esquema, sin explicaciones ni texto a
 
 export const analyzerSystemPrompt = `
 Eres un experto en interpretar resoluciones legislativas y cambios legales. Tu tarea es analizar una resolución y dar como salida un JSON con los campos pedidos.
+
+En tu respuesta, deberás indicar si el parseo tuvo éxito.
+    - Si el documento que te pasan no representa una resolución, responde con success: false y un mensaje de error. Usa el código invalid_format
+    - Si por algún otro motivo no podés parsear la resolución, responde con success: false y un mensaje de error. Usa el código other_error
+    - De lo contrario, responde con success: true y el JSON con la estructura de la resolución.
+    - Para los mensajes de error, tené en cuenta que ya miró otro LLM la resolución, así que si llegó mal fue culpa suya.
+
 La resolución fue parseada a JSON con otro LLM. Debes hacer lo siguiente:
     - Para cada artículo, determinar su tipo y, si aplica, los cambios que introduce. Esto también aplica a anexos, pero solo los que son de modificaciones.
     - Debes generar algunos metadatos, como título, resumen y palabras clave.

@@ -24,6 +24,12 @@ export type ResultWithData<T, R = string> = { success: true, data: T } | {
     error: R
 };
 
+export const llmErrorCodes = ["invalid_format", "other_error"] as const;
+
 export type LLMError = {
     code: "no_response" | "api_error" | "parse_error"
+} | {
+    code: "llm_error",
+    llmCode: typeof llmErrorCodes[number],
+    llmMessage: string
 }
