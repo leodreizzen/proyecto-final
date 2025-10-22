@@ -1,5 +1,5 @@
 import {parseResolutionStructure} from "@/parser/structure_parser";
-import {ResultWithData} from "@/definitions";
+import {LLMError, ResultWithData} from "@/definitions";
 import {ResolutionAnalysis} from "@/parser/schemas/analyzer/resolution";
 import {analyzeResolution} from "@/parser/analyzer";
 import {runPythonScript} from "@/util/python_scripts";
@@ -7,6 +7,7 @@ import {ResolutionStructure} from "@/parser/schemas/parser/schemas";
 import {validateResolution} from "@/parser/validation";
 import {assembleResolution} from "@/parser/assemble";
 import {Resolution} from "@/parser/types";
+import {countTokens} from "@/util/tokenCounter";
 
 export function validateAndAssembleResolution(structure: ResolutionStructure, analysis: ResolutionAnalysis): ResultWithData<Resolution> {
     const validationResults = validateResolution(structure, analysis);
@@ -21,13 +22,41 @@ export function validateAndAssembleResolution(structure: ResolutionStructure, an
     return assembleResolution(structure, analysis);
 }
 
-export async function parseTextResolution(fileContent: string): Promise<ResultWithData<Resolution>> {
+type ParseResolutionResult = ResultWithData<Resolution, {
+    code: "internal_error" | "invalid_format" | "too_large"
+}>;
+
+function mapLLMError(error: LLMError){
+    let errorResult: {code: "internal_error"} | {code: "invalid_format"};
+    if(error.code === "llm_error" && error.llmCode === "invalid_format") {
+        errorResult = {
+            code: "invalid_format"
+        };
+    } else {
+        errorResult = {
+            code: "internal_error"
+        }
+    }
+    return errorResult;
+}
+
+export async function parseTextResolution(fileContent: string): Promise<ParseResolutionResult> {
+    const tokenCount = countTokens(fileContent);
+    if(tokenCount > 10000) {
+        return {
+            success: false,
+            error: {
+                code: "too_large"
+            }
+        }
+    }
+
     const structureRes = await parseResolutionStructure(fileContent);
     if (!structureRes.success) {
         console.error(JSON.stringify(structureRes.error));
         return {
             success: false,
-            error: "Failed to parse resolution structure"
+            error: mapLLMError(structureRes.error)
         }
     }
 
@@ -36,16 +65,17 @@ export async function parseTextResolution(fileContent: string): Promise<ResultWi
         console.error(JSON.stringify(analysisRes.error));
         return {
             success: false,
-            error: "Failed to analyze resolution" // TODO error codes
+            error: mapLLMError(analysisRes.error)
         }
     }
 
     const assembleResolutionRes = validateAndAssembleResolution(structureRes.data, analysisRes.data);
 
     if (!assembleResolutionRes.success) {
+        console.error(JSON.stringify(assembleResolutionRes.error));
         return {
             success: false,
-            error: assembleResolutionRes.error
+            error: {code: "internal_error"}
         }
     }
 
@@ -55,7 +85,7 @@ export async function parseTextResolution(fileContent: string): Promise<ResultWi
     }
 }
 
-export async function parseFileResolution(filePath: string): Promise<ResultWithData<Resolution>> {
+export async function parseFileResolution(filePath: string): Promise<ParseResolutionResult> {
     const file_markdown = await runPythonScript('src/parser/pdfparse.py', [filePath]); //TODO error handling
     return parseTextResolution(file_markdown);
 }

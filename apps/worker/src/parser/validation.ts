@@ -40,7 +40,7 @@ export function validateResolution(structure: ResolutionStructure, analysis: Res
         (structure, analysis, ok, err) => {
             structure.tables.forEach((table, index) => {
                 const analysisTable = analysis.tables[index]!;
-                for(const row_num of analysisTable.rowJoins.flat()) {
+                for(const row_num of analysisTable.rowJoins.map(r => r.rowIndices).flat()) {
                     if (row_num >= table.rows.length) {
                         return err("Table " + table.number + " has invalid row join number: " + row_num + " (max rows: " + table.rows.length + ")");
                     }

@@ -25,7 +25,7 @@ export async function parseResolutionStructure(fileContent: string): Promise<Res
                 type: "json_object"
             },
             reasoning_effort: "low",
-            max_completion_tokens: 18000,
+            max_completion_tokens: 25000,
             messages: [
                 {
                     role: "developer",

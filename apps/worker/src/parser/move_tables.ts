@@ -176,18 +176,6 @@ function moveTablesToAnnexes(annexes: AnnexWithoutTables[], tables: TableStructu
                 chapters: chaptersWithTables,
                 looseArticles: looseArticlesWithTables
             });
-        } else if (annex.type == "Modifications") {
-            const moveArticlesRes = moveTablesToObjectArray(annex.articles, tables, usedTableNumbers);
-            if (!moveArticlesRes.success) {
-                return resultWithDataError(`Error processing table references in annex ${annex.number} modifications articles: ${moveArticlesRes.error}`);
-            }
-            usedTableNumbers = moveArticlesRes.data.usedTableNumbers;
-            const articlesWithTables = moveArticlesRes.data.objects as WithTables<typeof annex.articles[0]>[];
-
-            annexesWithTables.push({
-                ...annex,
-                articles: articlesWithTables
-            });
         } else {
             const _: never = annex;
             throw new Error("Unhandled annex type");

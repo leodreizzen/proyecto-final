@@ -21,13 +21,17 @@ export const ChapterReferenceSchema = z.object({
 
 export const ArticleReferenceSchema = z.object({
     referenceType: z.literal("Article"),
-    resolutionId: ResolutionIDSchema.optional().nullable().describe("Referencia a la resolución que contiene el artículo; usar si no está en un anexo"),
+    resolutionId: ResolutionIDSchema.optional().nullable().describe("Referencia a la resolución que contiene el artículo; usar si no está en un anexo."),
     annex: AnnexReferenceSchema.optional().nullable().describe("Referencia al anexo que contiene el artículo; usar si no está en la resolución principal"),
     number: z.coerce.number().describe("Número del artículo"),
     suffix: z.string().optional().nullable().describe("Sufijo del artículo, ej. 'bis'; opcional"),
 }).refine((data) => {
-    return (data.resolutionId || data.annex) && !(data.resolutionId && data.annex);
-}, {error: "Must specify resolution or annex"}).meta({
+    return (data.resolutionId || data.annex)
+}, {error: "Must specify resolution or annex"}).refine(data => {
+    if(!(data.resolutionId && data.annex)) return true;
+    return JSON.stringify(data.resolutionId) === JSON.stringify(data.annex.resolutionId);
+}, {error: "Specified inconsistent resolution ids between resolutionId and annex.resolutionId"})
+    .meta({
     title: "ReferenciaArticulo",
     schemaDescription: "Referencia a un artículo dentro de una resolución o anexo, siempre de la universidad; incluir anexos si aplica. Obligatorio especificar resolución o anexo, aunque sea la actual"
 });

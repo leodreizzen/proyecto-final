@@ -6,6 +6,7 @@ import OpenAI from "openai";
 import {parseLLMResponse} from "@/util/llm_response";
 import {LLMError, ResultWithData} from "@/definitions";
 import {ResolutionAnalysisResultSchema} from "@/parser/schemas/analyzer/result";
+import {countTokens} from "@/util/tokenCounter";
 
 const openai = new OpenAI({
     apiKey: process.env.OPEN_ROUTER_KEY,
@@ -16,6 +17,7 @@ const schemaDescription = zodToLLMDescription(ResolutionAnalysisResultSchema);
 
 export async function analyzeResolution(resolution: ResolutionStructure): Promise<ResultWithData<ResolutionAnalysis, LLMError>> {
     console.log("calling analyzer model...");
+    const resolutionJSON = JSON.stringify(resolution, null, 2);
     let res
     try {
         res = await openai.chat.completions.create({
@@ -23,8 +25,8 @@ export async function analyzeResolution(resolution: ResolutionStructure): Promis
             response_format: {
                 type: "json_object"
             },
-            reasoning_effort: "low",
-            max_completion_tokens: 18000,
+            reasoning_effort: "medium",
+            max_completion_tokens: 64000,
             messages: [
                 {
                     role: "developer",
@@ -42,7 +44,7 @@ export async function analyzeResolution(resolution: ResolutionStructure): Promis
                     role: "user",
                     content: [{
                         type: "text",
-                        text: JSON.stringify(resolution, null, 2)
+                        text: resolutionJSON
                     }]
                 }
             ]

@@ -3,7 +3,8 @@ import * as util from "node:util";
 
 async function main() {
     // const filePath = "../../downloads/CSU_RES-1-2002.pdf";
-    const filePath = "../../downloads/CSU_RES-620-2024.pdf";
+    // const filePath = "../../downloads/CSU_RES-233-2020-trimmed.pdf";
+    const filePath = "src/__tests__/parser/test_files/CSU_RES-233-2020-trimmed.pdf";
     const res = await parseFileResolution(filePath);
     if (res.success) {
         console.log(util.inspect(res.data, {depth: null, colors: true}));
@@ -11,6 +12,4 @@ async function main() {
         console.error(res.error);
     }
 }
-
-
 main().catch(console.error)

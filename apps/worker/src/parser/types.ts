@@ -1,21 +1,46 @@
 import {
-    AnnexModificationsStructure,
     AnnexRegulationStructure,
     ArticleStructure,
     ChapterStructure, ResolutionStructure,
     TableStructure,
     TextAnnexStructure
 } from "@/parser/schemas/parser/schemas";
-import {ArticleAnalysis} from "@/parser/schemas/analyzer/article";
+import {ArticleAnalysis, ArticleSchemaWithText} from "@/parser/schemas/analyzer/article";
 import {TextReference} from "@/parser/schemas/analyzer/reference";
-import {AnnexRegulationAnalysis, AnnexModificationsAnalysis, TextAnnexAnalysis} from "@/parser/schemas/analyzer/annex";
+import {AnnexRegulationAnalysis, TextAnnexAnalysis} from "@/parser/schemas/analyzer/annex";
 import {ResolutionAnalysis} from "@/parser/schemas/analyzer/resolution";
+import {Change, ChangeAddArticleToAnnex, ChangeAddArticleToResolution} from "@/parser/schemas/analyzer/change";
+
 
 export type WithTables<T> = T & {
     tables: TableStructure[];
 }
 
-type ArticleWithoutTables = ArticleStructure & ArticleAnalysis;
+export type ArticleWithoutTables = ArticleStructure & ArticleAnalysis;
+
+type ArticleSchemaWithTextMapped = Omit<ArticleSchemaWithText, "analysis"> & ArticleSchemaWithText["analysis"]
+
+type ChangeAddArticleToResolutionMapped = Omit<ChangeAddArticleToResolution, "articleToAdd"> & {
+    articleToAdd: ArticleSchemaWithTextMapped
+}
+
+type ChangeAddArticleToAnnexMapped = Omit<ChangeAddArticleToAnnex, "articleToAdd"> & {
+    articleToAdd: ArticleSchemaWithTextMapped
+}
+
+
+type ChangeMapped = Exclude<Change, {
+    type: "AddArticleToResolution" | "AddArticleToAnnex"
+}> | ChangeAddArticleToResolutionMapped | ChangeAddArticleToAnnexMapped;
+
+type ArticleModifier = Extract<ArticleStructure & ArticleAnalysis, {type: "Modifier"}>;
+
+type ArticleModifierWithMappedChanges = Omit<ArticleModifier, "changes"> & {
+    changes: ChangeMapped[];
+}
+
+type ArticleWithMappedChanges = Exclude<ArticleWithoutTables, { type: "Modifier" }> | ArticleModifierWithMappedChanges;
+
 type RecitalWithoutTables = {
     text: string,
     references: TextReference[];
@@ -26,8 +51,6 @@ type ConsiderationWithoutTables = {
 }
 type TextAnnexWithoutTables = TextAnnexStructure & TextAnnexAnalysis
 type AnnexRegulationWithoutTables = AnnexRegulationStructure & AnnexRegulationAnalysis
-type AnnexModificationsWithoutTables = AnnexModificationsStructure & AnnexModificationsAnalysis
-
 
 type TextAnnex = WithTables<TextAnnexWithoutTables>
 type AnnexRegulation = AnnexRegulationAnalysis & {
@@ -37,19 +60,15 @@ type AnnexRegulation = AnnexRegulationAnalysis & {
     })[];
 };
 
-export type AnnexModifications = AnnexModificationsWithoutTables & {
-    articles: WithTables<AnnexModificationsWithoutTables["articles"][number]>[];
-};
 
-export type AnnexWithoutTables = TextAnnexWithoutTables | AnnexRegulationWithoutTables | AnnexModificationsWithoutTables;
+export type AnnexWithoutTables = TextAnnexWithoutTables | AnnexRegulationWithoutTables;
 
-
-export type Annex = TextAnnex | AnnexRegulation | AnnexModifications;
-export type Article = WithTables<ArticleWithoutTables>;
+export type Annex = TextAnnex | AnnexRegulation;
+export type Article = WithTables<ArticleWithMappedChanges>;
 export type Recital = WithTables<RecitalWithoutTables>;
 export type Consideration = WithTables<ConsiderationWithoutTables>;
 
-export type Resolution = Omit<ResolutionStructure & ResolutionAnalysis, "tables" | "recitals" | "considerations" | "annexes" > & {
+export type Resolution = Omit<ResolutionStructure & ResolutionAnalysis, "tables" | "recitals" | "considerations" | "annexes" | "articles" > & {
     recitals: Recital[]
     considerations: Consideration[]
     articles: Article[],

@@ -17,7 +17,7 @@ def table_to_markdown(table):
     if not table or len(table) == 0:
         return ""
 
-    md = ""
+    md = "\n"
 
     # Header
     md += "| " + " | ".join(clean_cell_text(cell) for cell in table[0]) + " |\n"
