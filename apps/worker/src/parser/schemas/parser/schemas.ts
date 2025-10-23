@@ -50,12 +50,12 @@ const ArticleAnnexSchema = z.object({
     name: z.string().optional().nullable().describe("Nombre del anexo, si lo tiene"),
     number: z.number().describe("Número del anexo"),
     type: z.literal("Regulation").describe("Anexo compuesto por artículos (ej. reglamento, manual)."),
-    looseArticles: z.array(ArticleSchema).describe("Artículos del anexo que no pertenecen a ningún capítulo"),
+    articles: z.array(ArticleSchema).describe("Artículos del anexo que no pertenecen a ningún capítulo"),
     chapters: z.array(ChapterSchema).describe("Capítulos del anexo; puede no haber ninguno"),
     initialText: z.string().optional().nullable().describe("Texto inicial del anexo"),
     finalText: z.string().optional().nullable().describe("Texto final del anexo"),
 }).refine( annex =>
-    annex.looseArticles.length > 0 || (annex.chapters.length > 0 && annex.chapters.flatMap(c => c.articles).length > 0), {error: "Regulation annex must have at least one article, either loose or in chapters"}
+    annex.articles.length > 0 || (annex.chapters.length > 0 && annex.chapters.flatMap(c => c.articles).length > 0), {error: "Regulation annex must have at least one article, either loose or in chapters"}
 ).meta({title:"AnexoArticulos", schemaDescription: "Anexo compuesto por artículos (ej. reglamento, manual)."})
 
 export type AnnexRegulationStructure = z.infer<typeof ArticleAnnexSchema>;
@@ -76,9 +76,11 @@ const AnnexSchema = z.discriminatedUnion("type", [
     // ModificationsAnnexSchema
 ]).meta({title: "Anexo", schemaDescription: "Anexo de la resolución, puede ser de texto, artículos o modificaciones"})
 
+export type AnnexStructure = z.infer<typeof AnnexSchema>;
+
 export const ResolutionStructureSchema = z.object({
     id: ResolutionIDSchema.describe("ID de la resolución"),
-    decisionBy: z.string().describe("Quien dicta la resolución"),
+    decisionBy: z.string().describe("Quien dicta la resolución. NO incluir prefijos como 'el', 'la',etc, aunque estén en el texto"),
     date: z.coerce.date().describe("Fecha de emisión"),
     caseFiles: z.array(z.string()).describe("Expedientes administrativos, pueden estar vacíos"),
     recitals: z.array(z.string().meta({title: "Visto"}).describe("Texto de 'Visto', un párrafo por elemento"),).meta({title: "Recital"}).describe("Vistos"),

@@ -2,7 +2,7 @@ import {parseFileResolution} from "@/parser/parser";
 import path from "node:path";
 
 import {expect, describe, jest, test} from "@jest/globals";
-import {Article, Resolution} from "@/parser/types";
+import {Annex, Article, Resolution} from "@/parser/types";
 
 describe("E2E Resolution Parsing", () => {
     jest.retryTimes(2, {logErrorsBeforeRetry: true});
@@ -25,7 +25,7 @@ describe("E2E Resolution Parsing", () => {
         parseResData.articles.forEach(article => {
             expect(article.text).not.toMatch(/^(art[ií]culo)/i)
         })
-        expect(parseResData.decisionBy.toLowerCase()).toBe("el consejo superior universitario");
+        expect(parseResData.decisionBy.toLowerCase()).toBe("consejo superior universitario");
         expect(parseResData.articles[0]!.type).toEqual("Normative");
         expect(parseResData.articles[1]!.type).toEqual("Formality");
     });
@@ -45,7 +45,7 @@ describe("E2E Resolution Parsing", () => {
         expect(parseResData.considerations.length).toBe(5);
         expect(parseResData.articles.length).toBe(3);
         expect(parseResData.annexes.length).toBe(0);
-        expect(parseResData.decisionBy.toLowerCase()).toBe("el consejo superior universitario");
+        expect(parseResData.decisionBy.toLowerCase()).toBe("consejo superior universitario");
         parseResData.articles.forEach(article => {
             expect(article.text).not.toMatch(/^(art[ií]culo)/i)
         })
@@ -106,7 +106,7 @@ describe("E2E Resolution Parsing", () => {
         expect(parseResData.articles.length).toBe(2);
         expect(parseResData.annexes.length).toBe(0);
         expect(parseResData.date).toEqual(new Date("2007-06-26T00:00:00Z"));
-        expect(parseResData.decisionBy.toLowerCase()).toBe("el consejo superior universitario");
+        expect(parseResData.decisionBy.toLowerCase()).toBe("consejo superior universitario");
         parseResData.articles.forEach(article => {
             expect(article.text).not.toMatch(/^(art[ií]culo)/i)
         })
@@ -248,7 +248,7 @@ describe("E2E Resolution Parsing", () => {
         expect(parseResData.considerations.length).toBe(6);
         expect(parseResData.articles.length).toBe(4);
         expect(parseResData.annexes.length).toBe(1);
-        expect(parseResData.decisionBy.toLowerCase()).toBe("el consejo superior universitario");
+        expect(parseResData.decisionBy.toLowerCase()).toBe("consejo superior universitario");
         expect(parseResData.date).toEqual(new Date("2019-04-25T00:00:00Z"));
         parseResData.articles.forEach(article => {
             expect(article.text).not.toMatch(/^(art[ií]culo)/i)
@@ -275,11 +275,11 @@ describe("E2E Resolution Parsing", () => {
         });
         expect(parseResData.annexes[0]!.type).toBe("Regulation");
         const annexRegulation = parseResData.annexes[0] as Extract<Resolution["annexes"][number], { type: "Regulation" }>;
-        expect(annexRegulation.looseArticles).toHaveLength(2);
+        expect(annexRegulation.articles).toHaveLength(2);
         expect(annexRegulation.chapters).toHaveLength(0);
 
-        expect(annexRegulation.looseArticles[0]!.tables).toHaveLength(1);
-        const table = annexRegulation.looseArticles[0]!.tables[0]!;
+        expect(annexRegulation.articles[0]!.tables).toHaveLength(1);
+        const table = annexRegulation.articles[0]!.tables[0]!;
         expect(table.number).toBe(1);
         expect(table.rows).toHaveLength(9);
         table.rows.forEach(row => {
@@ -303,7 +303,7 @@ describe("E2E Resolution Parsing", () => {
         expect(parseResData.considerations.length).toBe(7);
         expect(parseResData.articles.length).toBe(2);
         expect(parseResData.annexes.length).toBe(0);
-        expect(parseResData.decisionBy.toLowerCase()).toBe("el consejo superior universitario");
+        expect(parseResData.decisionBy.toLowerCase()).toBe("consejo superior universitario");
         parseResData.articles.forEach(article => {
             expect(article.text).not.toMatch(/^(art[ií]culo)/i)
         });
@@ -341,7 +341,7 @@ describe("E2E Resolution Parsing", () => {
         expect(parseResData.considerations.length).toBe(2);
         expect(parseResData.articles.length).toBe(3);
         expect(parseResData.annexes.length).toBe(0);
-        expect(parseResData.decisionBy.toLowerCase()).toBe("el consejo superior universitario");
+        expect(parseResData.decisionBy.toLowerCase()).toBe("consejo superior universitario");
 
         parseResData.articles.forEach(article => {
             expect(article.text).not.toMatch(/^(art[ií]culo)/i)
@@ -400,7 +400,7 @@ describe("E2E Resolution Parsing", () => {
         expect(parseResData.considerations.length).toBe(6);
         expect(parseResData.articles.length).toBe(3);
         expect(parseResData.annexes.length).toBe(1);
-        expect(parseResData.decisionBy.toLowerCase()).toBe("el consejo superior universitario");
+        expect(parseResData.decisionBy.toLowerCase()).toBe("consejo superior universitario");
         parseResData.articles.forEach(article => {
             expect(article.text).not.toMatch(/^(art[ií]culo)/i)
         });
@@ -447,7 +447,7 @@ describe("E2E Resolution Parsing", () => {
         expect(parseResData.considerations.length).toBe(3);
         expect(parseResData.articles.length).toBe(4);
         expect(parseResData.annexes.length).toBe(0);
-        expect(parseResData.decisionBy.toLowerCase()).toBe("el consejo superior universitario");
+        expect(parseResData.decisionBy.toLowerCase()).toBe("consejo superior universitario");
         parseResData.articles.forEach(article => {
             expect(article.text).not.toMatch(/^(art[ií]culo)/i)
         });
@@ -485,7 +485,7 @@ describe("E2E Resolution Parsing", () => {
         expect(parseResData.considerations.length).toBe(3);
         expect(parseResData.articles.length).toBe(6);
         expect(parseResData.annexes.length).toBe(0);
-        expect(parseResData.decisionBy.toLowerCase()).toBe("el consejo superior universitario");
+        expect(parseResData.decisionBy.toLowerCase()).toBe("consejo superior universitario");
         parseResData.articles.forEach(article => {
             expect(article.text).not.toMatch(/^(art[ií]culo)/i)
         });
@@ -534,7 +534,7 @@ describe("E2E Resolution Parsing", () => {
         expect(parseResData.considerations.length).toBe(6);
         expect(parseResData.articles.length).toBe(2);
         expect(parseResData.annexes.length).toBe(0);
-        expect(parseResData.decisionBy.toLowerCase()).toBe("el consejo superior universitario");
+        expect(parseResData.decisionBy.toLowerCase()).toBe("consejo superior universitario");
         parseResData.articles.forEach(article => {
             expect(article.text).not.toMatch(/^(art[ií]culo)/i)
         });
@@ -574,7 +574,7 @@ describe("E2E Resolution Parsing", () => {
         expect(parseResData.considerations.length).toBe(15);
         expect(parseResData.articles.length).toBe(4);
         expect(parseResData.annexes.length).toBe(2);
-        expect(parseResData.decisionBy.toLowerCase()).toBe("el consejo superior universitario");
+        expect(parseResData.decisionBy.toLowerCase()).toBe("consejo superior universitario");
         parseResData.articles.forEach(article => {
             expect(article.text).not.toMatch(/^(art[ií]culo)/i)
         });
@@ -601,7 +601,6 @@ describe("E2E Resolution Parsing", () => {
 
     test.concurrent("E2E: Replace annex with reference & tables", async () => {
         //TODO also works for modify article, and tables
-        // TODO FIXME TABLES WITH SUBROWS ARE NOT BEING PARSED CORRECTLY. FIXED??
         const parseRes = await parseFileResolution(path.join(__dirname, "test_files", "CSU_RES-751-2023.pdf"));
         expect(parseRes.success).toBe(true);
         const resSuccess = parseRes as typeof parseRes & { success: true };
@@ -616,7 +615,7 @@ describe("E2E Resolution Parsing", () => {
         expect(parseResData.considerations.length).toBe(5);
         expect(parseResData.articles.length).toBe(5);
         expect(parseResData.annexes.length).toBe(1);
-        expect(parseResData.decisionBy.toLowerCase()).toBe("el consejo superior universitario");
+        expect(parseResData.decisionBy.toLowerCase()).toBe("consejo superior universitario");
         parseResData.articles.forEach(article => {
             expect(article.text).not.toMatch(/^(art[ií]culo)/i)
         });
@@ -652,6 +651,64 @@ describe("E2E Resolution Parsing", () => {
         expect(table.rows[0]!.header).toBe(true);
     })
 
+    test.concurrent("E2E: modfications annex", async ()=> {
+        const parseRes = await parseFileResolution(path.join(__dirname, "test_files", "CSU_RES-233-2020-trimmed.pdf"));
+        expect(parseRes.success).toBe(true);
+        const resSuccess = parseRes as typeof parseRes & { success: true };
+        const parseResData = resSuccess.data;
+        expect(parseResData.id).toEqual({
+            initial: "CSU",
+            number: 233,
+            year: 2020
+        });
+        expect(parseResData.date).toEqual(new Date("2020-06-25T00:00:00Z"));
+        expect(parseResData.recitals.length).toBe(4);
+        expect(parseResData.considerations.length).toBe(7);
+        expect(parseResData.articles.length).toBe(4);
+        expect(parseResData.annexes.length).toBe(2);
+        expect(parseResData.decisionBy.toLowerCase()).toBe("consejo superior universitario");
+        parseResData.articles.forEach(article => {
+            expect(article.text).not.toMatch(/^(art[ií]culo)/i)
+        });
+        expect(parseResData.articles[0]!).toMatchObject({
+            type: 'Modifier',
+            changes: [
+                {
+                    type: 'ApplyModificationsAnnex',
+                    annexToApply: {
+                        referenceType: 'Annex',
+                        resolutionId: {initial: 'CSU', number: 233, year: 2020},
+                        number: 1
+                    },
+                }
+            ],
+        } satisfies DeepPartial<Article>);
+
+        expect(parseResData.articles[1]!).toMatchObject({
+            type: 'Modifier',
+            changes: [
+                {
+                    type: 'ApplyModificationsAnnex',
+                    annexToApply: {
+                        referenceType: 'Annex',
+                        resolutionId: {initial: 'CSU', number: 233, year: 2020},
+                        number: 2
+                    },
+                }
+            ],
+        } satisfies DeepPartial<Article>);
+
+        const firstAnnex = parseResData.annexes[0]!;
+        expect(firstAnnex.type).toBe("Regulation" satisfies Annex["type"]);
+        const firstAnnexRegulation = firstAnnex as Extract<typeof firstAnnex, { type: "Regulation" }>;
+        expect(firstAnnexRegulation.articles).toHaveLength(2);
+
+        const secondAnnex = parseResData.annexes[1]!;
+        expect(secondAnnex.type).toBe("Regulation" satisfies Annex["type"]);
+        const secondAnnexRegulation = secondAnnex as Extract<typeof secondAnnex, { type: "Regulation" }>;
+        expect(secondAnnexRegulation.articles).toHaveLength(2);
+    });
+
     test.concurrent("E2E: invalid format", async () => {
         const parseRes = await parseFileResolution(path.join(__dirname, "test_files", "invalid.pdf"));
         expect(parseRes.success).toBe(false);
@@ -660,14 +717,12 @@ describe("E2E Resolution Parsing", () => {
             code: "invalid_format",
         });
     });
-
     /* TODO:
     - Check why CSU_971_2022 frequently fails
     - restructure file to use describe and before
     - Assert references
     - change types:
         - RepealChapterAnnex: No examples?
-    - Modifications annex
  */
 });
 

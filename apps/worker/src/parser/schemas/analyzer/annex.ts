@@ -29,7 +29,7 @@ export type AnnexArticle = z.infer<typeof AnnexArticleSchema>;
 export const AnnexRegulationSchema = z.object({
     type: z.literal("Regulation").describe("Anexo tipo reglamento/manual, compuesto por artículos"),
     chapters: z.array(ChapterSchema).describe("Capítulos del anexo; puede no haber ninguno"),
-    looseArticles: z.array(AnnexArticleSchema).describe("Artículos sueltos del anexo; puede no haber ninguno. NO usar prop 'articles'"),
+    articles: z.array(AnnexArticleSchema).describe("Artículos sueltos del anexo; puede no haber ninguno."),
 }).meta({title: "AnexoReglamento"});
 
 export type AnnexRegulationAnalysis = z.infer<typeof AnnexRegulationSchema>;
@@ -41,18 +41,20 @@ export const TextAnnexSchema = z.object({
 
 export type TextAnnexAnalysis = z.infer<typeof TextAnnexSchema>;
 
-export const ModificationsAnnexSchema = z.object({
-    type: z.literal("Modifications").describe("Anexo que contiene solo modificaciones a artículos"),
-    articles: z.array(ModificationAnnexArticleSchema).describe("Artículos que forman parte del anexo de modificaciones. Deben ser modificadores"),
-}).meta({title: "AnexoModificaciones"});
+// export const ModificationsAnnexSchema = z.object({
+//     type: z.literal("Modifications").describe("Anexo que contiene solo modificaciones a artículos"),
+//     articles: z.array(ModificationAnnexArticleSchema).describe("Artículos que forman parte del anexo de modificaciones. Deben ser modificadores"),
+// }).meta({title: "AnexoModificaciones"});
 
-export type AnnexModificationsAnalysis = z.infer<typeof ModificationsAnnexSchema>;
+// export type AnnexModificationsAnalysis = z.infer<typeof ModificationsAnnexSchema>;
 
 export const AnnexSchema = z.discriminatedUnion("type", [
     AnnexRegulationSchema,
     TextAnnexSchema,
-    ModificationsAnnexSchema,
+    // ModificationsAnnexSchema,
 ]).meta({title: "Anexo", schemaDescription: "Anexo de una resolución"});
+
+export type AnnexAnalysis = z.infer<typeof AnnexSchema>;
 
 export const ReplaceAnnexContent = z.object({
     type: z.literal("TextOrTables").describe("Anexo de solo texto o tablas"),

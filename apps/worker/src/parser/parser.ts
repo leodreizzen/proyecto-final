@@ -1,15 +1,14 @@
 import {parseResolutionStructure} from "@/parser/structure_parser";
 import {LLMError, ResultWithData} from "@/definitions";
-import {ResolutionAnalysis} from "@/parser/schemas/analyzer/resolution";
 import {analyzeResolution} from "@/parser/analyzer";
 import {runPythonScript} from "@/util/python_scripts";
 import {ResolutionStructure} from "@/parser/schemas/parser/schemas";
 import {validateResolution} from "@/parser/validation";
 import {assembleResolution} from "@/parser/assemble";
-import {Resolution} from "@/parser/types";
+import {FullResolutionAnalysis, Resolution} from "@/parser/types";
 import {countTokens} from "@/util/tokenCounter";
 
-export function validateAndAssembleResolution(structure: ResolutionStructure, analysis: ResolutionAnalysis): ResultWithData<Resolution> {
+export function validateAndAssembleResolution(structure: ResolutionStructure, analysis: FullResolutionAnalysis): ResultWithData<Resolution> {
     const validationResults = validateResolution(structure, analysis);
 
     if (!validationResults.success) {
@@ -42,7 +41,7 @@ function mapLLMError(error: LLMError){
 
 export async function parseTextResolution(fileContent: string): Promise<ParseResolutionResult> {
     const tokenCount = countTokens(fileContent);
-    if(tokenCount > 10000) {
+    if(tokenCount > 20000) {
         return {
             success: false,
             error: {

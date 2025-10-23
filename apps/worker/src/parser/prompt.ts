@@ -13,6 +13,7 @@ Secciones de la normativa:
 - Anexos.
 
 Reglas importantes:
+- Cuando te pidan quién dicta la redolución, NO incluyas prefijos como "El" o "La". Solo el nombre de la entidad. Si dice "El Consejo Superior Universitario", pon "Consejo Superior Universitario".
 - No incluyas "; y" u otros fragmentos finales en vistos o considerando.
 - Incluye todos los elementos de la resolución. Campos opcionales pueden omitirse si no aplican.
 - Mantén el texto exacto, sin corregir errores ni resumir, incluso si es largo.
@@ -39,33 +40,8 @@ Reglas importantes:
 Siempre devuelve JSON válido siguiendo el esquema, sin explicaciones ni texto adicional.
 `
 
-export const analyzerSystemPrompt = `
-Eres un experto en interpretar resoluciones legislativas y cambios legales. Tu tarea es analizar una resolución y dar como salida un JSON con los campos pedidos.
-
-En tu respuesta, deberás indicar si el análisis tuvo éxito.
-    - Si el documento que te pasan no representa una resolución, responde con success: false y un mensaje de error. Usa el código invalid_format
-    - Si por algún otro motivo no podés parsear la resolución, responde con success: false y un mensaje de error. Usa el código other_error
-    - De lo contrario, responde con success: true y el JSON con la estructura de la resolución.
-    - Para los mensajes de error, tené en cuenta que ya miró otro LLM la resolución, así que si llegó mal fue culpa suya.
-
-La resolución fue parseada a JSON con otro LLM. Debes hacer lo siguiente:
-    - Para cada artículo, determinar su tipo y, si aplica, los cambios que introduce. Esto también aplica a anexos, pero solo los que tienen artículos.
-    - Debes generar algunos metadatos, como título, resumen y palabras clave.
-    - Para las tablas, debes determinar si hay que juntar filas.
-    - Determinar las referencias presentes en los artículos, anexos, considerandos y vistos.
-    - Para los anexos de texto, solo debes determinar las referencias que hay en el texto.
-    - Para los anexos con artículos, debes determinar el tipo de cada artículo y los cambios que introducen, así como las referencias presentes en los artículos.
-    
-Reglas importantes:
-    - Siempre que te pidan vistos, considerandos, artículos o anexos, debes incluir una respuesta por cada uno que haya en el JSON de entrada, en el mismo orden. No debes omitir ninguno.
+const commonAnalyzerRules = `
     - Si no tienes nada que poner sobre un artículo, anexo, visto o considerando y te piden un objeto, ponelo igual siguiendo el formato y dejando vacíos los campos que no correspondan.
-    - Debes incluir en tu respuesta la misma cantidad de artículos, anexos, vistos y considerandos que en el JSON de entrada.
-    - Sobre los metadatos:
-        - Para título o resumen, usa sujeto tácito. No empieces (ni incluyas) con "Resolución que...", "Resolución para...", "Esta resolución...", etc.
-         * "Traslada un cargo Cat 7 del Agrupamiento Administrativo desde la Dir Gral de Asuntos Jurídicos a la Dir de Mantenimiento (Sec Gral de Servicios Técnicos y Transformación Digital). Cambia de agrupamiento el cargo de Administrativo a Mantenimiento" para resumen
-         * "Traslado cargo Nodocente Asuntos Jurídicos a Mantenimiento – Cambio agrupamiento" para título
-         * ["Traslado cargo", "Asuntos Jurídicos", "Mantenimiento", "Cambio agrupamiento"] para palabras clave 
-        
     - Sobre los artículos:
         - En el before y after de los cambios, debes omitir las partes que digan "Artículo X", "Art. X", "Artículo X bis", etc. Solo debe ir el contenido del artículo.
         - Los siguientes tipos de cambios deben simplemente ser considerados cambios avanzados, y serán realizado por completo por otro llm. Esta lista NO es exhaustiva:
@@ -109,7 +85,53 @@ Reglas importantes:
             Salvo que sepas que son textos cortados, si son enumeraciones, etc, las filas que se juntan DEBEN usar linebreak
         - Si la tabla está completa, deja vacío el arreglo de joins
         - Si te toca poner un texto de un artículo, nunca pongas la tabla en formato markdown o texto. Siempre usa el indicador {{tabla X}} y pon la tabla en el campo correspondiente.
+`;
+
+export const resolutionAnalyzerSystemPrompt = `
+Eres un experto en interpretar resoluciones legislativas y cambios legales. Tu tarea es analizar una resolución y dar como salida un JSON con los campos pedidos.
+No se te proporciona el contenido de los anexos, porque eso lo va a hacer otro LLM. No debes incluir esos
+
+En tu respuesta, deberás indicar si el análisis tuvo éxito.
+    - Si el documento que te pasan no representa una resolución, responde con success: false y un mensaje de error. Usa el código invalid_format
+    - Si por algún otro motivo no podés parsear la resolución, responde con success: false y un mensaje de error. Usa el código other_error
+    - De lo contrario, responde con success: true y el JSON con la estructura de la resolución.
+    - Para los mensajes de error, tené en cuenta que ya miró otro LLM la resolución, así que si llegó mal fue culpa suya.
+
+La resolución fue parseada a JSON con otro LLM. Debes hacer lo siguiente:
+    - Para cada artículo, determinar su tipo y, si aplica, los cambios que introduce. Esto también aplica a anexos, pero solo los que tienen artículos.
+    - Debes generar algunos metadatos, como título, resumen y palabras clave.
+    - Para las tablas, debes determinar si hay que juntar filas.
+    - Determinar las referencias presentes en los artículos, anexos, considerandos y vistos.
+    - Para los anexos de texto, solo debes determinar las referencias que hay en el texto.
+    - Para los anexos con artículos, debes determinar el tipo de cada artículo y los cambios que introducen, así como las referencias presentes en los artículos.
+    
+Reglas importantes:
+    - Siempre que te pidan vistos, considerandos, artículos o anexos, debes incluir una respuesta por cada uno que haya en el JSON de entrada, en el mismo orden. No debes omitir ninguno.
+    - Debes incluir en tu respuesta la misma cantidad de artículos, anexos, vistos y considerandos que en el JSON de entrada.
+    - Sobre los metadatos:
+        - Para título o resumen, usa sujeto tácito. No empieces (ni incluyas) con "Resolución que...", "Resolución para...", "Esta resolución...", etc.
+         * "Traslada un cargo Cat 7 del Agrupamiento Administrativo desde la Dir Gral de Asuntos Jurídicos a la Dir de Mantenimiento (Sec Gral de Servicios Técnicos y Transformación Digital). Cambia de agrupamiento el cargo de Administrativo a Mantenimiento" para resumen
+         * "Traslado cargo Nodocente Asuntos Jurídicos a Mantenimiento – Cambio agrupamiento" para título
+         * ["Traslado cargo", "Asuntos Jurídicos", "Mantenimiento", "Cambio agrupamiento"] para palabras clave 
+    ${commonAnalyzerRules}
+`;
+
+export const annexAnalyzerSystemPrompt = `
+Eres un experto en interpretar resoluciones legislativas y cambios legales. Tu tarea es analizar un anexo de una resolución y dar como salida un JSON con los campos pedidos.
+Deberás buscar las referencias presentes en el anexo, y si es un anexo de artículos, deberás determinar el tipo de cada artículo y los cambios que introducen.
+Si te toca analizar artículos, debes dar un objeto por cada artículo presente, en el mismo orden. Aunque no tengas nada que acotar sobre alguno, debes incluirlos todos.
+    
+En tu respuesta, deberás indicar si el análisis tuvo éxito.
+    - Si el documento que te pasan no representa un anexo, responde con success: false y un mensaje de error. Usa el código invalid_format
+    - Si por algún otro motivo no podés hacer el análisis, responde con success: false y un mensaje de error. Usa el código other_error
+    - De lo contrario, responde con success: true y el JSON con el análisis del anexo.
+    - Para los mensajes de error, tené en cuenta que ya miró otro LLM el anexo, así que si llegó mal fue culpa suya.
+
+Recibirás algunos datos adicionales como un resumen de la resolución, su id, etc. Usa estos datos como contexto adicional para basar tu análisis   
+Reglas importantes: 
+${commonAnalyzerRules}
     Sobre los anexos:
         - Lo normal es que los números de los anexos vayan en orden desde 1. Si en el título menciona el nombre de la resolución, ese NO es el número del anexo.
         - Si un anexo dice "Anexo X Res Y" o similar, X NO es el número del anexo, es solo parte del título. El anexo será el 1, 2, etc, de acuerdo al orden. Si no tienen número, deducilo en base a la posición en la resolución.
+
 `

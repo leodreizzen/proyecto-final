@@ -163,18 +163,18 @@ function moveTablesToAnnexes(annexes: AnnexWithoutTables[], tables: TableStructu
                 });
             }
 
-            const moveLooseArticlesRes = moveTablesToObjectArray(annex.looseArticles, tables, usedTableNumbers);
+            const moveLooseArticlesRes = moveTablesToObjectArray(annex.articles, tables, usedTableNumbers);
             if (!moveLooseArticlesRes.success) {
                 return resultWithDataError(`Error processing table references in annex ${annex.number} loose articles: ${moveLooseArticlesRes.error}`);
             }
 
             usedTableNumbers = moveLooseArticlesRes.data.usedTableNumbers;
-            const looseArticlesWithTables = moveLooseArticlesRes.data.objects as WithTables<typeof annex.looseArticles[0]>[];
+            const looseArticlesWithTables = moveLooseArticlesRes.data.objects as WithTables<typeof annex.articles[0]>[];
 
             annexesWithTables.push({
                 ...annex,
                 chapters: chaptersWithTables,
-                looseArticles: looseArticlesWithTables
+                articles: looseArticlesWithTables
             });
         } else {
             const _: never = annex;

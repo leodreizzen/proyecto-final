@@ -9,8 +9,8 @@ import {zodToLLMDescription} from "@/util/zod_to_llm";
 import {parseLLMResponse} from "@/util/llm_response";
 
 const openai = new OpenAI({
-    apiKey: process.env.OPEN_ROUTER_KEY,
-    baseURL: "https://openrouter.ai/api/v1",
+    apiKey: process.env.GOOGLE_API_KEY,
+    baseURL: "https://generativelanguage.googleapis.com/v1beta/openai",
 });
 
 const schemaDescription = zodToLLMDescription(ResolutionStructureResultSchema);
@@ -20,7 +20,7 @@ export async function parseResolutionStructure(fileContent: string): Promise<Res
     let res;
     try {
         res = await openai.chat.completions.create({
-            model: "google/gemini-2.5-flash-lite",
+            model: "gemini-2.5-flash-lite",
             response_format: {
                 type: "json_object"
             },

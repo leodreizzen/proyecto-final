@@ -1,27 +1,68 @@
-import {ResolutionStructure} from "@/parser/schemas/parser/schemas";
+import {AnnexStructure, ResolutionStructure} from "@/parser/schemas/parser/schemas";
 import {zodToLLMDescription} from "@/util/zod_to_llm";
-import {analyzerSystemPrompt} from "@/parser/prompt";
+import {annexAnalyzerSystemPrompt, resolutionAnalyzerSystemPrompt} from "@/parser/prompt";
 import {ResolutionAnalysis} from "@/parser/schemas/analyzer/resolution";
 import OpenAI from "openai";
 import {parseLLMResponse} from "@/util/llm_response";
 import {LLMError, ResultWithData} from "@/definitions";
-import {ResolutionAnalysisResultSchema} from "@/parser/schemas/analyzer/result";
-import {countTokens} from "@/util/tokenCounter";
+import {AnnexAnalysisResultSchema, ResolutionAnalysisResultSchema} from "@/parser/schemas/analyzer/result";
+import {ResolutionID} from "@/parser/schemas/common";
+import {
+    FullResolutionAnalysis,
+} from "@/parser/types";
+import {AnnexAnalysis} from "@/parser/schemas/analyzer/annex";
 
 const openai = new OpenAI({
-    apiKey: process.env.OPEN_ROUTER_KEY,
-    baseURL: "https://openrouter.ai/api/v1",
+    apiKey: process.env.GOOGLE_API_KEY,
+    baseURL: "https://generativelanguage.googleapis.com/v1beta/openai/",
 });
 
-const schemaDescription = zodToLLMDescription(ResolutionAnalysisResultSchema);
+const resolutionSchemaDescription = zodToLLMDescription(ResolutionAnalysisResultSchema);
 
-export async function analyzeResolution(resolution: ResolutionStructure): Promise<ResultWithData<ResolutionAnalysis, LLMError>> {
-    console.log("calling analyzer model...");
-    const resolutionJSON = JSON.stringify(resolution, null, 2);
+function cutText(text: string, length: number) {
+    if(text.length > length) {
+        return text.substring(0, length) + "...";
+    }
+    return text;
+
+}
+
+export async function analyzeResolution(resolution: ResolutionStructure): Promise<ResultWithData<FullResolutionAnalysis, LLMError>> {
+    console.log("calling resolution analyzer model...");
+    const {annexes, ...resolutionWithoutAnnexes} = resolution;
+    const filteredAnnexes = annexes.map(annex => {
+        if(annex.type == "TextOrTables") {
+            const {content, ...rest} = annex;
+            return {...rest, content: cutText(content, 100)}
+        } else {
+            const {articles, chapters, ...rest} = annex;
+            return {
+                ...rest,
+                articles: articles.map(article => {
+                    const {text, ...restArticle} = article;
+                    return {...restArticle, text: cutText(text, 40)}
+                }),
+                chapters: chapters.map(chapter => ({
+                    ...chapter,
+                    articles: chapter.articles.map(article => {
+                        const {text, ...restArticle} = article;
+                        return {...restArticle, text: cutText(text, 40)}
+                    })
+                })),
+            }
+        }
+    })
+
+    const filteredResolution = {
+        ...resolutionWithoutAnnexes,
+        annexes: filteredAnnexes,
+    }
+
+    const resolutionJSON = JSON.stringify(filteredResolution, null, 2);
     let res
     try {
         res = await openai.chat.completions.create({
-            model: "google/gemini-2.5-flash",
+            model: "gemini-2.5-flash",
             response_format: {
                 type: "json_object"
             },
@@ -33,7 +74,7 @@ export async function analyzeResolution(resolution: ResolutionStructure): Promis
                     content: [
                         {
                             type: "text",
-                            text: analyzerSystemPrompt + schemaDescription,
+                            text: resolutionAnalyzerSystemPrompt + resolutionSchemaDescription,
                             cache_control: {
                                 type: "ephemeral"
                             }
@@ -62,15 +103,111 @@ export async function analyzeResolution(resolution: ResolutionStructure): Promis
     }
 
     const LLMResult = jsonParseRes.data;
-        if (LLMResult.processSuccess) {
+    if (LLMResult.success) {
+        const resolutionAnalysis = LLMResult.data;
+
+        const annexPromises = resolution.annexes.map((annex, index) =>
+            analyzeAnnex({
+                annex,
+                annexNumber: index + 1,
+                recitals: resolution.recitals,
+                considerations: resolution.considerations,
+                resolutionId: resolution.id,
+                metadata: resolutionAnalysis.metadata
+            })
+        );
+
+        const annexResults = await Promise.all(annexPromises);
+        if (!annexResults.every(result => result.success)) {
+            const firstError = annexResults.find(result => !result.success)?.error!;
+            return {
+                success: false,
+                error: firstError
+            };
+        }
+
+        return {
+            success: true,
+            data: {
+                ...LLMResult.data,
+                annexes: annexResults.map(result => result.data!)
+            }
+        }
+    } else {
+        return {
+            success: false,
+            error: {code: "llm_error", llmCode: LLMResult.error.code, llmMessage: LLMResult.error.message}
+        };
+    }
+}
+
+const annexSchemaDescription = zodToLLMDescription(AnnexAnalysisResultSchema);
+
+type AnalyzeAnnexInput = {
+    annex: AnnexStructure,
+    annexNumber: number,
+    recitals: ResolutionStructure["recitals"],
+    considerations: ResolutionStructure["considerations"],
+    resolutionId: ResolutionID,
+    metadata: ResolutionAnalysis["metadata"]
+}
+
+async function analyzeAnnex(input: AnalyzeAnnexInput): Promise<ResultWithData<AnnexAnalysis, LLMError>> {
+    console.log("calling anenex analyzer model...");
+    const annexJSON = JSON.stringify(input, null, 2);
+    let res
+    try {
+        res = await openai.chat.completions.create({
+            model: "gemini-2.5-flash",
+            response_format: {
+                type: "json_object"
+            },
+            reasoning_effort: "medium",
+            max_completion_tokens: 64000,
+            messages: [
+                {
+                    role: "developer",
+                    content: [
+                        {
+                            type: "text",
+                            text: annexAnalyzerSystemPrompt + annexSchemaDescription,
+                            cache_control: {
+                                type: "ephemeral"
+                            }
+                        }
+                    ],
+                },
+                {
+                    role: "user",
+                    content: [{
+                        type: "text",
+                        text: annexJSON
+                    }]
+                }
+            ]
+        })
+    } catch (e) {
+        console.error("API error:", e);
+        return {
+            success: false,
+            error: {code: "api_error"}
+        };
+    }
+    const jsonParseRes = parseLLMResponse(res, AnnexAnalysisResultSchema);
+    if (!jsonParseRes.success) {
+        return jsonParseRes
+    }
+
+    const LLMResult = jsonParseRes.data;
+    if (LLMResult.success) {
         return {
             success: true,
             data: LLMResult.data
         }
-    }
-        else {
+    } else {
         return {
             success: false,
-            error: { code: "llm_error", llmCode: LLMResult.error.code, llmMessage: LLMResult.error.message}
+            error: {code: "llm_error", llmCode: LLMResult.error.code, llmMessage: LLMResult.error.message}
         };
-    }}
+    }
+}

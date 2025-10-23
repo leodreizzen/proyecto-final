@@ -27,7 +27,7 @@ export const ChangeReplaceArticle = z.object({
 
 export const ChangeAdvanced = z.object({
     type: z.literal("AdvancedChange").describe("Cambio avanzado asistido por LLM. Debe usarse cuando el cambio no puede ser representado por los otros tipos"),
-    targetResolution: ResolutionReferenceSchema.describe("Resolución destino del cambio"),
+    targetResolution: ResolutionIDSchema.describe("Resolución destino del cambio"),
     targetArticle: ArticleReferenceSchema.optional().nullable().describe("Artículo objetivo opcional"),
     targetAnnex: AnnexReferenceSchema.optional().nullable().describe("Anexo destino opcional"),
     targetChapter: ChapterReferenceSchema.optional().nullable().describe("Capítulo destino opcional"),

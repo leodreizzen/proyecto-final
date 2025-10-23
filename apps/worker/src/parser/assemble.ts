@@ -3,12 +3,12 @@ import {ResolutionStructure, TableStructure} from "@/parser/schemas/parser/schem
 import {ResolutionAnalysis} from "@/parser/schemas/analyzer/resolution";
 import {RowJoin, TableAnalysis} from "@/parser/schemas/analyzer/table";
 import {merge} from "lodash-es";
-import {AnnexWithoutTables, ArticleWithoutTables, Resolution} from "@/parser/types";
+import {AnnexWithoutTables, ArticleWithoutTables, FullResolutionAnalysis, Resolution} from "@/parser/types";
 import {moveTablesInResolution} from "@/parser/move_tables";
 
 //TODO ERROR CODES
 // Resolution must be validated before calling this function
-export function assembleResolution(structure: ResolutionStructure, analysis: ResolutionAnalysis): ResultWithData<Resolution> {
+export function assembleResolution(structure: ResolutionStructure, analysis: FullResolutionAnalysis): ResultWithData<Resolution> {
     const recitals = structure.recitals.map((recital, index) => ({
         text: recital,
         references: analysis.recitals[index]!.references

@@ -1,13 +1,14 @@
 import {ResolutionStructure} from "@/parser/schemas/parser/schemas";
 import {ResolutionAnalysis} from "@/parser/schemas/analyzer/resolution";
 import {ResultVoid, resultVoidError, resultVoidSuccess} from "@/definitions";
+import {FullResolutionAnalysis} from "@/parser/types";
 
 type ValidationFunction = (structure: ResolutionStructure,
-                           analysis: ResolutionAnalysis,
+                           analysis: FullResolutionAnalysis,
                            ok: () => ResultVoid,
                            err: (message: string) => ResultVoid) => ResultVoid;
 
-export function validateResolution(structure: ResolutionStructure, analysis: ResolutionAnalysis): ResultVoid {
+export function validateResolution(structure: ResolutionStructure, analysis: FullResolutionAnalysis): ResultVoid {
     const validations: ValidationFunction[] = [
         (structure, analysis, ok, err) => {
             if (structure.recitals.length !== analysis.recitals.length) {

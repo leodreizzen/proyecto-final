@@ -7,7 +7,7 @@ import {
 } from "@/parser/schemas/parser/schemas";
 import {ArticleAnalysis, ArticleSchemaWithText} from "@/parser/schemas/analyzer/article";
 import {TextReference} from "@/parser/schemas/analyzer/reference";
-import {AnnexRegulationAnalysis, TextAnnexAnalysis} from "@/parser/schemas/analyzer/annex";
+import {AnnexAnalysis, AnnexRegulationAnalysis, TextAnnexAnalysis} from "@/parser/schemas/analyzer/annex";
 import {ResolutionAnalysis} from "@/parser/schemas/analyzer/resolution";
 import {Change, ChangeAddArticleToAnnex, ChangeAddArticleToResolution} from "@/parser/schemas/analyzer/change";
 
@@ -41,11 +41,15 @@ type ArticleModifierWithMappedChanges = Omit<ArticleModifier, "changes"> & {
 
 type ArticleWithMappedChanges = Exclude<ArticleWithoutTables, { type: "Modifier" }> | ArticleModifierWithMappedChanges;
 
-type RecitalWithoutTables = {
+export type FullResolutionAnalysis = ResolutionAnalysis & {
+    annexes: AnnexAnalysis[];
+}
+
+export type RecitalWithoutTables = {
     text: string,
     references: TextReference[];
 }
-type ConsiderationWithoutTables = {
+export type ConsiderationWithoutTables = {
     text: string,
     references: TextReference[];
 }
@@ -54,7 +58,7 @@ type AnnexRegulationWithoutTables = AnnexRegulationStructure & AnnexRegulationAn
 
 type TextAnnex = WithTables<TextAnnexWithoutTables>
 type AnnexRegulation = AnnexRegulationAnalysis & {
-    looseArticles: WithTables<AnnexRegulationAnalysis["looseArticles"][number]>[];
+    articles: WithTables<AnnexRegulationAnalysis["articles"][number]>[];
     chapters: (ChapterStructure & {
         articles: WithTables<AnnexRegulationAnalysis["chapters"][number]["articles"][number]>[]
     })[];
@@ -68,7 +72,7 @@ export type Article = WithTables<ArticleWithMappedChanges>;
 export type Recital = WithTables<RecitalWithoutTables>;
 export type Consideration = WithTables<ConsiderationWithoutTables>;
 
-export type Resolution = Omit<ResolutionStructure & ResolutionAnalysis, "tables" | "recitals" | "considerations" | "annexes" | "articles" > & {
+export type Resolution = Omit<ResolutionStructure & FullResolutionAnalysis, "tables" | "recitals" | "considerations" | "annexes" | "articles" > & {
     recitals: Recital[]
     considerations: Consideration[]
     articles: Article[],
