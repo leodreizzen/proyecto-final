@@ -3,7 +3,7 @@
   "ui": "tui",
   "tasks": {
     "worker:*": {
-      "env": ["NODE_ENV", "OPEN_ROUTER_KEY"]
+      "env": ["NODE_ENV", "OPEN_ROUTER_KEY", "USE_OPENROUTER", "OPENROUTER_API_KEY", "GOOGLE_API_KEY"]
     },
     "build": {
       "dependsOn": ["^build"],

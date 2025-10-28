@@ -88,13 +88,9 @@ function checkOptionalNullable(schema: ZodType): { descriptionToAdd: string, unw
     }
     if (optional) {
         description += "Es opcional.\n";
-    } else {
-        description += `Requerido\n`;
     }
     if (nullable) {
         description += "Puede ser null.\n";
-    } else {
-        description += "NO puede ser null.\n";
     }
 
     return {descriptionToAdd: description, unwrapped: schema};

@@ -146,7 +146,7 @@ function moveTablesToAnnexes(annexes: AnnexWithoutTables[], tables: TableStructu
                 content: moveTablesRes.data.newContent,
                 tables: moveTablesRes.data.matchingTables
             });
-        } else if (annex.type == "Regulation") {
+        } else if (annex.type == "WithArticles") {
             const chaptersWithTables = [];
             for (const chapter of annex.chapters || []) {
                 const moveChapterArticlesRes = moveTablesToObjectArray(chapter.articles, tables, usedTableNumbers);

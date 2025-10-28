@@ -5,7 +5,7 @@ import {expect, describe, jest, test} from "@jest/globals";
 import {Annex, Article, Resolution} from "@/parser/types";
 
 describe("E2E Resolution Parsing", () => {
-    jest.retryTimes(2, {logErrorsBeforeRetry: true});
+    jest.retryTimes(0, {logErrorsBeforeRetry: true});
     jest.setTimeout(60 * 4 * 1000);
     test.concurrent("E2E: simple resolution", async () => {
         const parseRes = await parseFileResolution(path.join(__dirname, "test_files", "CSU_RES-1-2012.pdf"));
@@ -56,7 +56,7 @@ describe("E2E Resolution Parsing", () => {
                 {
                     type: "ModifyArticle",
                     targetArticle: {
-                        referenceType: "Article",
+                        referenceType: "NormalArticle",
                         number: 2,
                         resolutionId: {
                             initial: "CSU",
@@ -66,7 +66,7 @@ describe("E2E Resolution Parsing", () => {
                     }
                 }
             ]
-        });
+        } satisfies DeepPartial<Article>);
 
         expect(parseResData.articles[1]!).toMatchObject({
             type: "Modifier",
@@ -74,7 +74,7 @@ describe("E2E Resolution Parsing", () => {
                 {
                     type: "ModifyArticle",
                     targetArticle: {
-                        referenceType: "Article",
+                        referenceType: "NormalArticle",
                         number: 3,
                         resolutionId: {
                             initial: "CSU",
@@ -84,28 +84,28 @@ describe("E2E Resolution Parsing", () => {
                     }
                 }
             ]
-        })
+        } satisfies DeepPartial<Article>)
         expect(parseResData.articles[2]!).toMatchObject({
             type: "Formality",
         });
     });
 
     test.concurrent("E2E: Replace Article", async () => {
-        const parseRes = await parseFileResolution(path.join(__dirname, "test_files", "CSU_RES-326-2007.pdf"));
+        const parseRes = await parseFileResolution(path.join(__dirname, "test_files", "CSU_RES-500-2016.pdf"));
         expect(parseRes.success).toBe(true);
         const resSucess = parseRes as typeof parseRes & { success: true };
         const parseResData = resSucess.data;
         expect(parseResData.id).toEqual({
             initial: "CSU",
-            number: 326,
-            year: 2007
+            number: 500,
+            year: 2016
         })
-        expect(parseResData.caseFiles).toEqual(["54/00"]);
+        expect(parseResData.caseFiles).toEqual(["1230/16"]);
         expect(parseResData.recitals.length).toBe(1);
-        expect(parseResData.considerations.length).toBe(5);
-        expect(parseResData.articles.length).toBe(2);
+        expect(parseResData.considerations.length).toBe(4);
+        expect(parseResData.articles.length).toBe(3);
         expect(parseResData.annexes.length).toBe(0);
-        expect(parseResData.date).toEqual(new Date("2007-06-26T00:00:00Z"));
+        expect(parseResData.date).toEqual(new Date("2016-09-08T00:00:00Z"));
         expect(parseResData.decisionBy.toLowerCase()).toBe("consejo superior universitario");
         parseResData.articles.forEach(article => {
             expect(article.text).not.toMatch(/^(art[ií]culo)/i)
@@ -117,12 +117,12 @@ describe("E2E Resolution Parsing", () => {
                 {
                     type: "ReplaceArticle",
                     targetArticle: {
-                        referenceType: "Article",
-                        number: 26,
+                        referenceType: "NormalArticle",
+                        number: 1,
                         resolutionId: {
                             initial: "CSU",
-                            number: 245,
-                            year: 1993
+                            number: 358,
+                            year: 2016
                         },
                     },
                 }
@@ -130,6 +130,24 @@ describe("E2E Resolution Parsing", () => {
         } satisfies DeepPartial<Article>);
 
         expect(parseResData.articles[1]!).toMatchObject({
+            type: "Modifier",
+            changes: [
+                {
+                    type: "ReplaceArticle",
+                    targetArticle: {
+                        referenceType: "NormalArticle",
+                        number: 3,
+                        resolutionId: {
+                            initial: "CSU",
+                            number: 358,
+                            year: 2016
+                        },
+                    },
+                }
+            ]
+        } satisfies DeepPartial<Article>);
+
+        expect(parseResData.articles[2]!).toMatchObject({
             type: "Formality"
         });
     })
@@ -159,7 +177,7 @@ describe("E2E Resolution Parsing", () => {
                 {
                     type: "ModifyArticle",
                     targetArticle: {
-                        referenceType: "Article",
+                        referenceType: "NormalArticle",
                         number: 1,
                         resolutionId: {
                             initial: "CSU",
@@ -177,7 +195,7 @@ describe("E2E Resolution Parsing", () => {
                 {
                     type: "RepealArticle",
                     targetArticle: {
-                        referenceType: "Article",
+                        referenceType: "NormalArticle",
                         number: 2,
                         resolutionId: {
                             initial: "CSU",
@@ -195,7 +213,7 @@ describe("E2E Resolution Parsing", () => {
                 {
                     type: "ModifyArticle",
                     targetArticle: {
-                        referenceType: "Article",
+                        referenceType: "NormalArticle",
                         number: 4,
                         resolutionId: {
                             initial: "CSU",
@@ -222,7 +240,7 @@ describe("E2E Resolution Parsing", () => {
                         number: 1,
                     },
                     newContent: {
-                        type: "Inline",
+                        contentType: "Inline",
                         content: {
                             type: "TextOrTables",
                         }
@@ -255,7 +273,7 @@ describe("E2E Resolution Parsing", () => {
         });
         expect(parseResData.articles[0]!).toMatchObject({
             type: "Normative",
-        });
+        } satisfies DeepPartial<Article>);
         expect(parseResData.articles[1]!).toMatchObject({
             type: "Modifier",
             changes: [
@@ -272,14 +290,16 @@ describe("E2E Resolution Parsing", () => {
                     }
                 }
             ]
-        });
-        expect(parseResData.annexes[0]!.type).toBe("Regulation");
-        const annexRegulation = parseResData.annexes[0] as Extract<Resolution["annexes"][number], { type: "Regulation" }>;
-        expect(annexRegulation.articles).toHaveLength(2);
-        expect(annexRegulation.chapters).toHaveLength(0);
+        } satisfies DeepPartial<Article>);
+        expect(parseResData.annexes[0]!.type).toBe("WithArticles");
+        const annexWithArticles = parseResData.annexes[0] as Extract<Resolution["annexes"][number], {
+            type: "WithArticles"
+        }>;
+        expect(annexWithArticles.articles).toHaveLength(2);
+        expect(annexWithArticles.chapters).toHaveLength(0);
 
-        expect(annexRegulation.articles[0]!.tables).toHaveLength(1);
-        const table = annexRegulation.articles[0]!.tables[0]!;
+        expect(annexWithArticles.articles[0]!.tables).toHaveLength(1);
+        const table = annexWithArticles.articles[0]!.tables[0]!;
         expect(table.number).toBe(1);
         expect(table.rows).toHaveLength(9);
         table.rows.forEach(row => {
@@ -319,11 +339,11 @@ describe("E2E Resolution Parsing", () => {
                     }
                 }
             ]
-        });
+        } satisfies DeepPartial<Article>);
 
         expect(parseResData.articles[1]!).toMatchObject({
             type: "Formality"
-        });
+        } satisfies DeepPartial<Article>);
     })
 
     test.concurrent("E2E: modify article, both normal and annex", async () => {
@@ -353,7 +373,7 @@ describe("E2E Resolution Parsing", () => {
                 {
                     type: "ModifyArticle",
                     targetArticle: {
-                        referenceType: "Article",
+                        referenceType: "NormalArticle",
                         number: 2,
                         resolutionId: {
                             initial: "CSU",
@@ -363,7 +383,7 @@ describe("E2E Resolution Parsing", () => {
                     }
                 }
             ]
-        });
+        } satisfies DeepPartial<Article>);
 
         expect(parseResData.articles[1]!).toMatchObject({
             type: "Modifier",
@@ -371,7 +391,7 @@ describe("E2E Resolution Parsing", () => {
                 {
                     type: 'ModifyArticle',
                     targetArticle: {
-                        referenceType: 'Article',
+                        referenceType: 'AnnexArticle',
                         annex: {
                             referenceType: 'Annex',
                             resolutionId: {initial: 'CSU', number: 310, year: 2025},
@@ -381,11 +401,10 @@ describe("E2E Resolution Parsing", () => {
                     }
                 }
             ]
-        });
+        } satisfies DeepPartial<Article>);
     });
 
     test.concurrent("E2E: modify annex & create document", async () => {
-        //TODO this can also be used for modify annex article
         const parseRes = await parseFileResolution(path.join(__dirname, "test_files", "CSU_RES-971-2022.pdf"));
         expect(parseRes.success).toBe(true);
         const resSuccess = parseRes as typeof parseRes & { success: true };
@@ -420,7 +439,7 @@ describe("E2E Resolution Parsing", () => {
                     }
                 }
             ]
-        });
+        } satisfies DeepPartial<Article>);
 
         expect(parseResData.articles[1]!).toMatchObject({
             type: "CreateDocument",
@@ -429,7 +448,7 @@ describe("E2E Resolution Parsing", () => {
                 resolutionId: {initial: 'CSU', number: 971, year: 2022},
                 number: 1
             },
-        });
+        } satisfies DeepPartial<Article>);
     });
 
     test.concurrent("E2E: Add Article To Resolution", async () => {
@@ -456,12 +475,9 @@ describe("E2E Resolution Parsing", () => {
             changes: [
                 {
                     type: "AddArticleToResolution",
-                    targetResolution: {
-                        referenceType: 'Resolution',
-                        resolutionId: {initial: 'CSU', number: 83, year: 2021}
-                    },
-                    targetNumber: 4,
-                    targetSuffix: 'bis',
+                    targetResolution: {initial: 'CSU', number: 83, year: 2021},
+                    newArticleNumber: 4,
+                    newArticleSuffix: 'bis',
                 }
             ]
         } satisfies DeepPartial<Article>)
@@ -469,8 +485,6 @@ describe("E2E Resolution Parsing", () => {
 
 
     test.concurrent("E2E: Add Article to Annex", async () => {
-        //TODO ALSO WORKS FOR REPLACE ARTICLE IN ANNEX
-        //TODO ALSO WORKS FOR ADVANCED CHANGE
         const parseRes = await parseFileResolution(path.join(__dirname, "test_files", "CSU_RES-214-2018.pdf"));
         expect(parseRes.success).toBe(true);
         const resSuccess = parseRes as typeof parseRes & { success: true };
@@ -489,6 +503,24 @@ describe("E2E Resolution Parsing", () => {
         parseResData.articles.forEach(article => {
             expect(article.text).not.toMatch(/^(art[ií]culo)/i)
         });
+
+        expect(parseResData.articles[0]!).toMatchObject({
+            type: "Modifier",
+            changes: [
+                {
+                    type: "ReplaceArticle",
+                    targetArticle: {
+                        referenceType: "AnnexArticle",
+                        annex: {
+                            referenceType: "Annex",
+                            resolutionId: {initial: "CSU", number: 311, year: 2015},
+                        },
+                        number: 2
+                    }
+                }
+            ]
+        } satisfies DeepPartial<Article>);
+
         expect(parseResData.articles[1]!).toMatchObject({
             type: "Modifier",
             changes: [
@@ -503,8 +535,8 @@ describe("E2E Resolution Parsing", () => {
                         },
                         number: 1,
                     },
-                    targetNumber: 2,
-                    targetSuffix: "bis",
+                    newArticleNumber: 2,
+                    newArticleSuffix: "bis",
                 }
             ]
         } satisfies DeepPartial<Article>)
@@ -552,11 +584,11 @@ describe("E2E Resolution Parsing", () => {
                         },
                         number: 4
                     },
-                    targetNumber: null,
-                    targetSuffix: null,
+                    newArticleNumber: null,
+                    newArticleSuffix: null,
                 }
             ],
-        });
+        } satisfies DeepPartial<Article>);
     });
 
     test.concurrent("E2E: add annex to annex", async () => {
@@ -593,10 +625,10 @@ describe("E2E Resolution Parsing", () => {
                         resolutionId: {initial: 'CSU', number: 511, year: 2010},
                         number: 1
                     },
-                    targetNumber: 1
+                    newAnnexNumber: 1
                 }
             ]
-        });
+        } satisfies DeepPartial<Article>);
     })
 
     test.concurrent("E2E: Replace annex with reference & tables", async () => {
@@ -630,7 +662,7 @@ describe("E2E Resolution Parsing", () => {
                         number: 1
                     },
                     newContent: {
-                        type: 'Reference',
+                        contentType: 'Reference',
                         reference: {
                             referenceType: 'Annex',
                             resolutionId: {initial: 'CSU', number: 751, year: 2023},
@@ -639,7 +671,7 @@ describe("E2E Resolution Parsing", () => {
                     }
                 }
             ],
-        });
+        } satisfies DeepPartial<Article>);
         expect(parseResData.annexes).toHaveLength(1);
         const annex = parseResData.annexes[0]!;
         expect(annex.type).toBe("TextOrTables");
@@ -651,7 +683,7 @@ describe("E2E Resolution Parsing", () => {
         expect(table.rows[0]!.header).toBe(true);
     })
 
-    test.concurrent("E2E: modfications annex", async ()=> {
+    test.concurrent("E2E: modfications annex", async () => {
         const parseRes = await parseFileResolution(path.join(__dirname, "test_files", "CSU_RES-233-2020-trimmed.pdf"));
         expect(parseRes.success).toBe(true);
         const resSuccess = parseRes as typeof parseRes & { success: true };
@@ -699,14 +731,14 @@ describe("E2E Resolution Parsing", () => {
         } satisfies DeepPartial<Article>);
 
         const firstAnnex = parseResData.annexes[0]!;
-        expect(firstAnnex.type).toBe("Regulation" satisfies Annex["type"]);
-        const firstAnnexRegulation = firstAnnex as Extract<typeof firstAnnex, { type: "Regulation" }>;
-        expect(firstAnnexRegulation.articles).toHaveLength(2);
+        expect(firstAnnex.type).toBe("WithArticles" satisfies Annex["type"]);
+        const firstAnnexWithArticles = firstAnnex as Extract<typeof firstAnnex, { type: "WithArticles" }>;
+        expect(firstAnnexWithArticles.articles).toHaveLength(2);
 
         const secondAnnex = parseResData.annexes[1]!;
-        expect(secondAnnex.type).toBe("Regulation" satisfies Annex["type"]);
-        const secondAnnexRegulation = secondAnnex as Extract<typeof secondAnnex, { type: "Regulation" }>;
-        expect(secondAnnexRegulation.articles).toHaveLength(2);
+        expect(secondAnnex.type).toBe("WithArticles" satisfies Annex["type"]);
+        const secondAnnexWithArticles = secondAnnex as Extract<typeof secondAnnex, { type: "WithArticles" }>;
+        expect(secondAnnexWithArticles.articles).toHaveLength(2);
     });
 
     test.concurrent("E2E: invalid format", async () => {
@@ -718,7 +750,6 @@ describe("E2E Resolution Parsing", () => {
         });
     });
     /* TODO:
-    - Check why CSU_971_2022 frequently fails
     - restructure file to use describe and before
     - Assert references
     - change types:

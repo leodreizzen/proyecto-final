@@ -7,11 +7,7 @@ import {structureParserSystemPrompt} from "@/parser/prompt";
 import {LLMError, ResultWithData} from "@/definitions";
 import {zodToLLMDescription} from "@/util/zod_to_llm";
 import {parseLLMResponse} from "@/util/llm_response";
-
-const openai = new OpenAI({
-    apiKey: process.env.GOOGLE_API_KEY,
-    baseURL: "https://generativelanguage.googleapis.com/v1beta/openai",
-});
+import {createOpenAICompletion} from "@/util/openai_wrapper";
 
 const schemaDescription = zodToLLMDescription(ResolutionStructureResultSchema);
 
@@ -19,12 +15,12 @@ export async function parseResolutionStructure(fileContent: string): Promise<Res
     console.log("calling structure parser model...");
     let res;
     try {
-        res = await openai.chat.completions.create({
+        res = await createOpenAICompletion({
             model: "gemini-2.5-flash-lite",
             response_format: {
                 type: "json_object"
             },
-            reasoning_effort: "low",
+            reasoning_effort: "medium",
             max_completion_tokens: 25000,
             messages: [
                 {
@@ -61,7 +57,7 @@ export async function parseResolutionStructure(fileContent: string): Promise<Res
     }
 
     const LLMResult = jsonParseRes.data;
-    if(LLMResult.processSuccess){
+    if(LLMResult.success){
         return {
             success: true,
             data: LLMResult.data

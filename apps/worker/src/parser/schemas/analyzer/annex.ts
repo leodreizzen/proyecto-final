@@ -27,10 +27,10 @@ export const AnnexArticleSchema = z.object({
 export type AnnexArticle = z.infer<typeof AnnexArticleSchema>;
 
 export const AnnexRegulationSchema = z.object({
-    type: z.literal("Regulation").describe("Anexo tipo reglamento/manual, compuesto por artículos"),
+    type: z.literal("WithArticles").describe("Anexo compuesto por artículos"),
     chapters: z.array(ChapterSchema).describe("Capítulos del anexo; puede no haber ninguno"),
     articles: z.array(AnnexArticleSchema).describe("Artículos sueltos del anexo; puede no haber ninguno."),
-}).meta({title: "AnexoReglamento"});
+}).meta({title: "AnexoArticulos"});
 
 export type AnnexRegulationAnalysis = z.infer<typeof AnnexRegulationSchema>;
 

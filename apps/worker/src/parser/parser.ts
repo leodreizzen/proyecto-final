@@ -25,9 +25,9 @@ type ParseResolutionResult = ResultWithData<Resolution, {
     code: "internal_error" | "invalid_format" | "too_large"
 }>;
 
-function mapLLMError(error: LLMError){
-    let errorResult: {code: "internal_error"} | {code: "invalid_format"};
-    if(error.code === "llm_error" && error.llmCode === "invalid_format") {
+function mapLLMError(error: LLMError) {
+    let errorResult: { code: "internal_error" } | { code: "invalid_format" };
+    if (error.code === "llm_error" && error.llmCode === "invalid_format") {
         errorResult = {
             code: "invalid_format"
         };
@@ -41,7 +41,7 @@ function mapLLMError(error: LLMError){
 
 export async function parseTextResolution(fileContent: string): Promise<ParseResolutionResult> {
     const tokenCount = countTokens(fileContent);
-    if(tokenCount > 20000) {
+    if (tokenCount > 20000) {
         return {
             success: false,
             error: {

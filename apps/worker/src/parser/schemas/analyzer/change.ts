@@ -49,13 +49,13 @@ export const ChangeRatifyAdReferendum = z.object({
     resolutionToRatify: ResolutionIDSchema.describe("Resolución a ratificar"),
 }).meta({title: "CambioRatificarAdReferendum"});
 
-export const ReplaceAnnexNewContent = z.discriminatedUnion("type", [
+export const ReplaceAnnexNewContent = z.discriminatedUnion("contentType", [
     z.object({
-        type: z.literal("Inline").describe("Contenido del anexo incluido en línea"),
+        contentType: z.literal("Inline").describe("El contenido del anexo se provee como parte del mismo artículo"),
         content: ReplaceAnnexContent.describe("Contenido nuevo del anexo"),
     }).meta({title: "ReemplazoAnexoContenidoNuevoInline"}),
     z.object({
-        type: z.literal("Reference").describe("Referencia a un anexo de la resolución"),
+        contentType: z.literal("Reference").describe("El nuevo anexo se provee como un anexo de la resolución actual"),
         reference: AnnexReferenceSchema.describe("Referencia al anexo. Debe ser de la resolución actual"),
     }).meta({title: "ReemplazoAnexoContenidoNuevoReferencia"}),
 ]).meta({title: "ReemplazoAnexoContenidoNuevo"});
@@ -69,15 +69,15 @@ export const ChangeReplaceAnnex = z.object({
 export const ChangeAddAnnexToResolution = z.object({
     type: z.literal("AddAnnexToResolution").describe("Agregar un anexo a una resolución"),
     annexToAdd: AnnexReferenceSchema.describe("Anexo a agregar"),
-    targetResolution: ResolutionReferenceSchema.describe("Resolución destino"),
-    targetNumber: z.coerce.number().optional().nullable().describe("Número destino opcional"),
+    targetResolution: ResolutionIDSchema.describe("Resolución destino"),
+    newAnnexNumber: z.coerce.number().optional().nullable().describe("Número que tendrá el anexo en el destino. Opcional"),
 }).meta({title: "CambioAgregarAnexoAResolucion"});
 
 export const ChangeAddAnnexToAnnex = z.object({
     type: z.literal("AddAnnexToAnnex").describe("Agregar un anexo dentro de otro anexo"),
     annexToAdd: AnnexReferenceSchema.describe("Anexo a agregar"),
     target: AnnexReferenceSchema.describe("Anexo donde se va a agregar"),
-    targetNumber: z.coerce.number().optional().nullable().describe("Número destino opcional"),
+    newAnnexNumber: z.coerce.number().optional().nullable().describe("Número que tendrá el anexo en el destino. Opcional"),
 }).meta({title: "CambioAgregarAnexoAAnexo"});
 
 export const ChangeModifyTextAnnex = z.object({
@@ -89,9 +89,9 @@ export const ChangeModifyTextAnnex = z.object({
 
 export const ChangeAddArticleToResolution = z.object({
     type: z.literal("AddArticleToResolution").describe("Agregar un artículo a una resolución. No usar si se va a agregar a un anexo"),
-    targetResolution: ResolutionReferenceSchema.describe("Resolución destino"),
-    targetNumber: z.coerce.number().optional().nullable().describe("Número destino opcional"),
-    targetSuffix: z.string().optional().nullable().describe("Sufijo del artículo, ej. 'bis'"),
+    targetResolution: ResolutionIDSchema.describe("Resolución destino"),
+    newArticleNumber: z.coerce.number().optional().nullable().describe("Número que tendrá el artículo en el destino. Opcional"),
+    newArticleSuffix: z.string().optional().nullable().describe("Sufijo que tendrá el artículo en el destino, ej. 'bis'"),
     get articleToAdd() {
         return ArticleSchemaWithText.describe("Artículo a agregar, con su texto completo");
     }
@@ -107,8 +107,8 @@ export const ChangeAddArticleToAnnex = z.object({
             ChapterReferenceSchema.describe("Capítulo destino dentro de un anexo"),
         ]).describe("Destino del artículo")
     },
-    targetNumber: z.coerce.number().optional().nullable().describe("Número destino opcional"),
-    targetSuffix: z.string().optional().nullable().describe("Sufijo del artículo, ej. 'bis'"),
+    newArticleNumber: z.coerce.number().optional().nullable().describe("Número que tendrá el artículo en el destino. Opcional"),
+    newArticleSuffix: z.string().optional().nullable().describe("Sufijo que tendrá el artículo en el destino, ej. 'bis'"),
     get articleToAdd() {
         return ArticleSchemaWithText.describe("Artículo a agregar, con su texto completo");
     }
@@ -157,7 +157,7 @@ export const ChangeSchema = z.discriminatedUnion("type", [
         }
 
         if (change.type === "AddArticleToResolution" || change.type === "AddArticleToAnnex") {
-            if (change.targetSuffix && !change.targetNumber) return false;
+            if (change.newArticleSuffix && !change.newArticleNumber) return false;
         }
 
         return true;

@@ -23,7 +23,7 @@ export type TableStructure = z.infer<typeof TableStructureSchema>;
 
 const TextAnnexSchema = z.object({
     name: z.string().optional().nullable().describe("Nombre del anexo, si lo tiene"),
-    number: z.number().describe("Número del anexo"),
+    number: z.number().describe("Número del anexo. Si no se especifica, deducir de acuerdo al orden"),
     type: z.literal("TextOrTables").describe("Anexo de texto o tablas"),
     content: z.string().describe("Contenido textual del anexo, sin resumir, al pie de la letra. Usar {{tabla X}} para referenciar tablas presentes en la resolución (no indicar acá su contenido)"),
 }).meta({title:"AnexoTexto", schemaDescription: "Anexo de texto o tablas. NO ESTÁ COMPUESTO POR ARTÍCULOS."})
@@ -48,15 +48,15 @@ export type ChapterStructure = z.infer<typeof ChapterSchema>;
 
 const ArticleAnnexSchema = z.object({
     name: z.string().optional().nullable().describe("Nombre del anexo, si lo tiene"),
-    number: z.number().describe("Número del anexo"),
-    type: z.literal("Regulation").describe("Anexo compuesto por artículos (ej. reglamento, manual)."),
+    number: z.number().describe("Número del anexo. Si no se especifica, deducir de acuerdo al orden"),
+    type: z.literal("WithArticles").describe("Anexo compuesto por al menos 1 artículo"),
     articles: z.array(ArticleSchema).describe("Artículos del anexo que no pertenecen a ningún capítulo"),
     chapters: z.array(ChapterSchema).describe("Capítulos del anexo; puede no haber ninguno"),
     initialText: z.string().optional().nullable().describe("Texto inicial del anexo"),
     finalText: z.string().optional().nullable().describe("Texto final del anexo"),
 }).refine( annex =>
     annex.articles.length > 0 || (annex.chapters.length > 0 && annex.chapters.flatMap(c => c.articles).length > 0), {error: "Regulation annex must have at least one article, either loose or in chapters"}
-).meta({title:"AnexoArticulos", schemaDescription: "Anexo compuesto por artículos (ej. reglamento, manual)."})
+).meta({title:"AnexoArticulos", schemaDescription: "Anexo compuesto por artículos. Debe tener al menos 1 artículo"})
 
 export type AnnexRegulationStructure = z.infer<typeof ArticleAnnexSchema>;
 
@@ -74,7 +74,7 @@ const AnnexSchema = z.discriminatedUnion("type", [
     TextAnnexSchema,
     ArticleAnnexSchema,
     // ModificationsAnnexSchema
-]).meta({title: "Anexo", schemaDescription: "Anexo de la resolución, puede ser de texto, artículos o modificaciones"})
+]).meta({title: "Anexo", schemaDescription: "Anexo de la resolución, puede ser de texto o de artículos. Solamente es de artículos si dice 'Artículo x' en algún lado"})
 
 export type AnnexStructure = z.infer<typeof AnnexSchema>;
 
@@ -82,25 +82,25 @@ export const ResolutionStructureSchema = z.object({
     id: ResolutionIDSchema.describe("ID de la resolución"),
     decisionBy: z.string().describe("Quien dicta la resolución. NO incluir prefijos como 'el', 'la',etc, aunque estén en el texto"),
     date: z.coerce.date().describe("Fecha de emisión"),
-    caseFiles: z.array(z.string()).describe("Expedientes administrativos, pueden estar vacíos"),
+    caseFiles: z.array(z.string()).overwrite(cfs => cfs.map(cf => cf.replace(/^el\s|la\s/g, ""))).describe("Expedientes administrativos, pueden estar vacíos. NO modificar los números tal cual están en el texto"),
     recitals: z.array(z.string().meta({title: "Visto"}).describe("Texto de 'Visto', un párrafo por elemento"),).meta({title: "Recital"}).describe("Vistos"),
     considerations: z.array(
         z.string().describe("Texto de 'Considerando', un párrafo por elemento"),
     ).meta({title: "Considerando"}).describe("Considerandos"),
     articles: z.array(ArticleSchema).describe("Artículos presentes en la resolución"),
-    annexes: z.array(AnnexSchema).describe("Anexos presentes en la resolución"),
+    annexes: z.array(AnnexSchema).describe("Anexos presentes en la resolución, presentes luego del último artículo"),
     tables: z.array(TableStructureSchema).describe("Tablas presentes en la resolución. DEBEN ser referenciadas en el texto como {{tabla X}}"),
 }).meta({title: "Resolución", schemaDescription: "Resolución completa"});
 
 export type ResolutionStructure = z.infer<typeof ResolutionStructureSchema>;
 
-export const ResolutionStructureResultSchema = z.discriminatedUnion("processSuccess", [
+export const ResolutionStructureResultSchema = z.discriminatedUnion("success", [
     z.object({
-        processSuccess: z.literal(true),
+        success: z.literal(true),
         data: ResolutionStructureSchema
     }).meta({title: "ParseoExitoso"}),
     z.object({
-        processSuccess: z.literal(false),
+        success: z.literal(false),
         error: z.object({
             code: z.enum(llmErrorCodes),
             message: z.string().describe("Mensaje de error, describiendo por qué no se pudo parsear la resolución")

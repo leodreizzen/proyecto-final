@@ -1,6 +1,6 @@
 import {AnnexStructure, ResolutionStructure} from "@/parser/schemas/parser/schemas";
 import {zodToLLMDescription} from "@/util/zod_to_llm";
-import {annexAnalyzerSystemPrompt, resolutionAnalyzerSystemPrompt} from "@/parser/prompt";
+import resolutionAnalyzerSystemPrompt, {annexAnalyzerSystemPrompt} from "@/parser/prompt";
 import {ResolutionAnalysis} from "@/parser/schemas/analyzer/resolution";
 import OpenAI from "openai";
 import {parseLLMResponse} from "@/util/llm_response";
@@ -11,11 +11,7 @@ import {
     FullResolutionAnalysis,
 } from "@/parser/types";
 import {AnnexAnalysis} from "@/parser/schemas/analyzer/annex";
-
-const openai = new OpenAI({
-    apiKey: process.env.GOOGLE_API_KEY,
-    baseURL: "https://generativelanguage.googleapis.com/v1beta/openai/",
-});
+import {createOpenAICompletion} from "@/util/openai_wrapper";
 
 const resolutionSchemaDescription = zodToLLMDescription(ResolutionAnalysisResultSchema);
 
@@ -61,7 +57,7 @@ export async function analyzeResolution(resolution: ResolutionStructure): Promis
     const resolutionJSON = JSON.stringify(filteredResolution, null, 2);
     let res
     try {
-        res = await openai.chat.completions.create({
+        res = await createOpenAICompletion({
             model: "gemini-2.5-flash",
             response_format: {
                 type: "json_object"
@@ -157,7 +153,7 @@ async function analyzeAnnex(input: AnalyzeAnnexInput): Promise<ResultWithData<An
     const annexJSON = JSON.stringify(input, null, 2);
     let res
     try {
-        res = await openai.chat.completions.create({
+        res = await createOpenAICompletion({
             model: "gemini-2.5-flash",
             response_format: {
                 type: "json_object"

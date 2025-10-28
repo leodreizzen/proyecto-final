@@ -39,6 +39,16 @@ export function parseStringWithZodObject<O, I>(str: string, schema: ZodType<O, I
 }
 
 export function parseLLMStringWithZodObject<O, I>(str: string, schema: ZodType<O, I>): ParseStringWithZodObjectResult<O> {
-    const repairedStr = jsonrepair(str);
+    let repairedStr;
+    try{
+        repairedStr = jsonrepair(str);
+    } catch (e){
+        console.error(JSON.stringify(e));
+        return {
+            success: false,
+            error: { code: "invalid_json"}
+        }
+    }
+
     return parseStringWithZodObject(repairedStr, schema);
 }

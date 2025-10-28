@@ -1,5 +1,4 @@
 import {ResolutionStructure} from "@/parser/schemas/parser/schemas";
-import {ResolutionAnalysis} from "@/parser/schemas/analyzer/resolution";
 import {ResultVoid, resultVoidError, resultVoidSuccess} from "@/definitions";
 import {FullResolutionAnalysis} from "@/parser/types";
 
@@ -55,6 +54,15 @@ export function validateResolution(structure: ResolutionStructure, analysis: Ful
             } else{
                 return ok();
             }
+        }, (structure, analysis, ok, err) => {
+            for (let i = 0; i < structure.annexes.length; i++) {
+                const annex = structure.annexes[i]!;
+                const annexAnalysis = analysis.annexes[i]!;
+                if (annex.type !== annexAnalysis.type) {
+                    return err("Annex " + annex.number + " type mismatch: " + annex.type + " vs " + annexAnalysis.type);
+                }
+            }
+            return ok();
         }
     ]
 

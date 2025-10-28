@@ -1,6 +1,5 @@
 import {z} from "zod";
 import {ArticleSchema} from "./article";
-import {AnnexSchema} from "./annex";
 import {TextReferenceSchema} from "./reference";
 import {TableAnalysisSchema} from "./table";
 export const ResolutionAnalysisSchema = z.object({

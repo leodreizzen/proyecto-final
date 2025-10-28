@@ -19,28 +19,39 @@ export const ChapterReferenceSchema = z.object({
     number: z.coerce.number().describe("Número del capítulo dentro del anexo"),
 }).meta({title: "ReferenciaCapitulo", schemaDescription: "Referencia a un capítulo dentro de un anexo"});
 
-export const ArticleReferenceSchema = z.object({
-    referenceType: z.literal("Article"),
-    resolutionId: ResolutionIDSchema.optional().nullable().describe("Referencia a la resolución que contiene el artículo; usar si no está en un anexo."),
-    annex: AnnexReferenceSchema.optional().nullable().describe("Referencia al anexo que contiene el artículo; usar si no está en la resolución principal"),
+
+export const NormalArticleReferenceSchema = z.object({
+    referenceType: z.literal("NormalArticle"),
+    resolutionId: ResolutionIDSchema.describe("ID de la resolución que contiene el artículo"),
     number: z.coerce.number().describe("Número del artículo"),
     suffix: z.string().optional().nullable().describe("Sufijo del artículo, ej. 'bis'; opcional"),
-}).refine((data) => {
-    return (data.resolutionId || data.annex)
-}, {error: "Must specify resolution or annex"}).refine(data => {
-    if(!(data.resolutionId && data.annex)) return true;
-    return JSON.stringify(data.resolutionId) === JSON.stringify(data.annex.resolutionId);
-}, {error: "Specified inconsistent resolution ids between resolutionId and annex.resolutionId"})
-    .meta({
-    title: "ReferenciaArticulo",
-    schemaDescription: "Referencia a un artículo dentro de una resolución o anexo, siempre de la universidad; incluir anexos si aplica. Obligatorio especificar resolución o anexo, aunque sea la actual"
+}).meta({
+    title: "ReferenciaArticuloNormal",
+    schemaDescription: "Referencia a un artículo de una resolución, fuera de anexos"
 });
+
+
+export const AnnexArticleReferenceSchema = z.object({
+    referenceType: z.literal("AnnexArticle"),
+    annex: AnnexReferenceSchema.describe("Anexo que contiene el artículo"),
+    number: z.coerce.number().describe("Número del artículo"),
+    suffix: z.string().optional().nullable().describe("Sufijo del artículo, ej. 'bis'; opcional"),
+}).meta({
+    title: "ReferenciaArticuloAnexo",
+    schemaDescription: "Referencia a un artículo dentro de un anexo de una resolución"
+});
+
+export const ArticleReferenceSchema = z.discriminatedUnion("referenceType", [
+    NormalArticleReferenceSchema,
+    AnnexArticleReferenceSchema,
+]).meta({title: "ReferenciaArticle"});
 
 export const ReferenceSchema = z.discriminatedUnion("referenceType", [
     ResolutionReferenceSchema,
     AnnexReferenceSchema,
     ChapterReferenceSchema,
-    ArticleReferenceSchema,
+    NormalArticleReferenceSchema,
+    AnnexArticleReferenceSchema
 ]).meta({title: "Referencia", schemaDescription: "Referencia a resolución, anexo, capítulo o artículo"});
 
 export const TextReferenceSchema = z.object({
