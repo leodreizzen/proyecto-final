@@ -3,7 +3,7 @@ import {AnnexReferenceSchema, TextReferenceSchema} from "./reference";
 import {ChangeSchema} from "./change";
 
 const ArticleNormative = z.object({
-    type: z.literal("Normative").describe("Artículo con disposiciones válidas por sí solas"),
+    type: z.literal("Normative").describe("Artículo con disposiciones válidas por sí solas. NO modifica otras resoluciones o artículos"),
     references: z.array(TextReferenceSchema).describe("Referencias; incluir anexos"),
 }).meta({title: "ArticuloNormativa"});
 

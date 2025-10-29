@@ -12,11 +12,13 @@ import {
 } from "@/parser/types";
 import {AnnexAnalysis} from "@/parser/schemas/analyzer/annex";
 import {createOpenAICompletion} from "@/util/openai_wrapper";
+import {tableAnalyzer} from "@/parser/table_analyzer";
+import {TableAnalysis} from "@/parser/schemas/analyzer/table";
 
 const resolutionSchemaDescription = zodToLLMDescription(ResolutionAnalysisResultSchema);
 
 function cutText(text: string, length: number) {
-    if(text.length > length) {
+    if (text.length > length) {
         return text.substring(0, length) + "...";
     }
     return text;
@@ -27,7 +29,7 @@ export async function analyzeResolution(resolution: ResolutionStructure): Promis
     console.log("calling resolution analyzer model...");
     const {annexes, ...resolutionWithoutAnnexes} = resolution;
     const filteredAnnexes = annexes.map(annex => {
-        if(annex.type == "TextOrTables") {
+        if (annex.type == "TextOrTables") {
             const {content, ...rest} = annex;
             return {...rest, content: cutText(content, 100)}
         } else {
@@ -121,14 +123,27 @@ export async function analyzeResolution(resolution: ResolutionStructure): Promis
                 error: firstError
             };
         }
+        let tableAnalysis = [] as TableAnalysis[];
+        if (resolution.tables.length > 0) {
+            const tableAnalysisRes = await tableAnalyzer(resolution.tables);
+
+            if (!tableAnalysisRes.success) {
+                console.error(JSON.stringify(tableAnalysisRes.error));
+                return tableAnalysisRes;
+            }
+
+            tableAnalysis = tableAnalysisRes.data.result;
+        }
 
         return {
             success: true,
             data: {
                 ...LLMResult.data,
-                annexes: annexResults.map(result => result.data!)
+                annexes: annexResults.map(result => result.data!),
+                tables: tableAnalysis
             }
         }
+
     } else {
         return {
             success: false,
