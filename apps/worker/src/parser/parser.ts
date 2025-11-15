@@ -1,12 +1,12 @@
-import {parseResolutionStructure} from "@/parser/structure_parser";
+import {parseResolutionStructure} from "@/parser/llms/structure_parser";
 import {LLMError, ResultWithData} from "@/definitions";
-import {analyzeResolution} from "@/parser/analyzer";
+import {analyzeResolution} from "@/parser/llms/analyzer";
 import {runPythonScript} from "@/util/python_scripts";
 import {ResolutionStructure} from "@/parser/schemas/structure_parser/schemas";
 import {validateResolution} from "@/parser/validation";
 import {assembleResolution} from "@/parser/assemble";
 import {FullResolutionAnalysis, Resolution} from "@/parser/types";
-import {countTokens} from "@/util/tokenCounter";
+import {countTokens} from "@/util/llm/tokenCounter";
 
 export function validateAndAssembleResolution(structure: ResolutionStructure, analysis: FullResolutionAnalysis): ResultWithData<Resolution> {
     const validationResults = validateResolution(structure, analysis);

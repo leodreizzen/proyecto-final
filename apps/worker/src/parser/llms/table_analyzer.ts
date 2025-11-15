@@ -1,18 +1,15 @@
-import {
-    ResolutionStructure,
-
-} from "@/parser/schemas/structure_parser/schemas";
-import {structureParserSystemPrompt} from "@/parser/prompt";
 import {LLMError, ResultWithData} from "@/definitions";
-import {zodToLLMDescription} from "@/util/zod_to_llm";
-import {parseLLMResponse} from "@/util/llm_response";
-import {createOpenAICompletion} from "@/util/openai_wrapper";
-import {ResolutionStructureResultSchema} from "@/parser/schemas/structure_parser/result";
+import {createOpenAICompletion} from "@/util/llm/openai_wrapper";
+import {parseLLMResponse} from "@/util/llm/llm_response";
+import {zodToLLMDescription} from "@/util/llm/zod_to_llm";
+import {MultipleTableAnalysis, MultipleTableAnalysisSchema} from "@/parser/schemas/analyzer/tables/table";
+import {TableStructure} from "@/parser/schemas/structure_parser/table";
+import {tableAnalyzerSystemPrompt} from "@/parser/llms/prompts/table_analyzer";
 
-const schemaDescription = zodToLLMDescription(ResolutionStructureResultSchema);
+const schemaDescription = zodToLLMDescription(MultipleTableAnalysisSchema);
 
-export async function parseResolutionStructure(fileContent: string): Promise<ResultWithData<ResolutionStructure, LLMError>> {
-    console.log("calling structure parser model...");
+export async function tableAnalyzer(tables: TableStructure[]): Promise<ResultWithData<MultipleTableAnalysis, LLMError>> {
+    console.log("calling table analyzer model...");
     let res;
     try {
         res = await createOpenAICompletion({
@@ -28,7 +25,7 @@ export async function parseResolutionStructure(fileContent: string): Promise<Res
                     content: [
                         {
                             type: "text",
-                            text: structureParserSystemPrompt + schemaDescription,
+                            text: tableAnalyzerSystemPrompt + schemaDescription,
                             cache_control: {
                                 type: "ephemeral"
                             }
@@ -39,7 +36,7 @@ export async function parseResolutionStructure(fileContent: string): Promise<Res
                     role: "user",
                     content: [{
                         type: "text",
-                        text: fileContent
+                        text: JSON.stringify(tables)
                     }]
                 }
             ]
@@ -51,22 +48,14 @@ export async function parseResolutionStructure(fileContent: string): Promise<Res
             error: {code: "api_error"}
         };
     }
-    const jsonParseRes = parseLLMResponse(res, ResolutionStructureResultSchema);
+    const jsonParseRes = parseLLMResponse(res, MultipleTableAnalysisSchema);
     if (!jsonParseRes.success) {
         return jsonParseRes
     }
 
     const LLMResult = jsonParseRes.data;
-    if(LLMResult.success){
-        return {
-            success: true,
-            data: LLMResult.data
-        }
-    }
-    else{
-        return {
-            success: false,
-            error: { code: "llm_error", llmCode: LLMResult.error.code, llmMessage: LLMResult.error.message}
-        };
+    return {
+        success: true,
+        data: LLMResult
     }
 }

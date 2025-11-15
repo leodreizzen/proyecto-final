@@ -1,5 +1,5 @@
 import {LLMError, ResultWithData} from "@/definitions";
-import {parseLLMStringWithZodObject} from "@/util/jsonparse";
+import {parseLLMStringWithZodObject} from "@/util/llm/json_parse";
 import {z} from "zod";
 import { ChatCompletion } from "openai/resources";
 
