@@ -2,7 +2,7 @@ import {ResultWithData} from "@/definitions";
 import {ResolutionStructure} from "@/parser/schemas/structure_parser/schemas";
 import {merge} from "lodash-es";
 import {AnnexWithoutTables, ArticleWithoutTables, FullResolutionAnalysis, Resolution} from "@/parser/types";
-import {moveTablesInResolution} from "@/parser/move_tables";
+import {moveTablesInResolution} from "@/parser/postprocessing/move_tables";
 import {RowJoin, TableAnalysis} from "@/parser/schemas/analyzer/tables/table";
 import {TableStructure} from "@/parser/schemas/structure_parser/table";
 

@@ -1,10 +1,10 @@
 import {parseResolutionStructure} from "@/parser/llms/structure_parser";
 import {LLMError, ResultWithData} from "@/definitions";
-import {analyzeResolution} from "@/parser/llms/analyzer";
+import {analyzeFullResolution} from "@/parser/llms/analyzer";
 import {runPythonScript} from "@/util/python_scripts";
 import {ResolutionStructure} from "@/parser/schemas/structure_parser/schemas";
-import {validateResolution} from "@/parser/validation";
-import {assembleResolution} from "@/parser/assemble";
+import {validateResolution} from "@/parser/postprocessing/validation";
+import {assembleResolution} from "@/parser/postprocessing/assemble";
 import {FullResolutionAnalysis, Resolution} from "@/parser/types";
 import {countTokens} from "@/util/llm/tokenCounter";
 
@@ -59,7 +59,7 @@ export async function parseTextResolution(fileContent: string): Promise<ParseRes
         }
     }
 
-    const analysisRes = await analyzeResolution(structureRes.data);
+    const analysisRes = await analyzeFullResolution(structureRes.data);
     if (!analysisRes.success) {
         console.error(JSON.stringify(analysisRes.error));
         return {

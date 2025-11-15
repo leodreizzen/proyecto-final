@@ -1,11 +1,11 @@
 import {z} from "zod";
 import {llmErrorCodes} from "@/definitions";
-import {ResolutionAnalysisSchema} from "@/parser/schemas/analyzer/resolution/resolution";
+import {MainResolutionAnalysisSchema} from "@/parser/schemas/analyzer/resolution/resolution";
 
-export const ResolutionAnalysisResultSchema = z.discriminatedUnion("success", [
+export const MainResolutionAnalysisResultSchema = z.discriminatedUnion("success", [
     z.object({
         success: z.literal(true),
-        data: ResolutionAnalysisSchema
+        data: MainResolutionAnalysisSchema
     }).meta({title: "AnalisisExitoso"}),
     z.object({
         success: z.literal(false),
@@ -19,4 +19,4 @@ export const ResolutionAnalysisResultSchema = z.discriminatedUnion("success", [
     schemaDescription: "Resultado del análisis de la resolución, puede ser exitoso o fallido"
 });
 
-export type ResolutionAnalysisLLMResult = z.infer<typeof ResolutionAnalysisResultSchema>;
+export type ResolutionAnalysisLLMResult = z.infer<typeof MainResolutionAnalysisResultSchema>;

@@ -8,7 +8,13 @@ import {tableAnalyzerSystemPrompt} from "@/parser/llms/prompts/table_analyzer";
 
 const schemaDescription = zodToLLMDescription(MultipleTableAnalysisSchema);
 
-export async function tableAnalyzer(tables: TableStructure[]): Promise<ResultWithData<MultipleTableAnalysis, LLMError>> {
+export async function tableAnalyzer(tables: TableStructure[]): Promise<ResultWithData<MultipleTableAnalysis["result"], LLMError>> {
+    if (tables.length === 0) {
+        return {
+            success: true,
+            data: []
+        };
+    }
     console.log("calling table analyzer model...");
     let res;
     try {
@@ -56,6 +62,6 @@ export async function tableAnalyzer(tables: TableStructure[]): Promise<ResultWit
     const LLMResult = jsonParseRes.data;
     return {
         success: true,
-        data: LLMResult
+        data: LLMResult.result
     }
 }

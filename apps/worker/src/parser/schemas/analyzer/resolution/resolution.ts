@@ -1,7 +1,7 @@
 import {z} from "zod";
 import {ArticleSchema} from "../article";
 
-export const ResolutionAnalysisSchema = z.object({
+export const MainResolutionAnalysisSchema = z.object({
     metadata: z.object({
         title: z.string().describe(
             "Título breve de la resolución. Ejemplos: 'Eleva Asamblea Universitaria creación Unidad Colección Paleontológica', 'Rectifica Anexo I CSU-418-25 Cargos docentes temporarios', 'Crea cargos Lic. en Matemática Aplicada'"
@@ -12,4 +12,4 @@ export const ResolutionAnalysisSchema = z.object({
     articles: z.array(ArticleSchema).describe("Análisis de los artículos presentes en la resolución"),
 }).meta({title: "AnalisisResolucion", schemaDescription: "Análisis de la resolución, incluyendo artículos y tablas"})
 
-export type ResolutionAnalysis = z.infer<typeof ResolutionAnalysisSchema>;
+export type MainResolutionAnalysis = z.infer<typeof MainResolutionAnalysisSchema>;

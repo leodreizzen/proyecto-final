@@ -3,7 +3,7 @@ import {
 } from "@/parser/schemas/structure_parser/schemas";
 import {ArticleAnalysis, ArticleSchemaWithText} from "@/parser/schemas/analyzer/article";
 import {AnnexAnalysis, AnnexRegulationAnalysis, TextAnnexAnalysis} from "@/parser/schemas/analyzer/annexes/annex";
-import {ResolutionAnalysis} from "@/parser/schemas/analyzer/resolution/resolution";
+import {MainResolutionAnalysis} from "@/parser/schemas/analyzer/resolution/resolution";
 import {Change, ChangeAddArticleToAnnex, ChangeAddArticleToResolution} from "@/parser/schemas/analyzer/change";
 import {ResolutionReferencesAnalysis, TextReference} from "@/parser/schemas/references/schemas";
 import {TableAnalysis} from "@/parser/schemas/analyzer/tables/table";
@@ -41,7 +41,7 @@ type ArticleModifierWithMappedChanges = Omit<ArticleModifier, "changes"> & {
 
 type ArticleWithMappedChanges = Exclude<ArticleWithoutTables, { type: "Modifier" }> | ArticleModifierWithMappedChanges;
 
-export type FullResolutionAnalysis = ResolutionAnalysis & {
+export type FullResolutionAnalysis = MainResolutionAnalysis & {
     annexes: AnnexAnalysis[];
     tables: TableAnalysis[];
 } & ResolutionReferencesAnalysis;
