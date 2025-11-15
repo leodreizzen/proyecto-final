@@ -8,7 +8,7 @@ import {
 import {ArticleAnalysis, ArticleSchemaWithText} from "@/parser/schemas/analyzer/article";
 import {TextReference} from "@/parser/schemas/analyzer/reference";
 import {AnnexAnalysis, AnnexRegulationAnalysis, TextAnnexAnalysis} from "@/parser/schemas/analyzer/annex";
-import {ResolutionAnalysis} from "@/parser/schemas/analyzer/resolution";
+import {ResolutionAnalysis, ResolutionReferencesAnalysis} from "@/parser/schemas/analyzer/resolution";
 import {Change, ChangeAddArticleToAnnex, ChangeAddArticleToResolution} from "@/parser/schemas/analyzer/change";
 import {TableAnalysis} from "@/parser/schemas/analyzer/table";
 
@@ -45,7 +45,7 @@ type ArticleWithMappedChanges = Exclude<ArticleWithoutTables, { type: "Modifier"
 export type FullResolutionAnalysis = ResolutionAnalysis & {
     annexes: AnnexAnalysis[];
     tables: TableAnalysis[];
-}
+} & ResolutionReferencesAnalysis;
 
 export type RecitalWithoutTables = {
     text: string,

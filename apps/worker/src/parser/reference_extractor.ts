@@ -1,26 +1,24 @@
-import {TableStructure} from "@/parser/schemas/parser/schemas";
-import {
-    MultipleTableAnalysis,
-    MultipleTableAnalysisSchema,
-} from "@/parser/schemas/analyzer/table";
+import {ResolutionStructure} from "@/parser/schemas/parser/schemas";
 import {LLMError, ResultWithData} from "@/definitions";
 import {createOpenAICompletion} from "@/util/openai_wrapper";
-import {tableAnalyzerSystemPrompt} from "@/parser/prompt";
+import {referenceExtractorSystemPrompt} from "@/parser/prompt";
 import {parseLLMResponse} from "@/util/llm_response";
 import {zodToLLMDescription} from "@/util/zod_to_llm";
+import {ResolutionReferencesAnalysis, ResolutionReferencesSchema} from "@/parser/schemas/analyzer/resolution";
 
-const schemaDescription = zodToLLMDescription(MultipleTableAnalysisSchema);
+const schemaDescription = zodToLLMDescription(ResolutionReferencesSchema);
 
-export async function tableAnalyzer(tables: TableStructure[]): Promise<ResultWithData<MultipleTableAnalysis, LLMError>> {
-    console.log("calling table analyzer model...");
+export async function extractReferences(resolution: ResolutionStructure): Promise<ResultWithData<ResolutionReferencesAnalysis, LLMError>> {
+    // TODO ALLOW REFUSAL
+    console.log("calling reference extractor model...");
     let res;
     try {
         res = await createOpenAICompletion({
-            model: "gemini-2.5-flash-lite",
+            model: "gemini-2.5-flash",
             response_format: {
                 type: "json_object"
             },
-            reasoning_effort: "medium",
+            reasoning_effort: "low",
             max_completion_tokens: 25000,
             messages: [
                 {
@@ -28,7 +26,7 @@ export async function tableAnalyzer(tables: TableStructure[]): Promise<ResultWit
                     content: [
                         {
                             type: "text",
-                            text: tableAnalyzerSystemPrompt + schemaDescription,
+                            text: referenceExtractorSystemPrompt + schemaDescription,
                             cache_control: {
                                 type: "ephemeral"
                             }
@@ -39,7 +37,7 @@ export async function tableAnalyzer(tables: TableStructure[]): Promise<ResultWit
                     role: "user",
                     content: [{
                         type: "text",
-                        text: JSON.stringify(tables)
+                        text: JSON.stringify(resolution)
                     }]
                 }
             ]
@@ -51,7 +49,7 @@ export async function tableAnalyzer(tables: TableStructure[]): Promise<ResultWit
             error: {code: "api_error"}
         };
     }
-    const jsonParseRes = parseLLMResponse(res, MultipleTableAnalysisSchema);
+    const jsonParseRes = parseLLMResponse(res, ResolutionReferencesSchema);
     if (!jsonParseRes.success) {
         return jsonParseRes
     }

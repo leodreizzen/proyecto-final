@@ -2,7 +2,6 @@ import {AnnexStructure, ResolutionStructure} from "@/parser/schemas/parser/schem
 import {zodToLLMDescription} from "@/util/zod_to_llm";
 import resolutionAnalyzerSystemPrompt, {annexAnalyzerSystemPrompt} from "@/parser/prompt";
 import {ResolutionAnalysis} from "@/parser/schemas/analyzer/resolution";
-import OpenAI from "openai";
 import {parseLLMResponse} from "@/util/llm_response";
 import {LLMError, ResultWithData} from "@/definitions";
 import {AnnexAnalysisResultSchema, ResolutionAnalysisResultSchema} from "@/parser/schemas/analyzer/result";
@@ -14,6 +13,8 @@ import {AnnexAnalysis} from "@/parser/schemas/analyzer/annex";
 import {createOpenAICompletion} from "@/util/openai_wrapper";
 import {tableAnalyzer} from "@/parser/table_analyzer";
 import {TableAnalysis} from "@/parser/schemas/analyzer/table";
+import {extractReferences} from "@/parser/reference_extractor";
+import {merge} from "lodash-es";
 
 const resolutionSchemaDescription = zodToLLMDescription(ResolutionAnalysisResultSchema);
 
@@ -106,6 +107,7 @@ export async function analyzeResolution(resolution: ResolutionStructure): Promis
 
         const annexPromises = resolution.annexes.map((annex, index) =>
             analyzeAnnex({
+                resolutionArticles: resolution.articles,
                 annex,
                 annexNumber: index + 1,
                 recitals: resolution.recitals,
@@ -114,6 +116,11 @@ export async function analyzeResolution(resolution: ResolutionStructure): Promis
                 metadata: resolutionAnalysis.metadata
             })
         );
+
+        const referenceAnalysis = await extractReferences(resolution);
+        if (!referenceAnalysis.success) {
+            return referenceAnalysis;
+        }
 
         const annexResults = await Promise.all(annexPromises);
         if (!annexResults.every(result => result.success)) {
@@ -137,11 +144,11 @@ export async function analyzeResolution(resolution: ResolutionStructure): Promis
 
         return {
             success: true,
-            data: {
+            data: merge ({
                 ...LLMResult.data,
                 annexes: annexResults.map(result => result.data!),
                 tables: tableAnalysis
-            }
+            }, referenceAnalysis.data)
         }
 
     } else {
@@ -157,6 +164,7 @@ const annexSchemaDescription = zodToLLMDescription(AnnexAnalysisResultSchema);
 type AnalyzeAnnexInput = {
     annex: AnnexStructure,
     annexNumber: number,
+    resolutionArticles: ResolutionStructure["articles"],
     recitals: ResolutionStructure["recitals"],
     considerations: ResolutionStructure["considerations"],
     resolutionId: ResolutionID,

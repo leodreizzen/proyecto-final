@@ -3,7 +3,7 @@ import {
     AnnexReferenceSchema,
     ArticleReferenceSchema,
     ChapterReferenceSchema,
-    ResolutionReferenceSchema, TextReferenceSchema
+    TextReferenceSchema
 } from "./reference";
 import {ArticleSchemaWithText} from "./article";
 import {ReplaceAnnexContent} from "./annex";
@@ -14,15 +14,12 @@ export const ChangeModifyArticle = z.object({
     targetArticle: ArticleReferenceSchema.describe("Artículo objetivo del cambio"),
     before: z.string().describe("Fragmento de texto antes del cambio"),
     after: z.string().describe("Fragmento de texto después del cambio"),
-    removedReferences: z.array(TextReferenceSchema).describe("Referencias eliminadas"),
-    addedReferences: z.array(TextReferenceSchema).describe("Referencias agregadas; incluir anexos"),
 }).meta({title: "CambioModificarArticulo"});
 
 export const ChangeReplaceArticle = z.object({
     type: z.literal("ReplaceArticle").describe("Reemplazo completo de un artículo"),
     targetArticle: ArticleReferenceSchema.describe("Artículo objetivo a reemplazar"),
     newContent: z.string().describe("Nuevo contenido del artículo"),
-    references: z.array(TextReferenceSchema).describe("Referencias del artículo; incluir anexos"),
 }).meta({title: "CambioReemplazarArticulo"}).describe("No llevan before/after");
 
 export const ChangeAdvanced = z.object({
@@ -31,7 +28,6 @@ export const ChangeAdvanced = z.object({
     targetArticle: ArticleReferenceSchema.optional().nullable().describe("Artículo objetivo opcional"),
     targetAnnex: AnnexReferenceSchema.optional().nullable().describe("Anexo destino opcional"),
     targetChapter: ChapterReferenceSchema.optional().nullable().describe("Capítulo destino opcional"),
-    newReferences: z.array(TextReferenceSchema).describe("Nuevas referencias; incluir anexos"),
 }).meta({title: "CambioAvanzado"});
 
 export const ChangeRepealArticle = z.object({
