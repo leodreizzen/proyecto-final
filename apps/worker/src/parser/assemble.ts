@@ -1,10 +1,10 @@
 import {ResultWithData} from "@/definitions";
-import {ResolutionStructure, TableStructure} from "@/parser/schemas/parser/schemas";
-import {ResolutionAnalysis} from "@/parser/schemas/analyzer/resolution";
-import {RowJoin, TableAnalysis} from "@/parser/schemas/analyzer/table";
+import {ResolutionStructure} from "@/parser/schemas/structure_parser/schemas";
 import {merge} from "lodash-es";
 import {AnnexWithoutTables, ArticleWithoutTables, FullResolutionAnalysis, Resolution} from "@/parser/types";
 import {moveTablesInResolution} from "@/parser/move_tables";
+import {RowJoin, TableAnalysis} from "@/parser/schemas/analyzer/tables/table";
+import {TableStructure} from "@/parser/schemas/structure_parser/table";
 
 //TODO ERROR CODES
 // Resolution must be validated before calling this function

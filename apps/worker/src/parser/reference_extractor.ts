@@ -1,10 +1,10 @@
-import {ResolutionStructure} from "@/parser/schemas/parser/schemas";
+import {ResolutionStructure} from "@/parser/schemas/structure_parser/schemas";
 import {LLMError, ResultWithData} from "@/definitions";
 import {createOpenAICompletion} from "@/util/openai_wrapper";
 import {referenceExtractorSystemPrompt} from "@/parser/prompt";
 import {parseLLMResponse} from "@/util/llm_response";
 import {zodToLLMDescription} from "@/util/zod_to_llm";
-import {ResolutionReferencesAnalysis, ResolutionReferencesSchema} from "@/parser/schemas/analyzer/resolution";
+import {ResolutionReferencesAnalysis, ResolutionReferencesSchema} from "@/parser/schemas/references/schemas";
 
 const schemaDescription = zodToLLMDescription(ResolutionReferencesSchema);
 

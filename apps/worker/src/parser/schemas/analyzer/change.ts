@@ -1,28 +1,26 @@
-import {z} from "zod";
+import {ArticleSchemaWithText} from "./article";
+import {ResolutionIDSchema} from "@/parser/schemas/common";
 import {
     AnnexReferenceSchema,
     ArticleReferenceSchema,
     ChapterReferenceSchema,
-    TextReferenceSchema
-} from "./reference";
-import {ArticleSchemaWithText} from "./article";
-import {ReplaceAnnexContent} from "./annex";
-import {ResolutionIDSchema} from "@/parser/schemas/common";
+} from "@/parser/schemas/references/schemas";
+import {z} from "zod";
 
-export const ChangeModifyArticle = z.object({
+export const ChangeModifyArticleSchema = z.object({
     type: z.literal("ModifyArticle").describe("Cambio parcial de un artículo"),
     targetArticle: ArticleReferenceSchema.describe("Artículo objetivo del cambio"),
     before: z.string().describe("Fragmento de texto antes del cambio"),
     after: z.string().describe("Fragmento de texto después del cambio"),
 }).meta({title: "CambioModificarArticulo"});
 
-export const ChangeReplaceArticle = z.object({
+export const ChangeReplaceArticleSchema = z.object({
     type: z.literal("ReplaceArticle").describe("Reemplazo completo de un artículo"),
     targetArticle: ArticleReferenceSchema.describe("Artículo objetivo a reemplazar"),
     newContent: z.string().describe("Nuevo contenido del artículo"),
 }).meta({title: "CambioReemplazarArticulo"}).describe("No llevan before/after");
 
-export const ChangeAdvanced = z.object({
+export const ChangeAdvancedSchema = z.object({
     type: z.literal("AdvancedChange").describe("Cambio avanzado asistido por LLM. Debe usarse cuando el cambio no puede ser representado por los otros tipos"),
     targetResolution: ResolutionIDSchema.describe("Resolución destino del cambio"),
     targetArticle: ArticleReferenceSchema.optional().nullable().describe("Artículo objetivo opcional"),
@@ -30,25 +28,30 @@ export const ChangeAdvanced = z.object({
     targetChapter: ChapterReferenceSchema.optional().nullable().describe("Capítulo destino opcional"),
 }).meta({title: "CambioAvanzado"});
 
-export const ChangeRepealArticle = z.object({
+export const ChangeRepealArticleSchema = z.object({
     type: z.literal("RepealArticle").describe("Derogar un artículo"),
     targetArticle: ArticleReferenceSchema.describe("Artículo objetivo a derogar"),
 }).meta({title: "CambioDerogarArticulo"});
 
-export const ChangeRepealResolution = z.object({
+export const ChangeRepealResolutionSchema = z.object({
     type: z.literal("RepealResolution").describe("Derogar una resolución completa"),
     targetResolution: ResolutionIDSchema.describe("Resolución objetivo"),
 }).meta({title: "CambioDerogarResolucion"});
 
-export const ChangeRatifyAdReferendum = z.object({
+export const ChangeRatifyAdReferendumSchema = z.object({
     type: z.literal("RatifyAdReferendum").describe("Ratificar una resolución ad referéndum"),
     resolutionToRatify: ResolutionIDSchema.describe("Resolución a ratificar"),
 }).meta({title: "CambioRatificarAdReferendum"});
 
-export const ReplaceAnnexNewContent = z.discriminatedUnion("contentType", [
+export const ReplaceAnnexContentSchema = z.object({
+    type: z.literal("TextOrTables").describe("Anexo de solo texto o tablas"),
+    text: z.string().describe("Texto completo del anexo nuevo"),
+}).meta({title: "ReemplazoAnexoContenidoNuevo"});
+
+export const ReplaceAnnexNewContentSchema = z.discriminatedUnion("contentType", [
     z.object({
         contentType: z.literal("Inline").describe("El contenido del anexo se provee como parte del mismo artículo"),
-        content: ReplaceAnnexContent.describe("Contenido nuevo del anexo"),
+        content: ReplaceAnnexContentSchema.describe("Contenido nuevo del anexo"),
     }).meta({title: "ReemplazoAnexoContenidoNuevoInline"}),
     z.object({
         contentType: z.literal("Reference").describe("El nuevo anexo se provee como un anexo de la resolución actual"),
@@ -56,34 +59,34 @@ export const ReplaceAnnexNewContent = z.discriminatedUnion("contentType", [
     }).meta({title: "ReemplazoAnexoContenidoNuevoReferencia"}),
 ]).meta({title: "ReemplazoAnexoContenidoNuevo"});
 
-export const ChangeReplaceAnnex = z.object({
+export const ChangeReplaceAnnexSchema = z.object({
     type: z.literal("ReplaceAnnex").describe("Reemplazar un anexo"),
     targetAnnex: AnnexReferenceSchema.describe("Anexo a reemplazar"),
-    newContent: ReplaceAnnexNewContent.describe("Contenido nuevo del anexo. Puede ser inline o una referencia a otro anexo"),
+    newContent: ReplaceAnnexNewContentSchema.describe("Contenido nuevo del anexo. Puede ser inline o una referencia a otro anexo"),
 }).meta({title: "CambioReemplazarAnexo"});
 
-export const ChangeAddAnnexToResolution = z.object({
+export const ChangeAddAnnexToResolutionSchema = z.object({
     type: z.literal("AddAnnexToResolution").describe("Agregar un anexo a una resolución"),
     annexToAdd: AnnexReferenceSchema.describe("Anexo a agregar"),
     targetResolution: ResolutionIDSchema.describe("Resolución destino"),
     newAnnexNumber: z.coerce.number().optional().nullable().describe("Número que tendrá el anexo en el destino. Opcional"),
 }).meta({title: "CambioAgregarAnexoAResolucion"});
 
-export const ChangeAddAnnexToAnnex = z.object({
+export const ChangeAddAnnexToAnnexSchema = z.object({
     type: z.literal("AddAnnexToAnnex").describe("Agregar un anexo dentro de otro anexo"),
     annexToAdd: AnnexReferenceSchema.describe("Anexo a agregar"),
     target: AnnexReferenceSchema.describe("Anexo donde se va a agregar"),
     newAnnexNumber: z.coerce.number().optional().nullable().describe("Número que tendrá el anexo en el destino. Opcional"),
 }).meta({title: "CambioAgregarAnexoAAnexo"});
 
-export const ChangeModifyTextAnnex = z.object({
+export const ChangeModifyTextAnnexSchema = z.object({
     type: z.literal("ModifyTextAnnex").describe("Modificar un anexo de solo texto o tablas"),
     targetAnnex: AnnexReferenceSchema.describe("Anexo a modificar"),
     before: z.string().describe("Texto antes del cambio"),
     after: z.string().describe("Texto después del cambio"),
 }).meta({title: "CambioModificarAnexoTextoOTablas"});
 
-export const ChangeAddArticleToResolution = z.object({
+export const ChangeAddArticleToResolutionSchema = z.object({
     type: z.literal("AddArticleToResolution").describe("Agregar un artículo a una resolución. No usar si se va a agregar a un anexo"),
     targetResolution: ResolutionIDSchema.describe("Resolución destino"),
     newArticleNumber: z.coerce.number().optional().nullable().describe("Número que tendrá el artículo en el destino. Opcional"),
@@ -93,9 +96,9 @@ export const ChangeAddArticleToResolution = z.object({
     }
 }).meta({title: "CambioAgregarArticuloAResolucion"});
 
-export type ChangeAddArticleToResolution = z.infer<typeof ChangeAddArticleToResolution>;
+export type ChangeAddArticleToResolution = z.infer<typeof ChangeAddArticleToResolutionSchema>;
 
-export const ChangeAddArticleToAnnex = z.object({
+export const ChangeAddArticleToAnnexSchema = z.object({
     type: z.literal("AddArticleToAnnex").describe("Agregar un artículo a un anexo o capítulo"),
     get target() {
         return z.discriminatedUnion("referenceType", [
@@ -113,39 +116,39 @@ export const ChangeAddArticleToAnnex = z.object({
     schemaDescription: "Cambio que agrega un artículo a un anexo o capítulo"
 });
 
-export type ChangeAddArticleToAnnex = z.infer<typeof ChangeAddArticleToAnnex>;
+export type ChangeAddArticleToAnnex = z.infer<typeof ChangeAddArticleToAnnexSchema>;
 
-export const ChangeRepealAnnex = z.object({
+export const ChangeRepealAnnexSchema = z.object({
     type: z.literal("RepealAnnex").describe("Derogar un anexo"),
     targetAnnex: AnnexReferenceSchema.describe("Anexo objetivo a derogar"),
 }).meta({title: "CambioDerogarAnexo"});
 
-export const ChangeRepealAnnexChapter = z.object({
+export const ChangeRepealAnnexChapterSchema = z.object({
     type: z.literal("RepealAnnexChapter").describe("Derogar un capítulo de un anexo"),
     targetChapter: ChapterReferenceSchema.describe("Capítulo objetivo a derogar"),
 }).meta({title: "CambioDerogarCapituloAnexo"});
 
-export const ChangeApplyModificationsAnnex = z.object({
+export const ChangeApplyModificationsAnnexSchema = z.object({
     type: z.literal("ApplyModificationsAnnex").describe("Aplicar un anexo de modificaciones"),
     annexToApply: AnnexReferenceSchema.describe("Anexo de modificaciones a aplicar"),
 }).meta({title: "CambioAplicarAnexoModificaciones"});
 
 export const ChangeSchema = z.discriminatedUnion("type", [
-    ChangeModifyArticle,
-    ChangeReplaceArticle,
-    ChangeAdvanced,
-    ChangeRepealArticle,
-    ChangeRepealResolution,
-    ChangeRatifyAdReferendum,
-    ChangeReplaceAnnex,
-    ChangeAddAnnexToResolution,
-    ChangeAddAnnexToAnnex,
-    ChangeModifyTextAnnex,
-    ChangeAddArticleToResolution,
-    ChangeAddArticleToAnnex,
-    ChangeRepealAnnex,
-    ChangeRepealAnnexChapter,
-    ChangeApplyModificationsAnnex
+    ChangeModifyArticleSchema,
+    ChangeReplaceArticleSchema,
+    ChangeAdvancedSchema,
+    ChangeRepealArticleSchema,
+    ChangeRepealResolutionSchema,
+    ChangeRatifyAdReferendumSchema,
+    ChangeReplaceAnnexSchema,
+    ChangeAddAnnexToResolutionSchema,
+    ChangeAddAnnexToAnnexSchema,
+    ChangeModifyTextAnnexSchema,
+    ChangeAddArticleToResolutionSchema,
+    ChangeAddArticleToAnnexSchema,
+    ChangeRepealAnnexSchema,
+    ChangeRepealAnnexChapterSchema,
+    ChangeApplyModificationsAnnexSchema
 ]).meta({schemaDescription: "Cualquier tipo de cambio posible en una resolución"})
     .refine((change) => {
         if (change.type === "AdvancedChange") {

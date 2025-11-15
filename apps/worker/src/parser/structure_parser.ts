@@ -1,13 +1,13 @@
-import OpenAI from "openai";
 import {
     ResolutionStructure,
-    ResolutionStructureResultSchema,
-} from "@/parser/schemas/parser/schemas";
+
+} from "@/parser/schemas/structure_parser/schemas";
 import {structureParserSystemPrompt} from "@/parser/prompt";
 import {LLMError, ResultWithData} from "@/definitions";
 import {zodToLLMDescription} from "@/util/zod_to_llm";
 import {parseLLMResponse} from "@/util/llm_response";
 import {createOpenAICompletion} from "@/util/openai_wrapper";
+import {ResolutionStructureResultSchema} from "@/parser/schemas/structure_parser/result";
 
 const schemaDescription = zodToLLMDescription(ResolutionStructureResultSchema);
 

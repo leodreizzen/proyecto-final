@@ -1,20 +1,22 @@
-import {AnnexStructure, ResolutionStructure} from "@/parser/schemas/parser/schemas";
+import {ResolutionStructure} from "@/parser/schemas/structure_parser/schemas";
 import {zodToLLMDescription} from "@/util/zod_to_llm";
 import resolutionAnalyzerSystemPrompt, {annexAnalyzerSystemPrompt} from "@/parser/prompt";
-import {ResolutionAnalysis} from "@/parser/schemas/analyzer/resolution";
+import {ResolutionAnalysis} from "@/parser/schemas/analyzer/resolution/resolution";
 import {parseLLMResponse} from "@/util/llm_response";
 import {LLMError, ResultWithData} from "@/definitions";
-import {AnnexAnalysisResultSchema, ResolutionAnalysisResultSchema} from "@/parser/schemas/analyzer/result";
+import {ResolutionAnalysisResultSchema} from "@/parser/schemas/analyzer/resolution/result";
 import {ResolutionID} from "@/parser/schemas/common";
 import {
     FullResolutionAnalysis,
 } from "@/parser/types";
-import {AnnexAnalysis} from "@/parser/schemas/analyzer/annex";
+import {AnnexAnalysis} from "@/parser/schemas/analyzer/annexes/annex";
 import {createOpenAICompletion} from "@/util/openai_wrapper";
 import {tableAnalyzer} from "@/parser/table_analyzer";
-import {TableAnalysis} from "@/parser/schemas/analyzer/table";
 import {extractReferences} from "@/parser/reference_extractor";
 import {merge} from "lodash-es";
+import {AnnexAnalysisResultSchema} from "@/parser/schemas/analyzer/annexes/result";
+import {TableAnalysis} from "@/parser/schemas/analyzer/tables/table";
+import {AnnexStructure} from "@/parser/schemas/structure_parser/annex";
 
 const resolutionSchemaDescription = zodToLLMDescription(ResolutionAnalysisResultSchema);
 

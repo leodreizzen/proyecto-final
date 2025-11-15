@@ -1,16 +1,15 @@
 import {
-    AnnexRegulationStructure,
-    ArticleStructure,
-    ChapterStructure, ResolutionStructure,
-    TableStructure,
-    TextAnnexStructure
-} from "@/parser/schemas/parser/schemas";
+    ResolutionStructure
+} from "@/parser/schemas/structure_parser/schemas";
 import {ArticleAnalysis, ArticleSchemaWithText} from "@/parser/schemas/analyzer/article";
-import {TextReference} from "@/parser/schemas/analyzer/reference";
-import {AnnexAnalysis, AnnexRegulationAnalysis, TextAnnexAnalysis} from "@/parser/schemas/analyzer/annex";
-import {ResolutionAnalysis, ResolutionReferencesAnalysis} from "@/parser/schemas/analyzer/resolution";
+import {AnnexAnalysis, AnnexRegulationAnalysis, TextAnnexAnalysis} from "@/parser/schemas/analyzer/annexes/annex";
+import {ResolutionAnalysis} from "@/parser/schemas/analyzer/resolution/resolution";
 import {Change, ChangeAddArticleToAnnex, ChangeAddArticleToResolution} from "@/parser/schemas/analyzer/change";
-import {TableAnalysis} from "@/parser/schemas/analyzer/table";
+import {ResolutionReferencesAnalysis, TextReference} from "@/parser/schemas/references/schemas";
+import {TableAnalysis} from "@/parser/schemas/analyzer/tables/table";
+import {annex, ChapterStructure, TextAnnexStructure} from "@/parser/schemas/structure_parser/annex";
+import {ArticleStructure} from "@/parser/schemas/structure_parser/article";
+import {TableStructure} from "@/parser/schemas/structure_parser/table";
 
 
 export type WithTables<T> = T & {
@@ -56,7 +55,7 @@ export type ConsiderationWithoutTables = {
     references: TextReference[];
 }
 type TextAnnexWithoutTables = TextAnnexStructure & TextAnnexAnalysis
-type AnnexRegulationWithoutTables = AnnexRegulationStructure & AnnexRegulationAnalysis
+type AnnexRegulationWithoutTables = annex & AnnexRegulationAnalysis
 
 type TextAnnex = WithTables<TextAnnexWithoutTables>
 type AnnexRegulation = AnnexRegulationAnalysis & {

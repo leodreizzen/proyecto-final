@@ -1,6 +1,6 @@
-import {TableStructure} from "@/parser/schemas/parser/schemas";
 import {ResultWithData, resultWithDataError, resultWithDataSuccess} from "@/definitions";
 import {Annex, AnnexWithoutTables, WithTables} from "@/parser/types";
+import {TableStructure} from "@/parser/schemas/structure_parser/table";
 
 interface MoveTablesResolutionInput {
     recitals: { text: string }[],

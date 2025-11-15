@@ -1,4 +1,4 @@
-import {ResolutionStructure} from "@/parser/schemas/parser/schemas";
+import {ResolutionStructure} from "@/parser/schemas/structure_parser/schemas";
 import {ResultVoid, resultVoidError, resultVoidSuccess} from "@/definitions";
 import {FullResolutionAnalysis} from "@/parser/types";
 

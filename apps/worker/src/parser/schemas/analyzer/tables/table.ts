@@ -12,7 +12,7 @@ export const TableAnalysisSchema = z.object({
 export const MultipleTableAnalysisSchema = z.object({
     result: z.array(TableAnalysisSchema).meta({title: "AnalisisTablas"}).describe("Análisis de las tablas presentes en la resolución. Un elemento por tabla"),
 }).meta({title: "ResultadoAnalisisMultiplesTablas"});
-export type MultipleTableAnalysis = z.infer<typeof MultipleTableAnalysisSchema>;
 
-export type RowJoin = z.infer<typeof rowJoinSchema>;
 export type TableAnalysis = z.infer<typeof TableAnalysisSchema>;
+export type MultipleTableAnalysis = z.infer<typeof MultipleTableAnalysisSchema>;
+export type RowJoin = z.infer<typeof rowJoinSchema>;

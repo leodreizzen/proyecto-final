@@ -1,13 +1,10 @@
-import {TableStructure} from "@/parser/schemas/parser/schemas";
-import {
-    MultipleTableAnalysis,
-    MultipleTableAnalysisSchema,
-} from "@/parser/schemas/analyzer/table";
 import {LLMError, ResultWithData} from "@/definitions";
 import {createOpenAICompletion} from "@/util/openai_wrapper";
 import {tableAnalyzerSystemPrompt} from "@/parser/prompt";
 import {parseLLMResponse} from "@/util/llm_response";
 import {zodToLLMDescription} from "@/util/zod_to_llm";
+import {MultipleTableAnalysis, MultipleTableAnalysisSchema} from "@/parser/schemas/analyzer/tables/table";
+import {TableStructure} from "@/parser/schemas/structure_parser/table";
 
 const schemaDescription = zodToLLMDescription(MultipleTableAnalysisSchema);
 

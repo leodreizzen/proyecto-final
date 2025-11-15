@@ -2,7 +2,7 @@ import {parseResolutionStructure} from "@/parser/structure_parser";
 import {LLMError, ResultWithData} from "@/definitions";
 import {analyzeResolution} from "@/parser/analyzer";
 import {runPythonScript} from "@/util/python_scripts";
-import {ResolutionStructure} from "@/parser/schemas/parser/schemas";
+import {ResolutionStructure} from "@/parser/schemas/structure_parser/schemas";
 import {validateResolution} from "@/parser/validation";
 import {assembleResolution} from "@/parser/assemble";
 import {FullResolutionAnalysis, Resolution} from "@/parser/types";
