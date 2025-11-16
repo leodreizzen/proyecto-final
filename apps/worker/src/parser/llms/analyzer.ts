@@ -2,10 +2,12 @@ import {ResolutionStructure} from "@/parser/schemas/structure_parser/schemas";
 import {LLMError, ResultWithData} from "@/definitions";
 import {FullResolutionAnalysis,} from "@/parser/types";
 import {tableAnalyzer} from "@/parser/llms/analyzer/table_analyzer";
-import {extractReferences} from "@/parser/llms/reference_extractor";
+import {extractReferences} from "@/parser/llms/analyzer/reference_extractor";
 import {merge} from "lodash-es";
 import {analyzeAnnex} from "@/parser/llms/analyzer/annex_analyzer";
 import {analyzeMainResolution} from "@/parser/llms/analyzer/main_resolution_analyzer";
+
+import {validateReferenceConsistency} from "@/parser/llms/analyzer/reference_consistency";
 
 export async function analyzeFullResolution(resolution: ResolutionStructure): Promise<ResultWithData<FullResolutionAnalysis, LLMError>> {
     const mainAnalysisRes = await analyzeMainResolution(resolution);
@@ -52,7 +54,17 @@ export async function analyzeFullResolution(resolution: ResolutionStructure): Pr
 
     const tableAnalysis = tableAnalysisRes.data;
 
-    // TODO VALIDATIONS
+    const consistencyValidationRes = validateReferenceConsistency(mainResolutionAnalysis, annexes, referenceAnalysisResult.data);
+    if (!consistencyValidationRes.success) {
+        console.error(JSON.stringify(consistencyValidationRes.error));
+        return {
+            success: false,
+            error: {
+                code: "validation_error"
+            }
+        }
+    }
+
     return {
         success: true,
         data: merge ({

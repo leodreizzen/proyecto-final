@@ -2,24 +2,9 @@ import {parseResolutionStructure} from "@/parser/llms/structure_parser";
 import {LLMError, ResultWithData} from "@/definitions";
 import {analyzeFullResolution} from "@/parser/llms/analyzer";
 import {runPythonScript} from "@/util/python_scripts";
-import {ResolutionStructure} from "@/parser/schemas/structure_parser/schemas";
-import {validateResolution} from "@/parser/postprocessing/validation";
-import {assembleResolution} from "@/parser/postprocessing/assemble";
-import {FullResolutionAnalysis, Resolution} from "@/parser/types";
+import {Resolution} from "@/parser/types";
 import {countTokens} from "@/util/llm/tokenCounter";
-
-export function validateAndAssembleResolution(structure: ResolutionStructure, analysis: FullResolutionAnalysis): ResultWithData<Resolution> {
-    const validationResults = validateResolution(structure, analysis);
-
-    if (!validationResults.success) {
-        return {
-            success: false,
-            error: validationResults.error
-        }
-    }
-
-    return assembleResolution(structure, analysis);
-}
+import {assembleResolution} from "@/parser/postprocessing/assemble";
 
 type ParseResolutionResult = ResultWithData<Resolution, {
     code: "internal_error" | "invalid_format" | "too_large"
@@ -68,7 +53,7 @@ export async function parseTextResolution(fileContent: string): Promise<ParseRes
         }
     }
 
-    const assembleResolutionRes = validateAndAssembleResolution(structureRes.data, analysisRes.data);
+    const assembleResolutionRes = assembleResolution(structureRes.data, analysisRes.data);
 
     if (!assembleResolutionRes.success) {
         console.error(JSON.stringify(assembleResolutionRes.error));

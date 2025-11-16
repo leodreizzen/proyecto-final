@@ -4,7 +4,10 @@ import {ResolutionIDSchema} from "@/parser/schemas/common";
 export const ResolutionReferenceSchema = z.object({
     referenceType: z.literal("Resolution"),
     resolutionId: ResolutionIDSchema.describe("ID de la resolución referida"),
+    isDocument: z.boolean().describe("Indica si la referencia es a un documento (reglamento, texto ordenado, etc.)"),
 }).meta({title: "ReferenciaResolucion", schemaDescription: "Referencia a una resolución"});
+
+export type RawResolutionReference = z.infer<typeof ResolutionReferenceSchema>;
 
 export const AnnexReferenceSchema = z.object({
     referenceType: z.literal("Annex"),
@@ -21,6 +24,7 @@ export const ChapterReferenceSchema = z.object({
 export const NormalArticleReferenceSchema = z.object({
     referenceType: z.literal("NormalArticle"),
     resolutionId: ResolutionIDSchema.describe("ID de la resolución que contiene el artículo"),
+    isDocument: z.boolean().describe("Indica si la referencia es a un documento (reglamento, texto ordenado, etc.)"),
     number: z.coerce.number().describe("Número del artículo"),
     suffix: z.string().optional().nullable().describe("Sufijo del artículo, ej. 'bis'; opcional"),
 }).meta({
@@ -49,7 +53,9 @@ export const ReferenceSchema = z.discriminatedUnion("referenceType", [
     ChapterReferenceSchema,
     NormalArticleReferenceSchema,
     AnnexArticleReferenceSchema
-]).meta({title: "Referencia", schemaDescription: "Referencia a resolución, anexo, capítulo o artículo"});
+]).meta({title: "Referencia", schemaDescription: "Referencia a resolución, anexo, capítulo o artículo. Tomar la opción más específica posible"});
+
+export type RawReference = z.infer<typeof ReferenceSchema>;
 
 export const TextReferenceSchema = z.object({
     before: z.string().describe("Texto antes de la referencia. No más de 5 palabras, salvo que en el mismo artículo haya otra referencia igual"),

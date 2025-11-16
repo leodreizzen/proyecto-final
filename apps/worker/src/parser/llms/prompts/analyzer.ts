@@ -1,6 +1,6 @@
 const commonAnalyzerRules = `
 - No incluyas cosas como el texto completo de un artículo ni cualquier otra que no se te pida dada la tarea y descrición de tipos.
-- Si no tienes nada que poner sobre un artículo, anexo, visto o considerando y te piden un objeto, ponelo igual siguiendo el formato y dejando vacíos los campos que no correspondan.
+- Si no tienes nada que poner sobre un artículo y te piden un objeto, ponelo igual siguiendo el formato y dejando vacíos los campos que no correspondan.
     ## Sobre el uso de valores fijos y 'Literales' en JSON
      - Para cualquier campo dentro del esquema donde se haya declarado un **valor literal fijo** (ej. en el campo 'type' de las uniones discriminadas), es **OBLIGATORIO** usar esa cadena de texto exacta como valor.
      - **Prohibición de Sustitución:** Nunca se debe sustituir ese valor literal fijo por el nombre de la estructura, objeto, o tipo de esquema que lo contiene, a menos que el esquema indique explícitamente que el valor del campo debe ser el nombre del tipo.
@@ -11,8 +11,7 @@ const commonAnalyzerRules = `
     ## Procedimiento de análisis:
         1) Identificar todos los artículos, anexos, vistos y considerandos presentes en el JSON de entrada.
         2) Para vistos y considerandos:
-            - Identificar las referencias presentes en el texto.
-            - Agregar un objeto al arreglo del resultado por cada uno, en el mismo orden.
+            - Reconocer la información que brindan sobre resoluciones para obtener contexto necesario para los próximos pasos.
         3) Para artículos:
             - Identificar las referencias presentes en el texto.
             - Determinar el tipo de artículo y los cambios que introduce.
@@ -49,27 +48,29 @@ const commonAnalyzerRules = `
          - Donde te piden textos, debes ponerlos tal cual, sin modificaciones, salvo que se indique lo contrario en estas reglas.
          - Los capítulos pertenecen a anexos. Si se menciona un capítulo y no se nombra un anexo, entonces es el anexo 1.
          - Es posible agregar un anexo a una resolución, o a otro anexo. Debes distinguir esos casos y retornar el tipo de cambio adecuado.
-         - Si se agrega un anexo a un reglamento y no se aclara qué anexo de la resolución es, asumí que se está agregando un anexo al anexo 1 de la resolución (anexo anidado).
         - Determinación del tipo de artículo **Regla dura no negociable**:
            if (no modifica, deroga, agrega (incorpora) ningún artículo ni anexo ni resolución de la UNS) → Normative
            else if (aprueba un documento como un reglamento o texto ordenado) → CreateDocument
-           else → Modifier            
-      - **Asunción de Anexos para Reglamentos**: Si un artículo de la resolución actual modifica, deroga, o agrega texto a un artículo de un Reglamento o Texto Ordenado (identificado por su nombre, por ejemplo, "Reglamento de Alumnos", "Estatuto Nodocente", etc.), y la Resolución afectada está claramente identificada (ej. Res. N° 2), se DEBE asumir que el Reglamento/Texto Ordenado reside en el Anexo 1 de esa Resolución afectada (Res. N° 2).
-        Por lo tanto, el cambio debe modelarse como una modificación del artículo dentro del Anexo 1 de la resolución externa referida.   
-       
+           else → Modifier                   
     ## Sobre los tipos de cambios (prestar especial atención):
          - Para distinguir entre ReplaceArticle y ModifyArticle, debes fijarte si se da el texto anterior y el final (modificación) o solo el texto final (reemplazo).
             - if(tiene before y after) → ModifyArticle
             - else → ReplaceArticle
          - Artículos donde aplica "before" y "after", NO son de tipo ReplaceArticle. Son de tipo ModifyArticle, o a lo sumo avanzados pero solo en casos muy raros.
-         - Para los artículos que reemplazan anexos, debes determinar si el anexo nuevo es inline (se da el texto completo) o es una referencia a otro anexo de la misma resolución. Debes distinguir esos casos en tu respuesta.
-         
-         **Modificación o referencia a textos ordenados**: Cuando un artículo modifica o hace referencia a un Reglamento o Texto Ordenado, DEBES asumir que el artículo modificado o referenciado pertenece al Anexo 1 de la Resolución que lo aprobó o lo contiene, salvo que se indique otro número de anexo explícitamente.
-         La mención al reglamento o texto ordenado puede ser explícita (ej. "Reglamento de Alumnos") o implícita (citar a una resolución, pero en los vistos o considerandos se menciona que esa resolución contiene un reglamento).
-         Ejemplo 1: Un artículo dice "Modifícase el Artículo 5to del Reglamento de Alumnos (Res. N° 2)". Resultado: El artículo modificado es el Artículo 5to del Anexo 1 de la Resolución N° 2.
-         Ejemplo 2: Un artículo dice "Modifícase el Artículo 3ro de la Res. N° 3". En los vistos se menciona que la Res. N° 3 contiene el "Reglamento de Evaluación". Resultado: El artículo modificado es el Artículo 3ro del Anexo 1 de la Resolución N° 3.
-         Ejemplo 3: Un artículo agrega un anexo a un reglamento, como Anexo I. Entonces lo que se está haciendo es agregar un anexo a un anexo, no un anexo a una resolución. Se agrega con newAnnexNumber: 1 (porque dice que lo agrega como Anexo I).
-         Si dudas sobre si es un reglamento o texto ordenado, revisa los vistos y considerandos para ver si se lo menciona. La regla debe aplicarse SIEMPRE que se cumplan las condiciones, sin excepciones.
+         - Para los artículos que reemplazan anexos, debes determinar si el anexo nuevo es inline (se da el texto completo) o es una referencia a otro anexo de la misma resolución. Debes distinguir esos casos en tu respuesta.         
+         - Para los cambios avanzados, debes determinar si el cambio afecta a la resolución completa, a un anexo, un capítulo o un artículo específico. Incluye SOLO el más específico. Por ejemplo, si un artículo modifica un anexo, no incluyas targetResolution
+- **Determinación de documentos**: Debes completar un campo llamado isDocument (booleano) o targetIsDocument en algunos tipos de cambios. A continuación se explica cómo determinar su valor:
+ 1) Debes analizar el contenido del artículo o texto que tiene la referencia, así como cualquier visto o considerando que mencione la resolución o referenciados.
+ 2) **ÚNICA REGLA DE DETERMINACIÓN:** El valor de 'isDocument' DEBE ser **TRUE** solo si el texto analizado (Artículo) o algún texto relacionado (Visto, Considerando, o Artículo) **MENCIONA EXPLÍCITAMENTE** que la resolución referenciada es un **"reglamento"**, **"cronograma"**, **"texto ordenado"**, o **"plan de estudios"**.
+ 3) En cualquier otro caso, el valor de 'isDocument' DEBE ser **FALSE**.
+ 
+**REGLA DE CUMPLIMIENTO OBLIGATORIO:** Si el texto no contiene explícitamente una de las cuatro palabras clave (**reglamento, cronograma, texto ordenado, plan de estudios**) aplicada a la resolución referenciada, DEBES poner isDocument en **false**. Esta regla aplica incluso para modificaciones y derogaciones.
+
+ Ejemplos:
+ - Un artículo dice "Modifíquese el artículo 1 del reglamento de alumnos (resolución CSU-1000/2000)". -> isDocument: true.
+ - Un artículo dice "Modifíquese el artículo 5 de la resolución CSU-2005/2010". Un visto o considerando dice que esa resolución es el reglamento de alumnos. -> isDocument: true.
+ - Un artículo dice "Agreguese un artículo a la resolución CSU-3000/2015". No hay indicios de que esa resolución sea un documento de tipo reglamento, cronograma, texto ordenado, etc. -> isDocument: false.
+ - Un artículo dice "Dejar sin efecto la resolución CSU-94/2025 que establece el valor del módulo." -> isDocument: false (No dice reglamento/cronograma/texto ordenado/plan de estudios).
 `;
 
 export const resolutionAnalyzerSystemPrompt = `
@@ -106,11 +107,10 @@ La resolución fue parseada a JSON con otro LLM. Debes hacer lo siguiente:
          * ["Traslado cargo", "Asuntos Jurídicos", "Mantenimiento", "Cambio agrupamiento"] para palabras clave
          
 # Reglas importantes:
-    - Siempre que te pidan vistos, considerandos, artículos o anexos, debes incluir una respuesta por cada uno que haya en el JSON de entrada, en el mismo orden. No debes omitir ninguno.
-    - Debes incluir en tu respuesta la misma cantidad de artículos, anexos, vistos y considerandos que en el JSON de entrada. Bajo ninguna circuntancia puedes omitir o agregar artículos, anexos, vistos o considerandos.
+    - Siempre que te pidan artículos, debes incluir una respuesta por cada uno que haya en el JSON de entrada, en el mismo orden. No debes omitir ninguno.
+    - Debes incluir en tu respuesta la misma cantidad de artículos que en el JSON de entrada. Bajo ninguna circuntancia puedes omitir o agregar artículos.
  
     ${commonAnalyzerRules}
-    
 A continuación se incluyen los tipos esperados de salida. TODOS los campos son obligatorios, salvo que se especifique lo contrario. Si no tienes nada para poner en un campo de arreglo, pon un arreglo vacío, pero no omitas el campo.
 `;
 

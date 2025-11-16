@@ -1,22 +1,34 @@
 import {
     ResolutionStructure
 } from "@/parser/schemas/structure_parser/schemas";
-import {ArticleAnalysis, ArticleSchemaWithText} from "@/parser/schemas/analyzer/article";
-import {AnnexAnalysis, AnnexRegulationAnalysis, TextAnnexAnalysis} from "@/parser/schemas/analyzer/annexes/annex";
+import {ArticleSchemaWithText} from "@/parser/schemas/analyzer/article";
+import {AnnexAnalysis} from "@/parser/schemas/analyzer/annexes/annex";
 import {MainResolutionAnalysis} from "@/parser/schemas/analyzer/resolution/resolution";
 import {Change, ChangeAddArticleToAnnex, ChangeAddArticleToResolution} from "@/parser/schemas/analyzer/change";
-import {ResolutionReferencesAnalysis, TextReference} from "@/parser/schemas/references/schemas";
+import {
+    RawReference,
+    RawResolutionReference,
+    ResolutionReferencesAnalysis,
+    TextReference
+} from "@/parser/schemas/references/schemas";
 import {TableAnalysis} from "@/parser/schemas/analyzer/tables/table";
-import {annex, ChapterStructure, TextAnnexStructure} from "@/parser/schemas/structure_parser/annex";
+import {AnnexWithArticlesStructure, TextAnnexStructure} from "@/parser/schemas/structure_parser/annex";
 import {ArticleStructure} from "@/parser/schemas/structure_parser/article";
 import {TableStructure} from "@/parser/schemas/structure_parser/table";
 
+export type Reference = Exclude<RawReference, { referenceType: "Resolution" }> | Omit<RawResolutionReference, "isDocument">;
 
 export type WithTables<T> = T & {
     tables: TableStructure[];
 }
 
-export type ArticleWithoutTables = ArticleStructure & ArticleAnalysis;
+type FullArticleAnalysis = FullResolutionAnalysis["articles"][number];
+type FullAnnexAnalysis = FullResolutionAnalysis["annexes"][number];
+type FullTextAnnexAnalysis = Extract<FullAnnexAnalysis, {type: "TextOrTables"}>;
+type FullAnnexWithArticlesAnalysis = Extract<FullAnnexAnalysis, {type: "WithArticles"}>;
+
+
+export type ArticleWithoutTables = ArticleStructure & FullArticleAnalysis;
 
 type ArticleSchemaWithTextMapped = Omit<ArticleSchemaWithText, "analysis"> & ArticleSchemaWithText["analysis"]
 
@@ -28,12 +40,11 @@ type ChangeAddArticleToAnnexMapped = Omit<ChangeAddArticleToAnnex, "articleToAdd
     articleToAdd: ArticleSchemaWithTextMapped
 }
 
-
-type ChangeMapped = Exclude<Change, {
+export type ChangeMapped = Exclude<Change, {
     type: "AddArticleToResolution" | "AddArticleToAnnex"
 }> | ChangeAddArticleToResolutionMapped | ChangeAddArticleToAnnexMapped;
 
-type ArticleModifier = Extract<ArticleStructure & ArticleAnalysis, {type: "Modifier"}>;
+type ArticleModifier = Extract<ArticleStructure & FullArticleAnalysis, {type: "Modifier"}>;
 
 type ArticleModifierWithMappedChanges = Omit<ArticleModifier, "changes"> & {
     changes: ChangeMapped[];
@@ -54,21 +65,42 @@ export type ConsiderationWithoutTables = {
     text: string,
     references: TextReference[];
 }
-type TextAnnexWithoutTables = TextAnnexStructure & TextAnnexAnalysis
-type AnnexRegulationWithoutTables = annex & AnnexRegulationAnalysis
+type TextAnnexWithoutTables = TextAnnexStructure & FullTextAnnexAnalysis
+type AnnexWithArticlesWithoutTables = Omit<AnnexWithArticlesStructure & FullAnnexWithArticlesAnalysis, "articles" | "chapters"> & {
+    articles: (AnnexWithArticlesStructure["articles"][number] & FullAnnexWithArticlesAnalysis["articles"][number] )[];
+    chapters: (Omit<AnnexWithArticlesStructure["chapters"][number] & FullAnnexWithArticlesAnalysis["chapters"][number], "articles"> & {
+        articles: (AnnexWithArticlesStructure["chapters"][number]["articles"][number] & FullAnnexWithArticlesAnalysis["chapters"][number]["articles"][number])[]
+    })[]
+}
+
+type AnnexArticleModifier = Extract<AnnexWithArticlesWithoutTables["articles"][number], {type: "Modifier"}>;
+type AnnexArticleModifierWithMappedChanges = Omit<AnnexArticleModifier, "changes"> & {
+    changes: ChangeMapped[];
+}
+
+type AnnexArticleWithMappedChanges = Exclude<AnnexWithArticlesWithoutTables["articles"][number], { type: "Modifier" }> | AnnexArticleModifierWithMappedChanges;
+
+type AnnexWithArticlesWithMappedChanges = Omit<AnnexWithArticlesWithoutTables, "articles" | "chapters"> & {
+    articles: AnnexArticleWithMappedChanges[];
+    chapters: (Omit<AnnexWithArticlesWithoutTables["chapters"][number], "articles"> & {
+        articles: AnnexArticleWithMappedChanges[];
+    })[]
+}
+
+export type AnnexWithMappedChanges = TextAnnexWithoutTables | AnnexWithArticlesWithMappedChanges;
 
 type TextAnnex = WithTables<TextAnnexWithoutTables>
-type AnnexRegulation = AnnexRegulationAnalysis & {
-    articles: WithTables<AnnexRegulationAnalysis["articles"][number]>[];
-    chapters: (ChapterStructure & {
-        articles: WithTables<AnnexRegulationAnalysis["chapters"][number]["articles"][number]>[]
-    })[];
-};
 
+type AnnexWithArticles = Omit<AnnexWithArticlesWithMappedChanges, "articles" | "chapters"> & {
+    articles: WithTables<AnnexWithArticlesWithMappedChanges["articles"][number]>[];
+    chapters: (Omit<AnnexWithArticlesWithMappedChanges["chapters"][number], "articles"> & {
+        articles: WithTables<AnnexWithArticlesWithMappedChanges["chapters"][number]["articles"][number]>[]
+    })[]
+}
 
-export type AnnexWithoutTables = TextAnnexWithoutTables | AnnexRegulationWithoutTables;
+export type AnnexWithoutTables = TextAnnexWithoutTables | AnnexWithArticlesWithoutTables;
 
-export type Annex = TextAnnex | AnnexRegulation;
+export type Annex = TextAnnex | AnnexWithArticles;
 export type Article = WithTables<ArticleWithMappedChanges>;
 export type Recital = WithTables<RecitalWithoutTables>;
 export type Consideration = WithTables<ConsiderationWithoutTables>;

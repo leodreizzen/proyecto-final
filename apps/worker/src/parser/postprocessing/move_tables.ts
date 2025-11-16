@@ -1,12 +1,12 @@
 import {ResultWithData, resultWithDataError, resultWithDataSuccess} from "@/definitions";
-import {Annex, AnnexWithoutTables, WithTables} from "@/parser/types";
+import {Annex, AnnexWithMappedChanges, WithTables} from "@/parser/types";
 import {TableStructure} from "@/parser/schemas/structure_parser/table";
 
 interface MoveTablesResolutionInput {
     recitals: { text: string }[],
     considerations: { text: string }[],
     articles: { text: string, number: number }[],
-    annexes: AnnexWithoutTables[]
+    annexes: AnnexWithMappedChanges[]
     tables: TableStructure[]
 }
 
@@ -127,7 +127,7 @@ function moveTablesToObjectArray<T extends {
 }
 
 
-function moveTablesToAnnexes(annexes: AnnexWithoutTables[], tables: TableStructure[], _usedTableNumbers: Set<number>): ResultWithData<{
+function moveTablesToAnnexes(annexes: AnnexWithMappedChanges[], tables: TableStructure[], _usedTableNumbers: Set<number>): ResultWithData<{
     annexes: Annex[],
     usedTableNumbers: Set<number>
 }> {

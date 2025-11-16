@@ -30,7 +30,7 @@ export const ArticleAnnexSchema = z.object({
     annex.articles.length > 0 || (annex.chapters.length > 0 && annex.chapters.flatMap(c => c.articles).length > 0), {error: "Regulation annex must have at least one article, either loose or in chapters"}
 ).meta({title: "AnexoArticulos", schemaDescription: "Anexo compuesto por artículos. Debe tener al menos 1 artículo"})
 
-export type annex = z.infer<typeof ArticleAnnexSchema>;
+export type AnnexWithArticlesStructure = z.infer<typeof ArticleAnnexSchema>;
 export const AnnexSchema = z.discriminatedUnion("type", [
     AnnexStructureSchema,
     ArticleAnnexSchema,

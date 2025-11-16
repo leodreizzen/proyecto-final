@@ -5,6 +5,7 @@ import {zodToLLMDescription} from "@/util/llm/zod_to_llm";
 import {MultipleTableAnalysis, MultipleTableAnalysisSchema} from "@/parser/schemas/analyzer/tables/table";
 import {TableStructure} from "@/parser/schemas/structure_parser/table";
 import {tableAnalyzerSystemPrompt} from "@/parser/llms/prompts/table_analyzer";
+import {validateTableAnalysis} from "@/parser/llms/analyzer/analysis_validations";
 
 const schemaDescription = zodToLLMDescription(MultipleTableAnalysisSchema);
 
@@ -60,6 +61,16 @@ export async function tableAnalyzer(tables: TableStructure[]): Promise<ResultWit
     }
 
     const LLMResult = jsonParseRes.data;
+
+    const validationRes = validateTableAnalysis(LLMResult.result, tables);
+    if (!validationRes.success) {
+        console.error(JSON.stringify(validationRes, null, 2));
+        return {
+            success: false,
+            error: {code: "validation_error"}
+        }
+    }
+
     return {
         success: true,
         data: LLMResult.result

@@ -6,6 +6,7 @@ import {MainResolutionAnalysis} from "@/parser/schemas/analyzer/resolution/resol
 import {createOpenAICompletion} from "@/util/llm/openai_wrapper";
 import {resolutionAnalyzerSystemPrompt} from "@/parser/llms/prompts/analyzer";
 import {parseLLMResponse} from "@/util/llm/llm_response";
+import {validateMainResolutionAnalysis} from "@/parser/llms/analyzer/analysis_validations";
 
 const resolutionSchemaDescription = zodToLLMDescription(MainResolutionAnalysisResultSchema);
 
@@ -68,6 +69,15 @@ export async function analyzeMainResolution(resolution: ResolutionStructure): Pr
         return {
             success: false,
             error: {code: "llm_error", llmCode: LLMResult.error.code, llmMessage: LLMResult.error.message}
+        }
+    }
+
+    const validationRes = validateMainResolutionAnalysis(LLMResult.data, resolution);
+    if (!validationRes.success) {
+        console.error(JSON.stringify(validationRes, null, 2));
+        return {
+            success: false,
+            error: {code: "validation_error"}
         }
     }
     return LLMResult;

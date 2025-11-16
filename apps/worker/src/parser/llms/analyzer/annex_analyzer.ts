@@ -9,6 +9,7 @@ import {AnnexStructure} from "@/parser/schemas/structure_parser/annex";
 import {ResolutionStructure} from "@/parser/schemas/structure_parser/schemas";
 import {ResolutionID} from "@/parser/schemas/common";
 import {MainResolutionAnalysis} from "@/parser/schemas/analyzer/resolution/resolution";
+import {validateAnnexAnalysis} from "@/parser/llms/analyzer/analysis_validations";
 
 const annexSchemaDescription = zodToLLMDescription(AnnexAnalysisResultSchema);
 type AnalyzeAnnexInput = {
@@ -68,15 +69,25 @@ export async function analyzeAnnex(input: AnalyzeAnnexInput): Promise<ResultWith
     }
 
     const LLMResult = jsonParseRes.data;
-    if (LLMResult.success) {
-        return {
-            success: true,
-            data: LLMResult.data
-        }
-    } else {
+    if (!LLMResult.success) {
         return {
             success: false,
             error: {code: "llm_error", llmCode: LLMResult.error.code, llmMessage: LLMResult.error.message}
         };
     }
+
+    const validationRes = validateAnnexAnalysis(LLMResult.data, input.annex);
+    if (!validationRes.success) {
+        console.error(JSON.stringify(validationRes, null, 2));
+        return {
+            success: false,
+            error: {code: "validation_error"}
+        }
+    }
+
+    return {
+        success: true,
+        data: LLMResult.data
+    }
+
 }

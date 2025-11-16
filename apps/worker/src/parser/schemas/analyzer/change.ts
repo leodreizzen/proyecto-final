@@ -3,7 +3,7 @@ import {ResolutionIDSchema} from "@/parser/schemas/common";
 import {
     AnnexReferenceSchema,
     ArticleReferenceSchema,
-    ChapterReferenceSchema,
+    ChapterReferenceSchema, ReferenceSchema,
 } from "@/parser/schemas/references/schemas";
 import {z} from "zod";
 
@@ -22,10 +22,7 @@ export const ChangeReplaceArticleSchema = z.object({
 
 export const ChangeAdvancedSchema = z.object({
     type: z.literal("AdvancedChange").describe("Cambio avanzado asistido por LLM. Debe usarse cuando el cambio no puede ser representado por los otros tipos"),
-    targetResolution: ResolutionIDSchema.describe("Resolución destino del cambio"),
-    targetArticle: ArticleReferenceSchema.optional().nullable().describe("Artículo objetivo opcional"),
-    targetAnnex: AnnexReferenceSchema.optional().nullable().describe("Anexo destino opcional"),
-    targetChapter: ChapterReferenceSchema.optional().nullable().describe("Capítulo destino opcional"),
+    target: ReferenceSchema.describe("Referencia al objetivo del cambio. Debe ser una y solo una de las siguientes: resolución, artículo, anexo o capítulo"),
 }).meta({title: "CambioAvanzado"});
 
 export const ChangeRepealArticleSchema = z.object({
@@ -69,6 +66,7 @@ export const ChangeAddAnnexToResolutionSchema = z.object({
     type: z.literal("AddAnnexToResolution").describe("Agregar un anexo a una resolución"),
     annexToAdd: AnnexReferenceSchema.describe("Anexo a agregar"),
     targetResolution: ResolutionIDSchema.describe("Resolución destino"),
+    targetIsDocument: z.boolean().describe("Indica si la referencia es a un documento (reglamento, texto ordenado, etc.)"),
     newAnnexNumber: z.coerce.number().optional().nullable().describe("Número que tendrá el anexo en el destino. Opcional"),
 }).meta({title: "CambioAgregarAnexoAResolucion"});
 
@@ -89,6 +87,7 @@ export const ChangeModifyTextAnnexSchema = z.object({
 export const ChangeAddArticleToResolutionSchema = z.object({
     type: z.literal("AddArticleToResolution").describe("Agregar un artículo a una resolución. No usar si se va a agregar a un anexo"),
     targetResolution: ResolutionIDSchema.describe("Resolución destino"),
+    targetIsDocument: z.boolean().describe("Indica si la referencia es a un documento (reglamento, texto ordenado, etc.)"),
     newArticleNumber: z.coerce.number().optional().nullable().describe("Número que tendrá el artículo en el destino. Opcional"),
     newArticleSuffix: z.string().optional().nullable().describe("Sufijo que tendrá el artículo en el destino, ej. 'bis'"),
     get articleToAdd() {
@@ -151,18 +150,12 @@ export const ChangeSchema = z.discriminatedUnion("type", [
     ChangeApplyModificationsAnnexSchema
 ]).meta({schemaDescription: "Cualquier tipo de cambio posible en una resolución"})
     .refine((change) => {
-        if (change.type === "AdvancedChange") {
-            if (change.targetChapter && !change.targetAnnex) return false;
-        }
-
         if (change.type === "AddArticleToResolution" || change.type === "AddArticleToAnnex") {
             if (change.newArticleSuffix && !change.newArticleNumber) return false;
         }
-
         return true;
     }, {
-        message:
-            "Validaciones de jerarquía y sufijo: un anexo requiere artículo, un capítulo requiere un anexo, y no puede haber sufijo sin artículo",
+        message:  "Can't specify a suffix without an article number when adding an article",
     });
 
 

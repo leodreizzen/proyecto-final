@@ -35,7 +35,7 @@ En tu respuesta, deberás indicar si el parseo tuvo éxito.
 
 ## Sobre los textos:
 - No incluyas los saltos de línea presentes en el texto, salvo que estén al final de un párrafo.
-- No incluyas la parte de "Articulo X" en el contenido del artículo.
+- **Al extraer el contenido (\`text\`) de un artículo, elimina únicamente su propio encabezado introductorio (ej: "ARTÍCULO 1º:", "Art. 2do."). Cualquier referencia o citación completa a otro artículo (ej: "ARTÍCULO X:", "Art. Y:") que aparezca dentro del cuerpo del texto del artículo principal debe ser retenida como parte de su contenido. Esto aplica incluso si el texto citado reemplaza una sección de la normativa.**
 - Si, como parte de un texto, hay una lista (ya sea numerada, con viñetas, guiones, etc), aplica indentación en los items usando 4 espacios por nivel. Todo esto dentro del campo json correspondinete
 - Si hay una tabla, no la incluyas como texto, sino que debes usar el indicador {{tabla X}} para indicar que ahí va una tabla, y luego debes incluir la tabla en el campo "tablas" del artículo. X es el número de tabla (empieza en 1).
 - NUNCA incluyas las tablas en formato markdown / texto como parte de un artículo o anexo. Siempre usa {{tabla X}} y pon la tabla en el campo correspondiente. No importa si es lo único que hay en el anexo.

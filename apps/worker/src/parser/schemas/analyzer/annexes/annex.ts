@@ -7,7 +7,7 @@ export const ChapterSchema = z.object({
     }
 }).meta({title: "CapituloAnexo", schemaDescription: "Capítulo dentro de un anexo"});
 
-export const AnnexRegulationSchema = z.object({
+export const AnnexWithArticlesSchema = z.object({
     type: z.literal("WithArticles").describe("Anexo compuesto por artículos"),
     chapters: z.array(ChapterSchema).describe("Capítulos del anexo; puede no haber ninguno"),
     get articles() {
@@ -15,7 +15,7 @@ export const AnnexRegulationSchema = z.object({
     }
 }).meta({title: "AnexoArticulos"});
 
-export type AnnexRegulationAnalysis = z.infer<typeof AnnexRegulationSchema>;
+export type AnnexWithArticlesAnalysis = z.infer<typeof AnnexWithArticlesSchema>;
 
 export const TextAnnexSchema = z.object({
     type: z.literal("TextOrTables").describe("Anexo de solo texto o tablas"),
@@ -24,7 +24,7 @@ export const TextAnnexSchema = z.object({
 export type TextAnnexAnalysis = z.infer<typeof TextAnnexSchema>;
 
 export const AnnexSchema = z.discriminatedUnion("type", [
-    AnnexRegulationSchema,
+    AnnexWithArticlesSchema,
     TextAnnexSchema,
 ]).meta({title: "Anexo", schemaDescription: "Anexo de una resolución"});
 

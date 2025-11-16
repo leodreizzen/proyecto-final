@@ -5,6 +5,7 @@ import {parseLLMResponse} from "@/util/llm/llm_response";
 import {zodToLLMDescription} from "@/util/llm/zod_to_llm";
 import {ResolutionReferencesAnalysis, ResolutionReferencesSchema} from "@/parser/schemas/references/schemas";
 import {referenceExtractorSystemPrompt} from "@/parser/llms/prompts/reference_extractor";
+import {validateReferences} from "@/parser/llms/analyzer/analysis_validations";
 
 const schemaDescription = zodToLLMDescription(ResolutionReferencesSchema);
 
@@ -18,7 +19,7 @@ export async function extractReferences(resolution: ResolutionStructure): Promis
             response_format: {
                 type: "json_object"
             },
-            reasoning_effort: "low",
+            reasoning_effort: "medium",
             max_completion_tokens: 25000,
             messages: [
                 {
@@ -55,6 +56,16 @@ export async function extractReferences(resolution: ResolutionStructure): Promis
     }
 
     const LLMResult = jsonParseRes.data;
+
+    const validationRes = validateReferences(LLMResult, resolution);
+    if (!validationRes.success) {
+        console.error(JSON.stringify(validationRes, null, 2));
+        return {
+            success: false,
+            error: {code: "validation_error"}
+        }
+    }
+
     return {
         success: true,
         data: LLMResult
