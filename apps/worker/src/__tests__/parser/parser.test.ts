@@ -57,7 +57,7 @@ describe("E2E Resolution Parsing", () => {
                     type: "ModifyArticle",
                     targetArticle: {
                         referenceType: "NormalArticle",
-                        number: 2,
+                        articleNumber: 2,
                         resolutionId: {
                             initial: "CSU",
                             number: 1057,
@@ -75,7 +75,7 @@ describe("E2E Resolution Parsing", () => {
                     type: "ModifyArticle",
                     targetArticle: {
                         referenceType: "NormalArticle",
-                        number: 3,
+                        articleNumber: 3,
                         resolutionId: {
                             initial: "CSU",
                             number: 1057,
@@ -118,7 +118,7 @@ describe("E2E Resolution Parsing", () => {
                     type: "ReplaceArticle",
                     targetArticle: {
                         referenceType: "NormalArticle",
-                        number: 1,
+                        articleNumber: 1,
                         resolutionId: {
                             initial: "CSU",
                             number: 358,
@@ -136,7 +136,7 @@ describe("E2E Resolution Parsing", () => {
                     type: "ReplaceArticle",
                     targetArticle: {
                         referenceType: "NormalArticle",
-                        number: 3,
+                        articleNumber: 3,
                         resolutionId: {
                             initial: "CSU",
                             number: 358,
@@ -178,7 +178,7 @@ describe("E2E Resolution Parsing", () => {
                     type: "ModifyArticle",
                     targetArticle: {
                         referenceType: "NormalArticle",
-                        number: 1,
+                        articleNumber: 1,
                         resolutionId: {
                             initial: "CSU",
                             number: 94,
@@ -196,7 +196,7 @@ describe("E2E Resolution Parsing", () => {
                     type: "RepealArticle",
                     targetArticle: {
                         referenceType: "NormalArticle",
-                        number: 2,
+                        articleNumber: 2,
                         resolutionId: {
                             initial: "CSU",
                             number: 94,
@@ -214,7 +214,7 @@ describe("E2E Resolution Parsing", () => {
                     type: "ModifyArticle",
                     targetArticle: {
                         referenceType: "NormalArticle",
-                        number: 4,
+                        articleNumber: 4,
                         resolutionId: {
                             initial: "CSU",
                             number: 478,
@@ -237,7 +237,7 @@ describe("E2E Resolution Parsing", () => {
                             number: 478,
                             year: 2024,
                         },
-                        number: 1,
+                        annexNumber: 1,
                     },
                     newContent: {
                         contentType: "Inline",
@@ -286,7 +286,7 @@ describe("E2E Resolution Parsing", () => {
                             number: 843,
                             year: 2005,
                         },
-                        number: 2,
+                        annexNumber: 2,
                     }
                 }
             ]
@@ -374,7 +374,7 @@ describe("E2E Resolution Parsing", () => {
                     type: "ModifyArticle",
                     targetArticle: {
                         referenceType: "NormalArticle",
-                        number: 2,
+                        articleNumber: 2,
                         resolutionId: {
                             initial: "CSU",
                             number: 310,
@@ -395,9 +395,9 @@ describe("E2E Resolution Parsing", () => {
                         annex: {
                             referenceType: 'Annex',
                             resolutionId: {initial: 'CSU', number: 310, year: 2025},
-                            number: 1
+                            annexNumber: 1
                         },
-                        number: 9,
+                        articleNumber: 9,
                     }
                 }
             ]
@@ -435,7 +435,7 @@ describe("E2E Resolution Parsing", () => {
                             number: 584,
                             year: 2006
                         },
-                        number: 1,
+                        annexNumber: 1,
                     }
                 }
             ]
@@ -446,7 +446,7 @@ describe("E2E Resolution Parsing", () => {
             annexToApprove: {
                 referenceType: 'Annex',
                 resolutionId: {initial: 'CSU', number: 971, year: 2022},
-                number: 1
+                annexNumber: 1
             },
         } satisfies DeepPartial<Article>);
     });
@@ -515,7 +515,7 @@ describe("E2E Resolution Parsing", () => {
                             referenceType: "Annex",
                             resolutionId: {initial: "CSU", number: 311, year: 2015},
                         },
-                        number: 2
+                        articleNumber: 2
                     }
                 }
             ]
@@ -533,7 +533,7 @@ describe("E2E Resolution Parsing", () => {
                             number: 311,
                             year: 2015
                         },
-                        number: 1,
+                        annexNumber: 1,
                     },
                     newArticleNumber: 2,
                     newArticleSuffix: "bis",
@@ -580,9 +580,9 @@ describe("E2E Resolution Parsing", () => {
                         annex: {
                             referenceType: 'Annex',
                             resolutionId: {initial: 'CSU', number: 406, year: 2012},
-                            number: 1
+                            annexNumber: 1
                         },
-                        number: 4
+                        chapterNumber: 4
                     },
                     newArticleNumber: null,
                     newArticleSuffix: null,
@@ -618,12 +618,12 @@ describe("E2E Resolution Parsing", () => {
                     annexToAdd: {
                         referenceType: 'Annex',
                         resolutionId: {initial: 'CSU', number: 112, year: 2020},
-                        number: 1
+                        annexNumber: 1
                     },
                     target: {
                         referenceType: 'Annex',
                         resolutionId: {initial: 'CSU', number: 511, year: 2010},
-                        number: 1
+                        annexNumber: 1
                     },
                     newAnnexNumber: 1
                 }
@@ -659,14 +659,14 @@ describe("E2E Resolution Parsing", () => {
                     targetAnnex: {
                         referenceType: 'Annex',
                         resolutionId: {initial: 'CSU', number: 640, year: 2023},
-                        number: 1
+                        annexNumber: 1
                     },
                     newContent: {
                         contentType: 'Reference',
                         reference: {
                             referenceType: 'Annex',
                             resolutionId: {initial: 'CSU', number: 751, year: 2023},
-                            number: 1
+                            annexNumber: 1
                         }
                     }
                 }
@@ -710,7 +710,7 @@ describe("E2E Resolution Parsing", () => {
                     annexToApply: {
                         referenceType: 'Annex',
                         resolutionId: {initial: 'CSU', number: 233, year: 2020},
-                        number: 1
+                        annexNumber: 1
                     },
                 }
             ],
@@ -724,7 +724,7 @@ describe("E2E Resolution Parsing", () => {
                     annexToApply: {
                         referenceType: 'Annex',
                         resolutionId: {initial: 'CSU', number: 233, year: 2020},
-                        number: 2
+                        annexNumber: 2
                     },
                 }
             ],

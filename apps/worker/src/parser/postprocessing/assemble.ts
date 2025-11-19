@@ -13,6 +13,8 @@ import {TableStructure} from "@/parser/schemas/structure_parser/table";
 import {mergeDeep} from "@/util/merge";
 import {Change} from "@/parser/schemas/analyzer/change";
 import {TextReference} from "@/parser/schemas/references/schemas";
+import {ResolutionID} from "@/parser/schemas/common";
+import {isEqual} from "lodash-es";
 
 //TODO ERROR CODES
 // Resolution parts must be validated before calling this function
@@ -48,16 +50,18 @@ export function assembleResolution(structure: ResolutionStructure, analysis: Ful
         ) as AnnexWithoutTables;
     });
 
-    const finalArticles = mapArticlesWithChanges(articles);
+    const currentResolutionId = structure.id;
+
+    const finalArticles = mapArticlesWithChanges(articles, currentResolutionId);
     const finalAnnexes: AnnexWithMappedChanges[] = annexes.map(annex => {
         if (annex.type !== "WithArticles")
             return annex;
         return {
             ...annex,
-            articles: mapArticlesWithChanges(annex.articles),
+            articles: mapArticlesWithChanges(annex.articles, currentResolutionId),
             chapters: annex.chapters.map(chapter => ({
                 ...chapter,
-                articles: mapArticlesWithChanges(chapter.articles)
+                articles: mapArticlesWithChanges(chapter.articles, currentResolutionId)
             }))
         };
     });
@@ -146,14 +150,14 @@ function applyJoinsToTable(table: TableStructure, rowJoins: RowJoin[]): TableStr
     return {...table, rows: resultRows};
 }
 
-function mapArticlesWithChanges(articles: ArticleWithoutTables[]) {
+function mapArticlesWithChanges(articles: ArticleWithoutTables[], currentResolutionId: ResolutionID) {
     return articles.map(article => {
         if (article.type !== "Modifier")
             return article;
 
         const changes = article.changes.map(change => {
             const changeWithMappedAnalysis = mapAnalysis(change);
-            return mapChangeDocumentReferences(changeWithMappedAnalysis);
+            return mapChangeDocumentReferences(changeWithMappedAnalysis, currentResolutionId);
         });
         return {...article, changes};
     });
@@ -177,9 +181,12 @@ function mapAnalysis(change: Change) {
     }
 }
 
-function mapChangeDocumentReferences(change: ChangeMapped): ChangeMapped {
+function mapChangeDocumentReferences(change: ChangeMapped, currentResolutionId: ResolutionID): ChangeMapped {
     if (change.type === "ModifyArticle" || change.type === "ReplaceArticle" || change.type === "RepealArticle") {
         if (change.targetArticle.referenceType == "NormalArticle" && change.targetArticle.isDocument) {
+            if (change.targetArticle.resolutionId && isEqual(change.targetArticle.resolutionId, currentResolutionId)) {
+                return change;
+            }
             const {targetArticle, ...rest} = change;
             return {
                 ...rest,
@@ -188,25 +195,31 @@ function mapChangeDocumentReferences(change: ChangeMapped): ChangeMapped {
                     annex: {
                         referenceType: "Annex",
                         resolutionId: targetArticle.resolutionId,
-                        number: 1
+                        annexNumber: 1
                     },
-                    number: targetArticle.number
+                    articleNumber: targetArticle.articleNumber
                 }
             }
         }
     } else if (change.type == "AdvancedChange") {
         if (change.target.referenceType == "Resolution" && change.target.isDocument) {
+            if (isEqual(change.target.resolutionId, currentResolutionId)) {
+                return change;
+            }
             const {target, ...rest} = change;
             return {
                 ...rest,
                 target: {
                     referenceType: "Annex",
                     resolutionId: target.resolutionId,
-                    number: 1
+                    annexNumber: 1
                 }
             }
         }
         if (change.target.referenceType == "NormalArticle" && change.target.isDocument) {
+            if (isEqual(change.target.resolutionId, currentResolutionId)) {
+                return change;
+            }
             const {target, ...rest} = change;
             return {
                 ...rest,
@@ -215,14 +228,17 @@ function mapChangeDocumentReferences(change: ChangeMapped): ChangeMapped {
                     annex: {
                         referenceType: "Annex",
                         resolutionId: target.resolutionId,
-                        number: 1
+                        annexNumber: 1
                     },
-                    number: target.number
+                    articleNumber: target.articleNumber
                 }
             }
         }
     } else if (change.type === "AddAnnexToResolution") {
         if (change.targetIsDocument) {
+            if (isEqual(change.targetResolution, currentResolutionId)) {
+                return change;
+            }
             const {targetResolution, ...rest} = change;
             return {
                 ...rest,
@@ -230,7 +246,7 @@ function mapChangeDocumentReferences(change: ChangeMapped): ChangeMapped {
                 target: {
                     referenceType: "Annex",
                     resolutionId: targetResolution,
-                    number: 1
+                    annexNumber: 1
                 }
             }
         }
@@ -283,7 +299,7 @@ function mapReference(ref: TextReference): TextReference{
         mappedReference =  {
             referenceType: "Annex",
             resolutionId: reference.resolutionId,
-            number: 1
+            annexNumber: 1
         }
     }
     else if (reference.referenceType === "NormalArticle" && reference.isDocument) {
@@ -292,9 +308,9 @@ function mapReference(ref: TextReference): TextReference{
             annex: {
                 referenceType: "Annex",
                 resolutionId: reference.resolutionId,
-                number: 1
+                annexNumber: 1
             },
-            number: reference.number
+            articleNumber: reference.articleNumber
         }
     }
     else {

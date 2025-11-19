@@ -96,7 +96,7 @@ function filterAnnexes(annexes: ResolutionStructure["annexes"]) {
     return annexes.map(annex => {
         if (annex.type == "TextOrTables") {
             const {content, ...rest} = annex;
-            return {...rest, content: cutText(content, 100)}
+            return {...rest, content: cutText(content, 250)}
         } else {
             const {articles, chapters, ...rest} = annex;
             return {

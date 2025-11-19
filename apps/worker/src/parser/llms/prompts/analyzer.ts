@@ -44,9 +44,12 @@ const commonAnalyzerRules = `
            - Incorporar un texto como articulado en un capítulo o resolución, siempre y cuando se de el nuevo texto. Se considera un agregado de artículo.
            - Rectificar un artículo, siempre y cuando se de el texto anterior y final (modificación), o directamente el texto final (reemplazo).
          - Solamente usa el tipo AdvancedChange cuando no puedas expresar el cambio con los otros tipos. Si estás en duda, NO uses AdvancedChange.
-         - Debes incluir todos los artículos presentes, y todos los cambios
-         - Donde te piden textos, debes ponerlos tal cual, sin modificaciones, salvo que se indique lo contrario en estas reglas.
-         - Los capítulos pertenecen a anexos. Si se menciona un capítulo y no se nombra un anexo, entonces es el anexo 1.
+        
+        ### REGLA CRÍTICA: Inferencia de Capítulos y Anexos
+        - **Regla de Inferencia Obligatoria:** Los capítulos (ej. "Capítulo IV", "Capítulo II") **SIEMPRE** pertenecen a un anexo.
+        - Si el texto de un artículo (como "Incorporar...", "Modificar...", "Agregar...") menciona un **Capítulo** pero **NO** menciona explícitamente un número de Anexo (ej. "Anexo II"), DEBES **ASUMIR OBLIGATORIAMENTE** que la acción se aplica al **Anexo 1** de la resolución referenciada.
+        - **Ejemplo de aplicación:** Un artículo que dice "Incorporar el siguiente texto como articulado del Capítulo IV... de la resolución CSU-406/12" debe interpretarse como una incorporación al **Anexo 1**, **Capítulo IV** de la **resolución CSU-406/12**.
+   
          - Es posible agregar un anexo a una resolución, o a otro anexo. Debes distinguir esos casos y retornar el tipo de cambio adecuado.
         - Determinación del tipo de artículo **Regla dura no negociable**:
            if (no modifica, deroga, agrega (incorpora) ningún artículo ni anexo ni resolución de la UNS) → Normative
@@ -59,18 +62,19 @@ const commonAnalyzerRules = `
          - Artículos donde aplica "before" y "after", NO son de tipo ReplaceArticle. Son de tipo ModifyArticle, o a lo sumo avanzados pero solo en casos muy raros.
          - Para los artículos que reemplazan anexos, debes determinar si el anexo nuevo es inline (se da el texto completo) o es una referencia a otro anexo de la misma resolución. Debes distinguir esos casos en tu respuesta.         
          - Para los cambios avanzados, debes determinar si el cambio afecta a la resolución completa, a un anexo, un capítulo o un artículo específico. Incluye SOLO el más específico. Por ejemplo, si un artículo modifica un anexo, no incluyas targetResolution
-- **Determinación de documentos**: Debes completar un campo llamado isDocument (booleano) o targetIsDocument en algunos tipos de cambios. A continuación se explica cómo determinar su valor:
- 1) Debes analizar el contenido del artículo o texto que tiene la referencia, así como cualquier visto o considerando que mencione la resolución o referenciados.
- 2) **ÚNICA REGLA DE DETERMINACIÓN:** El valor de 'isDocument' DEBE ser **TRUE** solo si el texto analizado (Artículo) o algún texto relacionado (Visto, Considerando, o Artículo) **MENCIONA EXPLÍCITAMENTE** que la resolución referenciada es un **"reglamento"**, **"cronograma"**, **"texto ordenado"**, o **"plan de estudios"**.
- 3) En cualquier otro caso, el valor de 'isDocument' DEBE ser **FALSE**.
- 
-**REGLA DE CUMPLIMIENTO OBLIGATORIO:** Si el texto no contiene explícitamente una de las cuatro palabras clave (**reglamento, cronograma, texto ordenado, plan de estudios**) aplicada a la resolución referenciada, DEBES poner isDocument en **false**. Esta regla aplica incluso para modificaciones y derogaciones.
 
- Ejemplos:
- - Un artículo dice "Modifíquese el artículo 1 del reglamento de alumnos (resolución CSU-1000/2000)". -> isDocument: true.
- - Un artículo dice "Modifíquese el artículo 5 de la resolución CSU-2005/2010". Un visto o considerando dice que esa resolución es el reglamento de alumnos. -> isDocument: true.
- - Un artículo dice "Agreguese un artículo a la resolución CSU-3000/2015". No hay indicios de que esa resolución sea un documento de tipo reglamento, cronograma, texto ordenado, etc. -> isDocument: false.
- - Un artículo dice "Dejar sin efecto la resolución CSU-94/2025 que establece el valor del módulo." -> isDocument: false (No dice reglamento/cronograma/texto ordenado/plan de estudios).
+- **Determinación de documentos (isDocument/targetIsDocument):**
+ 1) Analiza el contexto de la referencia o el cambio.
+ 2) **REGLA GENERAL:** 'isDocument' es **TRUE** solo si el texto menciona explícitamente que la resolución referenciada es un **"reglamento"**, **"cronograma"**, **"texto ordenado"**, o **"plan de estudios"**.
+ 3) **EXCEPCIÓN DE APROBACIÓN (PRIORIDAD MÁXIMA):** Si el artículo o texto está **"Aprobando"**, **"Rectificando la aprobación"**, **"Creando"** o **"Ratificando"** el documento referenciado (ej: "Aprobar el Reglamento...", "Rectificar... donde dice: Aprobar el Reglamento"), entonces 'isDocument' DEBE ser **FALSE**.
+    * *Razonamiento:* Estás definiendo el documento, no citándolo como base normativa existente para modificarlo.
+ 4) En cualquier otro caso, 'isDocument' es **FALSE**.
+
+ Ejemplos isDocument:
+ - "Modifíquese el artículo 1 del reglamento de alumnos (Res A)". -> isDocument: true.
+ - "Aprobar el Reglamento de Alumnos que figura en el Anexo". -> isDocument: false (Es una aprobación).
+ - "Rectificar el art que dice 'Aprobar el Reglamento'". -> isDocument: false (Sigue siendo contexto de aprobación).
+ - "Dejar sin efecto la resolución CSU-94/2025 que establece el valor del módulo." -> isDocument: false (No dice reglamento/cronograma/texto ordenado/plan de estudios).
 `;
 
 export const resolutionAnalyzerSystemPrompt = `

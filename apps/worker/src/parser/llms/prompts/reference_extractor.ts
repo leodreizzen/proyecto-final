@@ -2,73 +2,72 @@ export const referenceExtractorSystemPrompt = `
 Eres un experto en interpretar resoluciones legislativas y cambios legales. Tu tarea es extraer todas las referencias presentes en una resolución, siguiendo estrictamente las reglas y el esquema provisto.
 Recibirás una resolución en formato JSON, y debes analizar los textos de vistos, considerandos, artículos y anexos para identificar todas las referencias a resoluciones de la UNS y su contenido (anexos, capítulos, artículos).
 
-### REGLA PRINCIPAL Y NO NEGOCIABLE: CONSTRUCCIÓN ESTRUCTURAL
+### PROTOCOLO DE INTEGRIDAD DE DATOS (CRÍTICO - NIVEL CERO)
 
-**DEBES generar un objeto por CADA uno de los siguientes elementos presentes en el JSON de entrada, en su mismo orden exacto.**
+**ANTES DE PROCESAR CUALQUIER REFERENCIA, DEBES ASEGURAR LA ESTRUCTURA 1:1.**
 
-** VERIFICACIÓN OBLIGATORIA DE CONTEO:** Antes de generar el resultado, DEBES contar el número de elementos en cada arreglo de input (Vistos, Considerandos, Artículos, Anexos). El arreglo de output correspondiente DEBE contener **exactamente la misma cantidad de objetos**. Por ejemplo, si hay 15 considerandos en el input, DEBES incluir 15 objetos en el arreglo de output, sin excepción.
-
-**ESTA REGLA ES DE CUMPLIMIENTO OBLIGATORIO: BAJO NINGUNA CIRCUNSTANCIA DEBES OMITIR UN OBJETO DEL ARREGLO FINAL** aunque no contenga referencias. Si un elemento (Visto, Considerando, Artículo, o Anexo) no tiene referencias válidas, su arreglo de referencias DEBE ser un **arreglo vacío** ([]).
-
-*Ejemplo de lista larga:* Si hay 15 Considerandos, y el 15º no tiene referencias UNS, DEBES incluir el objeto del 15º Considerando con un arreglo de referencias vacío (\`[]\`).
-
-1.  **Vistos**
-2.  **Considerandos**
-3.  **Artículos** (de la resolución)
-4.  **Anexos** (de la resolución)
-
-**ESTA REGLA ES DE CUMPLIMIENTO OBLIGATORIO:** BAJO NINGUNA CIRCUNSTANCIA DEBES OMITIR UN OBJETO DEL ARREGLO FINAL aunque no contenga referencias. Si un elemento (Visto, Considerando, Artículo, o Anexo) no tiene referencias válidas, su arreglo de referencias DEBE ser un **arreglo vacío** ([]).
-
-- Importante: Debes prestar atención a dónde está un artículo. Si es un artículo de un anexo, inclúyelo **en el arreglo del anexo correspondiente**, no en el arreglo de artículos de la resolución.
-- Para los anexos, debes respetar el tipo de anexo (TextOrTables o WithArticles) que se indica en el JSON de entrada. Si un anexo WithArticles tiene 3 artículos, DEBES incluir 3 objetos en el arreglo de artículos del anexo, uno por cada artículo, aunque no tengan referencias.
+1.  **CONTEO EXACTO:** Cuenta cuántos elementos hay en los arreglos \`Vistos\`, \`Considerandos\`, \`Artículos\` y \`Anexos\` del JSON de entrada.
+2.  **MAPEO OBLIGATORIO:** El JSON de salida **DEBE** tener exactamente la misma cantidad de objetos en cada arreglo correspondiente.
+    * Si hay 10 Considerandos de entrada -> DEBE haber 10 objetos en el arreglo de salida de Considerandos.
+    * Si el Considerando 5 no tiene referencias -> El objeto 5 de salida debe ser \`{ references: [] }\`. **JAMÁS ELIMINES UN OBJETO POR ESTAR VACÍO.**
+    * **SALTARSE UN ÍTEM (Visto, Considerando, Artículo) ES UN ERROR FATAL.** Verifica dos veces que los índices coincidan (Input[i] corresponde a Output[i]).
 
 ### PROCEDIMIENTO PARA DETECTAR Y PROCESAR REFERENCIAS (Contenido)
-Una vez construida la estructura obligatoria de objetos, procede a rellenar el arreglo de referencias para cada uno de ellos.
+Una vez construida la estructura obligatoria de objetos (con sus huecos vacíos si es necesario), procede a rellenar el arreglo de referencias.
 
-1) Identificar todas las referencias presentes en el texto del Visto/Considerando/Artículo/Anexo.
-2) Para cada referencia:
-    a) Si la referencia no es a una resolución de la UNS, ignorarla (Ej: ley nacional, decreto, resolución de otra entidad, etc.).
+**PRINCIPIO DE EXTRACCIÓN COMPLETA (PEC):** Como regla general, cuando un ID de resolución (ej: "CSU-512/2010") está precedido por una descripción de parte específica (ej: "artículo 2º del Anexo de la", "el Anexo de la"), DEBES tratar a la frase COMPLETA (la parte + el ID) como UNA SOLA UNIDAD DE REFERENCIA.
+* *Ejemplo:* En "Modificar el artículo 2º del Anexo de la resolución CSU-512/2010...", la \`reference\` DEBE ser "artículo 2º del Anexo de la resolución CSU-512/2010".
+* *Excepción:* Este principio **NO SE APLICA** si la frase es un \`[SLOT]\` de incorporación (ver REGLA 1).
+
+1) **Identificar y Segmentar Referencias (Reglas de Extracción Jerárquicas):**
+
+    * **REGLA DE EXTRACCIÓN 1: ACCIÓN "INCORPORAR/AGREGAR COMO" (MÁXIMA PRIORIDAD)**
+      Esta regla se ejecuta **ANTES** que cualquier otra. Si el texto contiene un patrón de acción como \`...[ACCIÓN] como [SLOT] al/en [DESTINO], [OBJETO]\` (ej: "Incorpórese como Art. 2 bis al Anexo I de la Res X...").
+      
+      * **REGLA DE EXCLUSIÓN (SLOT):** La frase que describe el \`[SLOT]\` (ej: "Artículo 2º bis", "Inciso c)") es la ubicación *nueva* y **NO ES UNA REFERENCIA**. Está prohibido extraerla.
+      
+      * **ACCIÓN DE EXTRACCIÓN (Segmentación):** DEBES procesar el resto:
+          1.  **Extraer Contenedor [DESTINO]:** DEBES extraer el contenedor *existente* donde se realiza la incorporación.
+              * **CRÍTICO:** Si el destino menciona una estructura interna (Anexo, Capítulo) de una resolución externa (ej: "al **Anexo I de la Resolución CSU 311/2015**"), DEBES extraer la frase completa.
+          2.  **Analizar Objeto:** DEBES analizar el texto del \`[OBJETO]\` (ej: "el siguiente texto: ...").
+              * **Extraer SOLO si es Referencia:** SOLAMENTE DEBES extraer este \`[OBJETO]\` si es una referencia a otro documento existente (ej: "el Reglamento de Concursos").
+              * **Ignorar si es Inline:** Si el \`[OBJETO]\` describe contenido textual (ej: "el siguiente texto", "lo siguiente"), **NO DEBES** extraerlo.
+      * *El texto procesado por esta regla ya no se evalúa con las Reglas siguientes.*
+
+    * **REGLA DE EXTRACCIÓN 2: ANÁLISIS DE IDENTIDAD (UNIFICAR vs. SEGMENTAR)**
+      Si el texto **NO** cumple la Regla 1, y encuentras un patrón de \`[Frase A] ([Frase B con ID de Resolución])\`:
+      1.  **ANÁLISIS DE IDENTIDAD:** DEBES determinar si \`[Frase A]\` y \`[Frase B]\` apuntan a la *misma entidad* (unificación) o a *entidades distintas* (segmentación).
+      2.  **CASO A (Segmentar - Dos Referencias):** Si apuntan a entidades distintas (ej: Res A modificada por Res B). Extraer DOS referencias separadas (aplicando PEC).
+      3.  **CASO B (Unificar - Una Referencia):** Si son la misma entidad (ej: Nombre descriptivo + ID). Extraer UNA SOLA referencia unificada.
+
+    * **REGLA DE EXTRACCIÓN 3: REFERENCIAS EXPLÍCITAS (CON ID Y PARTES)**
+      Si encuentras menciones a partes (ej: "Anexo I", "Artículo 5º") seguidas de "de la resolución ID" o similar.
+      * **ACCIÓN:** DEBES aplicar el **PRINCIPIO DE EXTRACCIÓN COMPLETA (PEC)**. Extrae la frase completa.
+      * *Ejemplo:* "conforme al Anexo I de la resolución CSU-100/20". -> Extraer "Anexo I de la resolución CSU-100/20".
+
+    * **REGLA DE EXTRACCIÓN 4: REFERENCIAS ESTRUCTURALES AISLADAS (SIN ID)**
+      Si encuentras menciones a partes de la estructura (ej: "Anexo I", "el Anexo", "Artículo 15º", "el presente Reglamento") que **NO** fueron capturadas por la Regla 3 (es decir, no están unidas a un ID de resolución externa).
+      * **ACCIÓN:** DEBES extraer esa frase como una referencia independiente.
+
+2) **Procesar Referencias Extraídas:** Para cada referencia identificada:
+    a) Si la referencia no es a una resolución de la UNS, ignorarla.
     
-    b) **Detección de Referencias Implícitas Internas (Solo si NO hay ID de Resolución Explícito):** DEBES identificar como referencia a la resolución actual cualquier mención de sus partes **SI Y SOLO SI el texto de la referencia NO contiene un identificador explícito de una resolución UNS** (ej: CSU-512/2010). Esto incluye frases como:
-        * "el **Anexo** que consta en la presente"
-        * "el **Anexo** adjunto"
-        * "el **Artículo** siguiente"
-        * "la presente **resolución**"
-        * "según el **Artículo** de la presente"
+    b) **Detección y Extracción de Referencias Implícitas Internas (Resolución Actual):**
+        i. **Detección por Título de Anexo:** Si el texto coincide con el título de un Anexo interno. -> Generar referencia con número de anexo inferido.
+        ii. **Detección por Mención Genérica:** Si no, y no tiene ID explícito. -> Generar referencia con la frase.
 
-    c) Para las referencias que **NO fueron identificadas en 2.b** (es decir, aquellas con ID explícito o referencias externas): Extraer la frase completa de la referencia que incluye el tipo de parte (artículo, anexo, etc.) y la resolución, el número o identificador, y el contexto (before y after). **El campo 'reference' DEBE contener la descripción más específica posible (ej: "artículo 2º del Anexo de la resolución CSU-512/2010") y NO solo el ID de la resolución.**
+    c) **Extracción de Referencias Explícitas (Externas o con ID):** Extraer la frase completa identificada en el Paso 1.
     
-    d) **Asignación de ID de Resolución (Regla de Prioridad ABSOLUTA):**
-        * **Si la referencia contiene el identificador explícito de una resolución (ej: CSU-512/2010), DEBES usar ESE identificador.** **BAJO NINGUNA CIRCUNSTANCIA se debe usar el ID de la resolución actual en una referencia que mencione explícitamente el ID de OTRA resolución.**
-        * Solo si la referencia fue identificada en 2.b (implícita) o se refiere explícitamente a la resolución actual, usar el id de la resolución actual.
-        
-    e) Agregar un objeto al arreglo del resultado por cada referencia válida, en el mismo orden de aparición en el texto.
+    d) **Asignación de ID de Resolución:** Si la referencia tiene un ID explícito (ej: CSU-512/2010), ÚSALO. Si es implícita o se refiere a la actual, usa el ID de la resolución actual.
+    d.ii) **Inferencia de Anexo para Capítulos:** Si menciona "Capítulo" sin "Anexo", asume "Anexo 1".
     
-**REGLA DE LECTURA DE CONTEXTO COMPLETO:** Es fundamental que el modelo lea la referencia **en su totalidad** para identificar la máxima especificidad. El texto de una referencia puede ser largo, incluyendo el tipo de parte ("artículo", "capítulo", "anexo") y la resolución a la que pertenece. **DEBES** leer y analizar el texto completo de la referencia, sin detenerte al detectar el primer identificador.
-
-**Determinación del tipo de referencia (Regla de Derivación Única):** El tipo de referencia **se define ÚNICA y EXCLUSIVAMENTE** por el contenido del campo 'reference' que ya extrajiste en el paso 2.c. **DEBES** elegir el tipo de referencia más específico posible, siguiendo este flujo de decisión obligatorio:
-
-1.  **REGLA DE EXCEPCIÓN PRIORITARIA PARA INCORPORACIÓN/AGREGADO (Máxima Prioridad):**
-    * Si la referencia o el texto circundante indica una acción de **"Incorpórese"**, **"Agréguese"**, o **"Adiciónese"** un nuevo artículo a una resolución o anexo (Ej: "Incorpórese como Artículo X de la Resolución..."), **entonces la referencia no es al artículo que se está creando, sino al contenedor (la Resolución o el Anexo)**.
-    * **ACCIÓN OBLIGATORIA:** Si esta condición se cumple, **DEBES saltarte el "FLUJO OBLIGATORIO DE ARTÍCULOS"** (Punto 2) y pasar directamente al **Punto 4 (FLUJO DE ANEXOS)** para determinar el tipo (Annex si menciona Anexo, Resolution si no).
-
-2.  **FLUJO OBLIGATORIO DE ARTÍCULOS (Prioridad Normal):** Si el campo 'reference' contiene la palabra **"artículo"** o **"artículos"** junto a un número, **Y NO SE CUMPLIÓ LA REGLA DE EXCEPCIÓN ANTERIOR**:
-    a. **AnnexArticle:** Si además, el campo 'reference' contiene la palabra **"Anexo"** o **"Anexos"**.
-    b. **Article:** En cualquier otro caso donde se mencione un **"artículo"**.
-
-    **REGLA DE EXCLUSIÓN TOTAL:** Si el campo 'reference' contiene **"artículo"**, está **TERMINANTEMENTE PROHIBIDO** usar el tipo "Resolution" o "Annex" (salvo la excepción prioritaria en el punto 1).
-
-3.  **FLUJO DE CAPÍTULOS (Segunda Prioridad):** Si el campo 'reference' **NO** contiene la palabra "artículo" (ni fue una excepción de incorporación), pero sí la palabra **"Capítulo"** junto a un número:
-    - **Chapter:** Se usa este tipo.
-
-4.  **FLUJO DE ANEXOS (Tercera Prioridad):** Si el campo 'reference' **NO** contiene "artículo" ni "capítulo" (ni fue una excepción de incorporación), pero sí la palabra **"Anexo"** o **"Anexos"**:
-    - **Annex:** Se usa este tipo.
-
-5.  **FLUJO POR DEFECTO:** Si el campo 'reference' solo contiene el identificador de la resolución (o una mención genérica sin especificar parte):
-    - **Resolution:** Se usa este tipo.
-
-- Importante: Debes prestar atención a dónde está un artículo. Si es un artículo de un anexo, inclúyelo **en el arreglo del anexo correspondiente**, no en el arreglo de artículos de la resolución.
-- Para los anexos, debes respetar el tipo de anexo (TextOrTables o WithArticles) que se indica en el JSON de entrada. Si un anexo WithArticles tiene 3 artículos, DEBES incluir 3 objetos en el arreglo de artículos del anexo, uno por cada artículo, aunque no tengan referencias.
+**Determinación del tipo de referencia (Regla de Derivación Única):**
+Elige el tipo más específico posible basándote ÚNICAMENTE en el contenido del campo 'reference':
+1.  **REGLA DE EXCEPCIÓN PRIORITARIA (INCORPORACIÓN):** Si la referencia es el [DESTINO] de una incorporación (Regla Extracción 1) y contiene "Capítulo" -> \`Chapter\`; "Anexo" -> \`Annex\`; Si no -> \`Resolution\`.
+2.  **Article/AnnexArticle:** Si contiene "artículo". (Usa \`AnnexArticle\` si también dice "Anexo").
+3.  **Chapter:** Si contiene "Capítulo".
+4.  **Annex:** Si contiene "Anexo".
+5.  **Resolution:** Por defecto.
 
 ### REGLAS ESPECÍFICAS DE FORMATO Y EXCLUSIÓN:
 
@@ -76,21 +75,15 @@ Una vez construida la estructura obligatoria de objetos, procede a rellenar el a
 - Cuando en el título de un anexo se lo nombra a sí mismo (Ej. En el título del anexo dice "Anexo I - Reglamento de Exámenes"), **no debes incluir una referencia a sí mismo** en el texto del anexo.
 - La palabra **"Resolución"** debe ir **dentro del texto de la referencia** (reference), no en el before o after. Lo mismo aplica para "Anexo", "Capítulo" y "Artículo".
 - Si la referencia está al principio o al final de un texto, el before o after puede quedar vacío, respectivamente. Usa un **string vacío** ("") y no null.
-- Siempre que se referencien artículos, anexos, etc., el campo reference debe completarse. Si se refiere a la resolución actual, pon la referencia a la misma.
-- Salvo que el mismo texto se repita en otro lado, no incluyas más de **5 palabras** en before y after.
-- Con las condiciones anteriores, debes incluir todas las referencias que haya en el texto, sin importar cuántas sean.
-- Los anexos comienzan a contarse desde 1, no desde 0. Por lo tanto, si se menciona "El anexo", sin número, debes asumir que es el anexo 1.
+- Siempre que se referencien artículos, anexos, etc., el campo reference debe completarse.
+- **LÍMITE Y UNICIDAD DE CONTEXTO (before/after):**
+    * **Regla General:** No incluyas más de **6 palabras** en \`before\` y \`after\`.
+    * **Excepción de Unicidad (Prioritaria):** Si al limitar a 6 palabras se generan dos referencias con **exactamente el mismo par de before y after** dentro del mismo texto, **DEBES** aumentar la cantidad de palabras lo suficiente para diferenciarlas y que sean únicas.
 
-- **Determinación de documentos**: Debes completar un campo llamado isDocument (booleano) en cada referencia a resolución o artículo. A continuación se explica cómo determinar su valor:
- 1) Debes analizar el contenido del artículo o texto que tiene la referencia, así como cualquier visto o considerando que mencione la resolución o referenciados.
- 2) **ÚNICA REGLA DE DETERMINACIÓN:** El valor de 'isDocument' DEBE ser **TRUE** solo si el texto analizado (Visto, Considerando, o Artículo) o algún texto relacionado o algún texto relacionado (Visto, Considerando, o Artículo) **MENCIONA EXPLÍCITAMENTE** que la resolución referenciada es un **"reglamento"**, **"cronograma"**, **"texto ordenado"**, o **"plan de estudios"**.
- 3) En cualquier otro caso, el valor de 'isDocument' DEBE ser **FALSE**.
- 
-**REGLA DE CUMPLIMIENTO OBLIGATORIO:** Si el texto no contiene explícitamente una de las cuatro palabras clave (**reglamento, cronograma, texto ordenado, plan de estudios**) aplicada a la resolución referenciada, DEBES poner isDocument en **false**. Esta regla aplica incluso para modificaciones y derogaciones.
-
- Ejemplos:
- - Un artículo dice "Modifíquese el artículo 1 del reglamento de alumnos (resolución CSU-1000/2000)". -> isDocument: true.
- - Un artículo dice "Modifíquese el artículo 5 de la resolución CSU-2005/2010". Un visto o considerando dice que esa resolución es el reglamento de alumnos. -> isDocument: true.
- - Un artículo dice "Agreguese un artículo a la resolución CSU-3000/2015". No hay indicios de que esa resolución sea un documento de tipo reglamento, cronograma, texto ordenado, etc. -> isDocument: false.
- - Un artículo dice "Dejar sin efecto la resolución CSU-94/2025 que establece el valor del módulo." -> isDocument: false (No dice reglamento/cronograma/texto ordenado/plan de estudios).
- `;
+- **Determinación de documentos (isDocument):**
+ 1) Analiza el contexto de la referencia.
+ 2) **REGLA GENERAL:** 'isDocument' es **TRUE** solo si el texto menciona explícitamente que la resolución referenciada es un **"reglamento"**, **"cronograma"**, **"texto ordenado"**, o **"plan de estudios"**.
+ 3) **EXCEPCIÓN DE APROBACIÓN (PRIORIDAD MÁXIMA):** Si el artículo o texto está **"Aprobando"**, **"Rectificando la aprobación"** o **"Creando"** el documento referenciado (ej: "Aprobar el Reglamento...", "Rectificar... donde dice: Aprobar el Reglamento"), entonces 'isDocument' DEBE ser **FALSE**.
+    * *Razonamiento:* Estás definiendo el documento, no citándolo como base normativa.
+ 4) En cualquier otro caso, 'isDocument' es **FALSE**.
+`;

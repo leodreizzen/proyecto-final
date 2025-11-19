@@ -12,20 +12,20 @@ export type RawResolutionReference = z.infer<typeof ResolutionReferenceSchema>;
 export const AnnexReferenceSchema = z.object({
     referenceType: z.literal("Annex"),
     resolutionId: ResolutionIDSchema.describe("ID de la resolución que contiene el anexo"),
-    number: z.coerce.number().describe("Número del anexo"),
+    annexNumber: z.coerce.number().describe("Número del anexo"),
 }).meta({title: "ReferenciaAnexo", schemaDescription: "Referencia a un anexo dentro de una resolución"});
 
 export const ChapterReferenceSchema = z.object({
     referenceType: z.literal("Chapter"),
     annex: AnnexReferenceSchema.describe("Anexo que contiene el capítulo"),
-    number: z.coerce.number().describe("Número del capítulo dentro del anexo"),
+    chapterNumber: z.coerce.number().describe("Número del capítulo dentro del anexo"),
 }).meta({title: "ReferenciaCapitulo", schemaDescription: "Referencia a un capítulo dentro de un anexo"});
 
 export const NormalArticleReferenceSchema = z.object({
     referenceType: z.literal("NormalArticle"),
     resolutionId: ResolutionIDSchema.describe("ID de la resolución que contiene el artículo"),
     isDocument: z.boolean().describe("Indica si la referencia es a un documento (reglamento, texto ordenado, etc.)"),
-    number: z.coerce.number().describe("Número del artículo"),
+    articleNumber: z.coerce.number().describe("Número del artículo"),
     suffix: z.string().optional().nullable().describe("Sufijo del artículo, ej. 'bis'; opcional"),
 }).meta({
     title: "ReferenciaArticuloNormal",
@@ -35,7 +35,7 @@ export const NormalArticleReferenceSchema = z.object({
 export const AnnexArticleReferenceSchema = z.object({
     referenceType: z.literal("AnnexArticle"),
     annex: AnnexReferenceSchema.describe("Anexo que contiene el artículo"),
-    number: z.coerce.number().describe("Número del artículo"),
+    articleNumber: z.coerce.number().describe("Número del artículo"),
     suffix: z.string().optional().nullable().describe("Sufijo del artículo, ej. 'bis'; opcional"),
 }).meta({
     title: "ReferenciaArticuloAnexo",
