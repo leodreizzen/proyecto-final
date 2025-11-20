@@ -43,18 +43,49 @@ const commonAnalyzerRules = `
          - Los siguientes cambios no son considerados avanzados. Esta lista no es exhaustiva:
            - Incorporar un texto como articulado en un capítulo o resolución, siempre y cuando se de el nuevo texto. Se considera un agregado de artículo.
            - Rectificar un artículo, siempre y cuando se de el texto anterior y final (modificación), o directamente el texto final (reemplazo).
-         - Solamente usa el tipo AdvancedChange cuando no puedas expresar el cambio con los otros tipos. Si estás en duda, NO uses AdvancedChange.
+         - Solamente usa el tipo AdvancedChange cuando no puedas expresar el cambio con los otros tipos.
+         - **Restricción de AdvancedChange:** Solo puedes usar el tipo de cambio \`AdvancedChange\` si ya has confirmado que el artículo es \`Modifier\` (ver reglas abajo). NUNCA uses \`AdvancedChange\` para describir acciones de encuadre, asignación de valores o definiciones de alcance (esos son Normative).
         
-        ### REGLA CRÍTICA: Inferencia de Capítulos y Anexos
-        - **Regla de Inferencia Obligatoria:** Los capítulos (ej. "Capítulo IV", "Capítulo II") **SIEMPRE** pertenecen a un anexo.
-        - Si el texto de un artículo (como "Incorporar...", "Modificar...", "Agregar...") menciona un **Capítulo** pero **NO** menciona explícitamente un número de Anexo (ej. "Anexo II"), DEBES **ASUMIR OBLIGATORIAMENTE** que la acción se aplica al **Anexo 1** de la resolución referenciada.
-        - **Ejemplo de aplicación:** Un artículo que dice "Incorporar el siguiente texto como articulado del Capítulo IV... de la resolución CSU-406/12" debe interpretarse como una incorporación al **Anexo 1**, **Capítulo IV** de la **resolución CSU-406/12**.
+        ### REGLA CRÍTICA: Inferencia de Anexos y Capítulos (ANTI-ALUCINACIÓN)
+        
+        1. **Regla del Anexo Único (Default = 1):**
+           - Si el texto dice "el anexo", "su anexo", "el anexo de la presente" (en singular y sin número explícito como II, B, 2), el número de anexo es **SIEMPRE 1**.
+        
+        2. **PROHIBICIÓN DE COPIA DE ID:** - El número de anexo **NO** tiene relación con el número de resolución.
+           - **ERROR COMÚN A EVITAR:** Si la resolución es la 751, el anexo **NO ES** el 751. Es el 1 (salvo que diga explícitamente "Anexo 751", lo cual es imposible).
+           - **Ejemplo Correcto:** "Anexo de la Res. 751" -> { annexNumber: 1 }.
+           
+        3. **Inferencia de Capítulos:**
+           - Los capítulos (ej. "Capítulo IV") **SIEMPRE** pertenecen a un anexo.
+           - Si un artículo menciona un **Capítulo** pero NO menciona un número de Anexo, DEBES asumir que es el **Anexo 1** de la resolución referenciada.
    
          - Es posible agregar un anexo a una resolución, o a otro anexo. Debes distinguir esos casos y retornar el tipo de cambio adecuado.
+         
         - Determinación del tipo de artículo **Regla dura no negociable**:
-           if (no modifica, deroga, agrega (incorpora) ningún artículo ni anexo ni resolución de la UNS) → Normative
-           else if (aprueba un documento como un reglamento o texto ordenado) → CreateDocument
-           else → Modifier                   
+           1) **PREGUNTA FILTRO:** ¿El artículo altera explícitamente la **redacción** (texto escrito) o la **vigencia** (validez) de una norma anterior?
+              - SÍ, cambia el texto (ej: "Sustitúyase", "Modifíquese", "Incorpórese al artículo X") o la vigencia (ej: "Derógase", "Déjase sin efecto") -> Es **Modifier**.
+              - NO, no cambia el texto ni la vigencia, solo cita la norma para usarla (ej: "Aplíquese", "Encuádrese", "Determínese según...", "Inclúyase en los alcances de...") -> Pasa al paso 2.
+           
+           2) Si la respuesta al filtro fue NO:
+              if (aprueba un documento como un reglamento o texto ordenado) → CreateDocument
+              else → **Normative** (Aunque cite mil resoluciones o anexos, si no reescribe su texto ni las deroga, es Normative).
+
+    ## Diferencia crítica: Referencia (Normative) vs Modificación (Modifier)
+    Para ser clasificado como **Modifier**, el artículo debe tener la intención de **cambiar la "letra de la ley"** de la norma objetivo.
+    
+    - **CASOS QUE SON NORMATIVE (NO son Modifier):**
+      - **Encuadre / Alcance:** Decir que una situación, persona o dependencia se "incluye en los alcances", "se regirá por" o "se encuadra en" una resolución existente. (Estás aplicando la ley, no cambiándola).
+      - **Fijación de Valores:** Determinar precios, tarifas o cánones "conforme al anexo" o "según la resolución X".
+      - **Ratificación:** Ratificar la vigencia de una norma.
+      - **Referencias:** Cualquier mención a una resolución para usarla como base o justificación.
+      
+      En todos estos casos, el tipo es **Normative** y la resolución citada va solamente en el arreglo de \`references\`.
+
+    - **CASOS QUE SON MODIFIER:**
+      - **Reescritura:** Cambiar palabras, frases o artículos enteros de una norma anterior ("Donde dice... debe decir...").
+      - **Derogación:** Quitar validez a una norma o parte de ella.
+      - **Incorporación:** Agregar texto nuevo *dentro* de la estructura de una norma anterior ("Incorpórese como artículo 5 bis...").
+                             
     ## Sobre los tipos de cambios (prestar especial atención):
          - Para distinguir entre ReplaceArticle y ModifyArticle, debes fijarte si se da el texto anterior y el final (modificación) o solo el texto final (reemplazo).
             - if(tiene before y after) → ModifyArticle

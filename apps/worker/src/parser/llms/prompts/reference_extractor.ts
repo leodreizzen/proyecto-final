@@ -54,7 +54,10 @@ Una vez construida la estructura obligatoria de objetos (con sus huecos vacíos 
     
     b) **Detección y Extracción de Referencias Implícitas Internas (Resolución Actual):**
         i. **Detección por Título de Anexo:** Si el texto coincide con el título de un Anexo interno. -> Generar referencia con número de anexo inferido.
-        ii. **Detección por Mención Genérica:** Si no, y no tiene ID explícito. -> Generar referencia con la frase.
+        ii. **Detección por Mención Genérica (REGLA DEL ANEXO 1):**
+            * Si el texto dice simplemente "**el Anexo**", "**el Anexo único**" o "**el Anexo adjunto**" **SIN NÚMERO**.
+            * **ACCIÓN:** Debes asumir SEMÁNTICAMENTE que se refiere al **Anexo 1**.
+            * *Excepción:* Nunca asumas "Anexo 0". Eso no existe.
 
     c) **Extracción de Referencias Explícitas (Externas o con ID):** Extraer la frase completa identificada en el Paso 1.
     
@@ -79,6 +82,17 @@ Elige el tipo más específico posible basándote ÚNICAMENTE en el contenido de
 - **LÍMITE Y UNICIDAD DE CONTEXTO (before/after):**
     * **Regla General:** No incluyas más de **6 palabras** en \`before\` y \`after\`.
     * **Excepción de Unicidad (Prioritaria):** Si al limitar a 6 palabras se generan dos referencias con **exactamente el mismo par de before y after** dentro del mismo texto, **DEBES** aumentar la cantidad de palabras lo suficiente para diferenciarlas y que sean únicas.
+- **NUMERACIÓN DE ANEXOS:**
+    * Los anexos comienzan a contarse desde 1. **EL "ANEXO 0" NO EXISTE.**
+    * Si una referencia menciona "El Anexo" (singular y sin número explícito), **DEBES** tratarlo internamente y referenciarlo como si fuera el **Anexo 1**.
+
+- **PARSEO DE SUFIJOS DE ARTÍCULOS (Campo 'suffix'):**
+    * El campo \`suffix\` debe ser **NULL** por defecto.
+    * **SOLO** debes rellenarlo si el número de artículo va seguido inmediatamente de una enumeración latina explícita: **"bis", "ter", "quater", "quinquies", "sexies", etc.**
+    * **PROHIBIDO:** No pongas símbolos ordinales (º, °) ni partes del número en el sufijo.
+    * *Ejemplo Correcto:* "Artículo 14 bis" -> { number: "14", suffix: "bis" }
+    * *Ejemplo Correcto:* "Artículo 1º" -> { number: "1", suffix: null } (El º NO es un sufijo).
+    * *Ejemplo Correcto:* "Artículo 1" -> { number: "1", suffix: null }.
 
 - **Determinación de documentos (isDocument):**
  1) Analiza el contexto de la referencia.
@@ -86,4 +100,4 @@ Elige el tipo más específico posible basándote ÚNICAMENTE en el contenido de
  3) **EXCEPCIÓN DE APROBACIÓN (PRIORIDAD MÁXIMA):** Si el artículo o texto está **"Aprobando"**, **"Rectificando la aprobación"** o **"Creando"** el documento referenciado (ej: "Aprobar el Reglamento...", "Rectificar... donde dice: Aprobar el Reglamento"), entonces 'isDocument' DEBE ser **FALSE**.
     * *Razonamiento:* Estás definiendo el documento, no citándolo como base normativa.
  4) En cualquier otro caso, 'isDocument' es **FALSE**.
-`;
+ `;

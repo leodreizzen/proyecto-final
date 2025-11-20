@@ -40,8 +40,9 @@ export function zodToLLMDescription(schema: ZodType): string {
         pending.push(...auxiliaryTypes);
     }
 
+    const title = "\nTipos de salida esperados:\n";
     const mainTypeHeader = `Tipo principal: ${schema.meta()?.title}\n`;
-    let finalDescription = mainTypeHeader + mainDescription;
+    let finalDescription = title + mainTypeHeader + mainDescription;
     if (auxiliaryDescriptions.length > 0) {
         finalDescription += "---\n" + auxiliaryDescriptions.join("\n-----\n") + "\n";
     }
