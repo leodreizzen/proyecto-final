@@ -1,0 +1,31 @@
+import {ExponentialBackoff, handleType, wrap} from 'cockatiel';
+import {InvalidLLMResponseError, LLMAPIError, LLMConsistencyValidationError} from "@/parser/llms/errors";
+import {retry} from "cockatiel";
+
+const apiPolicy = retry(handleType(LLMAPIError), {
+    maxAttempts: 2,
+    backoff: new ExponentialBackoff({
+        initialDelay: 1000,
+        maxDelay: 10000,
+        exponent: 2
+    })
+}); // TODO special treatment for rate limit?
+
+const validationPolicy = retry(handleType(InvalidLLMResponseError), {
+    maxAttempts: 2
+});
+
+const combinedPolicy = wrap(apiPolicy, validationPolicy);
+
+export async function withLlmRetry<T>(operation: () => Promise<T>): Promise<T> {
+    return combinedPolicy.execute(operation);
+}
+
+
+const consistencyPolicy = retry(handleType(LLMConsistencyValidationError), {
+    maxAttempts: 2
+});
+
+export async function withLlmConsistencyRetry<T>(operation: () => Promise<T>): Promise<T> {
+    return consistencyPolicy.execute(operation);
+}

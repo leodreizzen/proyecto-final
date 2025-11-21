@@ -11,6 +11,7 @@ import {structuredLLMCall} from "@/util/llm/llm_structured";
 import {ResultWithData} from "@/definitions";
 import {AnnexAnalysis} from "@/parser/schemas/analyzer/annexes/annex";
 import {ParseResolutionError} from "@/parser/types";
+import {withLlmRetry} from "@/util/llm/retries";
 
 const annexSchemaDescription = zodToLLMDescription(AnnexAnalysisResultSchema);
 type AnalyzeAnnexInput = {
@@ -31,9 +32,14 @@ function isParseResultValid(res: AnnexAnalysisResult): res is ParseAnnexResult &
 }
 
 export async function analyzeAnnex(input: AnalyzeAnnexInput): Promise<ParseAnnexResult> {
-    console.log("calling anenex analyzer model...");
-    const annexJSON = JSON.stringify(input, null, 2);
-    const LLMResult = await structuredLLMCall({
+    return withLlmRetry(() => _analyzeAnnex(input));
+}
+
+export async function _analyzeAnnex(input: AnalyzeAnnexInput): Promise<ParseAnnexResult> {
+    return withLlmRetry(async () => {
+        console.log("calling anenex analyzer model...");
+        const annexJSON = JSON.stringify(input, null, 2);
+        const LLMResult = await structuredLLMCall({
             model: "gemini-2.5-flash",
             response_format: {
                 type: "json_object"
@@ -63,16 +69,17 @@ export async function analyzeAnnex(input: AnalyzeAnnexInput): Promise<ParseAnnex
             ]
         }, AnnexAnalysisResultSchema);
 
-    if (!isParseResultValid(LLMResult)) {
-        throw new LLMRefusalError(`Annex analyzer LLM call failed: ${LLMResult.error.message}`);
-    }
-
-    if(LLMResult.success){
-        const validationRes = validateAnnexAnalysis(LLMResult.data, input.annex);
-        if (!validationRes.success) {
-            console.error(JSON.stringify(validationRes, null, 2));
-            throw new LLMResponseValidationError(`Annex analysis validation failed: ${validationRes.error}`);
+        if (!isParseResultValid(LLMResult)) {
+            throw new LLMRefusalError(`Annex analyzer LLM call failed: ${LLMResult.error.message}`);
         }
-    }
-    return LLMResult;
+
+        if (LLMResult.success) {
+            const validationRes = validateAnnexAnalysis(LLMResult.data, input.annex);
+            if (!validationRes.success) {
+                console.error(JSON.stringify(validationRes, null, 2));
+                throw new LLMResponseValidationError(`Annex analysis validation failed: ${validationRes.error}`);
+            }
+        }
+        return LLMResult;
+    });
 }

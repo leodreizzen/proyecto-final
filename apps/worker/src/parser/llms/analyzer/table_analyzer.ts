@@ -5,10 +5,15 @@ import {tableAnalyzerSystemPrompt} from "@/parser/llms/prompts/table_analyzer";
 import {validateTableAnalysis} from "@/parser/llms/analyzer/analysis_validations";
 import {structuredLLMCall} from "@/util/llm/llm_structured";
 import {LLMResponseValidationError} from "@/parser/llms/errors";
+import {withLlmRetry} from "@/util/llm/retries";
 
 const schemaDescription = zodToLLMDescription(MultipleTableAnalysisSchema);
 
-export async function tableAnalyzer(tables: TableStructure[]): Promise<MultipleTableAnalysis["result"]> {
+export async function analyze_tables(tables: TableStructure[]): Promise<MultipleTableAnalysis["result"]> {
+    return withLlmRetry(() => _analyze_tables(tables));
+}
+
+export async function _analyze_tables(tables: TableStructure[]): Promise<MultipleTableAnalysis["result"]> {
     if (tables.length === 0) {
         return [];
     }

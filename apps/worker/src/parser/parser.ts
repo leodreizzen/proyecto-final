@@ -5,10 +5,16 @@ import {runPythonScript} from "@/util/python_scripts";
 import {ParseResolutionError, Resolution} from "@/parser/types";
 import {countTokens} from "@/util/llm/tokenCounter";
 import {assembleResolution} from "@/parser/postprocessing/assemble";
+import {withLlmConsistencyRetry} from "@/util/llm/retries";
 
 type ParseResolutionResult = ResultWithData<Resolution, ParseResolutionError>
 
+
 export async function parseTextResolution(fileContent: string): Promise<ParseResolutionResult> {
+    return withLlmConsistencyRetry(() => _parseTextResolution(fileContent));
+}
+
+export async function _parseTextResolution(fileContent: string): Promise<ParseResolutionResult> {
     const tokenCount = countTokens(fileContent);
     if (tokenCount > 20000) {
         return {

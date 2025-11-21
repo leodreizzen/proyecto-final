@@ -49,6 +49,6 @@ Si el esquema de salida incluye un campo para tablas:
 - **Tipos:** Si el esquema pide tipo, usa "WithArticles" si tiene estructura de artículos, "TextOrTables" para el resto.
 
 # IDENTIFICACIÓN DE LA RESOLUCIÓN
-- Quien dicta: Solo el nombre (ej: "CONSEJO SUPERIOR"), sin artículos "El/La".
+- Quien dicta: Solo el nombre (ej: "CONSEJO SUPERIOR"), sin artículos "El/La". Para esto, básate únicamente en la parte donde dice "X resuelve".
 - ID: Usa el del encabezado actual. Años de 2 dígitos: <60 → 2000+, ≥60 → 1900+.
 `;

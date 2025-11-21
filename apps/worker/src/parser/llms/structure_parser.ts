@@ -3,6 +3,7 @@ import {ResolutionStructureLLMResult, ResolutionStructureResultSchema} from "@/p
 import {structureParserSystemPrompt} from "@/parser/llms/prompts/structure_parser";
 import {structuredLLMCall} from "@/util/llm/llm_structured";
 import {LLMRefusalError} from "@/parser/llms/errors";
+import {withLlmRetry} from "@/util/llm/retries";
 
 const schemaDescription = zodToLLMDescription(ResolutionStructureResultSchema);
 
@@ -22,6 +23,10 @@ function isParseResultValid(res: ResolutionStructureLLMResult): res is ParseReso
 }
 
 export async function parseResolutionStructure(fileContent: string): Promise<ParseResolutionStructureResult> {
+    return withLlmRetry(() => _parseResolutionStructure(fileContent));
+}
+
+async function _parseResolutionStructure(fileContent: string): Promise<ParseResolutionStructureResult> {
     console.log("calling structure parser model...");
     const res = await structuredLLMCall({
             model: "gemini-2.5-flash-lite",

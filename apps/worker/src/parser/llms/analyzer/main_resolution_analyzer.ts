@@ -11,6 +11,7 @@ import {validateMainResolutionAnalysis} from "@/parser/llms/analyzer/analysis_va
 import {ResultWithData} from "@/definitions";
 import {ParseResolutionError} from "@/parser/types";
 import {MainResolutionAnalysis} from "@/parser/schemas/analyzer/resolution/resolution";
+import {withLlmRetry} from "@/util/llm/retries";
 
 const resolutionSchemaDescription = zodToLLMDescription(MainResolutionAnalysisResultSchema);
 
@@ -24,6 +25,10 @@ function isParseResultValid(res: ResolutionAnalysisLLMResult): res is AnalyzeRes
 }
 
 export async function analyzeMainResolution(resolution: ResolutionStructure): Promise<AnalyzeResolutionResult> {
+    return withLlmRetry(() => _analyzeMainResolution(resolution))
+}
+
+export async function _analyzeMainResolution(resolution: ResolutionStructure): Promise<AnalyzeResolutionResult> {
     console.log("calling resolution analyzer model...");
     const {annexes, ...resolutionWithoutAnnexes} = resolution;
     const filteredAnnexes = filterAnnexes(annexes)
@@ -35,40 +40,40 @@ export async function analyzeMainResolution(resolution: ResolutionStructure): Pr
 
     const resolutionJSON = JSON.stringify(filteredResolution, null, 2);
     const LLMResult = await structuredLLMCall({
-            model: "gemini-2.5-flash",
-            response_format: {
-                type: "json_object"
-            },
-            reasoning_effort: "medium",
-            max_completion_tokens: 64000,
-            messages: [
-                {
-                    role: "developer",
-                    content: [
-                        {
-                            type: "text",
-                            text: resolutionAnalyzerSystemPrompt + resolutionSchemaDescription,
-                            cache_control: {
-                                type: "ephemeral"
-                            }
-                        }
-                    ],
-                },
-                {
-                    role: "user",
-                    content: [{
+        model: "gemini-2.5-flash",
+        response_format: {
+            type: "json_object"
+        },
+        reasoning_effort: "medium",
+        max_completion_tokens: 64000,
+        messages: [
+            {
+                role: "developer",
+                content: [
+                    {
                         type: "text",
-                        text: resolutionJSON
-                    }]
-                }
-            ]
-        }, MainResolutionAnalysisResultSchema)
+                        text: resolutionAnalyzerSystemPrompt + resolutionSchemaDescription,
+                        cache_control: {
+                            type: "ephemeral"
+                        }
+                    }
+                ],
+            },
+            {
+                role: "user",
+                content: [{
+                    type: "text",
+                    text: resolutionJSON
+                }]
+            }
+        ]
+    }, MainResolutionAnalysisResultSchema)
 
     if (!isParseResultValid(LLMResult)) {
         throw new LLMResponseValidationError(`Main resolution analyzer LLM call failed: ${LLMResult.error.message}`);
     }
 
-    if(LLMResult.success) {
+    if (LLMResult.success) {
         const validationRes = validateMainResolutionAnalysis(LLMResult.data, resolution);
         if (!validationRes.success) {
             console.error(JSON.stringify(validationRes, null, 2));

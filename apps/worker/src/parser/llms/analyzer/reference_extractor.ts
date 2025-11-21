@@ -5,10 +5,15 @@ import {referenceExtractorSystemPrompt} from "@/parser/llms/prompts/reference_ex
 import {validateReferences} from "@/parser/llms/analyzer/analysis_validations";
 import {structuredLLMCall} from "@/util/llm/llm_structured";
 import {LLMResponseValidationError} from "@/parser/llms/errors";
+import {withLlmRetry} from "@/util/llm/retries";
 
 const schemaDescription = zodToLLMDescription(ResolutionReferencesSchema);
 
 export async function extractReferences(resolution: ResolutionStructure): Promise<ResolutionReferencesAnalysis> {
+    return withLlmRetry(() => _extractReferences(resolution));
+}
+
+export async function _extractReferences(resolution: ResolutionStructure): Promise<ResolutionReferencesAnalysis> {
     // TODO ALLOW REFUSAL
     console.log("calling reference extractor model...");
     const LLMResult = await structuredLLMCall({

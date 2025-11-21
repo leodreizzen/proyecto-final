@@ -18,7 +18,7 @@ export class LLMAPIError extends Error {
     public details: APIError | Error | null;
 
     constructor(message: string, llmCode: LLMAPIErrorCode, details: APIError | Error | null) {
-        super(message);
+        super(`[${llmCode}] ${message}`);
         this.name = 'LLMAPIError';
         this.errorCode = llmCode;
         this.details = details;

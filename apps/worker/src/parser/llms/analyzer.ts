@@ -1,7 +1,7 @@
 import {ResolutionStructure} from "@/parser/schemas/structure_parser/schemas";
 import {ResultWithData} from "@/definitions";
 import {FullResolutionAnalysis, ParseResolutionError,} from "@/parser/types";
-import {tableAnalyzer} from "@/parser/llms/analyzer/table_analyzer";
+import {analyze_tables} from "@/parser/llms/analyzer/table_analyzer";
 import {extractReferences} from "@/parser/llms/analyzer/reference_extractor";
 import {merge} from "lodash-es";
 import {analyzeAnnex} from "@/parser/llms/analyzer/annex_analyzer";
@@ -29,7 +29,7 @@ export async function analyzeFullResolution(resolution: ResolutionStructure): Pr
         })
     );
     const referenceAnalysisPromise = extractReferences(resolution);
-    const tableAnalysisPromise = tableAnalyzer(resolution.tables);
+    const tableAnalysisPromise = analyze_tables(resolution.tables);
 
     const annexResults = await Promise.all(annexPromises);
     const firstFailed = annexResults.find(result => !result.success);
