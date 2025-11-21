@@ -16,6 +16,13 @@ import {AnnexWithArticlesStructure, TextAnnexStructure} from "@/parser/schemas/s
 import {ArticleStructure} from "@/parser/schemas/structure_parser/article";
 import {TableStructure} from "@/parser/schemas/structure_parser/table";
 
+export type ParseResolutionError = {
+    code: "invalid_format"
+    message: string;
+} | {
+    code: "too_large"
+};
+
 export type Reference = Exclude<RawReference, { referenceType: "Resolution" }> | Omit<RawResolutionReference, "isDocument">;
 
 export type WithTables<T> = T & {

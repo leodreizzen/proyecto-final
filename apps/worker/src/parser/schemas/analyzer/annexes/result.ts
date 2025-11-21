@@ -18,3 +18,5 @@ export const AnnexAnalysisResultSchema = z.discriminatedUnion("success", [
     title: "ResultadoAnalisisAnexo",
     schemaDescription: "Resultado del análisis de un anexo de la resolución, puede ser exitoso o fallido"
 });
+
+export type AnnexAnalysisResult = z.infer<typeof AnnexAnalysisResultSchema>;

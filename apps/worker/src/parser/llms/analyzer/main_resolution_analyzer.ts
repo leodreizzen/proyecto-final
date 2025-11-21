@@ -1,16 +1,29 @@
 import {zodToLLMDescription} from "@/util/llm/zod_to_llm";
-import {MainResolutionAnalysisResultSchema} from "@/parser/schemas/analyzer/resolution/result";
+import {
+    MainResolutionAnalysisResultSchema,
+    ResolutionAnalysisLLMResult
+} from "@/parser/schemas/analyzer/resolution/result";
 import {ResolutionStructure} from "@/parser/schemas/structure_parser/schemas";
-import {LLMError, ResultWithData} from "@/definitions";
-import {MainResolutionAnalysis} from "@/parser/schemas/analyzer/resolution/resolution";
-import {createOpenAICompletion} from "@/util/llm/openai_wrapper";
 import {resolutionAnalyzerSystemPrompt} from "@/parser/llms/prompts/analyzer";
-import {parseLLMResponse} from "@/util/llm/llm_response";
+import {structuredLLMCall} from "@/util/llm/llm_structured";
+import {LLMResponseValidationError} from "@/parser/llms/errors";
 import {validateMainResolutionAnalysis} from "@/parser/llms/analyzer/analysis_validations";
+import {ResultWithData} from "@/definitions";
+import {ParseResolutionError} from "@/parser/types";
+import {MainResolutionAnalysis} from "@/parser/schemas/analyzer/resolution/resolution";
 
 const resolutionSchemaDescription = zodToLLMDescription(MainResolutionAnalysisResultSchema);
 
-export async function analyzeMainResolution(resolution: ResolutionStructure): Promise<ResultWithData<MainResolutionAnalysis, LLMError>> {
+
+export type AnalyzeResolutionResult = ResultWithData<MainResolutionAnalysis, ParseResolutionError>
+
+
+function isParseResultValid(res: ResolutionAnalysisLLMResult): res is AnalyzeResolutionResult & ResolutionAnalysisLLMResult {
+    if (res.success) return true;
+    return res.error.code !== "other_error";
+}
+
+export async function analyzeMainResolution(resolution: ResolutionStructure): Promise<AnalyzeResolutionResult> {
     console.log("calling resolution analyzer model...");
     const {annexes, ...resolutionWithoutAnnexes} = resolution;
     const filteredAnnexes = filterAnnexes(annexes)
@@ -21,9 +34,7 @@ export async function analyzeMainResolution(resolution: ResolutionStructure): Pr
     }
 
     const resolutionJSON = JSON.stringify(filteredResolution, null, 2);
-    let res
-    try {
-        res = await createOpenAICompletion({
+    const LLMResult = await structuredLLMCall({
             model: "gemini-2.5-flash",
             response_format: {
                 type: "json_object"
@@ -51,33 +62,17 @@ export async function analyzeMainResolution(resolution: ResolutionStructure): Pr
                     }]
                 }
             ]
-        })
-    } catch (e) {
-        console.error("API error:", e);
-        return {
-            success: false,
-            error: {code: "api_error"}
-        };
-    }
-    const parseRes = parseLLMResponse(res, MainResolutionAnalysisResultSchema);
+        }, MainResolutionAnalysisResultSchema)
 
-    if (!parseRes.success) {
-        return parseRes;
-    }
-    const LLMResult = parseRes.data;
-    if (!LLMResult.success) {
-        return {
-            success: false,
-            error: {code: "llm_error", llmCode: LLMResult.error.code, llmMessage: LLMResult.error.message}
-        }
+    if (!isParseResultValid(LLMResult)) {
+        throw new LLMResponseValidationError(`Main resolution analyzer LLM call failed: ${LLMResult.error.message}`);
     }
 
-    const validationRes = validateMainResolutionAnalysis(LLMResult.data, resolution);
-    if (!validationRes.success) {
-        console.error(JSON.stringify(validationRes, null, 2));
-        return {
-            success: false,
-            error: {code: "validation_error"}
+    if(LLMResult.success) {
+        const validationRes = validateMainResolutionAnalysis(LLMResult.data, resolution);
+        if (!validationRes.success) {
+            console.error(JSON.stringify(validationRes, null, 2));
+            throw new LLMResponseValidationError(`Resolution analysis validation failed: ${validationRes.error}`);
         }
     }
     return LLMResult;

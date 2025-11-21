@@ -1,15 +1,16 @@
-import {LLMError, ResultWithData} from "@/definitions";
-import {AnnexAnalysis} from "@/parser/schemas/analyzer/annexes/annex";
-import {createOpenAICompletion} from "@/util/llm/openai_wrapper";
 import {annexAnalyzerSystemPrompt} from "@/parser/llms/prompts/analyzer";
-import {parseLLMResponse} from "@/util/llm/llm_response";
-import {AnnexAnalysisResultSchema} from "@/parser/schemas/analyzer/annexes/result";
+import {AnnexAnalysisResult, AnnexAnalysisResultSchema} from "@/parser/schemas/analyzer/annexes/result";
 import {zodToLLMDescription} from "@/util/llm/zod_to_llm";
 import {AnnexStructure} from "@/parser/schemas/structure_parser/annex";
 import {ResolutionStructure} from "@/parser/schemas/structure_parser/schemas";
 import {ResolutionID} from "@/parser/schemas/common";
 import {MainResolutionAnalysis} from "@/parser/schemas/analyzer/resolution/resolution";
 import {validateAnnexAnalysis} from "@/parser/llms/analyzer/analysis_validations";
+import {LLMRefusalError, LLMResponseValidationError} from "@/parser/llms/errors";
+import {structuredLLMCall} from "@/util/llm/llm_structured";
+import {ResultWithData} from "@/definitions";
+import {AnnexAnalysis} from "@/parser/schemas/analyzer/annexes/annex";
+import {ParseResolutionError} from "@/parser/types";
 
 const annexSchemaDescription = zodToLLMDescription(AnnexAnalysisResultSchema);
 type AnalyzeAnnexInput = {
@@ -22,12 +23,17 @@ type AnalyzeAnnexInput = {
     metadata: MainResolutionAnalysis["metadata"]
 }
 
-export async function analyzeAnnex(input: AnalyzeAnnexInput): Promise<ResultWithData<AnnexAnalysis, LLMError>> {
+export type ParseAnnexResult = ResultWithData<AnnexAnalysis, ParseResolutionError>
+
+function isParseResultValid(res: AnnexAnalysisResult): res is ParseAnnexResult & AnnexAnalysisResult {
+    if (res.success) return true;
+    return res.error.code !== "other_error";
+}
+
+export async function analyzeAnnex(input: AnalyzeAnnexInput): Promise<ParseAnnexResult> {
     console.log("calling anenex analyzer model...");
     const annexJSON = JSON.stringify(input, null, 2);
-    let res
-    try {
-        res = await createOpenAICompletion({
+    const LLMResult = await structuredLLMCall({
             model: "gemini-2.5-flash",
             response_format: {
                 type: "json_object"
@@ -55,39 +61,18 @@ export async function analyzeAnnex(input: AnalyzeAnnexInput): Promise<ResultWith
                     }]
                 }
             ]
-        })
-    } catch (e) {
-        console.error("API error:", e);
-        return {
-            success: false,
-            error: {code: "api_error"}
-        };
-    }
-    const jsonParseRes = parseLLMResponse(res, AnnexAnalysisResultSchema);
-    if (!jsonParseRes.success) {
-        return jsonParseRes
+        }, AnnexAnalysisResultSchema);
+
+    if (!isParseResultValid(LLMResult)) {
+        throw new LLMRefusalError(`Annex analyzer LLM call failed: ${LLMResult.error.message}`);
     }
 
-    const LLMResult = jsonParseRes.data;
-    if (!LLMResult.success) {
-        return {
-            success: false,
-            error: {code: "llm_error", llmCode: LLMResult.error.code, llmMessage: LLMResult.error.message}
-        };
-    }
-
-    const validationRes = validateAnnexAnalysis(LLMResult.data, input.annex);
-    if (!validationRes.success) {
-        console.error(JSON.stringify(validationRes, null, 2));
-        return {
-            success: false,
-            error: {code: "validation_error"}
+    if(LLMResult.success){
+        const validationRes = validateAnnexAnalysis(LLMResult.data, input.annex);
+        if (!validationRes.success) {
+            console.error(JSON.stringify(validationRes, null, 2));
+            throw new LLMResponseValidationError(`Annex analysis validation failed: ${validationRes.error}`);
         }
     }
-
-    return {
-        success: true,
-        data: LLMResult.data
-    }
-
+    return LLMResult;
 }

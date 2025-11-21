@@ -1,21 +1,29 @@
-import {
-    ResolutionStructure,
-
-} from "@/parser/schemas/structure_parser/schemas";
-import {LLMError, ResultWithData} from "@/definitions";
 import {zodToLLMDescription} from "@/util/llm/zod_to_llm";
-import {parseLLMResponse} from "@/util/llm/llm_response";
-import {createOpenAICompletion} from "@/util/llm/openai_wrapper";
-import {ResolutionStructureResultSchema} from "@/parser/schemas/structure_parser/result";
+import {ResolutionStructureLLMResult, ResolutionStructureResultSchema} from "@/parser/schemas/structure_parser/result";
 import {structureParserSystemPrompt} from "@/parser/llms/prompts/structure_parser";
+import {structuredLLMCall} from "@/util/llm/llm_structured";
+import {LLMRefusalError} from "@/parser/llms/errors";
 
 const schemaDescription = zodToLLMDescription(ResolutionStructureResultSchema);
 
-export async function parseResolutionStructure(fileContent: string): Promise<ResultWithData<ResolutionStructure, LLMError>> {
+export type ParseResolutionStructureResult =
+    | Extract<ResolutionStructureLLMResult, { success: true }>
+    | {
+    success: false;
+    error: {
+        code: Exclude<Extract<ResolutionStructureLLMResult, { success: false }>['error']['code'], "other_error">;
+        message: string;
+    }
+};
+
+function isParseResultValid(res: ResolutionStructureLLMResult): res is ParseResolutionStructureResult {
+    if (res.success) return true;
+    return res.error.code !== "other_error";
+}
+
+export async function parseResolutionStructure(fileContent: string): Promise<ParseResolutionStructureResult> {
     console.log("calling structure parser model...");
-    let res;
-    try {
-        res = await createOpenAICompletion({
+    const res = await structuredLLMCall({
             model: "gemini-2.5-flash-lite",
             response_format: {
                 type: "json_object"
@@ -43,30 +51,10 @@ export async function parseResolutionStructure(fileContent: string): Promise<Res
                     }]
                 }
             ]
-        });
-    } catch (e) {
-        console.error("API error:", e);
-        return {
-            success: false,
-            error: {code: "api_error"}
-        };
-    }
-    const jsonParseRes = parseLLMResponse(res, ResolutionStructureResultSchema);
-    if (!jsonParseRes.success) {
-        return jsonParseRes
-    }
+        }, ResolutionStructureResultSchema);
 
-    const LLMResult = jsonParseRes.data;
-    if(LLMResult.success){
-        return {
-            success: true,
-            data: LLMResult.data
-        }
+    if (!isParseResultValid(res)) {
+        throw new LLMRefusalError(`Structure parser LLM call failed: ${res.error.message}`);
     }
-    else{
-        return {
-            success: false,
-            error: { code: "llm_error", llmCode: LLMResult.error.code, llmMessage: LLMResult.error.message}
-        };
-    }
+    return res;
 }

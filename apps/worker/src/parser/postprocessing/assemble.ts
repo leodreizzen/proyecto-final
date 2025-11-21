@@ -16,9 +16,8 @@ import {TextReference} from "@/parser/schemas/references/schemas";
 import {ResolutionID} from "@/parser/schemas/common";
 import {isEqual} from "lodash-es";
 
-//TODO ERROR CODES
 // Resolution parts must be validated before calling this function
-export function assembleResolution(structure: ResolutionStructure, analysis: FullResolutionAnalysis): ResultWithData<Resolution> {
+export function assembleResolution(structure: ResolutionStructure, analysis: FullResolutionAnalysis): Resolution {
     const recitals = structure.recitals.map((recital, index) => ({
         text: recital,
         references: analysis.recitals[index]!.references
@@ -79,16 +78,7 @@ export function assembleResolution(structure: ResolutionStructure, analysis: Ful
         tables: tables,
     }
     const resolutionWithMovedTables = moveTablesInResolution(assembledResolution);
-    if(!resolutionWithMovedTables.success){
-        return {
-            success: false,
-            error: `Error moving tables in resolution assembly: ${resolutionWithMovedTables.error}`
-        }
-    }
-    return {
-        success: true,
-        data: mapDocumentReferences(resolutionWithMovedTables.data)
-    }
+    return mapDocumentReferences(resolutionWithMovedTables);
 }
 
 function applyAnalysisToTable(tableStructure: TableStructure, tableAnalysis: TableAnalysis): TableStructure {

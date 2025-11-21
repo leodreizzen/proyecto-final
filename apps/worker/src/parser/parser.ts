@@ -1,28 +1,12 @@
 import {parseResolutionStructure} from "@/parser/llms/structure_parser";
-import {LLMError, ResultWithData} from "@/definitions";
+import {ResultWithData} from "@/definitions";
 import {analyzeFullResolution} from "@/parser/llms/analyzer";
 import {runPythonScript} from "@/util/python_scripts";
-import {Resolution} from "@/parser/types";
+import {ParseResolutionError, Resolution} from "@/parser/types";
 import {countTokens} from "@/util/llm/tokenCounter";
 import {assembleResolution} from "@/parser/postprocessing/assemble";
 
-type ParseResolutionResult = ResultWithData<Resolution, {
-    code: "internal_error" | "invalid_format" | "too_large"
-}>;
-
-function mapLLMError(error: LLMError) {
-    let errorResult: { code: "internal_error" } | { code: "invalid_format" };
-    if (error.code === "llm_error" && error.llmCode === "invalid_format") {
-        errorResult = {
-            code: "invalid_format"
-        };
-    } else {
-        errorResult = {
-            code: "internal_error"
-        }
-    }
-    return errorResult;
-}
+type ParseResolutionResult = ResultWithData<Resolution, ParseResolutionError>
 
 export async function parseTextResolution(fileContent: string): Promise<ParseResolutionResult> {
     const tokenCount = countTokens(fileContent);
@@ -30,7 +14,7 @@ export async function parseTextResolution(fileContent: string): Promise<ParseRes
         return {
             success: false,
             error: {
-                code: "too_large"
+                code: "too_large",
             }
         }
     }
@@ -40,32 +24,19 @@ export async function parseTextResolution(fileContent: string): Promise<ParseRes
         console.error(JSON.stringify(structureRes.error));
         return {
             success: false,
-            error: mapLLMError(structureRes.error)
+            error: structureRes.error
         }
     }
 
     const analysisRes = await analyzeFullResolution(structureRes.data);
     if (!analysisRes.success) {
         console.error(JSON.stringify(analysisRes.error));
-        return {
-            success: false,
-            error: mapLLMError(analysisRes.error)
-        }
-    }
-
-    const assembleResolutionRes = assembleResolution(structureRes.data, analysisRes.data);
-
-    if (!assembleResolutionRes.success) {
-        console.error(JSON.stringify(assembleResolutionRes.error));
-        return {
-            success: false,
-            error: {code: "internal_error"}
-        }
+        return analysisRes;
     }
 
     return {
         success: true,
-        data: assembleResolutionRes.data
+        data: assembleResolution(structureRes.data, analysisRes.data)
     }
 }
 

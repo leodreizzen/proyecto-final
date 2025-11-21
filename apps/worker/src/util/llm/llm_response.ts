@@ -1,33 +1,17 @@
-import {LLMError, ResultWithData} from "@/definitions";
 import {parseLLMStringWithZodObject} from "@/util/llm/json_parse";
-import {z} from "zod";
+import {z, ZodType} from "zod";
 import { ChatCompletion } from "openai/resources";
+import {LLMAPIError} from "@/parser/llms/errors";
 
-export function parseLLMResponse<T>(res: ChatCompletion, schema: z.ZodType<T>): ResultWithData<T, LLMError> {
+export function parseLLMResponse<S extends ZodType>(res: ChatCompletion, schema: S): z.infer<S> {
     if (!res.choices || res.choices.length === 0) {
-        return {
-            success: false,
-            error: {code: "no_response"}
-        };
+        throw new LLMAPIError("No choices in LLM response", "no_response", null);
     }
 
     const message = res.choices[0]!.message.content;
     if (!message)
-        return {
-            success: false,
-            error: {code: "no_response"}
-        }
+        throw new LLMAPIError("No content in LLM response", "no_response", null);
+
     const messageToParse = message.replace(/<br>/g, "\n");
-    const parseResult = parseLLMStringWithZodObject(messageToParse, schema);
-    if (!parseResult.success) {
-        console.error("Parse error:\n" + JSON.stringify(parseResult.error, null, 2)); // TODO proper formatting
-        return {
-            success: false,
-            error: {code: "parse_error"}
-        };
-    }
-    return {
-        success: true,
-        data: parseResult.data
-    };
+    return parseLLMStringWithZodObject(messageToParse, schema);
 }

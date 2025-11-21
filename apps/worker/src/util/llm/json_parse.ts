@@ -1,54 +1,23 @@
-import {ZodError, ZodType} from "zod";
-import {ResultWithData} from "@/definitions";
+import {z, ZodError, ZodType} from "zod";
 import {jsonrepair} from "jsonrepair";
+import {InvalidLLMResponseError, LLMOutputParseError} from "@/parser/llms/errors";
 
-type parseError<T> = {
-    code: "invalid_json",
-} | {
-    code: "zod_error",
-    details: ZodError<T>;
+
+export function parseStringWithZodObject<S extends ZodType>(str: string, schema: S): z.infer<S> {
+    const obj = JSON.parse(str);
+    return schema.parse(obj);
 }
 
-type ParseStringWithZodObjectResult<O> = ResultWithData<O, parseError<O>>;
-
-export function parseStringWithZodObject<O, I>(str: string, schema: ZodType<O, I>): ParseStringWithZodObjectResult<O> {
-    let obj;
-    try {
-        obj = JSON.parse(str);
-    } catch {
-        return {
-            success: false,
-            error: { code: "invalid_json"}
-        };
-    }
-
-    const parseResult = schema.safeParse(obj);
-    if (!parseResult.success) {
-        return {
-            success: false,
-            error: {
-                code: "zod_error",
-                details: parseResult.error
-            }
-        };
-    }
-    return {
-        success: true,
-        data: parseResult.data
-    };
-}
-
-export function parseLLMStringWithZodObject<O, I>(str: string, schema: ZodType<O, I>): ParseStringWithZodObjectResult<O> {
+export function parseLLMStringWithZodObject<S extends ZodType>(str: string, schema: S): z.infer<S> {
     let repairedStr;
     try{
         repairedStr = jsonrepair(str);
+        return parseStringWithZodObject(repairedStr, schema);
     } catch (e){
-        console.error(JSON.stringify(e));
-        return {
-            success: false,
-            error: { code: "invalid_json"}
+        if (e instanceof ZodError) {
+            throw new LLMOutputParseError("Error parsing LLM response", e);
         }
+        else
+            throw new InvalidLLMResponseError("Invalid JSON response from LLM");
     }
-
-    return parseStringWithZodObject(repairedStr, schema);
 }

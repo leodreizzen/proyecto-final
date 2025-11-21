@@ -1,6 +1,6 @@
 import {ResolutionStructure} from "@/parser/schemas/structure_parser/schemas";
-import {LLMError, ResultWithData} from "@/definitions";
-import {FullResolutionAnalysis,} from "@/parser/types";
+import {ResultWithData} from "@/definitions";
+import {FullResolutionAnalysis, ParseResolutionError,} from "@/parser/types";
 import {tableAnalyzer} from "@/parser/llms/analyzer/table_analyzer";
 import {extractReferences} from "@/parser/llms/analyzer/reference_extractor";
 import {merge} from "lodash-es";
@@ -8,8 +8,9 @@ import {analyzeAnnex} from "@/parser/llms/analyzer/annex_analyzer";
 import {analyzeMainResolution} from "@/parser/llms/analyzer/main_resolution_analyzer";
 
 import {validateReferenceConsistency} from "@/parser/llms/analyzer/reference_consistency";
+import {LLMConsistencyValidationError} from "@/parser/llms/errors";
 
-export async function analyzeFullResolution(resolution: ResolutionStructure): Promise<ResultWithData<FullResolutionAnalysis, LLMError>> {
+export async function analyzeFullResolution(resolution: ResolutionStructure): Promise<ResultWithData<FullResolutionAnalysis, ParseResolutionError>> {
     const mainAnalysisRes = await analyzeMainResolution(resolution);
     if (!mainAnalysisRes.success) {
         return mainAnalysisRes;
@@ -33,36 +34,18 @@ export async function analyzeFullResolution(resolution: ResolutionStructure): Pr
     const annexResults = await Promise.all(annexPromises);
     const firstFailed = annexResults.find(result => !result.success);
     if (firstFailed !== undefined) {
-        const firstError = firstFailed.error;
-        return {
-            success: false,
-            error: firstError
-        };
+        return firstFailed;
     }
+
     const annexes = annexResults.map(result => (result as typeof result & {success: true}).data);
 
     const referenceAnalysisResult = await referenceAnalysisPromise;
-    if (!referenceAnalysisResult.success) {
-        return referenceAnalysisResult;
-    }
+    const tableAnalysis = await tableAnalysisPromise;
 
-    const tableAnalysisRes = await tableAnalysisPromise;
-    if (!tableAnalysisRes.success) {
-        console.error(JSON.stringify(tableAnalysisRes.error));
-        return tableAnalysisRes;
-    }
-
-    const tableAnalysis = tableAnalysisRes.data;
-
-    const consistencyValidationRes = validateReferenceConsistency(mainResolutionAnalysis, annexes, referenceAnalysisResult.data);
+    const consistencyValidationRes = validateReferenceConsistency(mainResolutionAnalysis, annexes, referenceAnalysisResult);
     if (!consistencyValidationRes.success) {
         console.error(JSON.stringify(consistencyValidationRes.error));
-        return {
-            success: false,
-            error: {
-                code: "validation_error"
-            }
-        }
+        throw new LLMConsistencyValidationError(consistencyValidationRes.error);
     }
 
     return {
@@ -71,6 +54,6 @@ export async function analyzeFullResolution(resolution: ResolutionStructure): Pr
             ...mainResolutionAnalysis,
             annexes: annexes,
             tables: tableAnalysis
-        }, referenceAnalysisResult.data)
+        }, referenceAnalysisResult)
     }
 }
