@@ -33,8 +33,8 @@ async function _parseResolutionStructure(fileContent: string): Promise<ParseReso
             response_format: {
                 type: "json_object"
             },
-            reasoning_effort: "medium",
-            max_completion_tokens: 25000,
+            reasoning_effort: "high",
+            max_completion_tokens: 30000,
             messages: [
                 {
                     role: "developer",

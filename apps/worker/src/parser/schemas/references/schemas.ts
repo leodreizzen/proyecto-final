@@ -26,7 +26,10 @@ export const NormalArticleReferenceSchema = z.object({
     resolutionId: ResolutionIDSchema.describe("ID de la resolución que contiene el artículo"),
     isDocument: z.boolean().describe("Indica si la referencia es a un documento (reglamento, texto ordenado, etc.)"),
     articleNumber: z.coerce.number().describe("Número del artículo"),
-    suffix: z.string().optional().nullable().describe("Sufijo del artículo, ej. 'bis'; opcional"),
+    suffix: z.string().optional().nullable().overwrite(s => {
+        if (s === undefined) return null;
+        return s;
+    }).describe("Sufijo del artículo, ej. 'bis'; opcional"),
 }).meta({
     title: "ReferenciaArticuloNormal",
     schemaDescription: "Referencia a un artículo de una resolución, fuera de anexos"
@@ -35,8 +38,17 @@ export const NormalArticleReferenceSchema = z.object({
 export const AnnexArticleReferenceSchema = z.object({
     referenceType: z.literal("AnnexArticle"),
     annex: AnnexReferenceSchema.describe("Anexo que contiene el artículo"),
+    chapterNumber: z.number().optional().nullable()
+        .overwrite(ch => {
+            if (ch === undefined) return null;
+            return ch;
+        })
+        .describe("Número del capítulo dentro del anexo, si aplica"),
     articleNumber: z.coerce.number().describe("Número del artículo"),
-    suffix: z.string().optional().nullable().describe("Sufijo del artículo, ej. 'bis'; opcional"),
+    suffix: z.string().optional().nullable().overwrite(s => {
+        if (s === undefined) return null;
+        return s;
+    }).describe("Sufijo del artículo, ej. 'bis'; opcional"),
 }).meta({
     title: "ReferenciaArticuloAnexo",
     schemaDescription: "Referencia a un artículo dentro de un anexo de una resolución"

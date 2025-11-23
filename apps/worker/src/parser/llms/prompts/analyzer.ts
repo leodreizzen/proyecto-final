@@ -94,19 +94,44 @@ const commonAnalyzerRules = `
          - Para los artículos que reemplazan anexos, debes determinar si el anexo nuevo es inline (se da el texto completo) o es una referencia a otro anexo de la misma resolución. Debes distinguir esos casos en tu respuesta.         
          - Para los cambios avanzados, debes determinar si el cambio afecta a la resolución completa, a un anexo, un capítulo o un artículo específico. Incluye SOLO el más específico. Por ejemplo, si un artículo modifica un anexo, no incluyas targetResolution
 
-- **Determinación de documentos (isDocument/targetIsDocument):**
- 1) Analiza el contexto de la referencia o el cambio.
- 2) **REGLA GENERAL:** 'isDocument' es **TRUE** solo si el texto menciona explícitamente que la resolución referenciada es un **"reglamento"**, **"cronograma"**, **"texto ordenado"**, o **"plan de estudios"**.
- 3) **EXCEPCIÓN DE APROBACIÓN (PRIORIDAD MÁXIMA):** Si el artículo o texto está **"Aprobando"**, **"Rectificando la aprobación"**, **"Creando"** o **"Ratificando"** el documento referenciado (ej: "Aprobar el Reglamento...", "Rectificar... donde dice: Aprobar el Reglamento"), entonces 'isDocument' DEBE ser **FALSE**.
-    * *Razonamiento:* Estás definiendo el documento, no citándolo como base normativa existente para modificarlo.
- 4) En cualquier otro caso, 'isDocument' es **FALSE**.
+### 3. ATRIBUTOS Y LÓGICA DE DOCUMENTOS
 
- Ejemplos isDocument:
- - "Modifíquese el artículo 1 del reglamento de alumnos (Res A)". -> isDocument: true.
- - "Aprobar el Reglamento de Alumnos que figura en el Anexo". -> isDocument: false (Es una aprobación).
- - "Rectificar el art que dice 'Aprobar el Reglamento'". -> isDocument: false (Sigue siendo contexto de aprobación).
- - "Dejar sin efecto la resolución CSU-94/2025 que establece el valor del módulo." -> isDocument: false (No dice reglamento/cronograma/texto ordenado/plan de estudios).
-`;
+**A) Determinación de 'isDocument' / 'targetIsDocument' (LÓGICA DE LISTA BLANCA):**
+Para que \`isDocument\` / \`targetIsDocument\` sea **TRUE**, la referencia DEBE cumplir obligatoriamente el Paso 1 y el Paso 2.
+
+**PASO 1: FILTRO DE PALABRAS CLAVE (WHITELIST)**
+Analiza la cadena de referencia extraída y su contexto inmediato (mismo artículo).
+
+* **Lista Blanca (TRUE Triggers):** "Reglamento", "Estatuto", "Plan", "Régimen", "Anexo", "Diseño Curricular", "Texto Ordenado", "Cronograma", "Capítulo".
+* **Lista Negra de Falsos Amigos (FALSE Triggers):**
+    * Palabras que suenan a documento pero **NO LO SON** para este sistema: "Pautas", "Lineamientos", "Marco", "Programa", "Procedimiento", "Acta", "Convenio".
+    * Si la referencia contiene "Pautas y Lineamientos" pero NO dice "Reglamento", entonces es **FALSE**.
+
+* **RESULTADO DEL FILTRO:**
+    * ¿Contiene alguna palabra de la Lista Blanca? -> **PASA AL PASO 2.**
+    * ¿Solo contiene palabras de Lista Negra o ninguna? -> **STOP. isDocument/targetIsDocument = FALSE.** (Aunque diga "Resolución" o "Artículo").
+
+**PASO 2: EL FILTRO DE ACCIÓN (Verb Check)**
+(Solo se evalúa si pasó el Paso 1 con éxito)
+* **TRUE:** Si la acción altera el *texto interior* del documento (Modificar, Sustituir, Rectificar redacción, Derogar artículo, Incorporar artículo).
+* **FALSE:** Si la acción es sobre la *existencia* o *validación* del documento (Aprobar, Crear, Ratificar, Dejar sin efecto el documento entero).
+
+**CASOS TEST CRÍTICOS (Úsalos para calibrar):**
+1. *Input:* "Incorporar como artículo 4° bis de la Resolución CSU-83/21..."
+   * *Check Paso 1:* ¿Dice Reglamento? No. ¿Dice Pautas? Quizás en el contexto, pero está en Lista Negra. -> **FALSE**.
+2. *Input:* "Modificar las Pautas y Lineamientos de la Res..."
+   * *Check Paso 1:* "Pautas" está en Lista Negra. -> **FALSE**.
+3. *Input:* "Modificar el artículo 5 del Reglamento de Alumnos..."
+   * *Check Paso 1:* "Reglamento" está en Lista Blanca. -> **TRUE**.
+
+**B) Referencias Internas e Implícitas (REGLAS DE INFERENCIA):**
+* **Regla del Anexo 1 (Capítulos Huérfanos):** Si el texto menciona un **Capítulo** (ej: "Capítulo IV") asociado a una Resolución, pero NO menciona explícitamente un número de Anexo, **ASUME SIEMPRE QUE ES EL ANEXO 1**.
+    * *Ejemplo:* "Capítulo IV de la Res. 123" -> **Type: Chapter, annexNumber: 1, chapterNumber: 4**.
+* Si el texto dice "**el Anexo**" (singular y sin número) -> Asume que se refiere al **Anexo 1**.
+* Si el texto coincide con el título de un anexo interno (Regla de Diccionario) -> Usa el ID de la resolución actual.
+
+**C) Tipo de Referencia (type):**
+Infiere el tipo más específico: \`AnnexArticle\`, \`Article\`, \`Annex\`, \`Chapter\`. Si es la resolución entera -> \`Resolution\`.`;
 
 export const resolutionAnalyzerSystemPrompt = `
 Eres un experto en interpretar resoluciones legislativas y cambios legales. Tu tarea es analizar una resolución y dar como salida un JSON con los campos pedidos.

@@ -1,7 +1,7 @@
 import {ResolutionStructure} from "@/parser/schemas/structure_parser/schemas";
 import {zodToLLMDescription} from "@/util/llm/zod_to_llm";
 import {ResolutionReferencesAnalysis, ResolutionReferencesSchema} from "@/parser/schemas/references/schemas";
-import {referenceExtractorSystemPrompt} from "@/parser/llms/prompts/reference_extractor";
+import {itemsCountPrompt, referenceExtractorSystemPrompt} from "@/parser/llms/prompts/reference_extractor";
 import {validateReferences} from "@/parser/llms/analyzer/analysis_validations";
 import {structuredLLMCall} from "@/util/llm/llm_structured";
 import {LLMResponseValidationError} from "@/parser/llms/errors";
@@ -33,6 +33,9 @@ export async function _extractReferences(resolution: ResolutionStructure): Promi
                         cache_control: {
                             type: "ephemeral"
                         }
+                    }, {
+                        type: "text",
+                        text: itemsCountPrompt(resolution)
                     }
                 ],
             },

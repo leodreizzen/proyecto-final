@@ -89,7 +89,12 @@ export const ChangeAddArticleToResolutionSchema = z.object({
     targetResolution: ResolutionIDSchema.describe("Resolución destino"),
     targetIsDocument: z.boolean().describe("Indica si la referencia es a un documento (reglamento, texto ordenado, etc.)"),
     newArticleNumber: z.coerce.number().optional().nullable().describe("Número que tendrá el artículo en el destino. Opcional"),
-    newArticleSuffix: z.string().optional().nullable().describe("Sufijo que tendrá el artículo en el destino, ej. 'bis'"),
+    newArticleSuffix: z.string().optional().nullable()
+        .overwrite(s => {
+            if (s === undefined) return null;
+            return s;
+        })
+        .describe("Sufijo que tendrá el artículo en el destino, ej. 'bis'"),
     get articleToAdd() {
         return ArticleSchemaWithText.describe("Artículo a agregar, con su texto completo");
     }
@@ -106,7 +111,12 @@ export const ChangeAddArticleToAnnexSchema = z.object({
         ]).describe("Destino del artículo")
     },
     newArticleNumber: z.coerce.number().optional().nullable().describe("Número que tendrá el artículo en el destino. Opcional"),
-    newArticleSuffix: z.string().optional().nullable().describe("Sufijo que tendrá el artículo en el destino, ej. 'bis'"),
+    newArticleSuffix: z.string().optional().nullable()
+        .overwrite(s => {
+            if (s === undefined) return null;
+            return s;
+        })
+        .describe("Sufijo que tendrá el artículo en el destino, ej. 'bis'"),
     get articleToAdd() {
         return ArticleSchemaWithText.describe("Artículo a agregar, con su texto completo");
     }

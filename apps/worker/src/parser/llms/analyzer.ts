@@ -9,6 +9,7 @@ import {analyzeMainResolution} from "@/parser/llms/analyzer/main_resolution_anal
 
 import {validateReferenceConsistency} from "@/parser/llms/analyzer/reference_consistency";
 import {LLMConsistencyValidationError} from "@/parser/llms/errors";
+import {withLlmConsistencyRetry} from "@/util/llm/retries";
 
 export async function analyzeFullResolution(resolution: ResolutionStructure): Promise<ResultWithData<FullResolutionAnalysis, ParseResolutionError>> {
     const mainAnalysisRes = await analyzeMainResolution(resolution);
@@ -39,14 +40,18 @@ export async function analyzeFullResolution(resolution: ResolutionStructure): Pr
 
     const annexes = annexResults.map(result => (result as typeof result & {success: true}).data);
 
-    const referenceAnalysisResult = await referenceAnalysisPromise;
     const tableAnalysis = await tableAnalysisPromise;
 
-    const consistencyValidationRes = validateReferenceConsistency(mainResolutionAnalysis, annexes, referenceAnalysisResult);
-    if (!consistencyValidationRes.success) {
-        console.error(JSON.stringify(consistencyValidationRes.error));
-        throw new LLMConsistencyValidationError(consistencyValidationRes.error);
-    }
+    const referenceAnalysisResult = await withLlmConsistencyRetry(async ()=> {
+        const referenceAnalysisResult = await referenceAnalysisPromise;
+        const consistencyValidationRes = validateReferenceConsistency(mainResolutionAnalysis, annexes, referenceAnalysisResult);
+        if (!consistencyValidationRes.success) {
+            console.error(JSON.stringify(consistencyValidationRes.error));
+            throw new LLMConsistencyValidationError(consistencyValidationRes.error);
+        }
+        return referenceAnalysisResult;
+    })
+
 
     return {
         success: true,

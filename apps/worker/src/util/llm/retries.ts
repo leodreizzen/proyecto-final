@@ -18,7 +18,14 @@ const validationPolicy = retry(handleType(InvalidLLMResponseError), {
 const combinedPolicy = wrap(apiPolicy, validationPolicy);
 
 export async function withLlmRetry<T>(operation: () => Promise<T>): Promise<T> {
-    return combinedPolicy.execute(operation);
+    try{
+        return combinedPolicy.execute(operation);
+    }
+    catch (e){
+        console.error("Error occurred while executing LLM operation:", e);
+        throw e;
+    }
+
 }
 
 

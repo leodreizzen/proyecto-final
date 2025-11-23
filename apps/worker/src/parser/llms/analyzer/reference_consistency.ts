@@ -69,13 +69,28 @@ function validateReferenceConsistencyInArticle(article: ArticleAnalysis, article
 
 function changeReferences(change: Change): RawReference[] {
     switch (change.type) {
-        case "AddArticleToResolution":
         case "RepealResolution":
             return [{
                 referenceType: "Resolution",
                 resolutionId: change.targetResolution,
                 isDocument: false
             }]
+        case "AddArticleToResolution": {
+            if (change.newArticleNumber)
+                return [{
+                    referenceType: "NormalArticle",
+                    isDocument: change.targetIsDocument,
+                    resolutionId: change.targetResolution,
+                    articleNumber: change.newArticleNumber,
+                    suffix: change.newArticleSuffix
+                }]
+            else
+                return [{
+                    referenceType: "Resolution",
+                    resolutionId: change.targetResolution,
+                    isDocument: change.targetIsDocument
+                }];
+        }
         case "ReplaceArticle":
         case "RepealArticle":
         case "ModifyArticle":
@@ -85,12 +100,24 @@ function changeReferences(change: Change): RawReference[] {
             return [change.targetAnnex]
         case "RepealAnnexChapter":
             return [change.targetChapter]
-        case "AddAnnexToResolution":
-            return [{
-                referenceType: "Resolution",
-                resolutionId: change.targetResolution,
-                isDocument: change.targetIsDocument
-            }, change.annexToAdd]
+        case "AddAnnexToResolution": {
+            let annexSlotRef;
+            if (change.newAnnexNumber)
+                annexSlotRef = {
+                    referenceType: "Annex",
+                    resolutionId: change.targetResolution,
+                    annexNumber: change.newAnnexNumber,
+                } as const
+            else
+                annexSlotRef = {
+                    referenceType: "Resolution",
+                    resolutionId: change.targetResolution,
+                    isDocument: change.targetIsDocument
+                } as const
+
+            return [annexSlotRef, change.annexToAdd]
+        }
+
         case "ReplaceAnnex": {
             const targets: RawReference[] = [change.targetAnnex];
             if (change.newContent.contentType == "Reference") {
@@ -100,8 +127,29 @@ function changeReferences(change: Change): RawReference[] {
         }
         case "AddAnnexToAnnex":
             return [change.annexToAdd, change.target]
-        case "AddArticleToAnnex":
-            return [change.target]
+        case "AddArticleToAnnex":{
+            if (change.newArticleNumber) {
+                if (change.target.referenceType === "Annex") {
+                    return [{
+                        referenceType: "AnnexArticle",
+                        annex: change.target,
+                        articleNumber: change.newArticleNumber,
+                        suffix: change.newArticleSuffix,
+                        chapterNumber: null
+                    }]
+                } else {
+                    return [{
+                        referenceType: "AnnexArticle",
+                        annex: change.target.annex,
+                        articleNumber: change.newArticleNumber,
+                        suffix: change.newArticleSuffix,
+                        chapterNumber: change.target.chapterNumber
+                    }]
+                }
+            }
+            else
+                return [change.target]
+        }
         case "ApplyModificationsAnnex":
             return [change.annexToApply]
         case "AdvancedChange": {
