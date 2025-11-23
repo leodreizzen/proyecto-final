@@ -3,7 +3,8 @@ import {ResolutionStructureLLMResult, ResolutionStructureResultSchema} from "@/p
 import {structureParserSystemPrompt} from "@/parser/llms/prompts/structure_parser";
 import {structuredLLMCall} from "@/util/llm/llm_structured";
 import {LLMRefusalError} from "@/parser/llms/errors";
-import {withLlmRetry} from "@/util/llm/retries";
+import {retryCacheBuster, withLlmRetry} from "@/util/llm/retries";
+import {IRetryContext} from "cockatiel";
 
 const schemaDescription = zodToLLMDescription(ResolutionStructureResultSchema);
 
@@ -22,11 +23,11 @@ function isParseResultValid(res: ResolutionStructureLLMResult): res is ParseReso
     return res.error.code !== "other_error";
 }
 
-export async function parseResolutionStructure(fileContent: string): Promise<ParseResolutionStructureResult> {
-    return withLlmRetry(() => _parseResolutionStructure(fileContent));
+export async function parseResolutionStructure(fileContent: string, firstAttempt: boolean): Promise<ParseResolutionStructureResult> {
+    return withLlmRetry((ctx) => _parseResolutionStructure(fileContent, firstAttempt && ctx.attempt === 1));
 }
 
-async function _parseResolutionStructure(fileContent: string): Promise<ParseResolutionStructureResult> {
+async function _parseResolutionStructure(fileContent: string, firstAttempt: boolean): Promise<ParseResolutionStructureResult> {
     console.log("calling structure parser model...");
     const res = await structuredLLMCall({
             model: "gemini-2.5-flash-lite",
@@ -52,7 +53,7 @@ async function _parseResolutionStructure(fileContent: string): Promise<ParseReso
                     role: "user",
                     content: [{
                         type: "text",
-                        text: fileContent
+                        text: retryCacheBuster(firstAttempt) + fileContent
                     }]
                 }
             ]

@@ -5,15 +5,15 @@ import {tableAnalyzerSystemPrompt} from "@/parser/llms/prompts/table_analyzer";
 import {validateTableAnalysis} from "@/parser/llms/analyzer/analysis_validations";
 import {structuredLLMCall} from "@/util/llm/llm_structured";
 import {LLMResponseValidationError} from "@/parser/llms/errors";
-import {withLlmRetry} from "@/util/llm/retries";
+import {retryCacheBuster, withLlmRetry} from "@/util/llm/retries";
 
 const schemaDescription = zodToLLMDescription(MultipleTableAnalysisSchema);
 
-export async function analyze_tables(tables: TableStructure[]): Promise<MultipleTableAnalysis["result"]> {
-    return withLlmRetry(() => _analyze_tables(tables));
+export async function analyze_tables(tables: TableStructure[], firstAttempt: boolean): Promise<MultipleTableAnalysis["result"]> {
+    return withLlmRetry((ctx) => _analyze_tables(tables, firstAttempt && ctx.attempt === 1));
 }
 
-export async function _analyze_tables(tables: TableStructure[]): Promise<MultipleTableAnalysis["result"]> {
+export async function _analyze_tables(tables: TableStructure[], firstAttempt: boolean): Promise<MultipleTableAnalysis["result"]> {
     if (tables.length === 0) {
         return [];
     }
@@ -42,7 +42,7 @@ export async function _analyze_tables(tables: TableStructure[]): Promise<Multipl
                     role: "user",
                     content: [{
                         type: "text",
-                        text: JSON.stringify(tables)
+                        text: retryCacheBuster(firstAttempt) + JSON.stringify(tables)
                     }]
                 }
             ]

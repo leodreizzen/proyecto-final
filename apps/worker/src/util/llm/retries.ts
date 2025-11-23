@@ -1,4 +1,4 @@
-import {ExponentialBackoff, handleType, wrap} from 'cockatiel';
+import {ExponentialBackoff, handleType, IRetryContext, wrap} from 'cockatiel';
 import {InvalidLLMResponseError, LLMAPIError, LLMConsistencyValidationError} from "@/parser/llms/errors";
 import {retry} from "cockatiel";
 
@@ -17,7 +17,7 @@ const validationPolicy = retry(handleType(InvalidLLMResponseError), {
 
 const combinedPolicy = wrap(apiPolicy, validationPolicy);
 
-export async function withLlmRetry<T>(operation: () => Promise<T>): Promise<T> {
+export async function withLlmRetry<T>(operation: (context: IRetryContext) => Promise<T>): Promise<T> {
     try{
         return combinedPolicy.execute(operation);
     }
@@ -33,6 +33,13 @@ const consistencyPolicy = retry(handleType(LLMConsistencyValidationError), {
     maxAttempts: 2
 });
 
-export async function withLlmConsistencyRetry<T>(operation: () => Promise<T>): Promise<T> {
+export async function withLlmConsistencyRetry<T>(operation: (context: IRetryContext) => Promise<T>): Promise<T> {
     return consistencyPolicy.execute(operation);
+}
+
+export function retryCacheBuster(firstAttempt: boolean){
+    if (!firstAttempt){
+        return "String a ignorar: " + Math.random().toString(36).substring(2, 15) + "\n\n";
+    } else
+        return "";
 }

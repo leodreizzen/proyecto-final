@@ -11,10 +11,10 @@ type ParseResolutionResult = ResultWithData<Resolution, ParseResolutionError>
 
 
 export async function parseTextResolution(fileContent: string): Promise<ParseResolutionResult> {
-    return withLlmConsistencyRetry(() => _parseTextResolution(fileContent));
+    return withLlmConsistencyRetry((ctx) => _parseTextResolution(fileContent, ctx.attempt === 1));
 }
 
-export async function _parseTextResolution(fileContent: string): Promise<ParseResolutionResult> {
+export async function _parseTextResolution(fileContent: string, firstAttempt: boolean): Promise<ParseResolutionResult> {
     const tokenCount = countTokens(fileContent);
     if (tokenCount > 20000) {
         return {
@@ -25,7 +25,7 @@ export async function _parseTextResolution(fileContent: string): Promise<ParseRe
         }
     }
 
-    const structureRes = await parseResolutionStructure(fileContent);
+    const structureRes = await parseResolutionStructure(fileContent, firstAttempt);
     if (!structureRes.success) {
         console.error(JSON.stringify(structureRes.error));
         return {
@@ -34,7 +34,7 @@ export async function _parseTextResolution(fileContent: string): Promise<ParseRe
         }
     }
 
-    const analysisRes = await analyzeFullResolution(structureRes.data);
+    const analysisRes = await analyzeFullResolution(structureRes.data, firstAttempt);
     if (!analysisRes.success) {
         console.error(JSON.stringify(analysisRes.error));
         return analysisRes;

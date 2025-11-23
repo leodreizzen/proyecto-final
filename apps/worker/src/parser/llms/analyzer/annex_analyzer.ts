@@ -11,7 +11,7 @@ import {structuredLLMCall} from "@/util/llm/llm_structured";
 import {ResultWithData} from "@/definitions";
 import {AnnexAnalysis} from "@/parser/schemas/analyzer/annexes/annex";
 import {ParseResolutionError} from "@/parser/types";
-import {withLlmRetry} from "@/util/llm/retries";
+import {retryCacheBuster, withLlmRetry} from "@/util/llm/retries";
 
 const annexSchemaDescription = zodToLLMDescription(AnnexAnalysisResultSchema);
 type AnalyzeAnnexInput = {
@@ -31,11 +31,11 @@ function isParseResultValid(res: AnnexAnalysisResult): res is ParseAnnexResult &
     return res.error.code !== "other_error";
 }
 
-export async function analyzeAnnex(input: AnalyzeAnnexInput): Promise<ParseAnnexResult> {
-    return withLlmRetry(() => _analyzeAnnex(input));
+export async function analyzeAnnex(input: AnalyzeAnnexInput, firstAttempt: boolean): Promise<ParseAnnexResult> {
+    return withLlmRetry((ctx) => _analyzeAnnex(input, firstAttempt && ctx.attempt === 1));
 }
 
-export async function _analyzeAnnex(input: AnalyzeAnnexInput): Promise<ParseAnnexResult> {
+export async function _analyzeAnnex(input: AnalyzeAnnexInput, firstAttempt: boolean): Promise<ParseAnnexResult> {
     return withLlmRetry(async () => {
         console.log("calling anenex analyzer model...");
         const annexJSON = JSON.stringify(input, null, 2);
@@ -63,7 +63,7 @@ export async function _analyzeAnnex(input: AnalyzeAnnexInput): Promise<ParseAnne
                     role: "user",
                     content: [{
                         type: "text",
-                        text: annexJSON
+                        text: retryCacheBuster(firstAttempt) + annexJSON
                     }]
                 }
             ]

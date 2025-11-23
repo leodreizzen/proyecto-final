@@ -11,7 +11,7 @@ import {validateMainResolutionAnalysis} from "@/parser/llms/analyzer/analysis_va
 import {ResultWithData} from "@/definitions";
 import {ParseResolutionError} from "@/parser/types";
 import {MainResolutionAnalysis} from "@/parser/schemas/analyzer/resolution/resolution";
-import {withLlmRetry} from "@/util/llm/retries";
+import {retryCacheBuster, withLlmRetry} from "@/util/llm/retries";
 
 const resolutionSchemaDescription = zodToLLMDescription(MainResolutionAnalysisResultSchema);
 
@@ -24,11 +24,11 @@ function isParseResultValid(res: ResolutionAnalysisLLMResult): res is AnalyzeRes
     return res.error.code !== "other_error";
 }
 
-export async function analyzeMainResolution(resolution: ResolutionStructure): Promise<AnalyzeResolutionResult> {
-    return withLlmRetry(() => _analyzeMainResolution(resolution))
+export async function analyzeMainResolution(resolution: ResolutionStructure, firstAttempt: boolean): Promise<AnalyzeResolutionResult> {
+    return withLlmRetry((ctx) => _analyzeMainResolution(resolution, firstAttempt && ctx.attempt === 1))
 }
 
-export async function _analyzeMainResolution(resolution: ResolutionStructure): Promise<AnalyzeResolutionResult> {
+export async function _analyzeMainResolution(resolution: ResolutionStructure, firstAttempt: boolean): Promise<AnalyzeResolutionResult> {
     console.log("calling resolution analyzer model...");
     const {annexes, ...resolutionWithoutAnnexes} = resolution;
     const filteredAnnexes = filterAnnexes(annexes)
@@ -63,7 +63,7 @@ export async function _analyzeMainResolution(resolution: ResolutionStructure): P
                 role: "user",
                 content: [{
                     type: "text",
-                    text: resolutionJSON
+                    text: retryCacheBuster(firstAttempt) + resolutionJSON
                 }]
             }
         ]

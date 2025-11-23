@@ -15,7 +15,7 @@ export function parseLLMStringWithZodObject<S extends ZodType>(str: string, sche
         return parseStringWithZodObject(repairedStr, schema);
     } catch (e){
         if (e instanceof ZodError) {
-            throw new LLMOutputParseError("Error parsing LLM response", e);
+             throw new LLMOutputParseError("Error parsing LLM response", e);
         }
         else
             throw new InvalidLLMResponseError("Invalid JSON response from LLM");

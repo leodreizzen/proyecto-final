@@ -5,15 +5,15 @@ import {itemsCountPrompt, referenceExtractorSystemPrompt} from "@/parser/llms/pr
 import {validateReferences} from "@/parser/llms/analyzer/analysis_validations";
 import {structuredLLMCall} from "@/util/llm/llm_structured";
 import {LLMResponseValidationError} from "@/parser/llms/errors";
-import {withLlmRetry} from "@/util/llm/retries";
+import {retryCacheBuster, withLlmRetry} from "@/util/llm/retries";
 
 const schemaDescription = zodToLLMDescription(ResolutionReferencesSchema);
 
-export async function extractReferences(resolution: ResolutionStructure): Promise<ResolutionReferencesAnalysis> {
-    return withLlmRetry(() => _extractReferences(resolution));
+export async function extractReferences(resolution: ResolutionStructure, firstAttempt: boolean): Promise<ResolutionReferencesAnalysis> {
+    return withLlmRetry((ctx) => _extractReferences(resolution, firstAttempt && ctx.attempt === 1));
 }
 
-export async function _extractReferences(resolution: ResolutionStructure): Promise<ResolutionReferencesAnalysis> {
+export async function _extractReferences(resolution: ResolutionStructure, firstAttempt: boolean): Promise<ResolutionReferencesAnalysis> {
     // TODO ALLOW REFUSAL
     console.log("calling reference extractor model...");
     const LLMResult = await structuredLLMCall({
@@ -43,7 +43,7 @@ export async function _extractReferences(resolution: ResolutionStructure): Promi
                 role: "user",
                 content: [{
                     type: "text",
-                    text: JSON.stringify(resolution)
+                    text: retryCacheBuster(firstAttempt) + "\n\n" + JSON.stringify(resolution)
                 }]
             }
         ]

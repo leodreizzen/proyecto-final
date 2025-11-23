@@ -26,48 +26,62 @@ Debes procesar cada arreglo del input de forma independiente y preservar su long
 
 ### 2. LÓGICA DE EXTRACCIÓN (PRIORIDADES)
 
-** Regla de exclusividad de resoluciones **: Los únicos documentos válidos para referenciar son resoluciones (o parte de ellas). No se permite referenciar otros documentos como decretos, estatutos, etc.
+** Regla de exclusividad de resoluciones **: Los únicos documentos válidos para referenciar son resoluciones (o parte de ellas). 
+No se permite referenciar otros documentos como decretos, estatutos, etc.
+Sí se permite referenciar:
+    -Resoluciones
+    -Artículos de resoluciones
+    -Anexos de resoluciones
+    -Capítulos de resoluciones
+    -Planes o reglamentos aprobados por resoluciones (referenciando la resolución o anexo correspondiente, lo que sea más específico).
+    -Otros documentos aprobados por resoluciones, siempre y cuando se haga referencia a la resolución que los aprueba o aun anexo de la misma.
+No se permite referenciar:
+    -Decretos
+    -Estatutos
+    -Leyes
+
 Ejemplos: 
 - Válido: "Resolución CSU-358/16", "Anexo I de la Resolución 123/2020"
 - Inválido: "Decreto 456/78", "Estatuto docente"
-- Válido: Reglamento de alumnos, si en algún lugar (consideraciones, recitals o artícles) se menciona una resolución que aprueba dicho reglamento.
+- Válido: Reglamento de alumnos, si en algún lugar (consideraciones, recitals o artícles) se menciona una resolución que aprueba dicho reglamento. Busca bien antes de decidir descartar un reglamento.
 
 Para cada bloque de texto, busca referencias aplicando este orden de prioridad estricto:
 
 **PRIORIDAD ALTA: DICCIONARIO DE ANEXOS (Check de Identidad)**
-Antes de analizar gramática, busca en el texto cualquier frase que coincida exactamente (o con gran similitud) con alguno de los **name** listados en los \`Anexos\` del JSON de entrada.
-* **SI ENCUENTRAS MATCH:** Extráelo inmediatamente usando el tipo **"Annex"** e ignora todo lo demás.
+Antes de analizar gramática, busca en el texto cualquier frase que coincida exactamente (o con gran similitud) con alguno de los **name** listados en los \`Anexos\` del JSON de entrada, o con el principio del texto.
+* **SI ENCUENTRAS MATCH:** Extráelo inmediatamente usando el tipo **"Annex"** e ignora todo lo demás para esta referencia.
     * \`resolutionId\`: ID de la resolución actual.
     * \`annexNumber\`: El número de anexo correspondiente.
     * *Esto soluciona casos donde se menciona un anexo por su nombre propio.*
+    * Ejemplo: Si el anexo se llama "Reglamento XYZ", y el texto dice "De acuerdo al Reglamento XYZ...", extrae esa referencia como un anexo interno.
+* **SI NO HAY MATCH:** Continúa con la lógica de prioridad media.
+* Esta regla es crucial para capturar referencias internas que no siguen el formato estándar. Si estás en duda sobre si aplicar esta regla, **SIEMPRE APLÍCALA PRIMERO**.
 
 **PRIORIDAD MEDIA: INCORPORACIONES Y MODIFICACIONES**
 Si el texto usa verbos como "Incorporar", "Agregar", "Insertar", "Modificar", "Sustituir", aplica esta lógica:
-
 1.  **ESTRATEGIA DE EXTRACCIÓN MÚLTIPLE (DESTINO + OBJETO):**
     A veces, una incorporación vincula dos documentos importantes. Debes evaluar si hay que extraer AMBOS.
-
-    * **A) EL DESTINO (Externo/Padre):** SIEMPRE se extrae.
-        * *Ejemplo:* "Incorporar como Anexo I del **Reglamento de Funcionamiento (Res 511)**..."
-        * *Acción:* Extrae la referencia a la Resolución 511 / Reglamento de Funcionamiento.
-
-    * **B) EL OBJETO (Interno/Hijo):** Se extrae SOLO si tiene nombre propio de documento.
-        * *Condición:* ¿El objeto que se incorpora se llama "Reglamento", "Anexo", "Plan", "Estatuto"?
-        * *Ejemplo:* "...el **Reglamento de Sesiones no Presenciales**."
-        * *Acción:* **SÍ**, extráelo también (como referencia interna implícita).
-        * *Contra-Ejemplo:* "...el siguiente texto: 'El personal docente...'" -> **NO** lo extraigas (es texto genérico, no un documento).
-
+    - El **destino** se extrae SIEMPRE. Debes usar la referencia más específica posible.
+      Ejemplo 1: "Modificar el artículo 3 del Anexo II de la Resolución 456/18" -> Extrae el destino como \`AnnexArticle\`.
+      Ejemplo 2: "Incorporar como Artículo 14 de la Resolución 789/21" -> Extrae el destino como \`NormalArticle\`, con el número 14.
+      Ejemplo 3: "Incorporar como articulado de la resolución 101/22" -> Extrae el destino como \`Resolution\`, ya que no se sabe el número de artículo.
+    
+    - El **objeto** (contenido a incorporar) se extrae SIEMPRE que no forme parte del texto actual.
+     Ejemplo 1: "Incorporar el anexo X a la resolución Y" => El objeto es el "anexo X" (extraerlo como anexo), y el destino es "resolución Y".
+     Ejemplo 2: "Incorporar el siguiente artículo a la Resolución Z" => El objeto forma parte del artículo que se está leyendo, NO extraer el objeto, pero SI el destino (Resolución Z).
+    
+    
 2.  **REFERENCIA MÁS ESPECÍFICA POSIBLE (Para el Destino):**
     Siempre intenta extraer el componente más granular posible.
     
     * *Input:* "Incorporar como artículo 4° bis de la Resolución 123/20"
-    * *Salida:* Type: **"NormalArticle"** (o AnnexArticle), articleNumber: 4, suffix: "bis".
+    * *Salida:* Type: **"NormalArticle"**, articleNumber: 4, suffix: "bis".
     
     * *Input:* "Sustituir el artículo 1 del Anexo I"
     * *Salida:* Type: **"AnnexArticle"**, annexNumber: 1, articleNumber: 1.
 
     * *Input:* "Incorporar texto al Capítulo IV de la Resolución 406/12"
-    * *Acción:* Detecta "Capítulo IV" y "Resolución". NO detecta "Anexo". -> **APLICA REGLA DE INFERENCIA (Anexo 1).**
+    * *Acción:* Detecta "Capítulo IV" y "Resolución". NO menciona "Anexo". -> **APLICA REGLA DE INFERENCIA (Anexo 1).**
     * *Salida:* Type: **"Chapter"**, annexNumber: 1, chapterNumber: 4.
 
     **Jerarquía de Selección (De más a menos específico):**
@@ -113,7 +127,7 @@ Analiza la cadena de referencia extraída y su contexto inmediato (mismo artícu
 * **Regla del Anexo 1 (Capítulos Huérfanos):** Si el texto menciona un **Capítulo** (ej: "Capítulo IV") asociado a una Resolución, pero NO menciona explícitamente un número de Anexo, **ASUME SIEMPRE QUE ES EL ANEXO 1**.
     * *Ejemplo:* "Capítulo IV de la Res. 123" -> **Type: Chapter, annexNumber: 1, chapterNumber: 4**.
 * Si el texto dice "**el Anexo**" (singular y sin número) -> Asume que se refiere al **Anexo 1**.
-* Si el texto coincide con el título de un anexo interno (Regla de Diccionario) -> Usa el ID de la resolución actual.
+* Si el texto coincide con el título de un anexo interno (Regla de Diccionario) -> Usa el ID de la resolución actual, y el número de anexo correspondiente.
 
 **C) Tipo de Referencia (type):**
 Infiere el tipo más específico: \`AnnexArticle\`, \`Article\`, \`Annex\`, \`Chapter\`. Si es la resolución entera -> \`Resolution\`.`;

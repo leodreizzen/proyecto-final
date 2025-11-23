@@ -17,25 +17,11 @@ Tu prioridad #1 es NO PERDER INFORMACIÓN. Es preferible que el texto sea largo 
 - **Expedientes:** Si extraes el número de expediente, elimina palabras como "Expte.", "Expediente", "Nº". Deja SOLO el código (ej: "123/24").
 
 ## 2. SECCIONES PRELIMINARES (VISTO Y CONSIDERANDO) - CRÍTICO
-El modelo suele fallar aquí omitiendo párrafos por "pereza". **ACTIVAR MODO TRANSCRIPCIÓN CIEGA.**
-
-**Lógica de Bloque Completo:**
-1. **VISTO:**
-   - **Inicio:** Palabra "VISTO" (con o sin dos puntos).
-   - **Fin:** Palabra "CONSIDERANDO".
-   - **Instrucción:** Captura TODO el texto entre estos dos límites. Si hay múltiples leyes o resoluciones citadas en líneas separadas, **INCLÚYELAS TODAS**.
-   - **Prohibido:** No te detengas en el primer punto y coma (;). Sigue leyendo hasta encontrar "CONSIDERANDO".
-
-2. **CONSIDERANDO (ALGORITMO DE ITERACIÓN TOTAL):**
-   - **Inicio:** Palabra "CONSIDERANDO" (con o sin dos puntos).
-   - **Fin:** Palabras "POR ELLO", "RESUELVE" o el inicio del articulado.
-   - **Instrucción:** El texto entre estos puntos es una lista sagrada. Tu trabajo NO es resumir, es **COPIAR**.
-   - **Patrón "Que":** Detecta CADA párrafo que comience con la palabra "Que".
-   - **Validación de Integridad:**
-     - Si el texto original tiene 15 párrafos de "Que...", tu JSON debe tener 15 elementos.
-     - **ESTÁ PROHIBIDO** usar elipses "[...]" o saltar del 3ro al último.
-     - Procesa el texto línea por línea. Si ves un "Que", va adentro.
-     - Ignora saltos de página que corten un considerando; únelos y guárdalo completo.
+Debes retornar todo el texto original sin omisiones, incluyendo SIEMPRE un elemento por párrafo.
+Revisa que no te haya faltado ninguno, y agrégalo si es necesario.
+Mapeo:
+    Visto => recitals
+    Considerando => considerations
 
 ## 3. LÓGICA DE ARTÍCULOS (Fronteras Duras)
 El documento es una secuencia de bloques. Un bloque "Artículo N" comienza en "ARTÍCULO N" y termina **ÚNICAMENTE** cuando aparece:
@@ -48,7 +34,6 @@ El documento es una secuencia de bloques. Un bloque "Artículo N" comienza en "A
 - **Tu trabajo es copiar TODO el bloque de texto tal cual aparece entre los delimitadores.**
 
 ## 4. CONTENIDO DEL ARTÍCULO (Regla del Verbo)
-El LLM suele cometer el error de borrar la instrucción de modificación.
 **REGLA DE ORO:** El campo de texto del artículo **JAMÁS** debe comenzar con la palabra "ARTÍCULO" o "ART.".
 
 **Cómo extraer correctamente:**
@@ -79,7 +64,7 @@ El modelo suele confundirse con el logo del encabezado. Para evitar esto, sigue 
 3. **Limpia:** Elimina artículos iniciales ("EL", "LA").
 4. **Validación Negativa:**
    - Si extraes "Universidad Nacional del Sur", **RECHÁZALO** (ese es el membrete). Busca de nuevo quién es el sujeto gramatical del verbo "RESUELVE".
-   - Ejemplo Correcto: Si dice "EL CONSEJO SUPERIOR UNIVERSITARIO R E S U E L V E", extrae "CONSEJO SUPERIOR UNIVERSITARIO".
+   - Ejemplo Correcto: Si dice "EL CONSEJO SUPERIOR UNIVERSITARIO RESUELVE", extrae "CONSEJO SUPERIOR UNIVERSITARIO".
 
 ## Extracción de ID
 - Usa el del encabezado actual. Años de 2 dígitos: <60 → 2000+, ≥60 → 1900+.

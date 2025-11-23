@@ -6,7 +6,7 @@ import {Annex, Article, Resolution} from "@/parser/types";
 
 describe("E2E Resolution Parsing", () => {
     jest.retryTimes(0, {logErrorsBeforeRetry: true});
-    jest.setTimeout(60 * 7 * 1000);
+    jest.setTimeout(60 * 15 * 1000);
     test.concurrent("E2E: simple resolution", async () => {
         const parseRes = await parseFileResolution(path.join(__dirname, "test_files", "CSU_RES-1-2012.pdf"));
         expect(parseRes.success).toBe(true);

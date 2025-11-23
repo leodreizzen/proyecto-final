@@ -11,8 +11,8 @@ import {validateReferenceConsistency} from "@/parser/llms/analyzer/reference_con
 import {LLMConsistencyValidationError} from "@/parser/llms/errors";
 import {withLlmConsistencyRetry} from "@/util/llm/retries";
 
-export async function analyzeFullResolution(resolution: ResolutionStructure): Promise<ResultWithData<FullResolutionAnalysis, ParseResolutionError>> {
-    const mainAnalysisRes = await analyzeMainResolution(resolution);
+export async function analyzeFullResolution(resolution: ResolutionStructure, firstAttempt: boolean): Promise<ResultWithData<FullResolutionAnalysis, ParseResolutionError>> {
+    const mainAnalysisRes = await analyzeMainResolution(resolution, firstAttempt);
     if (!mainAnalysisRes.success) {
         return mainAnalysisRes;
     }
@@ -27,10 +27,10 @@ export async function analyzeFullResolution(resolution: ResolutionStructure): Pr
             considerations: resolution.considerations,
             resolutionId: resolution.id,
             metadata: mainResolutionAnalysis.metadata
-        })
+        }, firstAttempt)
     );
-    const referenceAnalysisPromise = extractReferences(resolution);
-    const tableAnalysisPromise = analyze_tables(resolution.tables);
+    const tableAnalysisPromise = analyze_tables(resolution.tables, firstAttempt);
+    const tableAnalysis = await tableAnalysisPromise;
 
     const annexResults = await Promise.all(annexPromises);
     const firstFailed = annexResults.find(result => !result.success);
@@ -38,11 +38,10 @@ export async function analyzeFullResolution(resolution: ResolutionStructure): Pr
         return firstFailed;
     }
 
-    const annexes = annexResults.map(result => (result as typeof result & {success: true}).data);
+    const annexes = annexResults.map(result => (result as typeof result & { success: true }).data);
 
-    const tableAnalysis = await tableAnalysisPromise;
-
-    const referenceAnalysisResult = await withLlmConsistencyRetry(async ()=> {
+    const referenceAnalysisResult = await withLlmConsistencyRetry(async (ctx) => {
+        const referenceAnalysisPromise = extractReferences(resolution, firstAttempt && ctx.attempt === 1);
         const referenceAnalysisResult = await referenceAnalysisPromise;
         const consistencyValidationRes = validateReferenceConsistency(mainResolutionAnalysis, annexes, referenceAnalysisResult);
         if (!consistencyValidationRes.success) {
@@ -52,10 +51,9 @@ export async function analyzeFullResolution(resolution: ResolutionStructure): Pr
         return referenceAnalysisResult;
     })
 
-
     return {
         success: true,
-        data: merge ({
+        data: merge({
             ...mainResolutionAnalysis,
             annexes: annexes,
             tables: tableAnalysis
