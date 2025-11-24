@@ -3,52 +3,84 @@ import path from "node:path";
 
 import {expect, describe, jest, test} from "@jest/globals";
 import {Annex, Article, Resolution} from "@/parser/types";
+import {ResolutionID} from "@/parser/schemas/common";
+
 
 describe("E2E Resolution Parsing", () => {
+    function structureChecks(resolution: Resolution, expected: {
+        id: ResolutionID,
+        numRecitals: number,
+        numConsiderations: number,
+        numArticles: number,
+        numAnnexes: number,
+        caseFiles?: string[],
+        decisionBy: string,
+    }) {
+        expect(resolution.id).toEqual(expected.id);
+        expect(resolution.recitals.length).toBe(expected.numRecitals);
+        expect(resolution.considerations.length).toBe(expected.numConsiderations);
+        expect(resolution.articles.length).toBe(expected.numArticles);
+        expect(resolution.annexes.length).toBe(expected.numAnnexes);
+        if (expected.caseFiles !== undefined)
+            expect(resolution.caseFiles).toEqual(expect.arrayContaining(expected.caseFiles));
+        expect(resolution.decisionBy.toLowerCase()).toBe(expected.decisionBy.toLowerCase());
+
+        resolution.articles.forEach(article => {
+            expect(article.text).not.toMatch(/^(art[ií]culo)/i)
+        })
+
+    }
+
+    async function parseTestFile(fileName: string) {
+        return parseFileResolution(path.join(__dirname, "test_files", fileName));
+    }
+
     jest.retryTimes(0, {logErrorsBeforeRetry: true});
     jest.setTimeout(60 * 15 * 1000);
+
     test.concurrent("E2E: simple resolution", async () => {
-        const parseRes = await parseFileResolution(path.join(__dirname, "test_files", "CSU_RES-1-2012.pdf"));
+        const parseRes = await parseTestFile("CSU_RES-1-2012.pdf");
         expect(parseRes.success).toBe(true);
         const resSucess = parseRes as typeof parseRes & { success: true };
         const parseResData = resSucess.data;
-        expect(parseResData.id).toEqual({
-            initial: "CSU",
-            number: 1,
-            year: 2012
-        })
-        expect(parseResData.caseFiles).toEqual(["578/1986"]);
-        expect(parseResData.recitals.length).toBe(1);
-        expect(parseResData.considerations.length).toBe(2);
-        expect(parseResData.articles.length).toBe(2);
-        expect(parseResData.annexes.length).toBe(0);
-        parseResData.articles.forEach(article => {
-            expect(article.text).not.toMatch(/^(art[ií]culo)/i)
-        })
-        expect(parseResData.decisionBy.toLowerCase()).toBe("consejo superior universitario");
+
+        structureChecks(parseResData, {
+            id: {
+                initial: "CSU",
+                number: 1,
+                year: 2012
+            },
+            caseFiles: ["578/1986"],
+            numRecitals: 1,
+            numConsiderations: 2,
+            numArticles: 2,
+            numAnnexes: 0,
+            decisionBy: "consejo superior universitario",
+        });
+
         expect(parseResData.articles[0]!.type).toEqual("Normative");
         expect(parseResData.articles[1]!.type).toEqual("Formality");
     });
 
     test.concurrent("E2E: ModifyArticle", async () => {
-        const parseRes = await parseFileResolution(path.join(__dirname, "test_files", "CSU_RES-533-2025.pdf"));
+        const parseRes = await parseTestFile("CSU_RES-533-2025.pdf");
         expect(parseRes.success).toBe(true);
         const resSucess = parseRes as typeof parseRes & { success: true };
         const parseResData = resSucess.data;
-        expect(parseResData.id).toEqual({
-            initial: "CSU",
-            number: 533,
-            year: 2025
-        })
-        expect(parseResData.caseFiles).toEqual(["2325/2022"]);
-        expect(parseResData.recitals.length).toBe(1);
-        expect(parseResData.considerations.length).toBe(5);
-        expect(parseResData.articles.length).toBe(3);
-        expect(parseResData.annexes.length).toBe(0);
-        expect(parseResData.decisionBy.toLowerCase()).toBe("consejo superior universitario");
-        parseResData.articles.forEach(article => {
-            expect(article.text).not.toMatch(/^(art[ií]culo)/i)
-        })
+
+        structureChecks(parseResData, {
+            id: {
+                initial: "CSU",
+                number: 533,
+                year: 2025
+            },
+            caseFiles: ["2325/2022"],
+            numRecitals: 1,
+            numConsiderations: 5,
+            numArticles: 3,
+            numAnnexes: 0,
+            decisionBy: "consejo superior universitario",
+        });
 
         expect(parseResData.articles[0]!).toMatchObject({
             type: "Modifier",
@@ -91,25 +123,26 @@ describe("E2E Resolution Parsing", () => {
     });
 
     test.concurrent("E2E: Replace Article", async () => {
-        const parseRes = await parseFileResolution(path.join(__dirname, "test_files", "CSU_RES-500-2016.pdf"));
+        const parseRes = await parseTestFile("CSU_RES-500-2016.pdf");
         expect(parseRes.success).toBe(true);
         const resSucess = parseRes as typeof parseRes & { success: true };
         const parseResData = resSucess.data;
-        expect(parseResData.id).toEqual({
-            initial: "CSU",
-            number: 500,
-            year: 2016
-        })
-        expect(parseResData.caseFiles).toEqual(["1230/16"]);
-        expect(parseResData.recitals.length).toBe(1);
-        expect(parseResData.considerations.length).toBe(4);
-        expect(parseResData.articles.length).toBe(3);
-        expect(parseResData.annexes.length).toBe(0);
+
+        structureChecks(parseResData, {
+            id: {
+                initial: "CSU",
+                number: 500,
+                year: 2016
+            },
+            caseFiles: ["1230/16"],
+            numRecitals: 1,
+            numConsiderations: 4,
+            numArticles: 3,
+            numAnnexes: 0,
+            decisionBy: "consejo superior universitario",
+        });
+
         expect(parseResData.date).toEqual(new Date("2016-09-08T00:00:00Z"));
-        expect(parseResData.decisionBy.toLowerCase()).toBe("consejo superior universitario");
-        parseResData.articles.forEach(article => {
-            expect(article.text).not.toMatch(/^(art[ií]culo)/i)
-        })
 
         expect(parseResData.articles[0]!).toMatchObject({
             type: "Modifier",
@@ -153,24 +186,26 @@ describe("E2E Resolution Parsing", () => {
     })
 
     test.concurrent("E2E: Repeal article & replace annex inline", async () => {
-        const parseRes = await parseFileResolution(path.join(__dirname, "test_files", "CSU_RES-268-2025.pdf"));
+        const parseRes = await parseTestFile("CSU_RES-268-2025.pdf");
         expect(parseRes.success).toBe(true);
         const resSucess = parseRes as typeof parseRes & { success: true };
         const parseResData = resSucess.data;
-        expect(parseResData.id).toEqual({
-            initial: "CSU",
-            number: 268,
-            year: 2025
-        })
-        expect(parseResData.caseFiles).toEqual(["1502/92", "X-108/19"]);
-        expect(parseResData.recitals.length).toBe(3);
-        expect(parseResData.considerations.length).toBe(5);
-        expect(parseResData.articles.length).toBe(6);
-        expect(parseResData.annexes.length).toBe(0);
-        expect(parseResData.decisionBy.toLowerCase()).toBe("consejo superior universitario");
-        parseResData.articles.forEach(article => {
-            expect(article.text).not.toMatch(/^(art[ií]culo)/i)
-        })
+
+
+        structureChecks(parseResData, {
+            id: {
+                initial: "CSU",
+                number: 268,
+                year: 2025
+            },
+            caseFiles: ["1502/92", "X-108/19"],
+            numRecitals: 3,
+            numConsiderations: 5,
+            numArticles: 6,
+            numAnnexes: 0,
+            decisionBy: "consejo superior universitario",
+        });
+
         expect(parseResData.articles[0]!).toMatchObject({
             type: "Modifier",
             changes: [
@@ -251,29 +286,31 @@ describe("E2E Resolution Parsing", () => {
     })
 
     test.concurrent("E2E: repeal annex", async () => {
-        const parseRes = await parseFileResolution(path.join(__dirname, "test_files", "CSU_RES-220-2019.pdf"));
+        const parseRes = await parseTestFile("CSU_RES-220-2019.pdf");
         expect(parseRes.success).toBe(true);
         const resSucess = parseRes as typeof parseRes & { success: true };
         const parseResData = resSucess.data;
-        expect(parseResData.id).toEqual({
-            initial: "CSU",
-            number: 220,
-            year: 2019
+
+        structureChecks(parseResData, {
+            id: {
+                initial: "CSU",
+                number: 220,
+                year: 2019
+            },
+            caseFiles: ["X-35/11"],
+            numRecitals: 3,
+            numConsiderations: 6,
+            numArticles: 4,
+            numAnnexes: 1,
+            decisionBy: "consejo superior universitario",
         });
 
-        expect(parseResData.caseFiles).toEqual(["X-35/11"]);
-        expect(parseResData.recitals.length).toBe(3);
-        expect(parseResData.considerations.length).toBe(6);
-        expect(parseResData.articles.length).toBe(4);
-        expect(parseResData.annexes.length).toBe(1);
-        expect(parseResData.decisionBy.toLowerCase()).toBe("consejo superior universitario");
         expect(parseResData.date).toEqual(new Date("2019-04-25T00:00:00Z"));
-        parseResData.articles.forEach(article => {
-            expect(article.text).not.toMatch(/^(art[ií]culo)/i)
-        });
+
         expect(parseResData.articles[0]!).toMatchObject({
             type: "Normative",
         } satisfies DeepPartial<Article>);
+
         expect(parseResData.articles[1]!).toMatchObject({
             type: "Modifier",
             changes: [
@@ -291,6 +328,7 @@ describe("E2E Resolution Parsing", () => {
                 }
             ]
         } satisfies DeepPartial<Article>);
+
         expect(parseResData.annexes[0]!.type).toBe("WithArticles");
         const annexWithArticles = parseResData.annexes[0] as Extract<Resolution["annexes"][number], {
             type: "WithArticles"
@@ -309,24 +347,26 @@ describe("E2E Resolution Parsing", () => {
 
 
     test.concurrent("E2E: Ratify ad referendum", async () => {
-        const parseRes = await parseFileResolution(path.join(__dirname, "test_files", "CSU_RES-265-2021.pdf"));
+        const parseRes = await parseTestFile("CSU_RES-265-2021.pdf");
         expect(parseRes.success).toBe(true);
         const resSucess = parseRes as typeof parseRes & { success: true };
         const parseResData = resSucess.data;
-        expect(parseResData.id).toEqual({
-            initial: "CSU",
-            number: 265,
-            year: 2021
+
+
+        structureChecks(parseResData, {
+            id: {
+                initial: "CSU",
+                number: 265,
+                year: 2021
+            },
+            caseFiles: ["90/17"],
+            numRecitals: 1,
+            numConsiderations: 7,
+            numArticles: 2,
+            numAnnexes: 0,
+            decisionBy: "consejo superior universitario",
         });
-        expect(parseResData.caseFiles).toEqual(["90/17"]);
-        expect(parseResData.recitals.length).toBe(1);
-        expect(parseResData.considerations.length).toBe(7);
-        expect(parseResData.articles.length).toBe(2);
-        expect(parseResData.annexes.length).toBe(0);
-        expect(parseResData.decisionBy.toLowerCase()).toBe("consejo superior universitario");
-        parseResData.articles.forEach(article => {
-            expect(article.text).not.toMatch(/^(art[ií]culo)/i)
-        });
+
         expect(parseResData.articles[0]!).toMatchObject({
             type: "Modifier",
             changes: [
@@ -347,25 +387,26 @@ describe("E2E Resolution Parsing", () => {
     })
 
     test.concurrent("E2E: modify article, both normal and annex", async () => {
-        const parseRes = await parseFileResolution(path.join(__dirname, "test_files", "CSU_RES-429-2025.pdf"));
+        const parseRes = await parseTestFile("CSU_RES-429-2025.pdf");
         expect(parseRes.success).toBe(true);
         const resSucess = parseRes as typeof parseRes & { success: true };
         const parseResData = resSucess.data;
-        expect(parseResData.id).toEqual({
-            initial: "CSU",
-            number: 429,
-            year: 2025
-        })
-        expect(parseResData.date).toEqual(new Date("2025-07-03T00:00:00Z"));
-        expect(parseResData.recitals.length).toBe(1);
-        expect(parseResData.considerations.length).toBe(2);
-        expect(parseResData.articles.length).toBe(3);
-        expect(parseResData.annexes.length).toBe(0);
-        expect(parseResData.decisionBy.toLowerCase()).toBe("consejo superior universitario");
 
-        parseResData.articles.forEach(article => {
-            expect(article.text).not.toMatch(/^(art[ií]culo)/i)
+        structureChecks(parseResData, {
+            id: {
+                initial: "CSU",
+                number: 429,
+                year: 2025
+            },
+            caseFiles: ["X-46/11"],
+            numRecitals: 1,
+            numConsiderations: 2,
+            numArticles: 3,
+            numAnnexes: 0,
+            decisionBy: "consejo superior universitario",
         });
+
+        expect(parseResData.date).toEqual(new Date("2025-07-03T00:00:00Z"));
 
         expect(parseResData.articles[0]!).toMatchObject({
             type: "Modifier",
@@ -405,24 +446,29 @@ describe("E2E Resolution Parsing", () => {
     });
 
     test.concurrent("E2E: modify annex & create document", async () => {
-        const parseRes = await parseFileResolution(path.join(__dirname, "test_files", "CSU_RES-971-2022.pdf"));
+        const parseRes = await parseTestFile("CSU_RES-971-2022.pdf");
         expect(parseRes.success).toBe(true);
         const resSuccess = parseRes as typeof parseRes & { success: true };
         const parseResData = resSuccess.data;
-        expect(parseResData.id).toEqual({
-            initial: "CSU",
-            number: 971,
-            year: 2022
-        })
-        expect(parseResData.date).toEqual(new Date("2022-12-15T00:00:00Z"));
-        expect(parseResData.recitals.length).toBe(3);
-        expect(parseResData.considerations.length).toBe(6);
-        expect(parseResData.articles.length).toBe(3);
-        expect(parseResData.annexes.length).toBe(1);
-        expect(parseResData.decisionBy.toLowerCase()).toBe("consejo superior universitario");
-        parseResData.articles.forEach(article => {
-            expect(article.text).not.toMatch(/^(art[ií]culo)/i)
+
+
+        structureChecks(parseResData, {
+            id: {
+                initial: "CSU",
+                number: 971,
+                year: 2022
+            },
+            caseFiles: ["X-22/95"],
+            numRecitals: 3,
+            numConsiderations: 6,
+            numArticles: 3,
+            numAnnexes: 1,
+            decisionBy: "consejo superior universitario",
         });
+
+
+        expect(parseResData.date).toEqual(new Date("2022-12-15T00:00:00Z"));
+
         expect(parseResData.articles[0]!).toMatchObject({
             type: "Modifier",
             changes: [
@@ -452,24 +498,25 @@ describe("E2E Resolution Parsing", () => {
     });
 
     test.concurrent("E2E: Add Article To Resolution", async () => {
-        // TODO ALSO WORKS FOR REPEAL RESOLUTION
-        const parseRes = await parseFileResolution(path.join(__dirname, "test_files", "CSU_RES-139-2021.pdf"));
+        const parseRes = await parseTestFile("CSU_RES-139-2021.pdf");
         expect(parseRes.success).toBe(true);
         const resSucess = parseRes as typeof parseRes & { success: true };
         const parseResData = resSucess.data;
-        expect(parseResData.id).toEqual({
-            initial: "CSU",
-            number: 139,
-            year: 2021
+
+        structureChecks(parseResData, {
+            id: {
+                initial: "CSU",
+                number: 139,
+                year: 2021
+            },
+            caseFiles: ["489/20"],
+            numRecitals: 2,
+            numConsiderations: 3,
+            numArticles: 4,
+            numAnnexes: 0,
+            decisionBy: "consejo superior universitario",
         });
-        expect(parseResData.recitals.length).toBe(2);
-        expect(parseResData.considerations.length).toBe(3);
-        expect(parseResData.articles.length).toBe(4);
-        expect(parseResData.annexes.length).toBe(0);
-        expect(parseResData.decisionBy.toLowerCase()).toBe("consejo superior universitario");
-        parseResData.articles.forEach(article => {
-            expect(article.text).not.toMatch(/^(art[ií]culo)/i)
-        });
+
         expect(parseResData.articles[1]!).toMatchObject({
             type: "Modifier",
             changes: [
@@ -485,24 +532,26 @@ describe("E2E Resolution Parsing", () => {
 
 
     test.concurrent("E2E: Add Article to Annex", async () => {
-        const parseRes = await parseFileResolution(path.join(__dirname, "test_files", "CSU_RES-214-2018.pdf"));
+        const parseRes = await parseTestFile("CSU_RES-214-2018.pdf");
         expect(parseRes.success).toBe(true);
         const resSuccess = parseRes as typeof parseRes & { success: true };
         const parseResData = resSuccess.data;
-        expect(parseResData.id).toEqual({
-            initial: "CSU",
-            number: 214,
-            year: 2018
+
+        structureChecks(parseResData, {
+            id: {
+                initial: "CSU",
+                number: 214,
+                year: 2018
+            },
+            caseFiles: ["1123/09"],
+            numRecitals: 1,
+            numConsiderations: 3,
+            numArticles: 6,
+            numAnnexes: 0,
+            decisionBy: "consejo superior universitario",
         });
+
         expect(parseResData.date).toEqual(new Date("2018-04-19T00:00:00Z"));
-        expect(parseResData.recitals.length).toBe(1);
-        expect(parseResData.considerations.length).toBe(3);
-        expect(parseResData.articles.length).toBe(6);
-        expect(parseResData.annexes.length).toBe(0);
-        expect(parseResData.decisionBy.toLowerCase()).toBe("consejo superior universitario");
-        parseResData.articles.forEach(article => {
-            expect(article.text).not.toMatch(/^(art[ií]culo)/i)
-        });
 
         expect(parseResData.articles[0]!).toMatchObject({
             type: "Modifier",
@@ -552,24 +601,27 @@ describe("E2E Resolution Parsing", () => {
     });
 
     test.concurrent("E2E: Add article to chapter", async () => {
-        const parseRes = await parseFileResolution(path.join(__dirname, "test_files", "CSU_RES-582-2017.pdf"));
+        const parseRes = await parseTestFile("CSU_RES-582-2017.pdf");
         expect(parseRes.success).toBe(true);
         const resSuccess = parseRes as typeof parseRes & { success: true };
         const parseResData = resSuccess.data;
-        expect(parseResData.id).toEqual({
-            initial: "CSU",
-            number: 582,
-            year: 2017
+
+        structureChecks(parseResData, {
+            id: {
+                initial: "CSU",
+                number: 582,
+                year: 2017
+            },
+            caseFiles: ["993/11"],
+            numRecitals: 1,
+            numConsiderations: 6,
+            numArticles: 2,
+            numAnnexes: 0,
+            decisionBy: "consejo superior universitario",
         });
+
         expect(parseResData.date).toEqual(new Date("2017-10-05T00:00:00Z"));
-        expect(parseResData.recitals.length).toBe(1);
-        expect(parseResData.considerations.length).toBe(6);
-        expect(parseResData.articles.length).toBe(2);
-        expect(parseResData.annexes.length).toBe(0);
-        expect(parseResData.decisionBy.toLowerCase()).toBe("consejo superior universitario");
-        parseResData.articles.forEach(article => {
-            expect(article.text).not.toMatch(/^(art[ií]culo)/i)
-        });
+
         expect(parseResData.articles[0]!).toMatchObject({
             type: 'Modifier',
             changes: [
@@ -592,24 +644,27 @@ describe("E2E Resolution Parsing", () => {
     });
 
     test.concurrent("E2E: add annex to annex", async () => {
-        const parseRes = await parseFileResolution(path.join(__dirname, "test_files", "CSU_RES-112-2020.pdf"));
+        const parseRes = await parseTestFile("CSU_RES-112-2020.pdf");
         expect(parseRes.success).toBe(true);
         const resSuccess = parseRes as typeof parseRes & { success: true };
         const parseResData = resSuccess.data;
-        expect(parseResData.id).toEqual({
-            initial: "CSU",
-            number: 112,
-            year: 2020
+
+        structureChecks(parseResData, {
+            id: {
+                initial: "CSU",
+                number: 112,
+                year: 2020
+            },
+            caseFiles: ["1132/1986"],
+            numRecitals: 5,
+            numConsiderations: 15,
+            numArticles: 4,
+            numAnnexes: 2,
+            decisionBy: "consejo superior universitario",
         });
+
         expect(parseResData.date).toEqual(new Date("2020-04-30T00:00:00Z"));
-        expect(parseResData.recitals.length).toBe(5);
-        expect(parseResData.considerations.length).toBe(15);
-        expect(parseResData.articles.length).toBe(4);
-        expect(parseResData.annexes.length).toBe(2);
-        expect(parseResData.decisionBy.toLowerCase()).toBe("consejo superior universitario");
-        parseResData.articles.forEach(article => {
-            expect(article.text).not.toMatch(/^(art[ií]culo)/i)
-        });
+
         expect(parseResData.articles[1]!).toMatchObject({
             type: 'Modifier',
             changes: [
@@ -632,25 +687,26 @@ describe("E2E Resolution Parsing", () => {
     })
 
     test.concurrent("E2E: Replace annex with reference & tables", async () => {
-        //TODO also works for modify article, and tables
-        const parseRes = await parseFileResolution(path.join(__dirname, "test_files", "CSU_RES-751-2023.pdf"));
+        const parseRes = await parseTestFile("CSU_RES-751-2023.pdf");
         expect(parseRes.success).toBe(true);
         const resSuccess = parseRes as typeof parseRes & { success: true };
         const parseResData = resSuccess.data;
-        expect(parseResData.id).toEqual({
-            initial: "CSU",
-            number: 751,
-            year: 2023
+
+        structureChecks(parseResData, {
+            id: {
+                initial: "CSU",
+                number: 751,
+                year: 2023
+            },
+            caseFiles: ["2648/14"],
+            numRecitals: 4,
+            numConsiderations: 5,
+            numArticles: 5,
+            numAnnexes: 1,
+            decisionBy: "consejo superior universitario",
         });
+
         expect(parseResData.date).toEqual(new Date("2023-09-22T00:00:00Z"));
-        expect(parseResData.recitals.length).toBe(4);
-        expect(parseResData.considerations.length).toBe(5);
-        expect(parseResData.articles.length).toBe(5);
-        expect(parseResData.annexes.length).toBe(1);
-        expect(parseResData.decisionBy.toLowerCase()).toBe("consejo superior universitario");
-        parseResData.articles.forEach(article => {
-            expect(article.text).not.toMatch(/^(art[ií]culo)/i)
-        });
         expect(parseResData.articles[1]!).toMatchObject({
             type: 'Modifier',
             changes: [
@@ -684,24 +740,25 @@ describe("E2E Resolution Parsing", () => {
     })
 
     test.concurrent("E2E: modfications annex", async () => {
-        const parseRes = await parseFileResolution(path.join(__dirname, "test_files", "CSU_RES-233-2020-trimmed.pdf"));
+        const parseRes = await parseTestFile("CSU_RES-233-2020-trimmed.pdf");
         expect(parseRes.success).toBe(true);
         const resSuccess = parseRes as typeof parseRes & { success: true };
         const parseResData = resSuccess.data;
-        expect(parseResData.id).toEqual({
-            initial: "CSU",
-            number: 233,
-            year: 2020
+
+        structureChecks(parseResData, {
+            id: {
+                initial: "CSU",
+                number: 233,
+                year: 2020
+            },
+            numRecitals: 4,
+            numConsiderations: 7,
+            numArticles: 4,
+            numAnnexes: 2,
+            decisionBy: "consejo superior universitario",
         });
+
         expect(parseResData.date).toEqual(new Date("2020-06-25T00:00:00Z"));
-        expect(parseResData.recitals.length).toBe(4);
-        expect(parseResData.considerations.length).toBe(7);
-        expect(parseResData.articles.length).toBe(4);
-        expect(parseResData.annexes.length).toBe(2);
-        expect(parseResData.decisionBy.toLowerCase()).toBe("consejo superior universitario");
-        parseResData.articles.forEach(article => {
-            expect(article.text).not.toMatch(/^(art[ií]culo)/i)
-        });
         expect(parseResData.articles[0]!).toMatchObject({
             type: 'Modifier',
             changes: [
@@ -742,19 +799,13 @@ describe("E2E Resolution Parsing", () => {
     });
 
     test.concurrent("E2E: invalid format", async () => {
-        const parseRes = await parseFileResolution(path.join(__dirname, "test_files", "invalid.pdf"));
+        const parseRes = await parseTestFile("invalid.pdf");
         expect(parseRes.success).toBe(false);
         const resError = parseRes as typeof parseRes & { success: false };
         expect(resError.error).toMatchObject({
             code: "invalid_format",
         });
     });
-    /* TODO:
-    - restructure file to use describe and before
-    - Assert references
-    - change types:
-        - RepealChapterAnnex: No examples?
- */
 });
 
 type DeepPartial<T> = T extends object ? {
