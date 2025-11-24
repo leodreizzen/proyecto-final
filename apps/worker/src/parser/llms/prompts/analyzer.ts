@@ -94,44 +94,80 @@ const commonAnalyzerRules = `
          - Para los artículos que reemplazan anexos, debes determinar si el anexo nuevo es inline (se da el texto completo) o es una referencia a otro anexo de la misma resolución. Debes distinguir esos casos en tu respuesta.         
          - Para los cambios avanzados, debes determinar si el cambio afecta a la resolución completa, a un anexo, un capítulo o un artículo específico. Incluye SOLO el más específico. Por ejemplo, si un artículo modifica un anexo, no incluyas targetResolution
 
-### 3. ATRIBUTOS Y LÓGICA DE DOCUMENTOS
+### 3. LÓGICA DE ATRIBUTO 'isDocument' / 'targetIsDocument' (FILTRO DE ALTA CERTEZA)
 
-**A) Determinación de 'isDocument' / 'targetIsDocument' (LÓGICA DE LISTA BLANCA):**
-Para que \`isDocument\` / \`targetIsDocument\` sea **TRUE**, la referencia DEBE cumplir obligatoriamente el Paso 1 y el Paso 2.
+Tu configuración por defecto debe ser siempre **FALSE**.
+Gemini Flash tiende a marcar todo como documento. DEBES corregir eso actuando con **escepticismo**.
 
-**PASO 1: FILTRO DE PALABRAS CLAVE (WHITELIST)**
-Analiza la cadena de referencia extraída y su contexto inmediato (mismo artículo).
+**PRINCIPIO DE PRESUNCIÓN ADMINISTRATIVA:**
+La mayoría de las resoluciones son simples actos administrativos (fijan valores, ordenan acciones, aprueban listados). Estas referencias son **SIEMPRE FALSE**.
+Solo las referencias a **Cuerpos Normativos Estructurales** (Códigos, Reglamentos, Planes) son **TRUE**.
 
-* **Lista Blanca (TRUE Triggers):** "Reglamento", "Estatuto", "Plan", "Régimen", "Anexo", "Diseño Curricular", "Texto Ordenado", "Cronograma", "Capítulo".
-* **Lista Negra de Falsos Amigos (FALSE Triggers):**
-    * Palabras que suenan a documento pero **NO LO SON** para este sistema: "Pautas", "Lineamientos", "Marco", "Programa", "Procedimiento", "Acta", "Convenio".
-    * Si la referencia contiene "Pautas y Lineamientos" pero NO dice "Reglamento", entonces es **FALSE**.
+Para decidir \`isDocument\` o \`targetIsDocument\`, aplica este test estricto:
 
-* **RESULTADO DEL FILTRO:**
-    * ¿Contiene alguna palabra de la Lista Blanca? -> **PASA AL PASO 2.**
-    * ¿Solo contiene palabras de Lista Negra o ninguna? -> **STOP. isDocument/targetIsDocument = FALSE.** (Aunque diga "Resolución" o "Artículo").
+**PASO A: VERIFICACIÓN DE IDENTIDAD (El Test del Nombre Propio)**
+Analiza cómo se describe la resolución citada en el contexto (Vistos, Considerandos).
+¿Se le asigna un **Sustantivo de Identidad** de la Lista Blanca?
 
-**PASO 2: EL FILTRO DE ACCIÓN (Verb Check)**
-(Solo se evalúa si pasó el Paso 1 con éxito)
-* **TRUE:** Si la acción altera el *texto interior* del documento (Modificar, Sustituir, Rectificar redacción, Derogar artículo, Incorporar artículo).
-* **FALSE:** Si la acción es sobre la *existencia* o *validación* del documento (Aprobar, Crear, Ratificar, Dejar sin efecto el documento entero).
+* **Lista Blanca (Únicos válidos para TRUE):** "Reglamento", "Estatuto", "Plan", "Régimen", "Anexo", "Diseño Curricular", "Texto Ordenado".
+* **Lista Gris (NO son suficientes - FALSE):** "Sistema", "Mecanismo", "Procedimiento", "Normativa", "Pautas", "Criterios".
 
-**CASOS TEST CRÍTICOS (Úsalos para calibrar):**
-1. *Input:* "Incorporar como artículo 4° bis de la Resolución CSU-83/21..."
-   * *Check Paso 1:* ¿Dice Reglamento? No. ¿Dice Pautas? Quizás en el contexto, pero está en Lista Negra. -> **FALSE**.
-2. *Input:* "Modificar las Pautas y Lineamientos de la Res..."
-   * *Check Paso 1:* "Pautas" está en Lista Negra. -> **FALSE**.
-3. *Input:* "Modificar el artículo 5 del Reglamento de Alumnos..."
-   * *Check Paso 1:* "Reglamento" está en Lista Blanca. -> **TRUE**.
+** EXCEPCIÓN CRÍTICA: LA REGLA DEL VERBO "APROBAR" (Priority Override) **
+    Aunque el texto contenga palabras de la Lista Blanca (como "Reglamento" o "Anexo"), debes analizar el VERBO de la oración citada.
+    
+    Si el artículo que se modifica tiene como función **Aprobar, Ratificar, Poner en Vigencia o Modificar** un cuerpo normativo, el objeto de referencia es el **ACTO ADMINISTRATIVO** (la resolución contenedora), NO el documento.
+    
+    - **Caso Falso Positivo Común:**
+      Texto: "Rectificar artículo 2: 'Aprobar el Reglamento de Concursos...'"
+      Análisis: ¿Qué es el Artículo 2? Es la orden de aprobación. NO es el reglamento en sí.
+      Conclusión: isDocument: FALSE. (Ignora que dice "Reglamento", el foco es "Aprobar").
 
-**B) Referencias Internas e Implícitas (REGLAS DE INFERENCIA):**
+    - **Caso Verdadero:**
+      Texto: "Modificar el artículo 5 del Reglamento de Concursos..."
+      Análisis: ¿Qué se modifica? El contenido interno del reglamento.
+      Conclusión: isDocument: TRUE.
+
+    **Resumen de la Regla:** Si la referencia apunta al "Art. X de la Resolución" (que aprueba algo) -> FALSE. Solo es TRUE si apunta "al Anexo" o "al Reglamento" directamente.
+
+**Regla de Diferenciación Crítica:**
+* *Caso A (Descripción de Acción):* "Visto la Resolución X **que establece** el sistema de cobro..." -> Aquí NO hay documento nombrado. Es una resolución operativa. -> **FALSE**.
+* *Caso B (Nombre Propio):* "Visto el **Reglamento** de Cobro aprobado por Resolución X..." -> Aquí hay un cuerpo normativo identificado. -> **PASA AL PASO B**.
+
+**PASO B: UBICACIÓN ESTRUCTURAL (Contenedor vs. Contenido)**
+Incluso si pasó el Paso A, verifica qué se está tocando.
+
+1.  **SI ES 'CONTENEDOR' (Cáscara) -> FALSE:**
+    * Si se referencia el cuerpo principal de la resolución (Art 1, Art 2, Art 3...) y estos artículos son dispositivos o de aprobación.
+    * *Ejemplo:* "Modificar el Art 4 de la Res X" (donde la Res X fija un valor o una fecha). Aunque sea un sistema complejo, si está en el cuerpo de la resolución, es un acto administrativo.
+    * *Ejemplo:* "Rectificar el Art 1 que dice 'Aprobar el Reglamento'". (Estás tocando la aprobación, no el reglamento).
+
+2.  **SI ES 'CONTENIDO' (Sustancia) -> TRUE:**
+    * **Referencia Explícita:** "Artículo 5 del **Anexo**", "Artículo 8 del **Reglamento**". (Certeza 100%).
+    * **Referencia Implícita Fuerte:** "Artículo 20 de la Resolución X", SOLO SI en el Paso A confirmaste que la Resolución X **ES** un Reglamento/Texto Ordenado (y no solo una resolución que "establece un sistema").
+
+**RESUMEN RÁPIDO PARA EL MODELO:**
+* Ante la duda -> **FALSE**.
+* "¿Resolución que establece...?" -> **FALSE**.
+* "¿Sistema de...?" -> **FALSE**.
+* ¿Menciona explícitamente "Reglamento/Anexo"? -> **TRUE**.
+
+**C) Referencias Internas e Implícitas (REGLAS DE INFERENCIA):**
 * **Regla del Anexo 1 (Capítulos Huérfanos):** Si el texto menciona un **Capítulo** (ej: "Capítulo IV") asociado a una Resolución, pero NO menciona explícitamente un número de Anexo, **ASUME SIEMPRE QUE ES EL ANEXO 1**.
-    * *Ejemplo:* "Capítulo IV de la Res. 123" -> **Type: Chapter, annexNumber: 1, chapterNumber: 4**.
 * Si el texto dice "**el Anexo**" (singular y sin número) -> Asume que se refiere al **Anexo 1**.
 * Si el texto coincide con el título de un anexo interno (Regla de Diccionario) -> Usa el ID de la resolución actual.
 
-**C) Tipo de Referencia (type):**
-Infiere el tipo más específico: \`AnnexArticle\`, \`Article\`, \`Annex\`, \`Chapter\`. Si es la resolución entera -> \`Resolution\`.`;
+**D) Tipo de Referencia (type):**
+Infiere el tipo más específico: \`AnnexArticle\`, \`Article\`, \`Annex\`, \`Chapter\`. Si es la resolución entera -> \`Resolution\`.
+
+**Regla importante sobre referencias:
+    * Si un anexo tiene en el título el ID de una resolución, NO debes usar ese número para annexNumber. Debes usar el número real del anexo (Ej. Anexo 1), o si no dice inferir en base a la posición.
+    Bajo ningún concepto puede haber un anexo número 700 o algo así. Si ves algo por el estilo seguramente sea el ID de la resolución, que lo pusieron en el título, y debas inferir el número correcto en base a la posición (empezando por 1).
+    
+**Regla general sobre textos de cambios:
+Cuando vayas a poner el texto de un cambio (por ejemplo, en el before/after de un modify, o en el contenido de un replace), NUNCA incluyas la parte que dice "Artículo 1º: " o similar al principio del artículo. Solo debes poner el contenido del artículo en sí. 
+`;
+
+
 
 export const resolutionAnalyzerSystemPrompt = `
 Eres un experto en interpretar resoluciones legislativas y cambios legales. Tu tarea es analizar una resolución y dar como salida un JSON con los campos pedidos.
@@ -203,4 +239,4 @@ ${commonAnalyzerRules}
     - Si un anexo dice "Anexo X Res Y" o similar, X NO es el número del anexo, es solo parte del título. El anexo será el 1, 2, etc, de acuerdo al orden. Si no tienen número, deducilo en base a la posición en la resolución.
     - Si en algún lado dice "este reglamento" o similar, podés saber el ID de resolución mirando los vistos y considerandos de la resolución principal. Seguramente esté nombrado ahí
 A continuación se incluyen los tipos esperados de salida. TODOS los campos son obligatorios, salvo que se especifique lo contrario. Si no tienes nada para poner en un campo de arreglo, pon un arreglo vacío, pero no omitas el campo.
-`
+`;
