@@ -798,6 +798,42 @@ describe("E2E Resolution Parsing", () => {
         expect(secondAnnexWithArticles.articles).toHaveLength(2);
     });
 
+    test.concurrent("E2E: Resolution with chapters", async () => {
+        const parseRes = await parseTestFile("CSU_RES-550-2019.pdf");
+        expect(parseRes.success).toBe(true);
+        const resSuccess = parseRes as typeof parseRes & { success: true };
+        const parseResData = resSuccess.data;
+        structureChecks(parseResData, {
+            id: {
+                initial: "CSU",
+                number: 550,
+                year: 2019
+            },
+            numRecitals: 2,
+            numConsiderations: 3,
+            numArticles: 2,
+            numAnnexes: 1,
+            decisionBy: "consejo superior universitario",
+        });
+
+        const firstAnnex = parseResData.annexes[0]!;
+        expect(firstAnnex.type).toBe("WithArticles" satisfies Annex["type"]);
+        const firstAnnexWithArticles = firstAnnex as Extract<typeof firstAnnex, { type: "WithArticles" }>;
+        expect(firstAnnexWithArticles.chapters).toHaveLength(5);
+        expect(firstAnnexWithArticles.chapters[0]!.articles).toHaveLength(1);
+        expect(firstAnnexWithArticles.chapters[1]!.articles).toHaveLength(4);
+        expect(firstAnnexWithArticles.chapters[2]!.articles).toHaveLength(3);
+        expect(firstAnnexWithArticles.chapters[3]!.articles).toHaveLength(3);
+        expect(firstAnnexWithArticles.chapters[4]!.articles).toHaveLength(2);
+        expect(firstAnnexWithArticles.articles).toHaveLength(0);
+        firstAnnexWithArticles.chapters.forEach(chapter => {
+            chapter.articles.forEach(article => {
+                expect(article.text).not.toMatch(/^(art[ií]culo)/i);
+                expect(article.type).toEqual("Normative");
+            });
+        });
+    })
+
     test.concurrent("E2E: invalid format", async () => {
         const parseRes = await parseTestFile("invalid.pdf");
         expect(parseRes.success).toBe(false);
