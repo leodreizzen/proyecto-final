@@ -51,9 +51,12 @@ Si el esquema de salida incluye un campo para tablas:
 
 ## 6. ANEXOS (Inferencia Agresiva)
 - **Ubicación:** Todo lo que aparece DESPUÉS de las firmas (fecha, firma del rector/decano) es considerado ANEXO.
+- Solo puede haber ANEXOS al final del documento, luego de TODOS los artículos. De lo contrario, el anexo forma parte de un artículo.
 - **Captura:** A menudo el modelo ignora los anexos si no dicen explícitamente "ANEXO I". Si hay texto o tablas después de las firmas, **CAPTÚRALO COMO ANEXO**.
 - **Numeración:** Si el esquema requiere un número y el anexo no lo tiene explícito, **ASIGNA UNO SECUENCIAL** (1, 2, 3...) basado en el orden. **NUNCA devuelvas null** en campos numéricos obligatorios.
 - **Tipos:** Si el esquema pide tipo, usa "WithArticles" si tiene estructura de artículos, "TextOrTables" para el resto.
+- **Anexos como parte de artículos** Si un artículo incluye textualmente el contenido de un anexo, **NO VA** en la sección de anexos. Solo inclúyelo una vez.
+
 
 # IDENTIFICACIÓN DE LA RESOLUCIÓN (CRÍTICO)
 

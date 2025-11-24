@@ -111,12 +111,13 @@ Analiza la cadena de referencia extraída y su contexto inmediato (mismo artícu
 
 * **Lista Blanca (TRUE Triggers):** "Reglamento", "Estatuto", "Plan", "Régimen", "Anexo", "Diseño Curricular", "Texto Ordenado", "Cronograma", "Capítulo".
 * **Lista Negra de Falsos Amigos (FALSE Triggers):**
-    * Palabras que suenan a documento pero **NO LO SON** para este sistema: "Pautas", "Lineamientos", "Marco", "Programa", "Procedimiento", "Acta", "Convenio".
+    * Palabras que suenan a documento pero **NO LO SON** para este sistema: "Pautas", "Lineamientos", "Marco", "Programa", "Procedimiento", "Acta", "Convenio". Estas palabras NO hacen que \`isDocument\` sea TRUE.
     * Si la referencia contiene "Pautas y Lineamientos" pero NO dice "Reglamento", entonces es **FALSE**.
 
 * **RESULTADO DEL FILTRO:**
     * ¿Contiene alguna palabra de la Lista Blanca? -> **PASA AL PASO 2.**
     * ¿Solo contiene palabras de Lista Negra o ninguna? -> **STOP. isDocument = FALSE.** (Aunque diga "Resolución" o "Artículo").
+    * Ante la duda: false
 
 **PASO 2: EL FILTRO DE ACCIÓN (Verb Check)**
 (Solo se evalúa si pasó el Paso 1 con éxito)
