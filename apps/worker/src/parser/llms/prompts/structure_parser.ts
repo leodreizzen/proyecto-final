@@ -56,6 +56,8 @@ Si el esquema de salida incluye un campo para tablas:
 - **Numeración:** Si el esquema requiere un número y el anexo no lo tiene explícito, **ASIGNA UNO SECUENCIAL** (1, 2, 3...) basado en el orden. **NUNCA devuelvas null** en campos numéricos obligatorios.
 - **Tipos:** Si el esquema pide tipo, usa "WithArticles" si tiene estructura de artículos, "TextOrTables" para el resto.
 - **Anexos como parte de artículos** Si un artículo incluye textualmente el contenido de un anexo, **NO VA** en la sección de anexos. Solo inclúyelo una vez.
+- **Anexos con capítulos**: Si un anexo tiene capítulos y no tiene artículos sueltos, DEBES usar un arreglo vacío (\`[]\`) para los artículos sueltos del anexo. NO omites ese campo.
+Además, asegurate de incluir los artículos de cada capítulo.
 
 
 # IDENTIFICACIÓN DE LA RESOLUCIÓN (CRÍTICO)

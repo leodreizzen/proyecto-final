@@ -135,7 +135,7 @@ function moveTablesToAnnexes(annexes: AnnexWithMappedChanges[], tables: TableStr
                 const moveChapterArticlesRes = moveTablesToObjectArray(chapter.articles, tables, usedTableNumbers);
                 usedTableNumbers = moveChapterArticlesRes.usedTableNumbers;
 
-                const articlesWithTables: WithTables<typeof chapter.articles[number]>[] = [];
+                const articlesWithTables = moveChapterArticlesRes.objects;
 
                 chaptersWithTables.push({
                     ...chapter,

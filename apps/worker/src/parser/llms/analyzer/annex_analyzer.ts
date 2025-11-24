@@ -36,50 +36,48 @@ export async function analyzeAnnex(input: AnalyzeAnnexInput, firstAttempt: boole
 }
 
 export async function _analyzeAnnex(input: AnalyzeAnnexInput, firstAttempt: boolean): Promise<ParseAnnexResult> {
-    return withLlmRetry(async () => {
-        console.log("calling anenex analyzer model...");
-        const annexJSON = JSON.stringify(input, null, 2);
-        const LLMResult = await structuredLLMCall({
-            model: "gemini-2.5-flash",
-            response_format: {
-                type: "json_object"
-            },
-            reasoning_effort: "medium",
-            max_completion_tokens: 64000,
-            messages: [
-                {
-                    role: "developer",
-                    content: [
-                        {
-                            type: "text",
-                            text: annexAnalyzerSystemPrompt + annexSchemaDescription,
-                            cache_control: {
-                                type: "ephemeral"
-                            }
-                        }
-                    ],
-                },
-                {
-                    role: "user",
-                    content: [{
+    console.log("calling anenex analyzer model...");
+    const annexJSON = JSON.stringify(input, null, 2);
+    const LLMResult = await structuredLLMCall({
+        model: "gemini-2.5-flash",
+        response_format: {
+            type: "json_object"
+        },
+        reasoning_effort: "medium",
+        max_completion_tokens: 64000,
+        messages: [
+            {
+                role: "developer",
+                content: [
+                    {
                         type: "text",
-                        text: retryCacheBuster(firstAttempt) + annexJSON
-                    }]
-                }
-            ]
-        }, AnnexAnalysisResultSchema);
-
-        if (!isParseResultValid(LLMResult)) {
-            throw new LLMRefusalError(`Annex analyzer LLM call failed: ${LLMResult.error.message}`);
-        }
-
-        if (LLMResult.success) {
-            const validationRes = validateAnnexAnalysis(LLMResult.data, input.annex);
-            if (!validationRes.success) {
-                console.error(JSON.stringify(validationRes, null, 2));
-                throw new LLMResponseValidationError(`Annex analysis validation failed: ${validationRes.error}`);
+                        text: annexAnalyzerSystemPrompt + annexSchemaDescription,
+                        cache_control: {
+                            type: "ephemeral"
+                        }
+                    }
+                ],
+            },
+            {
+                role: "user",
+                content: [{
+                    type: "text",
+                    text: retryCacheBuster(firstAttempt) + annexJSON
+                }]
             }
+        ]
+    }, AnnexAnalysisResultSchema);
+
+    if (!isParseResultValid(LLMResult)) {
+        throw new LLMRefusalError(`Annex analyzer LLM call failed: ${LLMResult.error.message}`);
+    }
+
+    if (LLMResult.success) {
+        const validationRes = validateAnnexAnalysis(LLMResult.data, input.annex);
+        if (!validationRes.success) {
+            console.error(JSON.stringify(validationRes, null, 2));
+            throw new LLMResponseValidationError(`Annex analysis validation failed: ${validationRes.error}`);
         }
-        return LLMResult;
-    });
+    }
+    return LLMResult;
 }
