@@ -55,6 +55,10 @@ Si el esquema de salida incluye un campo para tablas:
 - **Captura:** A menudo el modelo ignora los anexos si no dicen explícitamente "ANEXO I". Si hay texto o tablas después de las firmas, **CAPTÚRALO COMO ANEXO**.
 - **Numeración:** Si el esquema requiere un número y el anexo no lo tiene explícito, **ASIGNA UNO SECUENCIAL** (1, 2, 3...) basado en el orden. **NUNCA devuelvas null** en campos numéricos obligatorios.
 - **Tipos:** Si el esquema pide tipo, usa "WithArticles" si tiene estructura de artículos, "TextOrTables" para el resto.
+-- **Determinación de estructura de artículos:** 
+a)Si el anexo tiene subtítulos como "CAPÍTULO I", "ARTÍCULO 1", "Artículo 2º", etc., TIENE ESTRUCTURA DE ARTÍCULOS.
+b)Si el anexo dice 1, 2, 3, pero no menciona artículos, entonces NO TIENE ESTRUCTURA DE ARTÍCULOS.
+
 - **Anexos como parte de artículos** Si un artículo incluye textualmente el contenido de un anexo, **NO VA** en la sección de anexos. Solo inclúyelo una vez.
 - **Anexos con capítulos**: Si un anexo tiene capítulos y no tiene artículos sueltos, DEBES usar un arreglo vacío (\`[]\`) para los artículos sueltos del anexo. NO omites ese campo.
 Además, asegurate de incluir los artículos de cada capítulo.

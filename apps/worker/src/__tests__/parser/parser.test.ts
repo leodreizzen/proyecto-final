@@ -228,8 +228,8 @@ describe("E2E Resolution Parsing", () => {
             type: "Modifier",
             changes: [
                 {
-                    type: "RepealArticle",
-                    targetArticle: {
+                    type: "Repeal",
+                    target: {
                         referenceType: "NormalArticle",
                         articleNumber: 2,
                         resolutionId: {
@@ -315,8 +315,8 @@ describe("E2E Resolution Parsing", () => {
             type: "Modifier",
             changes: [
                 {
-                    type: "RepealAnnex",
-                    targetAnnex: {
+                    type: "Repeal",
+                    target: {
                         referenceType: "Annex",
                         resolutionId: {
                             initial: "CSU",

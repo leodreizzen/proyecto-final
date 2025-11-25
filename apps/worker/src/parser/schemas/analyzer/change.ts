@@ -1,9 +1,10 @@
 import {ArticleSchemaWithText} from "./article";
 import {ResolutionIDSchema} from "@/parser/schemas/common";
 import {
+    AnnexArticleReferenceSchema,
     AnnexReferenceSchema,
     ArticleReferenceSchema,
-    ChapterReferenceSchema, ReferenceSchema,
+    ChapterReferenceSchema, ReferenceSchema, ResolutionReferenceSchema,
 } from "@/parser/schemas/references/schemas";
 import {z} from "zod";
 
@@ -24,16 +25,6 @@ export const ChangeAdvancedSchema = z.object({
     type: z.literal("AdvancedChange").describe("Cambio avanzado asistido por LLM. Debe usarse cuando el cambio no puede ser representado por los otros tipos"),
     target: ReferenceSchema.describe("Referencia al objetivo del cambio. Debe ser una y solo una de las siguientes: resolución, artículo, anexo o capítulo"),
 }).meta({title: "CambioAvanzado"});
-
-export const ChangeRepealArticleSchema = z.object({
-    type: z.literal("RepealArticle").describe("Derogar un artículo"),
-    targetArticle: ArticleReferenceSchema.describe("Artículo objetivo a derogar"),
-}).meta({title: "CambioDerogarArticulo"});
-
-export const ChangeRepealResolutionSchema = z.object({
-    type: z.literal("RepealResolution").describe("Derogar una resolución completa"),
-    targetResolution: ResolutionIDSchema.describe("Resolución objetivo"),
-}).meta({title: "CambioDerogarResolucion"});
 
 export const ChangeRatifyAdReferendumSchema = z.object({
     type: z.literal("RatifyAdReferendum").describe("Ratificar una resolución ad referéndum"),
@@ -127,15 +118,10 @@ export const ChangeAddArticleToAnnexSchema = z.object({
 
 export type ChangeAddArticleToAnnex = z.infer<typeof ChangeAddArticleToAnnexSchema>;
 
-export const ChangeRepealAnnexSchema = z.object({
-    type: z.literal("RepealAnnex").describe("Derogar un anexo"),
-    targetAnnex: AnnexReferenceSchema.describe("Anexo objetivo a derogar"),
-}).meta({title: "CambioDerogarAnexo"});
-
-export const ChangeRepealAnnexChapterSchema = z.object({
-    type: z.literal("RepealAnnexChapter").describe("Derogar un capítulo de un anexo"),
-    targetChapter: ChapterReferenceSchema.describe("Capítulo objetivo a derogar"),
-}).meta({title: "CambioDerogarCapituloAnexo"});
+export const ChangeRepealSchema = z.object({
+    type: z.literal("Repeal").describe("Derogar un artículo, capítulo, anexo, artículo o resolución"),
+    target: ReferenceSchema.describe("Objetivo del cambio")
+}).meta({title: "CambioDerogar"});
 
 export const ChangeApplyModificationsAnnexSchema = z.object({
     type: z.literal("ApplyModificationsAnnex").describe("Aplicar un anexo de modificaciones"),
@@ -146,8 +132,7 @@ export const ChangeSchema = z.discriminatedUnion("type", [
     ChangeModifyArticleSchema,
     ChangeReplaceArticleSchema,
     ChangeAdvancedSchema,
-    ChangeRepealArticleSchema,
-    ChangeRepealResolutionSchema,
+    ChangeRepealSchema,
     ChangeRatifyAdReferendumSchema,
     ChangeReplaceAnnexSchema,
     ChangeAddAnnexToResolutionSchema,
@@ -155,8 +140,6 @@ export const ChangeSchema = z.discriminatedUnion("type", [
     ChangeModifyTextAnnexSchema,
     ChangeAddArticleToResolutionSchema,
     ChangeAddArticleToAnnexSchema,
-    ChangeRepealAnnexSchema,
-    ChangeRepealAnnexChapterSchema,
     ChangeApplyModificationsAnnexSchema
 ]).meta({schemaDescription: "Cualquier tipo de cambio posible en una resolución"})
     .refine((change) => {

@@ -172,7 +172,7 @@ function mapAnalysis(change: Change) {
 }
 
 function mapChangeDocumentReferences(change: ChangeMapped, currentResolutionId: ResolutionID): ChangeMapped {
-    if (change.type === "ModifyArticle" || change.type === "ReplaceArticle" || change.type === "RepealArticle") {
+    if (change.type === "ModifyArticle" || change.type === "ReplaceArticle") {
         if (change.targetArticle.referenceType == "NormalArticle" && change.targetArticle.isDocument) {
             if (change.targetArticle.resolutionId && isEqual(change.targetArticle.resolutionId, currentResolutionId)) {
                 return change;
@@ -191,7 +191,27 @@ function mapChangeDocumentReferences(change: ChangeMapped, currentResolutionId: 
                 }
             }
         }
-    } else if (change.type == "AdvancedChange") {
+    } else if (change.type === "Repeal"){
+        if (change.target.referenceType == "NormalArticle" && change.target.isDocument) {
+            if (isEqual(change.target.resolutionId, currentResolutionId)) {
+                return change;
+            }
+            const {target, ...rest} = change;
+            return {
+                ...rest,
+                target: {
+                    referenceType: "AnnexArticle",
+                    annex: {
+                        referenceType: "Annex",
+                        resolutionId: target.resolutionId,
+                        annexNumber: 1
+                    },
+                    articleNumber: target.articleNumber
+                }
+            }
+        }
+    }
+    else if (change.type == "AdvancedChange") {
         if (change.target.referenceType == "Resolution" && change.target.isDocument) {
             if (isEqual(change.target.resolutionId, currentResolutionId)) {
                 return change;

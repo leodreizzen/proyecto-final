@@ -69,12 +69,6 @@ function validateReferenceConsistencyInArticle(article: ArticleAnalysis, article
 
 function changeReferences(change: Change): RawReference[] {
     switch (change.type) {
-        case "RepealResolution":
-            return [{
-                referenceType: "Resolution",
-                resolutionId: change.targetResolution,
-                isDocument: false
-            }]
         case "AddArticleToResolution": {
             if (change.newArticleNumber)
                 return [{
@@ -92,14 +86,12 @@ function changeReferences(change: Change): RawReference[] {
                 }];
         }
         case "ReplaceArticle":
-        case "RepealArticle":
         case "ModifyArticle":
             return [change.targetArticle]
         case "ModifyTextAnnex":
-        case "RepealAnnex":
             return [change.targetAnnex]
-        case "RepealAnnexChapter":
-            return [change.targetChapter]
+        case "Repeal":
+            return [change.target]
         case "AddAnnexToResolution": {
             let annexSlotRef;
             if (change.newAnnexNumber)
