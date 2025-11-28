@@ -1,8 +1,8 @@
-FROM postgres:17.6
+FROM postgres:18.1
 
 # install dependencies
 RUN apt-get update && \
-    apt-get install -y postgresql-server-dev-17 build-essential git && \
+    apt-get install -y postgresql-server-dev-18 build-essential git && \
     rm -rf /var/lib/apt/lists/*
 
 # install pgvector

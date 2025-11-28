@@ -13,12 +13,13 @@
   "devDependencies": {
     "@repo/eslint-config": "workspace:*",
     "@repo/typescript-config": "workspace:*",
-    "prisma": "^6.17.1"
+    "prisma": "^7.0.0"
   },
   "dependencies": {
+    "@prisma/client": "^7.0.0",
     "@types/node": "^22.15.3",
-    "postinstall": "^0.11.2",
-    "@prisma/client": "^6.17.1"
+    "dotenv": "^17.2.3",
+    "postinstall": "^0.11.2"
   },
   "exports": {
     "./prisma": {
