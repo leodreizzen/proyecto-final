@@ -36,6 +36,11 @@ fi
         if openssl x509 -in "/etc/letsencrypt/live/$DOMAIN/fullchain.pem" -noout -issuer | grep -q "localhost"; then
             echo "Requesting SSL certificate for $DOMAIN (Staging: ${STAGING:-0})..."
 
+            # Delete dummy certificate
+            rm -rf "/etc/letsencrypt/live/$DOMAIN"
+            rm -rf "/etc/letsencrypt/archive/$DOMAIN"
+            rm -rf "/etc/letsencrypt/renewal/$DOMAIN.conf"
+
             certbot certonly --webroot -w /var/www/certbot \
                 $STAGING_ARG \
                 -d "$DOMAIN" --email "$CERTBOT_EMAIL" \
