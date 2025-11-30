@@ -5,97 +5,643 @@
 // Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
 
 generator client {
-  provider   = "prisma-client"
-  output     = "../src/generated/prisma"
-  extensions = [pgvector(map: "vector")]
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
 }
 
 datasource db {
   provider = "postgresql"
-  url      = env("DATABASE_URL")
 }
 
 model Resolution {
-  uuid String @id @default(uuid())
+  id String @id @default(dbgenerated("uuidv7()")) @db.Uuid
 
-  initials String
-  number   Int
-  year     Int
+  initial String
+  number  Int
+  year    Int
 
-  articles Article[]
+  decisionBy     String
+  date           DateTime
+  title          String
+  summary        String
+  keywords       String[]
+  caseFiles      String[]
+  recitals       Recital[]
+  considerations Consideration[]
+  articles       Article[]
+  annexes        Annex[]
+
+  originalFile   Asset  @relation(fields: [originalFileId], references: [id])
+  originalFileId String @unique @db.Uuid
+
+  createdBy   User   @relation(fields: [createdById], references: [id], name: "Resolution_createdBy")
+  createdById String @db.Uuid
+
+  lastUpdateBy   User   @relation(fields: [lastUpdateById], references: [id], name: "Resolution_lastUpdateBy")
+  lastUpdateById String @db.Uuid
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  appendices Appendix[]
+  referencedBy ReferenceResolution[]
+
+  // Check: "year" must be between 1000 and 9999 and match the year of "date"
+  // Check: "number" > 0
+  // Trigger: Automatically links/unlinks references pointing to this resolution on creation or update
+  // Index: Unique case-insensitive index on [initial, number, year]
+
+  @@unique([initial, number, year])
+  @@index([date])
+  @@index([keywords])
 }
 
-model Appendix {
-  uuid String @id @default(uuid())
+model Recital {
+  id String @id @default(dbgenerated("uuidv7()")) @db.Uuid
 
-  resolution     Resolution @relation(fields: [resolutionUuid], references: [uuid])
-  resolutionUuid String
+  resolution   Resolution      @relation(fields: [resolutionId], references: [id], onDelete: Cascade)
+  resolutionId String          @db.Uuid
+  number       Int
+  text         String
+  references   TextReference[]
+  tables       Table[]
 
-  number   Int
-  articles AppendixArticle[]
+  @@unique([resolutionId, number])
+}
 
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+model Consideration {
+  id String @id @default(dbgenerated("uuidv7()")) @db.Uuid
 
-  @@unique([resolutionUuid, number])
+  resolution   Resolution      @relation(fields: [resolutionId], references: [id], onDelete: Cascade)
+  resolutionId String          @db.Uuid
+  number       Int
+  text         String
+  references   TextReference[]
+  tables       Table[]
+
+  @@unique([resolutionId, number])
 }
 
 model Article {
-  uuid String @id @default(uuid())
+  id String @id @default(dbgenerated("uuidv7()")) @db.Uuid
 
-  resolution     Resolution @relation(fields: [resolutionUuid], references: [uuid])
-  resolutionUuid String
+  resolution             Resolution?           @relation(fields: [resolutionId], references: [id], onDelete: Cascade)
+  resolutionId           String?               @db.Uuid
+  annex                  AnnexWithArticles?    @relation(fields: [annexId], references: [id], onDelete: Cascade)
+  annexId                String?               @db.Uuid
+  chapter                AnnexChapter?         @relation(fields: [chapterId], references: [id], onDelete: Cascade)
+  chapterId              String?               @db.Uuid
+  addedByChange          ChangeAddArticle?     @relation(fields: [addedByChangeId], references: [id], onDelete: Cascade)
+  addedByChangeId        String?               @unique @db.Uuid
+  newContentFrom         ChangeReplaceArticle? @relation(fields: [newContentFromChangeId], references: [id], onDelete: Cascade)
+  newContentFromChangeId String?               @unique @db.Uuid
 
-  number  Int
-  content String
+  number                Int
+  suffix                Int
+  text                  String
+  tables                Table[]
+  references            TextReference[]
+  type                  ArticleType
+  articleNormative      ArticleNormative?
+  articleModifier       ArticleModifier?
+  articleCreateDocument ArticleCreateDocument?
+  articleFormality      ArticleFormality?
+  referencedBy          ReferenceArticle[]
 
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  references   Article[] @relation("ArticleReferences")
-  referencedBy Article[] @relation("ArticleReferences")
-
-  embedding Embedding[]
-
-  @@unique([resolutionUuid, number])
+  // Check: Ensures article belongs to exactly one parent (Resolution, Annex, Chapter, ChangeAddArticle, or ChangeReplaceArticle)
+  // Check: "number" > 0
+  // Trigger: Automatically links/unlinks references pointing to this article on creation or update
+  // Index: Optimized partial indexes for lookups by resolution, annex, or chapter
+  // Trigger when concrete type is created: Checks that the type matches the associated model
+  @@unique([resolutionId, number, suffix])
+  @@unique([annexId, number, suffix])
+  @@unique([chapterId, number, suffix])
+  @@index([resolutionId])
+  @@index([annexId])
+  @@index([chapterId])
 }
 
-model AppendixArticle {
-  uuid String @id @default(uuid())
-
-  appendix     Appendix @relation(fields: [appendixUuid], references: [uuid])
-  appendixUuid String
-
-  number  Int
-  content String
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  references   AppendixArticle[] @relation("AppendixArticleReferences")
-  referencedBy AppendixArticle[] @relation("AppendixArticleReferences")
-
-  embedding Embedding[]
-
-  @@unique([appendixUuid, number])
+model ArticleNormative {
+  id      String  @id @db.Uuid
+  article Article @relation(fields: [id], references: [id], onDelete: Cascade)
 }
 
-model Embedding {
-  uuid String @id @default(uuid())
+model ArticleModifier {
+  id      String   @id @db.Uuid
+  article Article  @relation(fields: [id], references: [id], onDelete: Cascade)
+  changes Change[]
+}
 
-  article         Article?         @relation(fields: [articleUuid], references: [uuid])
-  appendixArticle AppendixArticle? @relation(fields: [appendixArticleUuid], references: [uuid])
+model ArticleCreateDocument {
+  id      String  @id @db.Uuid
+  article Article @relation(fields: [id], references: [id], onDelete: Cascade)
 
-  articleUuid         String?
-  appendixArticleUuid String?
+  annexToApprove            ReferenceAnnex @relation(fields: [annexToApproveReferenceId], references: [id])
+  annexToApproveReferenceId String         @unique @db.Uuid
 
-  createdAt DateTime @default(now())
+  // Trigger: Cleanup references when deleted
+}
 
-  vector  Unsupported("Vector")?
+model ArticleFormality {
+  id      String  @id @db.Uuid
+  article Article @relation(fields: [id], references: [id], onDelete: Cascade)
+}
+
+model Change {
+  id String @id @default(dbgenerated("uuidv7()")) @db.Uuid
+
+  articleModifier               ArticleModifier                @relation(fields: [articleModifierId], references: [id], onDelete: Cascade)
+  articleModifierId             String                         @db.Uuid
+  type                          ChangeType
+  changeModifyArticle           ChangeModifyArticle?
+  changeReplaceArticle          ChangeReplaceArticle?
+  changeAdvanced                ChangeAdvanced?
+  changeRepeal                  ChangeRepeal?
+  changeRatifyAdReferendum      ChangeRatifyAdReferendum?
+  changeReplaceAnnex            ChangeReplaceAnnex?
+  changeAddAnnex                ChangeAddAnnex?
+  changeModifyTextAnnex         ChangeModifyTextAnnex?
+  changeAddArticle              ChangeAddArticle?
+  changeApplyModificationsAnnex ChangeApplyModificationsAnnex?
+
+  // Trigger when concrete type is created: Checks that the type matches the associated model
+
+  @@index([articleModifierId])
+}
+
+model ChangeModifyArticle {
+  id                       String           @id @db.Uuid
+  change                   Change           @relation(fields: [id], references: [id], onDelete: Cascade)
+  before                   String
+  after                    String
+  targetArticle            ReferenceArticle @relation(fields: [targetArticleReferenceId], references: [id])
+  targetArticleReferenceId String           @unique @db.Uuid
+
+  // Trigger: Prevents circular reference (An article cannot modify/replace itself)
+  // Trigger: Cleanup target references when this change is deleted
+
+  @@index([targetArticleReferenceId])
+}
+
+model ChangeReplaceArticle {
+  id                       String           @id @db.Uuid
+  change                   Change           @relation(fields: [id], references: [id], onDelete: Cascade)
+  newContent               Article?
+  targetArticle            ReferenceArticle @relation(fields: [targetArticleReferenceId], references: [id])
+  targetArticleReferenceId String           @unique @db.Uuid
+
+  // Trigger: Prevents circular reference (An article cannot modify/replace itself)
+  // Trigger: Cleanup target references when this change is deleted
+  @@index([targetArticleReferenceId])
+}
+
+model ChangeAdvanced {
+  id                String    @id @db.Uuid
+  change            Change    @relation(fields: [id], references: [id], onDelete: Cascade)
+  target            Reference @relation(fields: [targetReferenceId], references: [id])
+  targetReferenceId String    @unique @db.Uuid
+
+  // Trigger: Cleanup references when deleted
+  @@index([targetReferenceId])
+}
+
+model ChangeRatifyAdReferendum {
+  id                          String              @id @db.Uuid
+  change                      Change              @relation(fields: [id], references: [id], onDelete: Cascade)
+  targetResolution            ReferenceResolution @relation(fields: [targetResolutionReferenceId], references: [id])
+  targetResolutionReferenceId String              @unique @db.Uuid
+
+  // Trigger: Cleanup references when deleted
+
+  @@index([targetResolutionReferenceId])
+}
+
+model ChangeReplaceAnnex {
+  id                     String                  @id @db.Uuid
+  change                 Change                  @relation(fields: [id], references: [id], onDelete: Cascade)
+  targetAnnex            ReferenceAnnex          @relation(fields: [targetAnnexReferenceId], references: [id], name: "replaceAnnex_targetAnnex")
+  targetAnnexReferenceId String                  @unique @db.Uuid
+  newContentType         ReplaceAnnexContentType
+  newInlineAnnex         Annex?
+  newAnnexReference      ReferenceAnnex?         @relation(fields: [newAnnexReferenceId], references: [id], name: "replaceAnnex_newAnnexReference")
+  newAnnexReferenceId    String?                 @unique @db.Uuid
+
+  // Check: Consistency check. If INLINE, newAnnexReferenceId must be null. If REFERENCE, it must be present.
+  // Trigger: Cleanup target/new references when this change is deleted
+  @@index([targetAnnexReferenceId])
+}
+
+model ChangeAddAnnex {
+  id                          String               @id @db.Uuid
+  change                      Change               @relation(fields: [id], references: [id], onDelete: Cascade)
+  annexToAdd                  ReferenceAnnex       @relation(fields: [annexToAddReferenceId], references: [id], name: "addAnnex_annexToAdd")
+  annexToAddReferenceId       String               @unique @db.Uuid
+  targetResolution            ReferenceResolution? @relation(fields: [targetResolutionReferenceId], references: [id])
+  targetResolutionReferenceId String?              @unique @db.Uuid
+  targetAnnex                 ReferenceAnnex?      @relation(fields: [targetAnnexReferenceId], references: [id], name: "addAnnex_targetAnnex")
+  targetAnnexReferenceId      String?              @unique @db.Uuid
+  newAnnexNumber              Int?
+
+  // Check: Ensures target is exclusive (Resolution or Annex)
+  // Trigger: Cleanup target/source references when this change is deleted
+
+  @@index([targetResolutionReferenceId])
+  @@index([targetAnnexReferenceId])
+}
+
+model ChangeModifyTextAnnex {
+  id                     String         @id @db.Uuid
+  change                 Change         @relation(fields: [id], references: [id], onDelete: Cascade)
+  targetAnnex            ReferenceAnnex @relation(fields: [targetAnnexReferenceId], references: [id])
+  targetAnnexReferenceId String         @unique @db.Uuid
+  before                 String
+  after                  String
+
+  // Trigger: Cleanup references when deleted
+
+  @@index([targetAnnexReferenceId])
+}
+
+model ChangeAddArticle {
+  id                          String               @id @db.Uuid
+  change                      Change               @relation(fields: [id], references: [id], onDelete: Cascade)
+  targetResolution            ReferenceResolution? @relation(fields: [targetResolutionReferenceId], references: [id])
+  targetResolutionReferenceId String?              @unique @db.Uuid
+  targetAnnex                 ReferenceAnnex?      @relation(fields: [targetAnnexReferenceId], references: [id])
+  targetAnnexReferenceId      String?              @unique @db.Uuid
+  targetChapter               ReferenceChapter?   @relation(fields: [targetChapterReferenceId], references: [id])
+  targetChapterReferenceId    String?             @unique @db.Uuid
+
+  newArticleNumber Int?
+  newArticleSuffix Int?
+  newArticle       Article?
+
+  // Check: Ensures target is exclusive (Resolution, Annex, or Chapter)
+  // Check: strict consistency between newArticleNumber and newArticleSuffix (both null or both present)
+  // Trigger: Cleanup target references when this change is deleted
+
+  @@index([targetResolutionReferenceId])
+  @@index([targetAnnexReferenceId])
+}
+
+model ChangeRepeal {
+  id                String    @id @db.Uuid
+  change            Change    @relation(fields: [id], references: [id], onDelete: Cascade)
+  target            Reference @relation(fields: [targetReferenceId], references: [id])
+  targetReferenceId String    @unique @db.Uuid
+
+  // Trigger: Cleanup references when deleted
+
+  @@index([targetReferenceId])
+}
+
+model ChangeApplyModificationsAnnex {
+  id             String         @id @db.Uuid
+  change         Change         @relation(fields: [id], references: [id], onDelete: Cascade)
+  annexToApply   ReferenceAnnex @relation(fields: [annexToApplyId], references: [id])
+  annexToApplyId String         @unique @db.Uuid
+
+  // Trigger: Cleanup references when deleted
+}
+
+enum ArticleType {
+  NORMATIVE
+  MODIFIER
+  CREATE_DOCUMENT
+  FORMALITY
+}
+
+enum ChangeType {
+  MODIFY_ARTICLE
+  REPLACE_ARTICLE
+  ADVANCED
+  REPEAL
+  RATIFY_AD_REFERENDUM
+  REPLACE_ANNEX
+  MODIFY_TEXT_ANNEX
+  ADD_ARTICLE
+  ADD_ANNEX
+  APPLY_MODIFICATIONS_ANNEX
+}
+
+model Annex {
+  id                              String              @id @default(dbgenerated("uuidv7()")) @db.Uuid
+  resolution                      Resolution?         @relation(fields: [resolutionId], references: [id], onDelete: Cascade)
+  resolutionId                    String?             @db.Uuid
+  newContentForChangeReplaceAnnex ChangeReplaceAnnex? @relation(fields: [changeReplaceAnnexId], references: [id], onDelete: Cascade)
+  changeReplaceAnnexId            String?             @unique @db.Uuid
+
+  name              String
+  number            Int
+  type              AnnexType
+  annexText         AnnexText?
+  annexWithArticles AnnexWithArticles?
+
+  // Check: Ensures annex belongs to exactly one source (Resolution or ChangeReplaceAnnex)
+  // Check: "number" > 0
+  // Trigger: Automatically links/unlinks references pointing to this annex on creation or update
+
+  referencedBy ReferenceAnnex[]
+
+  @@unique([resolutionId, number])
+  @@index([resolutionId])
+}
+
+model AnnexText {
+  id      String  @id @db.Uuid
+  annex   Annex   @relation(fields: [id], references: [id], onDelete: Cascade)
   content String
+  references   TextReference[]
+  tables  Table[]
+}
+
+enum AnnexType {
+  TEXT
+  WITH_ARTICLES
+}
+
+model AnnexWithArticles {
+  id                 String         @id @db.Uuid
+  annex              Annex          @relation(fields: [id], references: [id], onDelete: Cascade)
+  standaloneArticles Article[]
+  chapters           AnnexChapter[]
+  initialText        String?
+  finalText          String?
+}
+
+model AnnexChapter {
+  id       String            @id @default(dbgenerated("uuidv7()")) @db.Uuid
+  annex    AnnexWithArticles @relation(fields: [annexId], references: [id], onDelete: Cascade)
+  annexId  String            @db.Uuid
+  number   Int
+  title    String
+  articles Article[]
+
+  referencedBy ReferenceChapter[]
+
+  // Check: "number" > 0
+  // Trigger: Automatically links/unlinks references pointing to this chapter on creation or update
+
+  @@unique([annexId, number])
+}
+
+model Table {
+  id      String @id @default(dbgenerated("uuidv7()")) @db.Uuid
+  number  Int
+  content Json
+
+  recital         Recital?       @relation(fields: [recitalId], references: [id], onDelete: Cascade)
+  recitalId       String?        @db.Uuid
+  consideration   Consideration? @relation(fields: [considerationId], references: [id], onDelete: Cascade)
+  considerationId String?        @db.Uuid
+  article         Article?       @relation(fields: [articleId], references: [id], onDelete: Cascade)
+  articleId       String?        @db.Uuid
+  annexText       AnnexText?     @relation(fields: [annexTextId], references: [id], onDelete: Cascade)
+  annexTextId     String?        @db.Uuid
+
+  // Check: Ensures table belongs to exactly one owner (Recital, Consideration, Article, or AnnexText)
+}
+
+model TextReference {
+  id          String    @id @default(dbgenerated("uuidv7()")) @db.Uuid
+  textBefore  String
+  textAfter   String
+  reference   Reference @relation(fields: [referenceId], references: [id])
+  referenceId String    @unique @db.Uuid
+
+  recital         Recital?       @relation(fields: [recitalId], references: [id], onDelete: Cascade)
+  recitalId       String?        @db.Uuid
+  consideration   Consideration? @relation(fields: [considerationId], references: [id], onDelete: Cascade)
+  considerationId String?        @db.Uuid
+  article         Article?       @relation(fields: [articleId], references: [id], onDelete: Cascade)
+  articleId       String?        @db.Uuid
+  annexText       AnnexText?     @relation(fields: [annexTextId], references: [id], onDelete: Cascade)
+  annexTextId     String?        @db.Uuid
+
+  // Check: Ensures text reference belongs to exactly one owner (Recital, Consideration, Article, or AnnexText)
+  // Trigger: Cleanup parent "Reference" when this record is deleted
+}
+
+model Reference {
+  id         String               @id @default(dbgenerated("uuidv7()")) @db.Uuid
+  targetType ReferenceTargetType
+  resolution ReferenceResolution?
+  article    ReferenceArticle?
+  annex      ReferenceAnnex?
+  chapter    ReferenceChapter?
+
+  sourceType     ReferenceSourceType
+  textReference  TextReference?
+  changeAdvanced ChangeAdvanced?
+  changeRepeal   ChangeRepeal?
+
+  // Trigger when concrete type is created: Checks that the targetType matches the associated model
+}
+
+model ReferenceResolution {
+  id        String    @id @db.Uuid
+  reference Reference @relation(fields: [id], references: [id], onDelete: Cascade)
+
+  resolution   Resolution? @relation(fields: [resolutionId], references: [id], onDelete: SetNull)
+  resolutionId String?     @db.Uuid
+
+  // To be used when target is not present
+  initial String
+  number  Int
+  year    Int
+
+  changeRatifyAdReferendum ChangeRatifyAdReferendum?
+  changeAddAnnexTarget     ChangeAddAnnex?
+  changeAddArticleTarget   ChangeAddArticle?
+
+  // Trigger: Automatically seeks and links to the concrete Resolution based on initial/number/year
+  // Trigger: Cleanup parent "Reference" row when this record is deleted
+  // Index: Optimized partial index for orphan finding (where resolutionId is null)
+
+  @@index([initial, number, year])
+  @@index([resolutionId])
+}
+
+model ReferenceArticle {
+  id        String    @id @db.Uuid
+  reference Reference @relation(fields: [id], references: [id], onDelete: Cascade)
+
+  article   Article? @relation(fields: [articleId], references: [id], onDelete: SetNull)
+  articleId String?  @db.Uuid
+
+  // To be used when target is not present
+  initial       String
+  resNumber     Int
+  year          Int
+  articleNumber Int
+  articleSuffix Int
+  annexNumber   Int?
+  chapterNumber Int?
+
+  changeModifyArticle  ChangeModifyArticle?
+  changeReplaceArticle ChangeReplaceArticle?
+
+  // Check: If a chapter is referenced, the annex must also be defined
+  // Trigger: Automatically seeks and links to the concrete Article using an optimized View context
+  // Trigger: Cleanup parent "Reference" row when this record is deleted
+  // Index: Optimized partial index for orphan finding
+
+  @@index([articleId])
+  @@index([initial, resNumber, year, articleNumber, articleSuffix, annexNumber, chapterNumber])
+}
+
+model ReferenceAnnex {
+  id        String    @id @db.Uuid
+  reference Reference @relation(fields: [id], references: [id], onDelete: Cascade)
+
+  annex   Annex?  @relation(fields: [annexId], references: [id], onDelete: SetNull)
+  annexId String? @db.Uuid
+
+  // To be used when target is not present
+  initial     String
+  resNumber   Int
+  year        Int
+  annexNumber Int
+
+  changeApplyModificationsAnnex  ChangeApplyModificationsAnnex?
+  changeReplaceAnnexTarget       ChangeReplaceAnnex?            @relation(name: "replaceAnnex_targetAnnex")
+  changeReplaceAnnexNewReference ChangeReplaceAnnex?            @relation(name: "replaceAnnex_newAnnexReference")
+  changeAddAnnexTarget           ChangeAddAnnex?                @relation(name: "addAnnex_targetAnnex")
+  changeAddAnnexAnnexToAdd       ChangeAddAnnex?                @relation(name: "addAnnex_annexToAdd")
+  changeModifyTextAnnex          ChangeModifyTextAnnex?
+  changeAddArticle               ChangeAddArticle?
+  articleCreateDocument          ArticleCreateDocument?
+
+
+  // Trigger: Automatically seeks and links to the concrete Annex based on metadata
+  // Trigger: Cleanup parent "Reference" row when this record is deleted
+  // Index: Optimized partial index for orphan finding
+
+  @@index([annexId])
+  @@index([initial, resNumber, year, annexNumber])
+}
+
+model ReferenceChapter {
+  id        String    @id @db.Uuid
+  reference Reference @relation(fields: [id], references: [id], onDelete: Cascade)
+
+  chapter   AnnexChapter? @relation(fields: [chapterId], references: [id], onDelete: SetNull)
+  chapterId String?       @db.Uuid
+
+  // To be used when target is not present
+  initial       String
+  resNumber     Int
+  year          Int
+  annexNumber   Int
+  chapterNumber Int
+
+  changeAddArticleTarget ChangeAddArticle?
+
+  // Trigger: Automatically seeks and links to the concrete Chapter based on metadata
+  // Trigger: Cleanup parent "Reference" row when this record is deleted
+  // Index: Optimized partial index for orphan finding
+
+  @@index([chapterId])
+  @@index([initial, resNumber, year, annexNumber, chapterNumber])
+}
+
+enum ReplaceAnnexContentType {
+  INLINE
+  REFERENCE
+}
+
+enum ReferenceTargetType {
+  RESOLUTION
+  ANNEX
+  ARTICLE
+  CHAPTER
+}
+
+enum ReferenceSourceType {
+  TEXT_REFERENCE
+
+  CHANGE_ADVANCED
+  CHANGE_REPEAL
+  CHANGE_RATIFY
+
+  CHANGE_ADD_ANNEX
+  CHANGE_REPLACE_ANNEX
+  CHANGE_MODIFY_TEXT_ANNEX
+
+  CHANGE_ADD_ARTICLE
+  CHANGE_MODIFY_ARTICLE
+  CHANGE_REPLACE_ARTICLE
+
+  CHANGE_RATIFY_AD_REFERENDUM
+
+  ARTICLE_CREATE_DOCUMENT
+}
+
+model User {
+  id                  String       @id @default(dbgenerated("uuidv7()")) @db.Uuid
+  uploadedResolutions Resolution[] @relation(name: "Resolution_createdBy")
+  updatedResolutions  Resolution[] @relation(name: "Resolution_lastUpdateBy")
+
+  email         String   @unique
+  emailVerified Boolean  @default(false)
+  image         String?
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  sessions Session[]
+  accounts Account[]
+}
+
+model Session {
+  id        String   @id @default(dbgenerated("uuidv7()")) @db.Uuid
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId    String   @db.Uuid
+  token     String   @unique
+  expiresAt DateTime
+  ipAddress String?
+  userAgent String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Account {
+  id                    String    @id @default(dbgenerated("uuidv7()")) @db.Uuid
+  user                  User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId                String    @db.Uuid
+  accountId             String
+  providerId            String
+  accessToken           String?
+  refreshToken          String?
+  accessTokenExpiresAt  DateTime?
+  refreshTokenExpiresAt DateTime?
+  scope                 String?
+  idToken               String?
+  password              String?
+  createdAt             DateTime  @default(now())
+  updatedAt             DateTime  @updatedAt
+
+  @@unique([providerId, accountId])
+}
+
+model Verification {
+  id         String   @id @default(dbgenerated("uuidv7()")) @db.Uuid
+  identifier String
+  value      String
+  expiresAt  DateTime
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  @@unique([identifier, value])
+}
+
+model Asset {
+  id               String      @id @default(dbgenerated("uuidv7()")) @db.Uuid
+  resolution       Resolution?
+  path             String      @unique
+  bucket           String
+  mimeType         String
+  size             Int
+  originalFileName String
+  createdAt        DateTime    @default(now())
+
+  // Check: "size" > 0
 }
