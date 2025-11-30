@@ -44,7 +44,7 @@ fi
             certbot certonly --webroot -w /var/www/certbot \
                 $STAGING_ARG \
                 -d "$DOMAIN" --email "$CERTBOT_EMAIL" \
-                --agree-tos --no-eff-email --force-renewal --non-interactive
+                --agree-tos --no-eff-email --non-interactive
 
             if [ $? -eq 0 ]; then
                 echo "SSL certificate obtained successfully."
@@ -55,7 +55,7 @@ fi
         fi
 
         # Renewal loop
-        while :; do sleep 12h; certbot renew --deploy-hook "nginx -s reload"; done
+        while :; certbot renew --deploy-hook "nginx -s reload"; do sleep 12h; done
     else
         echo "Timed out waiting for Nginx to start."
         kill 1
