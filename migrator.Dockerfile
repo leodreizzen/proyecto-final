@@ -6,8 +6,8 @@ ENV PATH="$PNPM_HOME:$PATH"
 RUN corepack enable pnpm
 
 FROM base AS prepare
-COPY . .
 RUN pnpm add -g turbo@^2.5.8
+COPY . .
 RUN pnpm exec turbo prune @repo/db --docker
 
 FROM base AS migrator

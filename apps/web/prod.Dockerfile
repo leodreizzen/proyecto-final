@@ -6,9 +6,9 @@ ENV PATH="$PNPM_HOME:$PATH"
 RUN corepack enable pnpm
 
 FROM base AS prepare
+RUN pnpm add -g turbo@^2.5.8
 COPY . .
 # Generate a partial monorepo with a pruned lockfile for a target workspace.
-RUN pnpm add -g turbo@^2.5.8
 RUN pnpm exec turbo prune web --docker
 
 FROM base AS builder
