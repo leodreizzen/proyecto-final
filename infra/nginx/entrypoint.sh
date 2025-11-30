@@ -43,7 +43,7 @@ fi
 
             certbot certonly --webroot -w /var/www/certbot \
                 $STAGING_ARG \
-                -d "$DOMAIN" --email "$CERTBOT_EMAIL" \
+                -d "$DOMAIN" -d "www.$DOMAIN" --email "$CERTBOT_EMAIL" \
                 --agree-tos --no-eff-email --non-interactive
 
             if [ $? -eq 0 ]; then
