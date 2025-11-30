@@ -1,0 +1,136 @@
+name: normativas
+services:
+  web:
+    container_name: web
+    build:
+      context: .
+      dockerfile: apps/web/prod.Dockerfile
+    restart: unless-stopped
+    environment:
+      DATABASE_URL: ${DATABASE_URL}
+      REDIS_URL: ${REDIS_URL}
+    depends_on:
+      garage-init:
+        condition: service_completed_successfully
+      migrator:
+        condition: service_completed_successfully
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    healthcheck:
+      test: [ "CMD", "wget", "--spider", "-q", "http://localhost:3000/api/health" ]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+
+  worker:
+    container_name: worker
+    build:
+      context: .
+      dockerfile: apps/worker/prod.Dockerfile
+    restart: unless-stopped
+    environment:
+      DATABASE_URL: ${DATABASE_URL}
+      REDIS_URL: ${REDIS_URL}
+      GOOGLE_API_KEY: ${GOOGLE_API_KEY}
+    depends_on:
+      migrator:
+        condition: service_completed_successfully
+      garage-init:
+        condition: service_completed_successfully
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+  db:
+    build: infra/db
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+    ports:
+      - "127.0.0.1:5432:5432"
+    volumes:
+      - pg_data:/var/lib/postgresql
+    restart: unless-stopped
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}" ]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+  redis:
+    image: "redis:8.4"
+    container_name: redis
+    healthcheck:
+      test: [ "CMD-SHELL", "redis-cli -a ${REDIS_PASSWORD} ping | grep PONG" ]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+    volumes:
+      - redis_data:/data
+    command: [ "redis-server", "--appendonly", "yes", "--requirepass","${REDIS_PASSWORD}" ]
+    restart: unless-stopped
+  nginx:
+    build:
+      context: infra/nginx
+      dockerfile: prod.Dockerfile
+    container_name: nginx
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - certs_data:/etc/letsencrypt
+    depends_on:
+      - web
+      - garage
+    environment:
+      CERTBOT_EMAIL: ${CERTBOT_EMAIL}
+      DOMAIN: ${DOMAIN}
+      STAGING:
+  garage:
+    image: dxflrs/garage:v2.1.0
+    container_name: garage
+    volumes:
+      - ./infra/garage/garage.toml:/etc/garage.toml
+      - garage_meta:/var/lib/garage/meta
+      - garage_data:/var/lib/garage/data
+    environment:
+      GARAGE_RPC_SECRET: ${GARAGE_RPC_SECRET}
+      GARAGE_ADMIN_TOKEN: ${GARAGE_ADMIN_TOKEN}
+    healthcheck:
+      test: [ "CMD", "/garage", "status" ]
+      interval: 10s
+      retries: 5
+  garage-init:
+    build:
+      context: infra/garage/init
+      dockerfile: Dockerfile
+    container_name: garage-init
+    depends_on:
+      garage:
+        condition: service_healthy
+    environment:
+      GARAGE_RPC_HOST: "garage:3901"
+      GARAGE_RPC_SECRET: ${GARAGE_RPC_SECRET}
+      GARAGE_ADMIN_TOKEN: ${GARAGE_ADMIN_TOKEN}
+      S3_ACCESS_KEY: ${S3_ACCESS_KEY}
+      S3_SECRET_KEY: ${S3_SECRET_KEY}
+  migrator:
+    container_name: migrator
+    build:
+      context: .
+      dockerfile: migrator.Dockerfile
+    environment:
+      DATABASE_URL: ${DATABASE_URL}
+    depends_on:
+      db:
+        condition: service_healthy
+    restart: on-failure
+volumes:
+  pg_data:
+  redis_data:
+  certs_data:
+  garage_meta:
+  garage_data:

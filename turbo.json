@@ -5,10 +5,18 @@
     "worker:*": {
       "env": ["NODE_ENV", "OPEN_ROUTER_KEY", "USE_OPENROUTER", "OPENROUTER_API_KEY", "GOOGLE_API_KEY"]
     },
+    "db:generate": {
+      "cache": false,
+      "inputs": ["prisma/schema.prisma", "prisma.config.ts"]
+    },
     "build": {
-      "dependsOn": ["^build"],
+      "dependsOn": ["^build", "^db:generate"],
       "inputs": ["$TURBO_DEFAULT$", ".env*", "!**/*.tsbuildinfo"],
-      "outputs": [".next/**", "!.next/cache/**", "worker.js"]
+      "outputs": [".next/**", "!.next/cache/**"]
+    },
+    "worker#build": {
+      "inputs": ["$TURBO_DEFAULT$", ".env*", "!**/*.tsbuildinfo"],
+      "outputs": ["build/**"]
     },
     "lint": {
       "dependsOn": ["^lint"]

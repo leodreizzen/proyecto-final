@@ -42,7 +42,6 @@ yarn-error.log*
 .idea/*
 
 downloads/
-/db/db_data/
 
 **/generated/prisma
 *.tsbuildinfo

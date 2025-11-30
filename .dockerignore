@@ -1,0 +1,12 @@
+downloads
+out
+**/node_modules
+**/.next
+**/dist
+**/.git
+**/.turbo
+**/.venv
+**/*.env*
+#.venv
+#*/.venv
+#apps/worker/.venv

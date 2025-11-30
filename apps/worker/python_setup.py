@@ -6,10 +6,11 @@ VENV_DIR = ".venv"
 REQ_FILE = "requirements.txt"
 
 def run(cmd):
-    result = subprocess.run(cmd, shell=True)
-    if result.returncode != 0:
-        sys.exit(result.returncode)
-
+    try:
+        subprocess.run(cmd, shell=False, check=True)
+    except subprocess.CalledProcessError as e:
+        print(f"Error executing command: {e}")
+        sys.exit(e.returncode)
 def main():
     if not os.path.exists(REQ_FILE):
         print(f"Error: {REQ_FILE} not found.")
