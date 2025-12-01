@@ -1,7 +1,7 @@
 name: normativas
 services:
   web:
-    container_name: web
+    container_name: normativas-web
     build:
       context: .
       dockerfile: apps/web/prod.Dockerfile
@@ -12,6 +12,8 @@ services:
     depends_on:
       garage-init:
         condition: service_completed_successfully
+      garage:
+        condition: service_healthy
       migrator:
         condition: service_completed_successfully
       db:
@@ -25,7 +27,7 @@ services:
       retries: 3
 
   worker:
-    container_name: worker
+    container_name: normativas-worker
     build:
       context: .
       dockerfile: apps/worker/prod.Dockerfile
@@ -45,6 +47,7 @@ services:
         condition: service_healthy
   db:
     build: infra/db
+    container_name: normativas-db
     environment:
       POSTGRES_USER: ${POSTGRES_USER}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
@@ -61,7 +64,7 @@ services:
       retries: 5
   redis:
     image: "redis:8.4"
-    container_name: redis
+    container_name: normativas-redis
     healthcheck:
       test: [ "CMD-SHELL", "redis-cli -a ${REDIS_PASSWORD} ping | grep PONG" ]
       interval: 5s
@@ -73,9 +76,9 @@ services:
     restart: unless-stopped
   nginx:
     build:
-      context: infra/nginx
-      dockerfile: prod.Dockerfile
-    container_name: nginx
+      context: infra/nginx/prod
+      dockerfile: Dockerfile
+    container_name: normativas-nginx
     restart: unless-stopped
     ports:
       - "80:80"
@@ -91,7 +94,7 @@ services:
       STAGING: 1
   garage:
     image: dxflrs/garage:v2.1.0
-    container_name: garage
+    container_name: normativas-garage
     volumes:
       - ./infra/garage/garage.toml:/etc/garage.toml
       - garage_meta:/var/lib/garage/meta
@@ -107,7 +110,7 @@ services:
     build:
       context: infra/garage/init
       dockerfile: Dockerfile
-    container_name: garage-init
+    container_name: normativas-garage-init
     depends_on:
       garage:
         condition: service_healthy
@@ -118,7 +121,7 @@ services:
       S3_ACCESS_KEY: ${S3_ACCESS_KEY}
       S3_SECRET_KEY: ${S3_SECRET_KEY}
   migrator:
-    container_name: migrator
+    container_name: normativas-migrator
     build:
       context: .
       dockerfile: migrator.Dockerfile
@@ -127,7 +130,7 @@ services:
     depends_on:
       db:
         condition: service_healthy
-    restart: on-failure
+    restart: no
 volumes:
   pg_data:
   redis_data:
