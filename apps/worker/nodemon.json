@@ -1,0 +1,8 @@
+{
+  "$schema": "https://json.schemastore.org/nodemon.json",
+  "watch": ["src"],
+  "ext": "ts,json",
+  "legacyWatch": true,
+  "exec": "tsx src/worker.ts",
+  "signal": "SIGTERM"
+}

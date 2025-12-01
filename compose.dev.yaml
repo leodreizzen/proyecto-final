@@ -1,0 +1,191 @@
+name: normativas-dev
+services:
+  web:
+    container_name: normativas-dev-web
+    build:
+      context: .
+      dockerfile: dev.Dockerfile
+    volumes:
+      - .:/app
+      - node_modules:/app/node_modules
+      - web-modules:/app/apps/web/node_modules
+      - db-modules:/app/packages/db/node_modules
+      - eslint-config-modules:/app/packages/eslint-config/node_modules
+      - typescript-config-modules:/app/packages/typescript-config/node_modules
+      - /app/apps/web/.next
+      - pnpm-store:/app/.pnpm-store
+    command: ["turbo", "dev", "--filter", "web"]
+    ports:
+      - "3000:3000"
+    environment:
+      DATABASE_URL: ${DATABASE_URL}
+      REDIS_URL: ${REDIS_URL}
+    depends_on:
+      garage-init:
+        condition: service_completed_successfully
+      garage:
+        condition: service_healthy
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      dev-init:
+        condition: service_completed_successfully
+  worker:
+    container_name: normativas-dev-worker
+    build:
+      context: .
+      dockerfile: dev.Dockerfile
+    volumes:
+      - .:/app
+      - node_modules:/app/node_modules
+      - worker-venv:/app/apps/worker/.venv
+      - worker-modules:/app/apps/worker/node_modules
+      - db-modules:/app/packages/db/node_modules
+      - eslint-config-modules:/app/packages/eslint-config/node_modules
+      - typescript-config-modules:/app/packages/typescript-config/node_modules
+      - pnpm-store:/app/.pnpm-store
+    command: ["turbo", "dev", "--filter", "worker"]
+    environment:
+      DATABASE_URL: ${DATABASE_URL}
+      REDIS_URL: ${REDIS_URL}
+      GOOGLE_API_KEY: ${GOOGLE_API_KEY}
+    depends_on:
+      garage-init:
+        condition: service_completed_successfully
+      garage:
+        condition: service_healthy
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      dev-init:
+        condition: service_completed_successfully
+  db:
+    build: infra/db
+    container_name: normativas-dev-db
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_SHADOW_DB: ${POSTGRES_SHADOW_DB}
+    ports:
+      - "127.0.0.1:5432:5432"
+    volumes:
+      - pg_data:/var/lib/postgresql
+      - ./infra/db/init-shadow.sh:/docker-entrypoint-initdb.d/init-shadow.sh
+    restart: unless-stopped
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}" ]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+  redis:
+    image: "redis:8.4"
+    container_name: normativas-dev-redis
+    healthcheck:
+      test: [ "CMD-SHELL", "redis-cli -a ${REDIS_PASSWORD} ping | grep PONG" ]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+    volumes:
+      - redis_data:/data
+    command: [ "redis-server", "--appendonly", "yes", "--requirepass","${REDIS_PASSWORD}" ]
+    restart: unless-stopped
+  nginx:
+    container_name: normativas-dev-nginx
+    image: nginx:1.29.3-alpine
+    restart: unless-stopped
+    volumes:
+        - ./infra/nginx/dev/nginx.conf:/etc/nginx/conf.d/default.conf:ro
+    ports:
+      - "8080:8080"
+    depends_on:
+      - web
+      - garage
+  garage:
+    image: dxflrs/garage:v2.1.0
+    container_name: normativas-dev-garage
+    volumes:
+      - ./infra/garage/garage.toml:/etc/garage.toml
+      - garage_meta:/var/lib/garage/meta
+      - garage_data:/var/lib/garage/data
+    environment:
+      GARAGE_RPC_SECRET: ${GARAGE_RPC_SECRET}
+      GARAGE_ADMIN_TOKEN: ${GARAGE_ADMIN_TOKEN}
+    healthcheck:
+      test: [ "CMD", "/garage", "status" ]
+      interval: 10s
+      retries: 5
+  garage-init:
+    build:
+      context: infra/garage/init
+      dockerfile: Dockerfile
+    container_name: normativas-dev-garage-init
+    depends_on:
+      garage:
+        condition: service_healthy
+    environment:
+      GARAGE_RPC_HOST: "garage:3901"
+      GARAGE_RPC_SECRET: ${GARAGE_RPC_SECRET}
+      GARAGE_ADMIN_TOKEN: ${GARAGE_ADMIN_TOKEN}
+      S3_ACCESS_KEY: ${S3_ACCESS_KEY}
+      S3_SECRET_KEY: ${S3_SECRET_KEY}
+  prisma-studio:
+    container_name: normativas-dev-prisma-studio
+    build:
+      context: .
+      dockerfile: dev.Dockerfile
+    volumes:
+      - .:/app
+      - node_modules:/app/node_modules
+      - db-modules:/app/packages/db/node_modules
+      - eslint-config-modules:/app/packages/eslint-config/node_modules
+      - typescript-config-modules:/app/packages/typescript-config/node_modules
+    depends_on:
+      db:
+        condition: service_healthy
+      dev-init:
+        condition: service_completed_successfully
+    ports:
+      - "127.0.0.1:5555:5555"
+    environment:
+      DATABASE_URL: ${DATABASE_URL}
+      SHADOW_DATABASE_URL: ${SHADOW_DATABASE_URL}
+    command: [ "pnpm", "exec", "prisma", "studio", "--port=5555", "--browser=none" ]
+    working_dir: "/app/packages/db"
+  dev-init:
+    build:
+      context: .
+      dockerfile: dev.Dockerfile
+    container_name: normativas-dev-dev-init
+    depends_on:
+      db:
+        condition: service_healthy
+    volumes:
+      - .:/app
+      - node_modules:/app/node_modules
+      - worker-venv:/app/apps/worker/.venv
+      - web-modules:/app/apps/web/node_modules
+      - worker-modules:/app/apps/worker/node_modules
+      - db-modules:/app/packages/db/node_modules
+      - eslint-config-modules:/app/packages/eslint-config/node_modules
+      - typescript-config-modules:/app/packages/typescript-config/node_modules
+      - pnpm-store:/app/.pnpm-store
+    environment:
+      DATABASE_URL: ${DATABASE_URL}
+      SHADOW_DATABASE_URL: ${SHADOW_DATABASE_URL}
+    command: [ "/bin/sh", "-c", "/app/dev-init.sh" ]
+volumes:
+  node_modules:
+  web-modules:
+  worker-modules:
+  db-modules:
+  eslint-config-modules:
+  typescript-config-modules:
+  pg_data:
+  redis_data:
+  garage_meta:
+  garage_data:
+  worker-venv:
+  pnpm-store:
