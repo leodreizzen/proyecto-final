@@ -39,6 +39,9 @@ yarn-error.log*
 
 .vscode/*
 .env*
+!/.env.production
+!/.env.development
+!/.env.keys.example
 .idea/*
 
 downloads/
