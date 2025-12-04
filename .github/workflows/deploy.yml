@@ -7,6 +7,9 @@ concurrency:
   group: production-deploy
   cancel-in-progress: false
 
+permissions:
+  contents: write
+
 jobs:
   build-and-push:
     runs-on: ubuntu-latest
@@ -60,6 +63,7 @@ jobs:
 
       - name: Build Web
         if: steps.changes.outputs.web == 'true'
+
         uses: docker/build-push-action@v5
         with:
           context: .
@@ -137,12 +141,13 @@ jobs:
           username: ${{ secrets.SSH_USERNAME }}
           key: ${{ secrets.SSH_KEY }}
           script: |
+            set -e
             cd ${{ secrets.TARGET_PATH }}
             
             echo "${{ secrets.REGISTRY_PASSWORD }}" | docker login registry.gitlab.com -u "${{ secrets.REGISTRY_USERNAME }}" --password-stdin
-            echo "REGISTRY="${{ vars.REGISTRY }}" >> .env
-            echo "GITLAB_IMAGE_BASE="${{ vars.GITLAB_IMAGE_BASE }}" >> .env
-            
+            echo "REGISTRY=\"${{ vars.REGISTRY }}\"" >> .env
+            echo "GITLAB_IMAGE_BASE=\"${{ vars.GITLAB_IMAGE_BASE }}\"" >> .env
+
             docker compose pull
             
             docker compose up -f compose.production.yaml -d --build --remove-orphans
