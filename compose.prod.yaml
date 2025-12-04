@@ -1,6 +1,7 @@
 name: normativas
 services:
   web:
+    image: ${REGISTRY}/${GITLAB_IMAGE_BASE}/web:latest
     container_name: normativas-web
     build:
       context: .
@@ -27,6 +28,7 @@ services:
       retries: 3
 
   worker:
+    image: ${REGISTRY}/${GITLAB_IMAGE_BASE}/worker:latest
     container_name: normativas-worker
     build:
       context: .
@@ -121,6 +123,7 @@ services:
       S3_ACCESS_KEY: ${S3_ACCESS_KEY}
       S3_SECRET_KEY: ${S3_SECRET_KEY}
   migrator:
+    image: ${REGISTRY}/${GITLAB_IMAGE_BASE}/migrator:latest
     container_name: normativas-migrator
     build:
       context: .

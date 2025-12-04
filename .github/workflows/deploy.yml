@@ -1,0 +1,137 @@
+name: Deploy Production
+
+on:
+  workflow_dispatch
+
+concurrency:
+  group: production-deploy
+  cancel-in-progress: false
+
+jobs:
+  build-and-push:
+    runs-on: ubuntu-latest
+    outputs:
+      web: ${{ steps.changes.outputs.web }}
+      worker: ${{ steps.changes.outputs.worker }}
+      migrator: ${{ steps.changes.outputs.migrator }}
+      infra: ${{ steps.changes.outputs.infra }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Check for changes
+        uses: dorny/paths-filter@v3
+        id: changes
+        with:
+          filters: |
+            web: ['apps/web/**', 'packages/**']
+            worker: ['apps/worker/**', 'packages/**']
+            migrator: ['packages/db/**', 'migrator.Dockerfile']
+            infra: ['infra/**', 'compose.prod.yaml']
+
+      - name: Get short SHA
+        id: slug
+        run: echo "sha8=$(echo ${GITHUB_SHA} | cut -c1-8)" >> $GITHUB_OUTPUT
+
+      - name: Log in to GitLab Registry
+        if: steps.changes.outputs.web == 'true' || steps.changes.outputs.worker == 'true' || steps.changes.outputs.migrator == 'true'
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ secrets.REGISTRY_USERNAME }}
+          password: ${{ secrets.REGISTRY_PASSWORD }}
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+        if: steps.changes.outputs.web == 'true' || steps.changes.outputs.worker == 'true' || steps.changes.outputs.migrator == 'true'
+
+      - name: Build Web
+        if: steps.changes.outputs.web == 'true'
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          file: apps/web/prod.Dockerfile
+          push: true
+          tags: |
+            ${{ env.REGISTRY }}/${{ env.GITLAB_IMAGE_BASE }}/web:latest
+            ${{ env.REGISTRY }}/${{ env.GITLAB_IMAGE_BASE }}/web:${{ steps.slug.outputs.sha8 }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+      - name: Build Worker
+        if: steps.changes.outputs.worker == 'true'
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          file: apps/worker/prod.Dockerfile
+          push: true
+          tags: |
+            ${{ env.REGISTRY }}/${{ env.GITLAB_IMAGE_BASE }}/worker:latest
+            ${{ env.REGISTRY }}/${{ env.GITLAB_IMAGE_BASE }}/worker:${{ steps.slug.outputs.sha8 }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+      - name: Build Migrator
+        if: steps.changes.outputs.migrator == 'true'
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          file: migrator.Dockerfile
+          push: true
+          tags: |
+            ${{ env.REGISTRY }}/${{ env.GITLAB_IMAGE_BASE }}/migrator:latest
+            ${{ env.REGISTRY }}/${{ env.GITLAB_IMAGE_BASE }}/migrator:${{ steps.slug.outputs.sha8 }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+  deploy:
+    needs: build-and-push
+    runs-on: ubuntu-latest
+    environment:
+      name: production
+      url: https://normativas.leodreizzen.com
+    if: ${{ needs.build-and-push.outputs.web == 'true' || needs.build-and-push.outputs.worker == 'true' || needs.build-and-push.outputs.migrator == 'true' || needs.build-and-push.outputs.infra == 'true' }}
+    steps:
+      - name: Install dotenvX
+        run: curl -sfS https://dotenvx.sh/install.sh | sh
+
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Get short SHA
+        id: slug
+        run: echo "sha8=$(echo ${GITHUB_SHA} | cut -c1-8)" >> $GITHUB_OUTPUT
+
+      - name: Create .env file
+        run: |
+          dotenvx decrypt .env.production --stdout > .env
+        env:
+          DOTENVX_KEY: ${{ secrets.DOTENVX_KEY }}
+
+      - name: Copy Config Files
+        uses: appleboy/scp-action@master
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USERNAME }}
+          key: ${{ secrets.SSH_KEY }}
+          source: "compose.prod.yaml,infra/,.env"
+          target: "${{ secrets.TARGET_PATH }}"
+
+      - name: Deploy via SSH
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USERNAME }}
+          key: ${{ secrets.SSH_KEY }}
+          script: |
+            cd ${{ secrets.TARGET_PATH }}
+            
+            echo "${{ secrets.REGISTRY_PASSWORD }}" | docker login registry.gitlab.com -u "${{ secrets.REGISTRY_USERNAME }}" --password-stdin
+            echo "REGISTRY="${{ env.REGISTRY }}" >> .env
+            echo "GITLAB_IMAGE_BASE="${{ env.GITLAB_IMAGE_BASE }}" >> .env
+            
+            docker compose pull
+            
+            docker compose up -f compose.production.yaml -d --build --remove-orphans
+            
+            docker image prune -f
