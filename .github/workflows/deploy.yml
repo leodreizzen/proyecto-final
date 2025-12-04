@@ -131,7 +131,7 @@ jobs:
           host: ${{ secrets.SSH_HOST }}
           username: ${{ secrets.SSH_USERNAME }}
           key: ${{ secrets.SSH_KEY }}
-          source: "compose.prod.yaml,infra/,.env"
+          source: "compose.prod.yaml,infra/,.,migrator.Dockerfile"
           target: "${{ secrets.TARGET_PATH }}"
 
       - name: Deploy via SSH
@@ -153,6 +153,13 @@ jobs:
             docker compose -f compose.prod.yaml up -d --build --remove-orphans
             
             docker image prune -f
+      - name: Verify Deployment
+        uses: jtalk/url-health-check-action@v4
+        with:
+          url: https://${{ vars.DOMAIN }}/api/health
+          max-attempts: 6
+          retry-delay: 10s
+          follow-redirect: true
       - name: Update Production Tag
         if: success()
         uses: actions/github-script@v7
