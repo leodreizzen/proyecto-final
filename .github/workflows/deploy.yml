@@ -18,11 +18,24 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-
+        with:
+          fetch-depth: 0
+      - name: Determine Base Ref
+        id: base
+        run: |
+          # Try to find tag
+          if git rev-parse "production-last-deploy" >/dev/null 2>&1; then
+            echo "REF=production-last-deploy" >> $GITHUB_OUTPUT
+          else
+            # Use first commit as base
+            FIRST_COMMIT=$(git rev-list --max-parents=0 HEAD | tail -n 1)
+            echo "REF=$FIRST_COMMIT" >> $GITHUB_OUTPUT
+          fi
       - name: Check for changes
         uses: dorny/paths-filter@v3
         id: changes
         with:
+          base: ${{ steps.base.outputs.REF }}
           filters: |
             web: ['apps/web/**', 'packages/**']
             worker: ['apps/worker/**', 'packages/**']
@@ -135,3 +148,27 @@ jobs:
             docker compose up -f compose.production.yaml -d --build --remove-orphans
             
             docker image prune -f
+      - name: Update Production Tag
+        if: success()
+        uses: actions/github-script@v7
+        with:
+          script: |
+            try {
+              try {
+                await github.rest.git.deleteRef({
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  ref: "tags/production-last-deploy"
+                });
+              } catch (e) {}
+            
+              await github.rest.git.createRef({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                ref: "refs/tags/production-last-deploy",
+                sha: context.sha
+              });
+            } catch (error) {
+              console.error("Error updating tag:", error);
+              throw error;
+            }
