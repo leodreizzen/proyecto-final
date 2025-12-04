@@ -123,7 +123,7 @@ jobs:
         run: |
           dotenvx decrypt -f .env.production --stdout > .env
         env:
-          DOTENVX_KEY: ${{ secrets.DOTENVX_KEY }}
+          DOTENV_PRIVATE_KEY_PRODUCTION: ${{ secrets.DOTENVX_KEY }}
 
       - name: Copy Config Files
         uses: appleboy/scp-action@master
