@@ -37,7 +37,7 @@ jobs:
         if: steps.changes.outputs.web == 'true' || steps.changes.outputs.worker == 'true' || steps.changes.outputs.migrator == 'true'
         uses: docker/login-action@v3
         with:
-          registry: ${{ env.REGISTRY }}
+          registry: ${{ vars.REGISTRY }}
           username: ${{ secrets.REGISTRY_USERNAME }}
           password: ${{ secrets.REGISTRY_PASSWORD }}
 
@@ -53,8 +53,8 @@ jobs:
           file: apps/web/prod.Dockerfile
           push: true
           tags: |
-            ${{ env.REGISTRY }}/${{ env.GITLAB_IMAGE_BASE }}/web:latest
-            ${{ env.REGISTRY }}/${{ env.GITLAB_IMAGE_BASE }}/web:${{ steps.slug.outputs.sha8 }}
+            ${{ vars.REGISTRY }}/${{ vars.GITLAB_IMAGE_BASE }}/web:latest
+            ${{ vars.REGISTRY }}/${{ vars.GITLAB_IMAGE_BASE }}/web:${{ steps.slug.outputs.sha8 }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
@@ -66,8 +66,8 @@ jobs:
           file: apps/worker/prod.Dockerfile
           push: true
           tags: |
-            ${{ env.REGISTRY }}/${{ env.GITLAB_IMAGE_BASE }}/worker:latest
-            ${{ env.REGISTRY }}/${{ env.GITLAB_IMAGE_BASE }}/worker:${{ steps.slug.outputs.sha8 }}
+            ${{ vars.REGISTRY }}/${{ vars.GITLAB_IMAGE_BASE }}/worker:latest
+            ${{ vars.REGISTRY }}/${{ vars.GITLAB_IMAGE_BASE }}/worker:${{ steps.slug.outputs.sha8 }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
@@ -79,8 +79,8 @@ jobs:
           file: migrator.Dockerfile
           push: true
           tags: |
-            ${{ env.REGISTRY }}/${{ env.GITLAB_IMAGE_BASE }}/migrator:latest
-            ${{ env.REGISTRY }}/${{ env.GITLAB_IMAGE_BASE }}/migrator:${{ steps.slug.outputs.sha8 }}
+            ${{ vars.REGISTRY }}/${{ vars.GITLAB_IMAGE_BASE }}/migrator:latest
+            ${{ vars.REGISTRY }}/${{ vars.GITLAB_IMAGE_BASE }}/migrator:${{ steps.slug.outputs.sha8 }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
@@ -127,8 +127,8 @@ jobs:
             cd ${{ secrets.TARGET_PATH }}
             
             echo "${{ secrets.REGISTRY_PASSWORD }}" | docker login registry.gitlab.com -u "${{ secrets.REGISTRY_USERNAME }}" --password-stdin
-            echo "REGISTRY="${{ env.REGISTRY }}" >> .env
-            echo "GITLAB_IMAGE_BASE="${{ env.GITLAB_IMAGE_BASE }}" >> .env
+            echo "REGISTRY="${{ vars.REGISTRY }}" >> .env
+            echo "GITLAB_IMAGE_BASE="${{ vars.GITLAB_IMAGE_BASE }}" >> .env
             
             docker compose pull
             
