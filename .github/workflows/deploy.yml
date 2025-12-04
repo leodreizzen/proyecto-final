@@ -148,7 +148,7 @@ jobs:
             echo "REGISTRY=\"${{ vars.REGISTRY }}\"" >> .env
             echo "GITLAB_IMAGE_BASE=\"${{ vars.GITLAB_IMAGE_BASE }}\"" >> .env
 
-            docker compose pull
+            docker compose -f compose.prod.yaml pull
             
             docker compose -f compose.prod.yaml up -d --build --remove-orphans
             
