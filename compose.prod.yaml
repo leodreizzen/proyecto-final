@@ -87,7 +87,7 @@ services:
     environment:
       CERTBOT_EMAIL: ${CERTBOT_EMAIL}
       DOMAIN: ${DOMAIN}
-      STAGING: 1
+      STAGING: 0
   garage:
     image: dxflrs/garage:v2.1.0
     container_name: normativas-garage
