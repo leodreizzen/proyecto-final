@@ -121,7 +121,7 @@ jobs:
 
       - name: Create .env file
         run: |
-          dotenvx decrypt .env.production --stdout > .env
+          dotenvx decrypt -f .env.production --stdout > .env
         env:
           DOTENVX_KEY: ${{ secrets.DOTENVX_KEY }}
 
@@ -150,7 +150,7 @@ jobs:
 
             docker compose pull
             
-            docker compose up -f compose.production.yaml -d --build --remove-orphans
+            docker compose -f compose.production.yaml up -d --build --remove-orphans
             
             docker image prune -f
       - name: Update Production Tag
