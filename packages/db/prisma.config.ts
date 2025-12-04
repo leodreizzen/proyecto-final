@@ -9,6 +9,11 @@ if (fs.existsSync(envPath)) {
     dotenv.config({path: envPath, quiet: true});
 }
 
+let useShadowDatabase = false;
+if (process.env.SHADOW_DATABASE_URL) {
+    useShadowDatabase = true;
+}
+
 export default defineConfig({
   schema: "prisma/schema.prisma",
   migrations: {
@@ -16,6 +21,6 @@ export default defineConfig({
   },
   datasource: {
     url: env("DATABASE_URL"),
-    shadowDatabaseUrl: env("SHADOW_DATABASE_URL"),
+    shadowDatabaseUrl: useShadowDatabase ? env("SHADOW_DATABASE_URL"): undefined,
   },
 });

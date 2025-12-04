@@ -3,9 +3,6 @@ services:
   web:
     image: ${REGISTRY}/${GITLAB_IMAGE_BASE}/web:latest
     container_name: normativas-web
-    build:
-      context: .
-      dockerfile: apps/web/prod.Dockerfile
     restart: unless-stopped
     environment:
       DATABASE_URL: ${DATABASE_URL}
@@ -30,9 +27,6 @@ services:
   worker:
     image: ${REGISTRY}/${GITLAB_IMAGE_BASE}/worker:latest
     container_name: normativas-worker
-    build:
-      context: .
-      dockerfile: apps/worker/prod.Dockerfile
     restart: unless-stopped
     environment:
       DATABASE_URL: ${DATABASE_URL}
@@ -125,9 +119,6 @@ services:
   migrator:
     image: ${REGISTRY}/${GITLAB_IMAGE_BASE}/migrator:latest
     container_name: normativas-migrator
-    build:
-      context: .
-      dockerfile: migrator.Dockerfile
     environment:
       DATABASE_URL: ${DATABASE_URL}
     depends_on:
