@@ -150,7 +150,7 @@ jobs:
 
             docker compose pull
             
-            docker compose -f compose.production.yaml up -d --build --remove-orphans
+            docker compose -f compose.prod.yaml up -d --build --remove-orphans
             
             docker image prune -f
       - name: Update Production Tag
