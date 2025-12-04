@@ -72,8 +72,8 @@ jobs:
           tags: |
             ${{ vars.REGISTRY }}/${{ vars.GITLAB_IMAGE_BASE }}/web:latest
             ${{ vars.REGISTRY }}/${{ vars.GITLAB_IMAGE_BASE }}/web:${{ steps.slug.outputs.sha8 }}
-          cache-from: type=gha
-          cache-to: type=gha,mode=max
+          cache-from: type=gha,scope=prod-web
+          cache-to: type=gha,mode=max,scope=prod-web
 
       - name: Build Worker
         if: steps.changes.outputs.worker == 'true'
@@ -85,8 +85,8 @@ jobs:
           tags: |
             ${{ vars.REGISTRY }}/${{ vars.GITLAB_IMAGE_BASE }}/worker:latest
             ${{ vars.REGISTRY }}/${{ vars.GITLAB_IMAGE_BASE }}/worker:${{ steps.slug.outputs.sha8 }}
-          cache-from: type=gha
-          cache-to: type=gha,mode=max
+          cache-from: type=gha,scope=prod-worker
+          cache-to: type=gha,mode=max,scope=prod-worker
 
       - name: Build Migrator
         if: steps.changes.outputs.migrator == 'true'
@@ -98,8 +98,8 @@ jobs:
           tags: |
             ${{ vars.REGISTRY }}/${{ vars.GITLAB_IMAGE_BASE }}/migrator:latest
             ${{ vars.REGISTRY }}/${{ vars.GITLAB_IMAGE_BASE }}/migrator:${{ steps.slug.outputs.sha8 }}
-          cache-from: type=gha
-          cache-to: type=gha,mode=max
+          cache-from: type=gha,scope=prod-migrator
+          cache-to: type=gha,mode=max,scope=prod-migrator
 
   deploy:
     needs: build-and-push
