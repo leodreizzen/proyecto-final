@@ -152,7 +152,7 @@ jobs:
 
             docker compose -f compose.prod.yaml pull
             
-            docker compose -f compose.prod.yaml up -d --build --remove-orphans
+            docker compose -f compose.prod.yaml up -d --build --remove-orphans --wait
             
             docker image prune -f
       - name: Verify Deployment
