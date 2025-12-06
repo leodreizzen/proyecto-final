@@ -131,6 +131,7 @@ jobs:
           host: ${{ secrets.SSH_HOST }}
           username: ${{ secrets.SSH_USERNAME }}
           key: ${{ secrets.SSH_KEY }}
+          port: ${{ secrets.SSH_PORT }}
           source: "compose.prod.yaml,infra/,migrator.Dockerfile,.env"
           target: "${{ secrets.TARGET_PATH }}"
 
@@ -140,6 +141,7 @@ jobs:
           host: ${{ secrets.SSH_HOST }}
           username: ${{ secrets.SSH_USERNAME }}
           key: ${{ secrets.SSH_KEY }}
+          port: ${{ secrets.SSH_PORT }}
           script: |
             set -e
             cd ${{ secrets.TARGET_PATH }}
