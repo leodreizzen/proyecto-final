@@ -1,4 +1,3 @@
-import {ResultWithData} from "@/definitions";
 import {ResolutionStructure} from "@/parser/schemas/structure_parser/schemas";
 import {
     AnnexWithMappedChanges,

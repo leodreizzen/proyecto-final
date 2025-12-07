@@ -4,7 +4,6 @@ import {structureParserSystemPrompt} from "@/parser/llms/prompts/structure_parse
 import {structuredLLMCall} from "@/util/llm/llm_structured";
 import {LLMRefusalError} from "@/parser/llms/errors";
 import {retryCacheBuster, withLlmRetry} from "@/util/llm/retries";
-import {IRetryContext} from "cockatiel";
 
 const schemaDescription = zodToLLMDescription(ResolutionStructureResultSchema);
 

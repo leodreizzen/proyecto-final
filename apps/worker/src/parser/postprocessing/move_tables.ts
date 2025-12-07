@@ -1,4 +1,3 @@
-import {resultWithDataError} from "@/definitions";
 import {Annex, AnnexWithMappedChanges, WithTables} from "@/parser/types";
 import {TableStructure} from "@/parser/schemas/structure_parser/table";
 import {LLMConsistencyValidationError} from "@/parser/llms/errors";
@@ -99,7 +98,7 @@ function moveTablesToObjectArray<T extends {
     let usedTableNumbers = new Set(_usedTableNumbers);
     const objWithTables: WithTables<T>[] = [];
 
-    for (const [index, object] of objects.entries()) {
+    for (const object of objects) {
         const moveTablesRes = moveTables(object.text, tables, usedTableNumbers);
         usedTableNumbers = moveTablesRes.usedTableNumbers;
         objWithTables.push({
