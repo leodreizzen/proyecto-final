@@ -1,10 +1,9 @@
 import {ArticleSchemaWithText} from "./article";
 import {ResolutionIDSchema} from "@/parser/schemas/common";
 import {
-    AnnexArticleReferenceSchema,
     AnnexReferenceSchema,
     ArticleReferenceSchema,
-    ChapterReferenceSchema, ReferenceSchema, ResolutionReferenceSchema,
+    ChapterReferenceSchema, ReferenceSchema,
 } from "@/parser/schemas/references/schemas";
 import {z} from "zod";
 
@@ -18,7 +17,9 @@ export const ChangeModifyArticleSchema = z.object({
 export const ChangeReplaceArticleSchema = z.object({
     type: z.literal("ReplaceArticle").describe("Reemplazo completo de un artículo"),
     targetArticle: ArticleReferenceSchema.describe("Artículo objetivo a reemplazar"),
-    newContent: z.string().describe("Nuevo contenido del artículo"),
+    get newContent() {
+        return z.string().describe("Nuevo contenido del artículo");
+    },
 }).meta({title: "CambioReemplazarArticulo"}).describe("No llevan before/after");
 
 export const ChangeAdvancedSchema = z.object({
@@ -148,7 +149,7 @@ export const ChangeSchema = z.discriminatedUnion("type", [
         }
         return true;
     }, {
-        message:  "Can't specify a suffix without an article number when adding an article",
+        message: "Can't specify a suffix without an article number when adding an article",
     });
 
 

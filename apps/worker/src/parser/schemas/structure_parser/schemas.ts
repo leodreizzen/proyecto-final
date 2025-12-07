@@ -16,6 +16,6 @@ export const ResolutionStructureSchema = z.object({
     articles: z.array(ArticleStructureSchema).describe("Artículos presentes en la resolución"),
     annexes: z.array(AnnexSchema).describe("Anexos presentes en la resolución, presentes luego del último artículo"),
     tables: z.array(TableStructureSchema).describe("Tablas presentes en la resolución. DEBEN ser referenciadas en el texto como {{tabla X}}"),
-}).meta({title: "Resolución", schemaDescription: "Resolución completa"});
+}).refine(res => res.id.year === res.date.getFullYear()).meta({title: "Resolución", schemaDescription: "Resolución completa"});
 
 export type ResolutionStructure = z.infer<typeof ResolutionStructureSchema>;
