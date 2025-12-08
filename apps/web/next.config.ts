@@ -6,11 +6,13 @@ const nextConfig: NextConfig = {
     webpack(config, context){
         if(context.dev){
             config.watchOptions = {
-                poll: 500,
+                poll: 1000,
                 aggregateTimeout: 300,
             };
         }
         return config;
-    }};
+    },
+    transpilePackages: ["@repo/db"],
+};
 
 export default nextConfig;
