@@ -3,7 +3,7 @@ import { prismaAdapter } from "better-auth/adapters/prisma";
 import prisma from "@repo/db/prisma";
 import {nextCookies} from "better-auth/next-js";
 
-export const auth = betterAuth({
+export const authConfig  = {
     database: prismaAdapter(prisma, {
         provider: "postgresql",
         transaction: true
@@ -25,5 +25,17 @@ export const auth = betterAuth({
             maxAge: 5 * 60
         }
     },
+    user: {
+        additionalFields: {
+            role: {
+                type: "string",
+                required: false,
+                defaultValue: "USER",
+                input: false,
+            }
+        }
+    },
     plugins: [nextCookies()]
-});
+} satisfies Parameters<typeof betterAuth>[0]
+
+export const auth = betterAuth(authConfig);

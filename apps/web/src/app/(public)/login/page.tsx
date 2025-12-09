@@ -8,20 +8,23 @@ import {Button} from "@/components/ui/button"
 import {Input} from "@/components/ui/input"
 import {Label} from "@/components/ui/label"
 import {Card, CardContent, CardHeader, CardTitle} from "@/components/ui/card"
-import {authClient} from "@/lib/auth-client";
+import {authClient} from "@/lib/auth/auth-client";
+import {useSearchParams} from "next/navigation";
 
 export default function LoginPage() {
     const [email, setEmail] = useState("")
     const [password, setPassword] = useState("")
     const [isLoading, setIsLoading] = useState(false)
     const [error, setError] = useState("")
+    const searchParams = useSearchParams();
+    const callbackURL = searchParams.get("callbackURL") || "/admin";
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault()
         setError("")
         setIsLoading(true)
         const res = await authClient.signIn.email({
-            email, password, callbackURL: "/admin"
+            email, password, callbackURL
         })
         if (res.error) {
             switch (res.error.code) {

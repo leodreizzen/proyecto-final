@@ -12,6 +12,9 @@ const nextConfig: NextConfig = {
         }
         return config;
     },
+    experimental: {
+        authInterrupts: true
+    },
     transpilePackages: ["@repo/db"],
 };
 
