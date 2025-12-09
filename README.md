@@ -17,7 +17,7 @@ Linux or MacOS:
 ``` 
 Windows (PowerShell):
 ``` powershell
-   dotenvx decrypt -f .env.development --stdout | Set-Content .env -Encoding utf
+   dotenvx decrypt -f .env.development --stdout | Set-Content .env -Encoding UTF8
 ```
 
 

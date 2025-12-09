@@ -4,8 +4,12 @@
     "plugins": [
       {
         "name": "next"
-      }
-    ]
+      },
+    ],
+    "moduleResolution": "Bundler",
+    "allowImportingTsExtensions": true,
+    "noEmit": true,
+    "module": "ESNext"
   },
   "include": [
     "**/*.ts",
@@ -16,6 +20,7 @@
   ],
   "exclude": [
     "node_modules",
-    "proof_of_concept"
+    "proof_of_concept",
+    "src/generated/**"
   ],
 }
