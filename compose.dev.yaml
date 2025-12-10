@@ -19,6 +19,8 @@ services:
     command: ["turbo", "dev", "--filter", "web"]
     ports:
       - "3000:3000"
+      - "9229:9229"
+      - "9230:9230"
     environment:
       DATABASE_URL: ${DATABASE_URL}
       REDIS_URL: ${REDIS_URL}

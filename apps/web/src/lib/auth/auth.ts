@@ -1,9 +1,10 @@
+import "server-only"
 import {betterAuth} from "better-auth"
-import { prismaAdapter } from "better-auth/adapters/prisma";
+import {prismaAdapter} from "better-auth/adapters/prisma";
 import prisma from "@repo/db/prisma";
 import {nextCookies} from "better-auth/next-js";
-
-export const authConfig  = {
+import {headers} from "next/headers";
+export const authConfig = {
     database: prismaAdapter(prisma, {
         provider: "postgresql",
         transaction: true
@@ -14,7 +15,7 @@ export const authConfig  = {
         },
         disableOriginCheck: process.env.NODE_ENV === "development",
     },
-    experimental: { joins: true },
+    experimental: {joins: true},
     emailAndPassword: {
         enabled: true,
         disableSignUp: true,
@@ -39,3 +40,10 @@ export const authConfig  = {
 } satisfies Parameters<typeof betterAuth>[0]
 
 export const auth = betterAuth(authConfig);
+
+
+export async function getSessionServer() {
+    return auth.api.getSession({
+        headers: await headers()
+    });
+}

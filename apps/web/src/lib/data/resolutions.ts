@@ -1,9 +1,14 @@
+import "server-only"
 import prisma from "@/lib/prisma";
 import {checkResourcePermission} from "@/lib/auth/data-authorization";
 
-async function fetchResolutions() {
-    // TODO pagination
+export async function fetchResolutionsWithStatus() {
+    //TODO PAGINATION
     await checkResourcePermission("resolution", "read");
-    const resolutions = await prisma.resolution.findMany();
-    return resolutions;
+
+    const resolutions = await prisma.resolution.findMany({});
+    return resolutions.map(resolution => ({
+        ...resolution,
+        status: "ok" //TODO
+    }));
 }
