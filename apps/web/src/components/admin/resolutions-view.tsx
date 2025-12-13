@@ -36,8 +36,8 @@ export async function ResolutionsView() {
       {/* Main content - Central column */}
       <div className="flex-1 flex flex-col min-w-0 p-4 lg:p-6 overflow-auto">
         <KpiHeader stats={stats} />
-        <Toolbar searchQuery={""} onSearchChange={() => {}} />
-        <ResolutionsTable resolutions={resolutions} onDelete={() => {}} />
+        <Toolbar />
+        <ResolutionsTable resolutions={resolutions} />
       </div>
 
       {/* Status panel - Right column */}
