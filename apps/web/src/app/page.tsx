@@ -1,7 +1,6 @@
-import {publicRoute} from "@/lib/auth/authorization";
+import {authCheck, publicRoute} from "@/lib/auth/route-authorization";
 
-export default function HomePage(){
-    return publicRoute(async () => {
-        return <h1>Hello world</h1>
-    })
+export default async function HomePage() {
+    await authCheck(publicRoute);
+    return <h1>Hello world</h1>
 }

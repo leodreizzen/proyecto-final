@@ -1,7 +1,6 @@
-import {restrictedRoute} from "@/lib/auth/authorization";
+import {authCheck} from "@/lib/auth/route-authorization";
 
 export default async function AdminPage() {
-    return restrictedRoute(["ADMIN"], async () => {
-        return <div>Admin Page</div>;
-    })
+    await authCheck(["ADMIN"]);
+    return <div>Admin Page</div>;
 }
