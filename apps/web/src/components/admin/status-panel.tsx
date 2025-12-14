@@ -1,6 +1,6 @@
 "use client"
 import { FileText, Check, X, ChevronRight, Loader2 } from "lucide-react"
-import { cn } from "@/lib/utils"
+import {cn, formatDateTime} from "@/lib/utils"
 import { Progress } from "@/components/ui/progress"
 import {
   Dialog,
@@ -10,48 +10,35 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog"
-
-interface Job {
-  id: string
-  filename: string
-  progress: number
-  phase: string
-}
-
-interface RecentItem {
-  id: string
-  filename: string
-  status: "success" | "error"
-  time: string
-  error?: string
-}
+import {UploadWithFile, UploadWithProgressAndFile} from "@/lib/definitions/uploads";
+//TODO don't depend on the repo package
+import {UploadStatus} from "@repo/db/prisma/enums";
 
 interface StatusPanelProps {
-  jobs: Job[]
-  recentItems: RecentItem[]
+  unfinished: UploadWithProgressAndFile[]
+  recent: UploadWithFile[]
 }
 
-export function StatusPanel({ jobs, recentItems }: StatusPanelProps) {
+export function StatusPanel({ unfinished, recent }: StatusPanelProps) {
   return (
     <div className="flex flex-col h-full max-h-[calc(100vh-4rem)] xl:max-h-screen">
       {/* Processing queue - Top section*/}
       <div className="flex-[3] min-h-0 p-4 border-b border-border overflow-auto">
         <h3 className="text-sm font-semibold text-foreground mb-4 flex items-center gap-2">
-          <Loader2 className="h-4 w-4 animate-spin text-status-info" />
+            {unfinished.length > 0 && <Loader2 className={"h-4 w-4 animate-spin text-status-info"}/>}
           En proceso
         </h3>
 
-        {jobs.length > 0 ? (
+        {unfinished.length > 0 ? (
           <div className="space-y-3">
-            {jobs.map((job) => (
+            {unfinished.map((job) => (
               <div key={job.id} className="p-3 rounded-lg bg-muted/50 border border-border">
                 <div className="flex items-center gap-2 mb-2">
                   <FileText className="h-4 w-4 text-muted-foreground shrink-0" />
-                  <span className="text-sm font-medium text-foreground truncate">{job.filename}</span>
+                  <span className="text-sm font-medium text-foreground truncate">{job.file.originalFileName}</span>
                 </div>
-                <Progress value={job.progress} className="h-1.5 mb-2" />
+                <Progress value={30} className="h-1.5 mb-2" />
                 <div className="flex items-center justify-between text-xs text-muted-foreground">
-                  <span>{job.phase}</span>
                   <span>{job.progress}%</span>
                 </div>
               </div>
@@ -73,7 +60,7 @@ export function StatusPanel({ jobs, recentItems }: StatusPanelProps) {
         </div>
 
         <div className="space-y-2">
-          {recentItems.map((item) => (
+          {recent.map((item) => (
             <RecentItemRow key={item.id} item={item} />
           ))}
         </div>
@@ -82,8 +69,8 @@ export function StatusPanel({ jobs, recentItems }: StatusPanelProps) {
   )
 }
 
-function RecentItemRow({ item }: { item: RecentItem }) {
-  const isError = item.status === "error"
+function RecentItemRow({ item }: { item: UploadWithFile }) {
+  const isError = item.status === UploadStatus.FAILED
 
   const content = (
     <div
@@ -101,13 +88,13 @@ function RecentItemRow({ item }: { item: RecentItem }) {
         {isError ? <X className="h-4 w-4 text-status-error" /> : <Check className="h-4 w-4 text-status-success" />}
       </div>
       <div className="flex-1 min-w-0">
-        <p className="text-sm font-medium text-foreground truncate">{item.filename}</p>
-        <p className="text-xs text-muted-foreground">{item.time}</p>
+        <p className="text-sm font-medium text-foreground truncate">{item.file.originalFileName}</p>
+        <p className="text-xs text-muted-foreground">{formatDateTime(item.uploadedAt)}</p>
       </div>
     </div>
   )
 
-  if (isError && item.error) {
+  if (isError && item.errorMsg) {
     return (
       <Dialog>
         <DialogTrigger asChild>{content}</DialogTrigger>
@@ -118,8 +105,8 @@ function RecentItemRow({ item }: { item: RecentItem }) {
               Error de procesamiento
             </DialogTitle>
             <DialogDescription className="pt-2">
-              <span className="font-mono text-sm block mb-2">{item.filename}</span>
-              <span className="text-foreground">{item.error}</span>
+              <span className="font-mono text-sm block mb-2">{item.file.originalFileName}</span>
+              <span className="text-foreground">{item.errorMsg}</span>
             </DialogDescription>
           </DialogHeader>
         </DialogContent>

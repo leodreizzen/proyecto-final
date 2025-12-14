@@ -45,6 +45,9 @@ model Resolution {
 
   referencedBy ReferenceResolution[]
 
+  upload             ResolutionUpload @relation(fields: [resolutionUploadId], references: [id])
+  resolutionUploadId String           @unique @db.Uuid
+
   // Check: "year" must be between 1000 and 9999 and match the year of "date"
   // Check: "number" > 0
   // Trigger: Automatically links/unlinks references pointing to this resolution on creation or update
@@ -562,10 +565,32 @@ enum ReferenceSourceType {
   ARTICLE_CREATE_DOCUMENT
 }
 
+model ResolutionUpload {
+  id         String       @id @default(dbgenerated("uuidv7()")) @db.Uuid
+  uploader   User         @relation(fields: [uploaderId], references: [id], onDelete: Cascade)
+  uploaderId String       @db.Uuid
+  file       Asset        @relation(fields: [fileId], references: [id])
+  fileId     String       @unique @db.Uuid
+  status     UploadStatus
+  errorMsg   String?
+
+  resolution Resolution?
+  uploadedAt DateTime    @default(now())
+  // Check: can only have errorMsg if status is FAILED
+}
+
+enum UploadStatus {
+  PENDING
+  PROCESSING
+  COMPLETED
+  FAILED
+}
+
 model User {
-  id                  String       @id @default(dbgenerated("uuidv7()")) @db.Uuid
-  uploadedResolutions Resolution[] @relation(name: "Resolution_createdBy")
-  updatedResolutions  Resolution[] @relation(name: "Resolution_lastUpdateBy")
+  id                  String             @id @default(dbgenerated("uuidv7()")) @db.Uuid
+  uploadedResolutions Resolution[]       @relation(name: "Resolution_createdBy")
+  updatedResolutions  Resolution[]       @relation(name: "Resolution_lastUpdateBy")
+  uploads             ResolutionUpload[]
 
   name          String
   email         String   @unique
@@ -628,14 +653,15 @@ model Verification {
 }
 
 model Asset {
-  id               String      @id @default(dbgenerated("uuidv7()")) @db.Uuid
-  resolution       Resolution?
-  path             String      @unique
+  id               String            @id @default(dbgenerated("uuidv7()")) @db.Uuid
+  resolutionUpload ResolutionUpload?
+  path             String            @unique
   bucket           String
   mimeType         String
   size             Int
   originalFileName String
-  createdAt        DateTime    @default(now())
+  createdAt        DateTime          @default(now())
 
   // Check: "size" > 0
+  Resolution Resolution?
 }

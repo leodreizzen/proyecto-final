@@ -1,4 +1,5 @@
-import {PrismaClient} from './generated/prisma/client.ts';
+import "server-only";
+import {PrismaClient} from './generated/prisma/client';
 import {PrismaPg} from '@prisma/adapter-pg'
 
 let prisma: ReturnType<typeof createPrismaClient>;

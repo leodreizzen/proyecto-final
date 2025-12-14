@@ -1,3 +1,4 @@
+import "server-only"
 import {UserRole} from "@repo/db/prisma/enums";
 import {auth} from "@/lib/auth/auth";
 import {headers} from "next/headers";
@@ -5,6 +6,7 @@ import {forbidden, unauthorized} from "next/navigation";
 
 type ACTIONS = {
     resolution: ["create", "read", "update", "delete"],
+    upload: ["create", "read", "readFile"]
 };
 
 type Resource = keyof ACTIONS;
@@ -23,7 +25,8 @@ const userPermissions: RolePermissions = {
 
 const adminPermissions: RolePermissions = {
     ...userPermissions,
-    resolution: ["create", "update", "delete"]
+    resolution: ["create", "update", "delete"],
+    upload: ["create", "read", "readFile"]
 }
 
 const GUEST = "GUEST";
@@ -37,8 +40,9 @@ const permissions: {
 }
 
 
-export async function checkResourcePermission(resource: Resource, action: ACTIONS[Resource][number]) {
-    if (permissions.GUEST[resource]?.includes(action))
+export async function checkResourcePermission<R extends Resource>(resource: R, action: ACTIONS[R][number]) {
+    const guestPermissionsForResource = permissions[GUEST][resource];
+    if (guestPermissionsForResource?.includes(action))
         return;
 
     const session = await auth.api.getSession({headers: await headers()});
