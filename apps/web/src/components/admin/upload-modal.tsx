@@ -51,6 +51,7 @@ export function UploadModalContent({onOpenChange, onUpload}: {
             maxSize: MAX_FILE_SIZE,
             maxFiles: MAX_FILES,
         },
+        shiftOnMaxFiles: false
     });
 
     function handleSubmit(event: React.FormEvent) {
@@ -68,7 +69,7 @@ export function UploadModalContent({onOpenChange, onUpload}: {
             <div className="not-prose flex flex-col gap-4">
                 <Dropzone {...dropzone}>
                     <div>
-                        <div className="flex justify-between">
+                        <div className="flex flex-col justify-between">
                             <DropzoneDescription>
                                 Seleccioná hasta {MAX_FILES} archivos PDF
                                 (máx. {filesize(MAX_FILE_SIZE, {standard: "jedec"})} c/u)
