@@ -2,7 +2,7 @@
   "$schema": "https://turborepo.com/schema.json",
   "ui": "tui",
   "tasks": {
-    "worker:*": {
+    "worker#dev": {
       "env": ["NODE_ENV", "OPEN_ROUTER_KEY", "USE_OPENROUTER", "OPENROUTER_API_KEY", "GOOGLE_API_KEY"]
     },
     "db:generate": {
@@ -25,7 +25,6 @@
       "dependsOn": ["^check-types"]
     },
     "dev": {
-      "env": ["DATABASE_URL", "BETTER_AUTH_SECRET", "BETTER_AUTH_URL", "REDIS_URL"],
       "cache": false,
       "persistent": true
     }

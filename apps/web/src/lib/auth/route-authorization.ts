@@ -5,6 +5,10 @@ import {headers} from "next/headers";
 
 export const publicRoute = Symbol("publicRoute");
 
+type User = NonNullable<Awaited<ReturnType<typeof auth.api.getSession>>>["user"];
+
+export async function authCheck(roles: UserRole[]): Promise<User>
+export async function authCheck(roles: typeof publicRoute): Promise<undefined>
 export async function authCheck(roles: UserRole[] | typeof publicRoute) {
     if (roles === publicRoute) {
         return;
@@ -18,4 +22,5 @@ export async function authCheck(roles: UserRole[] | typeof publicRoute) {
     if (!user.role || !((roles as string[]).includes(user.role))) {
         forbidden();
     }
+    return user;
 }

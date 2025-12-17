@@ -26,6 +26,13 @@ services:
       REDIS_URL: ${REDIS_URL}
       BETTER_AUTH_URL: ${BETTER_AUTH_URL}
       BETTER_AUTH_SECRET: ${BETTER_AUTH_SECRET}
+      S3_ACCESS_KEY: ${S3_ACCESS_KEY}
+      S3_SECRET_KEY: ${S3_SECRET_KEY}
+      S3_ENDPOINT: "http://garage:3900"
+      S3_REGION: "us-east-1"
+      S3_PUBLIC_BUCKET_NAME: "public-assets"
+      S3_INTERNAL_BUCKET_NAME: "internal-assets"
+      PUBLIC_S3_ENDPOINT: "http://localhost:8080/s3-api"
     depends_on:
       garage-init:
         condition: service_completed_successfully
@@ -102,18 +109,22 @@ services:
     restart: unless-stopped
   nginx:
     container_name: normativas-dev-nginx
-    image: nginx:1.29.3-alpine
+    build:
+        context: infra/nginx/dev
+        dockerfile: Dockerfile
     restart: unless-stopped
-    volumes:
-        - ./infra/nginx/dev/nginx.conf:/etc/nginx/conf.d/default.conf:ro
     ports:
       - "8080:8080"
+    environment:
+      S3_ENDPOINT: "http://garage:3900"
     depends_on:
       - web
       - garage
   garage:
     image: dxflrs/garage:v2.1.0
     container_name: normativas-dev-garage
+    ports:
+      - "127.0.0.1:3900:3900"
     volumes:
       - ./infra/garage/garage.toml:/etc/garage.toml
       - garage_meta:/var/lib/garage/meta

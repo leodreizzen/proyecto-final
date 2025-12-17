@@ -664,4 +664,6 @@ model Asset {
 
   // Check: "size" > 0
   Resolution Resolution?
+
+  @@unique([bucket, path])
 }

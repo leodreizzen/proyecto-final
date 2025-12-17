@@ -5,6 +5,7 @@ import {Input} from "@/components/ui/input"
 import {Button} from "@/components/ui/button"
 import {useState} from "react";
 import UploadModal from "@/components/admin/upload-modal";
+import {uploadResolutions} from "@/lib/actions/client/uploads";
 
 interface ToolbarProps {
     searchQuery?: string // TODO MAKE THIS REQUIRED
@@ -33,7 +34,7 @@ export function Toolbar({searchQuery, onSearchChange}: ToolbarProps) {
                 <Upload className="h-4 w-4"/>
                 <span>Subir PDF</span>
             </Button>
-            <UploadModal open={uploadModalOpen} onOpenChange={setUploadModalOpen} onUpload={(files)=> alert(`WIP (${files.length} files)`)}/>
+            <UploadModal open={uploadModalOpen} onOpenChange={setUploadModalOpen} onUpload={uploadResolutions}/>
         </div>
     )
 }

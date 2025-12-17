@@ -1,9 +1,4 @@
-import {
-    Dialog, DialogClose,
-    DialogContent, DialogFooter,
-    DialogHeader,
-    DialogTitle
-} from "@/components/ui/dialog"
+import {Dialog, DialogClose, DialogContent, DialogFooter, DialogHeader, DialogTitle} from "@/components/ui/dialog"
 import {
     Dropzone,
     DropZoneArea,
@@ -18,6 +13,7 @@ import {
 import {Button} from "@/components/ui/button";
 import {CloudUploadIcon, Trash2Icon} from "lucide-react";
 import {filesize} from "filesize";
+import {MAX_FILE_SIZE, MAX_FILES_PER_UPLOAD} from "../../../config/files";
 
 export default function UploadModal({open, onOpenChange, onUpload}: {
     open: boolean;
@@ -35,8 +31,6 @@ export function UploadModalContent({onOpenChange, onUpload}: {
     onOpenChange: (open: boolean) => void,
     onUpload: (files: File[]) => void
 }) {
-    const MAX_FILE_SIZE = 15 * 1024 * 1024;
-    const MAX_FILES = 10;
     const dropzone = useDropzone({
         onDropFile: async (file: File) => {
             return {
@@ -49,7 +43,7 @@ export function UploadModalContent({onOpenChange, onUpload}: {
                 "application/pdf": [],
             },
             maxSize: MAX_FILE_SIZE,
-            maxFiles: MAX_FILES,
+            maxFiles: MAX_FILES_PER_UPLOAD,
         },
         shiftOnMaxFiles: false
     });
@@ -71,7 +65,7 @@ export function UploadModalContent({onOpenChange, onUpload}: {
                     <div>
                         <div className="flex flex-col justify-between">
                             <DropzoneDescription>
-                                Seleccioná hasta {MAX_FILES} archivos PDF
+                                Seleccioná hasta {MAX_FILES_PER_UPLOAD} archivos PDF
                                 (máx. {filesize(MAX_FILE_SIZE, {standard: "jedec"})} c/u)
                             </DropzoneDescription>
                             <DropzoneMessage/>
