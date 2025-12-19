@@ -6,9 +6,17 @@ import {saveParsedResolution} from "@/data/save-resolution/save-resolution";
 import {Asset} from "@repo/db/prisma/client";
 import {formatErrorMessage, ResolutionRejectError} from "@/upload/errors";
 import {fetchUploadWithFile, setUploadStatus} from "@/data/uploads";
+import ProgressReporter from "@/util/progress-reporter";
 
-export async function processResolutionUpload(job: Job) {
-    const upload = await fetchUploadWithFile(job.data.uploadId);
+export async function processResolutionUpload(job: Job, progressReporter: ProgressReporter) {
+    if (!job.id)
+        throw new Error("Job ID is missing");
+
+    const fetchDataReporter = progressReporter.addSubreporter("fetchData", 0.14);
+    const parseResolutionReporter = progressReporter.addSubreporter("parseResolution", 140);
+    const saveDataReporter = progressReporter.addSubreporter("saveData", 0.5);
+
+    const upload = await fetchUploadWithFile(job.id);
     if (!upload) {
         throw new Error(`Upload with ID ${job.data.uploadId} not found`);
     }
@@ -22,8 +30,9 @@ export async function processResolutionUpload(job: Job) {
         }
 
         const file = await fetchAsset(upload.file);
+        fetchDataReporter.reportProgress(1);
 
-        const parseResult = await parseResolution(file);
+        const parseResult = await parseResolution(file, parseResolutionReporter);
         const parsedResolution = checkParseResult(parseResult);
 
         const createdFile = await makeResolutionFilePublic(upload.file, parsedResolution.id);
@@ -33,6 +42,7 @@ export async function processResolutionUpload(job: Job) {
             await saveParsedResolution(tx, parsedResolution, upload, createdFile);
             await setUploadStatus({upload, status: "COMPLETED", tx});
         });
+        saveDataReporter.reportProgress(1);
     } catch (e) {
         console.error("Error processing resolution upload:", e);
         await setUploadStatus({upload, status: "FAILED", errorMessage: formatErrorMessage(e)});

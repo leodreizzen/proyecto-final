@@ -4,19 +4,26 @@ import {FullResolutionAnalysis, ParseResolutionError,} from "@/parser/types";
 import {analyze_tables} from "@/parser/llms/analyzer/table_analyzer";
 import {extractReferences} from "@/parser/llms/analyzer/reference_extractor";
 import {merge} from "lodash-es";
-import {analyzeAnnex} from "@/parser/llms/analyzer/annex_analyzer";
+import {analyzeAnnex, ParseAnnexResult} from "@/parser/llms/analyzer/annex_analyzer";
 import {analyzeMainResolution} from "@/parser/llms/analyzer/main_resolution_analyzer";
 
 import {validateReferenceConsistency} from "@/parser/llms/analyzer/reference_consistency";
 import {LLMConsistencyValidationError} from "@/parser/llms/errors";
 import {withLlmConsistencyRetry} from "@/util/llm/retries";
+import ProgressReporter from "@/util/progress-reporter";
 
-export async function analyzeFullResolution(resolution: ResolutionStructure, firstAttempt: boolean): Promise<ResultWithData<FullResolutionAnalysis, ParseResolutionError>> {
+export async function analyzeFullResolution(resolution: ResolutionStructure, firstAttempt: boolean, reporter: ProgressReporter): Promise<ResultWithData<FullResolutionAnalysis, ParseResolutionError>> {
+    const mainResolutionReporter = reporter.addSubreporter("analyzeMainResolution", 60);
+    const annexesReporter = reporter.addSubreporter("analyzeAnnexes", 7.85);
+    const tablesReporter = reporter.addSubreporter("analyzeTables", 13.75);
+    const referencesReporter = reporter.addSubreporter("analyzeReferences", 30);
+
     const mainAnalysisRes = await analyzeMainResolution(resolution, firstAttempt);
     if (!mainAnalysisRes.success) {
         return mainAnalysisRes;
     }
     const mainResolutionAnalysis = mainAnalysisRes.data;
+    mainResolutionReporter.reportProgress(1);
 
     const annexPromises = resolution.annexes.map((annex, index) =>
         analyzeAnnex({
@@ -31,8 +38,16 @@ export async function analyzeFullResolution(resolution: ResolutionStructure, fir
     );
     const tableAnalysisPromise = analyze_tables(resolution.tables, firstAttempt);
     const tableAnalysis = await tableAnalysisPromise;
+    tablesReporter.reportProgress(1);
 
-    const annexResults = await Promise.all(annexPromises);
+    const annexResults: ParseAnnexResult[] = []
+    for (let i = 0; i < annexPromises.length; i++) {
+        const annexResult = await annexPromises[i]!;
+        annexesReporter.reportProgress((i + 1) / annexPromises.length);
+        annexResults.push(annexResult);
+    }
+    annexesReporter.reportProgress(1);
+
     const firstFailed = annexResults.find(result => !result.success);
     if (firstFailed !== undefined) {
         return firstFailed;
@@ -48,6 +63,7 @@ export async function analyzeFullResolution(resolution: ResolutionStructure, fir
             console.error(JSON.stringify(consistencyValidationRes.error));
             throw new LLMConsistencyValidationError(consistencyValidationRes.error);
         }
+        referencesReporter.reportProgress(1);
         return referenceAnalysisResult;
     })
 

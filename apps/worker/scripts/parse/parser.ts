@@ -1,5 +1,6 @@
 import {parseFileResolution} from "@/parser/parser";
 import * as util from "node:util";
+import ProgressReporter from "@/util/progress-reporter";
 
 async function test(){
     const filePath = "src/__tests__/parser/test_files/CSU_RES-751-2023.pdf";
@@ -8,7 +9,9 @@ async function test(){
 
     const resPromises = Array.from({length: repeatCount}, async (_, i) => {
         console.log(`Starting parse ${i + 1}`);
-        const res = await parseFileResolution(filePath);
+        const res = await parseFileResolution(filePath, new ProgressReporter({name: `parse${i + 1}`, onReport: (progress) => {
+            console.log(`Parse ${i + 1} progress: ${(progress * 100).toFixed(2)}%`);
+        }}));
         if (res.success) {
             console.log(`Parse ${i + 1} success:`);
             console.log(util.inspect(res.data, {depth: null, colors: true}));

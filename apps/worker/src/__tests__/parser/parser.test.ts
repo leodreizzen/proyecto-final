@@ -4,6 +4,7 @@ import path from "node:path";
 import {expect, describe, jest, test} from "@jest/globals";
 import {StandaloneAnnex, Article, Resolution} from "@/parser/types";
 import {ResolutionID} from "@/parser/schemas/common";
+import ProgressReporter from "@/util/progress-reporter";
 
 
 describe("E2E Resolution Parsing", () => {
@@ -32,7 +33,7 @@ describe("E2E Resolution Parsing", () => {
     }
 
     async function parseTestFile(fileName: string) {
-        return parseFileResolution(path.join(__dirname, "test_files", fileName));
+        return parseFileResolution(path.join(__dirname, "test_files", fileName), new ProgressReporter({name: "test", onReport: () => {}}));
     }
 
     jest.retryTimes(0, {logErrorsBeforeRetry: true});
