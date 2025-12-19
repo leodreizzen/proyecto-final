@@ -1,7 +1,7 @@
 "use client"
 
 import {FileText, ExternalLink, Trash2, Check, AlertTriangle, AlertCircle} from "lucide-react"
-import {cn} from "@/lib/utils"
+import {cn, formatResolutionId} from "@/lib/utils"
 import {Button} from "@/components/ui/button"
 import {
     AlertDialog,
@@ -65,19 +65,19 @@ export function ResolutionsTable({resolutions}: ResolutionsTableProps) {
                     </tr>
                     </thead>
                     <tbody className="divide-y divide-border">
-                    {resolutions.map((resolucion) => {
-                        const status = statusConfig[resolucion.status]
+                    {resolutions.map((resolution) => {
+                        const status = statusConfig[resolution.status]
                         const StatusIcon = status.icon
 
                         return (
-                            <tr key={resolucion.id} className="hover:bg-muted/20 transition-colors">
+                            <tr key={resolution.id} className="hover:bg-muted/20 transition-colors">
                                 <td className="px-4 py-3">
                                     <FileText className="h-5 w-5 text-muted-foreground"/>
                                 </td>
                                 <td className="px-4 py-3">
                                     <button
                                         className="font-mono font-bold text-foreground hover:text-primary transition-colors">
-                                        {resolucion.id}
+                                        {formatResolutionId(resolution)}
                                     </button>
                                 </td>
                                 <td className="px-4 py-3">
@@ -116,13 +116,13 @@ export function ResolutionsTable({resolutions}: ResolutionsTableProps) {
                                                     <AlertDialogDescription>
                                                         Esta acción no se puede deshacer. Se eliminará permanentemente
                                                         la resolución{" "}
-                                                        <span className="font-mono font-semibold">{resolucion.id}</span>.
+                                                        <span className="font-mono font-semibold">{formatResolutionId(resolution)}</span>.
                                                     </AlertDialogDescription>
                                                 </AlertDialogHeader>
                                                 <AlertDialogFooter>
                                                     <AlertDialogCancel>Cancelar</AlertDialogCancel>
                                                     <AlertDialogAction
-                                                        onClick={() => onDelete(resolucion.id)}
+                                                        onClick={() => onDelete(resolution.id)}
                                                         className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
                                                     >
                                                         Eliminar
@@ -141,17 +141,17 @@ export function ResolutionsTable({resolutions}: ResolutionsTableProps) {
 
             {/* Mobile cards */}
             <div className="md:hidden divide-y divide-border">
-                {resolutions.map((resolucion) => {
-                    const status = statusConfig[resolucion.status]
+                {resolutions.map((resolution) => {
+                    const status = statusConfig[resolution.status]
                     const StatusIcon = status.icon
 
                     return (
-                        <div key={resolucion.id} className="p-4 flex items-center gap-3">
+                        <div key={resolution.id} className="p-4 flex items-center gap-3">
                             <FileText className="h-5 w-5 text-muted-foreground shrink-0"/>
                             <div className="flex-1 min-w-0">
                                 <button
                                     className="font-mono font-bold text-sm text-foreground hover:text-primary transition-colors truncate block">
-                                    {resolucion.id}
+                                    {formatResolutionId(resolution)}
                                 </button>
                                 <span
                                     className={cn(
@@ -179,13 +179,13 @@ export function ResolutionsTable({resolutions}: ResolutionsTableProps) {
                                             <AlertDialogDescription>
                                                 Esta acción no se puede deshacer. Se eliminará permanentemente la
                                                 resolución{" "}
-                                                <span className="font-mono font-semibold">{resolucion.id}</span>.
+                                                <span className="font-mono font-semibold">{formatResolutionId(resolution)}</span>.
                                             </AlertDialogDescription>
                                         </AlertDialogHeader>
                                         <AlertDialogFooter>
                                             <AlertDialogCancel>Cancelar</AlertDialogCancel>
                                             <AlertDialogAction
-                                                onClick={() => onDelete(resolucion.id)}
+                                                onClick={() => onDelete(resolution.id)}
                                                 className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
                                             >
                                                 Eliminar
