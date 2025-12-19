@@ -21,9 +21,10 @@ export function formatErrorMessage(e: any): string {
             case "invalid_format":
                 errorMessage = `Archivo inválido: ${e.error.message}`;
                 break;
-            default:
-                let _exhaustiveCheck: never = e.error;
+            default: {
+                const _exhaustiveCheck: never = e.error;
                 return "Error desconocido";
+            }
         }
     } else {
         errorMessage = "Error interno";

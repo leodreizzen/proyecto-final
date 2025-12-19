@@ -1,6 +1,6 @@
 
 import readline from "readline"
-import {auth, authConfig} from "@/lib/auth/auth";
+import {authConfig} from "@/lib/auth/auth";
 import {betterAuth} from "better-auth";
 const rl = readline.createInterface({
     input: process.stdin,
