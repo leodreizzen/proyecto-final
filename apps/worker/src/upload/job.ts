@@ -22,11 +22,12 @@ export async function processResolutionUpload(job: Job, progressReporter: Progre
     }
 
     let publicFile: Asset | null = null;
+    const uploadId = upload.id;
     try {
-        await setUploadStatus({upload, status: "PROCESSING"});
+        await setUploadStatus({uploadId, status: "PROCESSING"});
 
         if (!upload.file) {
-            throw new Error(`Upload with ID ${job.data.uploadId} has no associated file`);
+            throw new Error(`Upload with ID ${uploadId} has no associated file`);
         }
 
         const file = await fetchAsset(upload.file);
@@ -40,12 +41,12 @@ export async function processResolutionUpload(job: Job, progressReporter: Progre
 
         await prisma.$transaction(async (tx) => {
             await saveParsedResolution(tx, parsedResolution, upload, createdFile);
-            await setUploadStatus({upload, status: "COMPLETED", tx});
+            await setUploadStatus({uploadId, status: "COMPLETED", tx});
         });
         saveDataReporter.reportProgress(1);
     } catch (e) {
         console.error("Error processing resolution upload:", e);
-        await setUploadStatus({upload, status: "FAILED", errorMessage: formatErrorMessage(e)});
+        await setUploadStatus({uploadId, status: "FAILED", errorMessage: formatErrorMessage(e)});
         if (publicFile) {
             await deleteAsset(publicFile);
         }

@@ -9,7 +9,7 @@ const redisUrl = process.env.REDIS_URL;
 
 export const redisConnection = new IORedis(redisUrl, {maxRetriesPerRequest: 5});
 
-const assetsQueue = new Queue('assets', {connection: redisConnection});
+export const assetsQueue = new Queue('assets', {connection: redisConnection});
 
 export async function createDeleteJob(file: Asset) {
     await assetsQueue.add('deleteAsset', {fileId: file.id}, {jobId: `delete-${file.id}`, removeOnComplete: true, removeOnFail: 100});
