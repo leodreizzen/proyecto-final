@@ -6,6 +6,7 @@ import {ParseResolutionError, Resolution} from "@/parser/types";
 import {countTokens} from "@/util/llm/tokenCounter";
 import {assembleResolution} from "@/parser/postprocessing/assemble";
 import {withLlmConsistencyRetry} from "@/util/llm/retries";
+import {readFile} from "node:fs/promises";
 
 export type ParseResolutionResult = ResultWithData<Resolution, ParseResolutionError>
 
@@ -49,4 +50,9 @@ export async function _parseTextResolution(fileContent: string, firstAttempt: bo
 export async function parseResolution(buffer: Buffer): Promise<ParseResolutionResult> {
     const file_markdown = await runPythonScript('src/parser/pdfparse.py', [], buffer); //TODO error handling
     return parseTextResolution(file_markdown);
+}
+
+export async function parseFileResolution(filePath: string): Promise<ParseResolutionResult> {
+    const fileBuffer = await readFile(filePath);
+    return parseResolution(fileBuffer);
 }
