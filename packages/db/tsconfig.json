@@ -9,7 +9,9 @@
     "moduleResolution": "Bundler",
     "allowImportingTsExtensions": true,
     "noEmit": true,
-    "module": "ESNext"
+    "module": "ESNext",
+    "declaration": false,
+    "declarationMap": false
   },
   "include": [
     "**/*.ts",
