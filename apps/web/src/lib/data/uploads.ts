@@ -38,19 +38,40 @@ export async function fetchUnfinishedUploads(): Promise<UploadWithProgressAndFil
 }
 
 export async function fetchRecentFinishedUploads(): Promise<UploadWithFile[]> {
-    // TODO filter by date / count
     await checkResourcePermission("upload", "read");
 
-    return prisma.resolutionUpload.findMany({
+    const maxFinishedDate = new Date();
+    maxFinishedDate.setHours(maxFinishedDate.getHours() - 1);
+
+    const uploads = await prisma.resolutionUpload.findMany({
         where: {
             status: {
                 in: ["COMPLETED", "FAILED"]
-            },
+            }
         },
+        orderBy: {
+            updatedAt: "desc"
+        },
+        take: 10,
         include: {
-            file: true
+            file: true,
+            resolution: {
+                select: {
+                    originalFile: true
+                }
+            }
         }
     })
+    return uploads.map(upload => {
+        let file = upload.file;
+        if (upload.resolution) {
+            file = upload.resolution.originalFile;
+        }
+        return {
+            ...upload,
+            file,
+        }
+    });
 }
 
 export async function createResolutionUpload(fileKey: string, uploaderId: string) {

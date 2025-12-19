@@ -579,6 +579,7 @@ model ResolutionUpload {
 
   resolution Resolution?
   uploadedAt DateTime    @default(now())
+  updatedAt  DateTime    @default(now()) @updatedAt
   // Check: can only have errorMsg if status is FAILED
   // TODO check: if status is COMPLETED, resolutionId must be present
   // TODO check: file must be present if and only if status is not COMPLETED
