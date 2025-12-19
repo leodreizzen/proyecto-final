@@ -5,18 +5,17 @@ import {AnnexAnalysis} from "@/parser/schemas/analyzer/annexes/annex";
 import {MainResolutionAnalysis} from "@/parser/schemas/analyzer/resolution/resolution";
 import {
     Change as ChangeAnalysis, ChangeAddArticleToAnnex, ChangeAddArticleToResolution, ChangeReplaceArticle,
-    ReplaceAnnexContent
 } from "@/parser/schemas/analyzer/change";
 import {
     RawReference,
     RawResolutionReference,
     ResolutionReferencesAnalysis,
-    TextReference
 } from "@/parser/schemas/references/schemas";
 import {TableAnalysis} from "@/parser/schemas/analyzer/tables/table";
 import {AnnexWithArticlesStructure, TextAnnexStructure} from "@/parser/schemas/structure_parser/annex";
 import {ArticleStructure} from "@/parser/schemas/structure_parser/article";
 import {TableStructure} from "@/parser/schemas/structure_parser/table";
+import {TextReference} from "@/parser/schemas/references/schemas";
 
 export type ParseResolutionError = {
     code: "invalid_format"
@@ -143,3 +142,6 @@ export type Resolution =
     articles: Article[],
     annexes: StandaloneAnnex[]
 }
+
+export type {ReplaceAnnexContent} from "@/parser/schemas/analyzer/change";
+export type {TextReference}

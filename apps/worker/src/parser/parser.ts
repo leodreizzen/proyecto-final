@@ -7,7 +7,7 @@ import {countTokens} from "@/util/llm/tokenCounter";
 import {assembleResolution} from "@/parser/postprocessing/assemble";
 import {withLlmConsistencyRetry} from "@/util/llm/retries";
 
-type ParseResolutionResult = ResultWithData<Resolution, ParseResolutionError>
+export type ParseResolutionResult = ResultWithData<Resolution, ParseResolutionError>
 
 
 export async function parseTextResolution(fileContent: string): Promise<ParseResolutionResult> {
