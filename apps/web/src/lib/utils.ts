@@ -7,5 +7,5 @@ export function cn(...inputs: ClassValue[]) {
 }
 
 export function formatDateTime(date: Date) {
-    return formatInTimeZone(date, 'Argentina/Buenos_Aires', 'dd-MM-yyyy HH:mm:ss zzz');
+    return formatInTimeZone(date, 'America/Argentina/Buenos_Aires', 'dd-MM-yyyy HH:mm:ss zzz');
 }

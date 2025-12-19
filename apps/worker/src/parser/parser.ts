@@ -46,7 +46,7 @@ export async function _parseTextResolution(fileContent: string, firstAttempt: bo
     }
 }
 
-export async function parseFileResolution(filePath: string): Promise<ParseResolutionResult> {
-    const file_markdown = await runPythonScript('src/parser/pdfparse.py', [filePath]); //TODO error handling
+export async function parseResolution(buffer: Buffer): Promise<ParseResolutionResult> {
+    const file_markdown = await runPythonScript('src/parser/pdfparse.py', [], buffer); //TODO error handling
     return parseTextResolution(file_markdown);
 }

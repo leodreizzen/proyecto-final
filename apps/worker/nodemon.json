@@ -1,6 +1,6 @@
 {
   "$schema": "https://json.schemastore.org/nodemon.json",
-  "watch": ["src"],
+  "watch": ["src", "../../packages/db"],
   "ext": "ts,json",
   "legacyWatch": true,
   "exec": "tsx src/worker.ts",

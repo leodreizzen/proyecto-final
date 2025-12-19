@@ -1,5 +1,7 @@
 import pdfplumber
 import sys
+import io
+
 sys.stdout.reconfigure(encoding='utf-8')
 
 def clean_cell_text(cell):
@@ -30,10 +32,10 @@ def table_to_markdown(table):
     return md + "\n"
 
 
-def pdf_to_markdown(pdf_path: str, output_path: str = None):
+def pdf_to_markdown(pdf_file_obj):
     markdown_content = ""
 
-    with pdfplumber.open(pdf_path) as pdf:
+    with pdfplumber.open(pdf_file_obj) as pdf:
         for page_num, page in enumerate(pdf.pages, 1):
             tables_data = page.find_tables()
             tables = page.extract_tables()
@@ -99,22 +101,12 @@ def pdf_to_markdown(pdf_path: str, output_path: str = None):
             # Page separator
             if page_num < len(pdf.pages):
                 markdown_content += "  \n---  \n"
-
-    if output_path:
-        with open(output_path, 'w', encoding='utf-8') as f:
-            f.write(markdown_content)
-
     return markdown_content
 
 
 if __name__ == "__main__":
-    if len(sys.argv) < 2:
-        print(f"Use: python {sys.argv[0]} <file.pdf> [output.md]")
-        sys.exit(1)
+    input_data = sys.stdin.buffer.read()
 
-    pdf_path = sys.argv[1]
-    output_path = sys.argv[2] if len(sys.argv) > 2 else None
+    pdf_source = io.BytesIO(input_data)
 
-    markdown = pdf_to_markdown(pdf_path, output_path)
-    if not output_path:
-        print(markdown)
+    print(pdf_to_markdown(pdf_source))

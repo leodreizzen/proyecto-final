@@ -65,6 +65,12 @@ services:
       DATABASE_URL: ${DATABASE_URL}
       REDIS_URL: ${REDIS_URL}
       GOOGLE_API_KEY: ${GOOGLE_API_KEY}
+      S3_ACCESS_KEY: ${S3_ACCESS_KEY}
+      S3_SECRET_KEY: ${S3_SECRET_KEY}
+      S3_ENDPOINT: "http://garage:3900"
+      S3_REGION: "us-east-1"
+      S3_PUBLIC_BUCKET_NAME: "public-assets"
+      S3_INTERNAL_BUCKET_NAME: "internal-assets"
     depends_on:
       garage-init:
         condition: service_completed_successfully
@@ -103,6 +109,8 @@ services:
       interval: 5s
       timeout: 3s
       retries: 5
+    ports:
+      - "127.0.0.1:6379:6379"
     volumes:
       - redis_data:/data
     command: [ "redis-server", "--appendonly", "yes", "--requirepass","${REDIS_PASSWORD}" ]

@@ -21,9 +21,15 @@
     "@prisma/client": "^7.0.0",
     "@types/node": "^22.15.3",
     "dotenv": "^17.2.3",
-    "postinstall": "^0.11.2"
+    "postinstall": "^0.11.2",
+    "zod": "^4.2.1"
   },
   "exports": {
+    "./tables": {
+      "types": "./src/tables.ts",
+      "import": "./src/tables.ts",
+      "default": "./src/tables.ts"
+    },
     "./prisma": {
       "types": "./src/prisma.ts",
       "import": "./src/prisma.ts",

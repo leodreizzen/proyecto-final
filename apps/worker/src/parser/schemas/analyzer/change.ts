@@ -18,9 +18,11 @@ export const ChangeReplaceArticleSchema = z.object({
     type: z.literal("ReplaceArticle").describe("Reemplazo completo de un artículo"),
     targetArticle: ArticleReferenceSchema.describe("Artículo objetivo a reemplazar"),
     get newContent() {
-        return z.string().describe("Nuevo contenido del artículo");
+        return ArticleSchemaWithText.describe("Nuevo contenido del artículo");
     },
 }).meta({title: "CambioReemplazarArticulo"}).describe("No llevan before/after");
+
+export type ChangeReplaceArticle = z.infer<typeof ChangeReplaceArticleSchema>;
 
 export const ChangeAdvancedSchema = z.object({
     type: z.literal("AdvancedChange").describe("Cambio avanzado asistido por LLM. Debe usarse cuando el cambio no puede ser representado por los otros tipos"),
@@ -34,8 +36,11 @@ export const ChangeRatifyAdReferendumSchema = z.object({
 
 export const ReplaceAnnexContentSchema = z.object({
     type: z.literal("TextOrTables").describe("Anexo de solo texto o tablas"),
-    text: z.string().describe("Texto completo del anexo nuevo"),
+    content: z.string().describe("Texto completo del anexo nuevo"),
+    name: z.string().optional().nullable().describe("Nombre del anexo, si aplica"),
 }).meta({title: "ReemplazoAnexoContenidoNuevo"});
+
+export type ReplaceAnnexContent = z.infer<typeof ReplaceAnnexContentSchema>;
 
 export const ReplaceAnnexNewContentSchema = z.discriminatedUnion("contentType", [
     z.object({

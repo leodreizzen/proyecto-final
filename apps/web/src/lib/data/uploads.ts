@@ -13,14 +13,28 @@ export async function fetchUnfinishedUploads(): Promise<UploadWithProgressAndFil
             }
         },
         include: {
-            file: true
+            file: true,
+            resolution: {
+                select: {
+                    originalFile: true
+                }
+            }
         }
     })
 
-    return uploads.map(upload => ({
-        ...upload,
-        progress: 50 // TODO: actual progress
-    }))
+
+    return uploads.map(upload => {
+            let file = upload.file;
+            if (upload.resolution) {
+                file = upload.resolution.originalFile;
+            }
+            return {
+                ...upload,
+                file,
+                progress: 50 // TODO: actual progress
+            }
+        }
+    )
 }
 
 export async function fetchRecentFinishedUploads(): Promise<UploadWithFile[]> {
@@ -46,7 +60,7 @@ export async function createResolutionUpload(fileKey: string, uploaderId: string
                 bucket: RESOLUTION_UPLOAD_BUCKET,
                 path: fileKey,
 
-                resolutionUpload : null,
+                resolutionUpload: null,
             }
         })
         if (!asset) {

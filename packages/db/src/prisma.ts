@@ -1,6 +1,6 @@
-import "server-only";
 import {PrismaClient} from './generated/prisma/client';
 import {PrismaPg} from '@prisma/adapter-pg'
+import {TableSchema} from "./tables";
 
 let prisma: ReturnType<typeof createPrismaClient>;
 
@@ -19,8 +19,46 @@ function createPrismaClient() {
                 timeout: 10000
             },
         }
-    );
+    ).$extends({
+        query: {
+            $allOperations({ operation, args, query }) {
+                if (!['create', 'update', 'upsert'].some(op => operation.startsWith(op))) {
+                    return query(args);
+                }
+
+                if (operation === 'upsert') {
+                    validate(args.create);
+                    validate(args.update);
+                } else {
+                    const data = args.data;
+
+                    if (Array.isArray(data)) {
+                        data.forEach(validate);
+                    } else {
+                        validate(data);
+                    }
+                }
+                return query(args);
+            }
+        },
+        result: {
+            table: {
+                content: {
+                    needs: { content: true },
+                    compute(data) {
+                        return TableSchema.parse(data.content);
+                    }
+                }
+            }
+        }
+    });
 }
+
+const validate = (data: { content?: unknown }) => {
+    if (data?.content) {
+        data.content = TableSchema.parse(data.content);
+    }
+};
 
 if (process.env.NODE_ENV === 'production') {
     prisma = createPrismaClient();
@@ -35,3 +73,4 @@ if (process.env.NODE_ENV === 'production') {
 }
 
 export default prisma;
+export type TransactionPrismaClient = Parameters<Parameters<typeof prisma.$transaction>[0]>[0]

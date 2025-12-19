@@ -9,6 +9,7 @@ import {ActionResult} from "@/lib/definitions/actions";
 import {RESOLUTION_UPLOAD_BUCKET} from "@/lib/file-storage/assignments";
 import {createResolutionUpload, deleteFailedUpload} from "@/lib/data/uploads";
 import {revalidatePath} from "next/cache";
+import {createUploadJob} from "@/lib/jobs/resolutions";
 
 const GetResolutionUploadUrlSchema = z.object({
     fileName: z.string().min(1),
@@ -82,7 +83,7 @@ async function saveUploadedResolution(keyData: z.infer<typeof SaveUploadedResolu
         }
 
         try {
-            //TODO await createUploadJob(createUploadRes.data.id);
+            await createUploadJob(createUploadRes.data.id);
         } catch (e) {
             console.error(`Failed to create processing job for upload ${createUploadRes.data.id}:`, e);
             await deleteFailedUpload(createUploadRes.data.id);

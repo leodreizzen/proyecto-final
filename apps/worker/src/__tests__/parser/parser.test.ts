@@ -2,7 +2,7 @@ import {parseFileResolution} from "@/parser/parser";
 import path from "node:path";
 
 import {expect, describe, jest, test} from "@jest/globals";
-import {Annex, Article, Resolution} from "@/parser/types";
+import {StandaloneAnnex, Article, Resolution} from "@/parser/types";
 import {ResolutionID} from "@/parser/schemas/common";
 
 
@@ -788,12 +788,12 @@ describe("E2E Resolution Parsing", () => {
         } satisfies DeepPartial<Article>);
 
         const firstAnnex = parseResData.annexes[0]!;
-        expect(firstAnnex.type).toBe("WithArticles" satisfies Annex["type"]);
+        expect(firstAnnex.type).toBe("WithArticles" satisfies StandaloneAnnex["type"]);
         const firstAnnexWithArticles = firstAnnex as Extract<typeof firstAnnex, { type: "WithArticles" }>;
         expect(firstAnnexWithArticles.articles).toHaveLength(2);
 
         const secondAnnex = parseResData.annexes[1]!;
-        expect(secondAnnex.type).toBe("WithArticles" satisfies Annex["type"]);
+        expect(secondAnnex.type).toBe("WithArticles" satisfies StandaloneAnnex["type"]);
         const secondAnnexWithArticles = secondAnnex as Extract<typeof secondAnnex, { type: "WithArticles" }>;
         expect(secondAnnexWithArticles.articles).toHaveLength(2);
     });
@@ -817,7 +817,7 @@ describe("E2E Resolution Parsing", () => {
         });
 
         const firstAnnex = parseResData.annexes[0]!;
-        expect(firstAnnex.type).toBe("WithArticles" satisfies Annex["type"]);
+        expect(firstAnnex.type).toBe("WithArticles" satisfies StandaloneAnnex["type"]);
         const firstAnnexWithArticles = firstAnnex as Extract<typeof firstAnnex, { type: "WithArticles" }>;
         expect(firstAnnexWithArticles.chapters).toHaveLength(5);
         expect(firstAnnexWithArticles.chapters[0]!.articles).toHaveLength(1);

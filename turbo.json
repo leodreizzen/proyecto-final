@@ -2,9 +2,6 @@
   "$schema": "https://turborepo.com/schema.json",
   "ui": "tui",
   "tasks": {
-    "worker#dev": {
-      "env": ["NODE_ENV", "OPEN_ROUTER_KEY", "USE_OPENROUTER", "OPENROUTER_API_KEY", "GOOGLE_API_KEY"]
-    },
     "db:generate": {
       "cache": false,
       "inputs": ["prisma/schema.prisma", "prisma.config.ts"]

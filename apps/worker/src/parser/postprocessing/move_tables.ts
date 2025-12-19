@@ -1,4 +1,4 @@
-import {Annex, AnnexWithMappedChanges, WithTables} from "@/parser/types";
+import {StandaloneAnnex, AnnexWithMappedChanges, WithTables} from "@/parser/types";
 import {TableStructure} from "@/parser/schemas/structure_parser/table";
 import {LLMConsistencyValidationError} from "@/parser/llms/errors";
 
@@ -14,7 +14,7 @@ type MoveTablesResolutionOutput<T extends MoveTablesResolutionInput> = Omit<T, "
     recitals: WithTables<T["recitals"][number]>[]
     considerations: WithTables<T["considerations"][number]>[]
     articles: WithTables<T["articles"][number]>[]
-    annexes: Annex[]
+    annexes: StandaloneAnnex[]
 }
 
 export function moveTablesInResolution<T extends MoveTablesResolutionInput>(resolution: T): MoveTablesResolutionOutput<T> {
@@ -113,11 +113,11 @@ function moveTablesToObjectArray<T extends {
 
 
 function moveTablesToAnnexes(annexes: AnnexWithMappedChanges[], tables: TableStructure[], _usedTableNumbers: Set<number>): {
-    annexes: Annex[],
+    annexes: StandaloneAnnex[],
     usedTableNumbers: Set<number>
 } {
     let usedTableNumbers = new Set(_usedTableNumbers);
-    const annexesWithTables: Annex[] = [];
+    const annexesWithTables: StandaloneAnnex[] = [];
 
     for (const annex of annexes) {
         if (annex.type == "TextOrTables") {

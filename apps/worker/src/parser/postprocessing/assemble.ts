@@ -152,15 +152,49 @@ function mapArticlesWithChanges(articles: ArticleWithoutTables[], currentResolut
     });
 }
 
-function mapAnalysis(change: Change) {
+function mapAnalysis(change: Change): ChangeMapped {
     if (change.type === "AddArticleToResolution" || change.type === "AddArticleToAnnex") {
         const articleToAdd = change.articleToAdd;
         const {analysis, ...restArticle} = articleToAdd;
+
+        let mappedAnalysis;
+        if(analysis.type === "Modifier"){
+            const mappedChanges = analysis.changes.map(change => mapAnalysis(change));
+            mappedAnalysis = {
+                ...analysis,
+                changes: mappedChanges
+            }
+        } else {
+            mappedAnalysis = analysis;
+        }
+
         return {
             ...change,
             articleToAdd: {
                 ...restArticle,
-                ...analysis
+                ...mappedAnalysis
+            }
+        }
+    } else if (change.type === "ReplaceArticle") {
+        const newContent = change.newContent;
+        const {analysis, ...restArticle} = newContent;
+
+        let mappedAnalysis;
+        if(analysis.type === "Modifier"){
+            const mappedChanges = analysis.changes.map(change => mapAnalysis(change));
+            mappedAnalysis = {
+                ...analysis,
+                changes: mappedChanges
+            }
+        } else {
+            mappedAnalysis = analysis;
+        }
+
+        return {
+            ...change,
+            newContent: {
+                ...restArticle,
+                ...mappedAnalysis
             }
         }
     } else {

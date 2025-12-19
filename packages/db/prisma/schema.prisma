@@ -34,9 +34,6 @@ model Resolution {
   originalFile   Asset  @relation(fields: [originalFileId], references: [id])
   originalFileId String @unique @db.Uuid
 
-  createdBy   User   @relation(fields: [createdById], references: [id], name: "Resolution_createdBy")
-  createdById String @db.Uuid
-
   lastUpdateBy   User   @relation(fields: [lastUpdateById], references: [id], name: "Resolution_lastUpdateBy")
   lastUpdateById String @db.Uuid
 
@@ -97,8 +94,8 @@ model Article {
   newContentFrom         ChangeReplaceArticle? @relation(fields: [newContentFromChangeId], references: [id], onDelete: Cascade)
   newContentFromChangeId String?               @unique @db.Uuid
 
-  number                Int
-  suffix                Int
+  number                Int?
+  suffix                Int?
   text                  String
   tables                Table[]
   references            TextReference[]
@@ -114,6 +111,9 @@ model Article {
   // Trigger: Automatically links/unlinks references pointing to this article on creation or update
   // Index: Optimized partial indexes for lookups by resolution, annex, or chapter
   // Trigger when concrete type is created: Checks that the type matches the associated model
+
+  //TODO check: article number and suffix must be present if parent is resolution/annex/chapter
+
   @@unique([resolutionId, number, suffix])
   @@unique([annexId, number, suffix])
   @@unique([chapterId, number, suffix])
@@ -325,8 +325,8 @@ model Annex {
   newContentForChangeReplaceAnnex ChangeReplaceAnnex? @relation(fields: [changeReplaceAnnexId], references: [id], onDelete: Cascade)
   changeReplaceAnnexId            String?             @unique @db.Uuid
 
-  name              String
-  number            Int
+  name              String?
+  number            Int?
   type              AnnexType
   annexText         AnnexText?
   annexWithArticles AnnexWithArticles?
@@ -334,7 +334,7 @@ model Annex {
   // Check: Ensures annex belongs to exactly one source (Resolution or ChangeReplaceAnnex)
   // Check: "number" > 0
   // Trigger: Automatically links/unlinks references pointing to this annex on creation or update
-
+  // TODO check: annex number must be present if parent is resolution
   referencedBy ReferenceAnnex[]
 
   @@unique([resolutionId, number])
@@ -396,9 +396,11 @@ model Table {
 }
 
 model TextReference {
-  id          String    @id @default(dbgenerated("uuidv7()")) @db.Uuid
-  textBefore  String
-  textAfter   String
+  id         String @id @default(dbgenerated("uuidv7()")) @db.Uuid
+  textBefore String
+  textAfter  String
+  text       String
+
   reference   Reference @relation(fields: [referenceId], references: [id])
   referenceId String    @unique @db.Uuid
 
@@ -555,6 +557,7 @@ enum ReferenceSourceType {
   CHANGE_ADD_ANNEX
   CHANGE_REPLACE_ANNEX
   CHANGE_MODIFY_TEXT_ANNEX
+  CHANGE_APPLY_MODIFICATIONS_ANNEX
 
   CHANGE_ADD_ARTICLE
   CHANGE_MODIFY_ARTICLE
@@ -569,14 +572,16 @@ model ResolutionUpload {
   id         String       @id @default(dbgenerated("uuidv7()")) @db.Uuid
   uploader   User         @relation(fields: [uploaderId], references: [id], onDelete: Cascade)
   uploaderId String       @db.Uuid
-  file       Asset        @relation(fields: [fileId], references: [id])
-  fileId     String       @unique @db.Uuid
+  file       Asset?       @relation(fields: [fileId], references: [id])
+  fileId     String?      @unique @db.Uuid
   status     UploadStatus
   errorMsg   String?
 
   resolution Resolution?
   uploadedAt DateTime    @default(now())
   // Check: can only have errorMsg if status is FAILED
+  // TODO check: if status is COMPLETED, resolutionId must be present
+  // TODO check: file must be present if and only if status is not COMPLETED
 }
 
 enum UploadStatus {
@@ -587,10 +592,9 @@ enum UploadStatus {
 }
 
 model User {
-  id                  String             @id @default(dbgenerated("uuidv7()")) @db.Uuid
-  uploadedResolutions Resolution[]       @relation(name: "Resolution_createdBy")
-  updatedResolutions  Resolution[]       @relation(name: "Resolution_lastUpdateBy")
-  uploads             ResolutionUpload[]
+  id                 String             @id @default(dbgenerated("uuidv7()")) @db.Uuid
+  updatedResolutions Resolution[]       @relation(name: "Resolution_lastUpdateBy")
+  uploads            ResolutionUpload[]
 
   name          String
   email         String   @unique
@@ -661,9 +665,10 @@ model Asset {
   size             Int
   originalFileName String
   createdAt        DateTime          @default(now())
+  deleted          Boolean           @default(false)
 
   // Check: "size" > 0
-  Resolution Resolution?
+  resolution Resolution?
 
   @@unique([bucket, path])
 }
