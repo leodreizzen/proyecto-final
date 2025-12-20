@@ -7,21 +7,77 @@ import {UploadWithFile, UploadWithProgressAndFile} from "@/lib/definitions/uploa
 import {ResolutionWithStatus} from "@/lib/definitions/resolutions";
 import {useEffect} from "react";
 import {AdminDashboardEvent} from "@/app/api/events/admin/dashboard/route";
+import {useQuery} from "@tanstack/react-query";
+import {unfinishedUploadsFetcher} from "@/app/api/admin/uploads/unfinished/fetcher";
+import {queryClient} from "@/lib/actions/queryClient";
+import {AdminUnfinishedUploadsReturnType} from "@/app/api/admin/uploads/unfinished/types";
 
-export function ResolutionsView({resolutions, pendingUploads, recentFinishedUploads, resCount}: {
+export function ResolutionsView({resolutions, pendingUploads: _pendingUploads, recentFinishedUploads, resCount}: {
     resolutions: ResolutionWithStatus[],
     pendingUploads: UploadWithProgressAndFile[],
     recentFinishedUploads: UploadWithFile[],
     resCount: number
 }) {
-
+    const {data: pendingUploads} = useQuery({
+        queryKey: ['pendingUploads'],
+        initialData: _pendingUploads,
+        queryFn: unfinishedUploadsFetcher
+    })
     useEffect(() => {
         const eventSource = new EventSource('/api/events/admin/dashboard');
-        eventSource.onmessage = (event) => {
+        eventSource.onmessage = async (event) => {
             const eventData = JSON.parse(event.data) as AdminDashboardEvent;
-        }
-        return () => {
-            eventSource.close();
+            if (eventData.scope === "UPLOADS_SPECIFIC") {
+                switch (eventData.data.type) {
+                    case "PROGRESS": {
+                        const uploadId = eventData.params.id;
+                        const progress = eventData.data.progress;
+
+                        queryClient.setQueryData<AdminUnfinishedUploadsReturnType>(["pendingUploads"], (oldData) => {
+                            if (!oldData) return oldData;
+                            return oldData.map((upload) => {
+                                if (upload.id === uploadId) {
+                                    return {
+                                        ...upload,
+                                        progress: progress
+                                    };
+                                } else
+                                    return upload;
+                            })
+                        });
+                        break;
+                    }
+                    case "STATUS": {
+                        const uploadId = eventData.params.id;
+                        const status = eventData.data.status;
+
+                        queryClient.setQueryData<AdminUnfinishedUploadsReturnType>(["pendingUploads"], (oldData) => {
+                            if (!oldData) return oldData;
+                            if(status === "COMPLETED" || status === "FAILED") {
+                                return oldData.filter((upload) => upload.id !== uploadId);
+                                // TODO add to recent finished uploads list
+                            }
+                            return oldData.map((upload) => {
+                                if (upload.id === uploadId) {
+                                    return {
+                                        ...upload,
+                                        status
+                                    };
+                                } else
+                                    return upload;
+                            })
+                        });
+                        break;
+                    }
+                }
+            }
+            else if (eventData.scope === "UPLOADS_GLOBAL") {
+                await queryClient.invalidateQueries({queryKey: ["pendingUploads"]});
+            }
+
+            return () => {
+                eventSource.close();
+            }
         }
     }, []);
 

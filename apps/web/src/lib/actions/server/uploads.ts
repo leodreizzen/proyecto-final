@@ -10,6 +10,7 @@ import {RESOLUTION_UPLOAD_BUCKET} from "@/lib/file-storage/assignments";
 import {createResolutionUpload, deleteFailedUpload} from "@/lib/data/uploads";
 import {revalidatePath} from "next/cache";
 import {createUploadJob} from "@/lib/jobs/resolutions";
+import {publishNewUpload} from "@repo/pubsub/publish/uploads";
 
 const GetResolutionUploadUrlSchema = z.object({
     fileName: z.string().min(1),
@@ -92,6 +93,7 @@ async function saveUploadedResolution(keyData: z.infer<typeof SaveUploadedResolu
                 error: "INTERNAL_ERROR"
             }
         }
+        publishNewUpload(createUploadRes.data.id).catch(console.error);
         revalidatePath("/admin")
         return {
             success: true

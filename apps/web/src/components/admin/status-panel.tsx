@@ -38,10 +38,19 @@ export function StatusPanel({unfinished, recent}: StatusPanelProps) {
                                     {job.file && <span
                                         className="text-sm font-medium text-foreground truncate">{job.file.originalFileName}</span>}
                                 </div>
-                                <Progress value={30} className="h-1.5 mb-2"/>
-                                <div className="flex items-center justify-between text-xs text-muted-foreground">
-                                    <span>{job.progress}%</span>
-                                </div>
+                                {
+                                    job.status === "PROCESSING" ? (
+                                        <>
+                                            <Progress value={job.progress * 100} className="h-1.5 mb-2"/>
+                                            <div
+                                                className="flex items-center justify-between text-xs text-muted-foreground">
+                                                <span>{(job.progress * 100).toFixed(0)}%</span>
+                                            </div>
+                                        </>
+                                    ) : job.status === "PENDING" ? (
+                                        <span className="text-xs text-muted-foreground mb-2 block">En cola...</span>
+                                    ) : null
+                                }
                             </div>
                         ))}
                     </div>
@@ -108,7 +117,8 @@ function RecentItemRow({item}: { item: UploadWithFile }) {
                             Error de procesamiento
                         </DialogTitle>
                         <DialogDescription className="pt-2">
-                            {item.file && <span className="font-mono text-sm block mb-2">{item.file.originalFileName}</span>}
+                            {item.file &&
+                                <span className="font-mono text-sm block mb-2">{item.file.originalFileName}</span>}
                             <span className="text-foreground">{item.errorMsg}</span>
                         </DialogDescription>
                     </DialogHeader>

@@ -2,6 +2,7 @@ import {checkResourcePermission} from "@/lib/auth/data-authorization";
 import prisma from "@/lib/prisma";
 import {UploadWithFile, UploadWithProgressAndFile} from "@/lib/definitions/uploads";
 import {RESOLUTION_UPLOAD_BUCKET} from "@/lib/file-storage/assignments";
+import {getUploadProgress} from "@/lib/jobs/resolutions";
 
 export async function fetchUnfinishedUploads(): Promise<UploadWithProgressAndFile[]> {
     await checkResourcePermission("upload", "read");
@@ -22,8 +23,7 @@ export async function fetchUnfinishedUploads(): Promise<UploadWithProgressAndFil
         }
     })
 
-
-    return uploads.map(upload => {
+    return await Promise.all(uploads.map(async upload => {
             let file = upload.file;
             if (upload.resolution) {
                 file = upload.resolution.originalFile;
@@ -31,10 +31,10 @@ export async function fetchUnfinishedUploads(): Promise<UploadWithProgressAndFil
             return {
                 ...upload,
                 file,
-                progress: 50 // TODO: actual progress
+                progress: await getUploadProgress(upload.id) ?? 0
             }
         }
-    )
+    ))
 }
 
 export async function fetchRecentFinishedUploads(): Promise<UploadWithFile[]> {
