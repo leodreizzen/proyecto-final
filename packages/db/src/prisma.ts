@@ -74,3 +74,4 @@ if (process.env.NODE_ENV === 'production') {
 
 export default prisma;
 export type TransactionPrismaClient = Parameters<Parameters<typeof prisma.$transaction>[0]>[0]
+export {PrismaClientKnownRequestError} from "@prisma/client/runtime/client";

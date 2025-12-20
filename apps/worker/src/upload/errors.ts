@@ -16,6 +16,21 @@ export class ResolutionRejectError extends Error {
     }
 }
 
+export class ResolutionExistsError extends Error {
+    id: { initial: string; number: number; year: number };
+    constructor(resolutionId: { initial: string; number: number; year: number }) {
+        super(`Resolution already exists: ${JSON.stringify(resolutionId)}`);
+        this.name = "ResolutionExistsError";
+        this.id = resolutionId;
+
+        Object.setPrototypeOf(this, ResolutionExistsError.prototype);
+
+        if (Error.captureStackTrace) {
+            Error.captureStackTrace(this, ResolutionExistsError);
+        }
+    }
+}
+
 //eslint-disable-next-line @typescript-eslint/no-explicit-any
 export function formatErrorMessage(e: any): string {
     let errorMessage;
@@ -32,6 +47,8 @@ export function formatErrorMessage(e: any): string {
                 return "Error desconocido";
             }
         }
+    } else if (e instanceof ResolutionExistsError) {
+        errorMessage = `Ya existe una resolución con este identificador (${e.id.initial}-${e.id.number}-${e.id.year})`;
     } else {
         errorMessage = "Error interno";
     }
