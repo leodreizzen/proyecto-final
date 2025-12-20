@@ -7,6 +7,12 @@ export class ResolutionRejectError extends Error {
         super(`Resolution rejected: ${JSON.stringify(error)}`);
         this.name = "ResolutionRejectError";
         this.error = error;
+
+        Object.setPrototypeOf(this, ResolutionRejectError.prototype);
+
+        if (Error.captureStackTrace) {
+            Error.captureStackTrace(this, ResolutionRejectError);
+        }
     }
 }
 
