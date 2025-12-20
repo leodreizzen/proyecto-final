@@ -8,7 +8,7 @@ import {textReferencesCreationInput} from "@/data/save-resolution/references";
 import {tablesCreationInput} from "@/data/save-resolution/tables";
 
 export async function saveParsedResolution(tx: TransactionPrismaClient, parsedRes: Parser.Resolution, upload: ResolutionUpload, publicAsset: Asset) {
-    await tx.resolution.create({
+    return tx.resolution.create({
         data: {
             initial: parsedRes.id.initial,
             number: parsedRes.id.number,

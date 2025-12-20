@@ -5,6 +5,7 @@ import ProgressReporter from "@/util/progress-reporter";
 import {fetchOldUnfinishedUploads, setUploadStatus} from "@/data/uploads";
 import {formatErrorMessage} from "@/upload/errors";
 import {assetsQueue} from "@/job-creation";
+import {publishUploadProgress, publishUploadStatus} from "@repo/pubsub/publish/uploads";
 
 if (!process.env.REDIS_URL) {
     throw new Error("REDIS_URL is not defined");
@@ -19,6 +20,7 @@ const worker = new Worker(
         console.log(`Processing job ${job.id} of type ${job.name}`);
         const progressReporter = new ProgressReporter({
             name: "root", onReport: (progress) => {
+                console.log(`Job ${job.id} progress: ${(progress * 100).toFixed(2)}%`);
                 job.updateProgress(progress);
             }
         })
@@ -39,10 +41,17 @@ worker.on('failed', async (job, err) => {
     console.error(`Job ${job?.id} has failed with error: ${err.message}`);
     if (job?.name == "resolutionUpload" && job.id) {
         await setUploadStatus({uploadId: job.id, status: "FAILED", errorMessage: formatErrorMessage(err.message)})
+        await publishUploadStatus(job.id, "FAILED");
     }
 });
 
-const scheduledWorker = new Worker(
+worker.on("progress", async (job) => {
+    if (job.id && job.name == "resolutionUpload" && job.id) {
+        await publishUploadProgress(job.id, job.progress as number);
+    }
+})
+
+const _scheduledWorker = new Worker(
     'scheduled',
     async (job) => {
         console.log(`Processing scheduled job ${job.id} of type ${job.name}`);

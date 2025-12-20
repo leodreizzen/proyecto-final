@@ -7,6 +7,8 @@ import {Asset} from "@repo/db/prisma/client";
 import {formatErrorMessage, ResolutionRejectError} from "@/upload/errors";
 import {fetchUploadWithFile, setUploadStatus} from "@/data/uploads";
 import ProgressReporter from "@/util/progress-reporter";
+import {publishUploadStatus} from "@repo/pubsub/publish/uploads";
+import {publishNewResolution} from "@repo/pubsub/publish/resolutions";
 
 export async function processResolutionUpload(job: Job, progressReporter: ProgressReporter) {
     if (!job.id)
@@ -25,6 +27,7 @@ export async function processResolutionUpload(job: Job, progressReporter: Progre
     const uploadId = upload.id;
     try {
         await setUploadStatus({uploadId, status: "PROCESSING"});
+        await publishUploadStatus(uploadId, "PROCESSING");
 
         if (!upload.file) {
             throw new Error(`Upload with ID ${uploadId} has no associated file`);
@@ -39,10 +42,13 @@ export async function processResolutionUpload(job: Job, progressReporter: Progre
         const createdFile = await makeResolutionFilePublic(upload.file, parsedResolution.id);
         publicFile = createdFile;
 
+        let res;
         await prisma.$transaction(async (tx) => {
-            await saveParsedResolution(tx, parsedResolution, upload, createdFile);
+            res = await saveParsedResolution(tx, parsedResolution, upload, createdFile);
             await setUploadStatus({uploadId, status: "COMPLETED", tx});
         });
+        await publishNewResolution(res!.id)
+        await publishUploadStatus(uploadId, "COMPLETED");
         saveDataReporter.reportProgress(1);
     } catch (e) {
         console.error("Error processing resolution upload:", e);

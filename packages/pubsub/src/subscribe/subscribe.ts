@@ -2,12 +2,12 @@ import {redisSubscriber} from "../redis.ts";
 import {MessageTypes, ParamsTypes, ChannelKey, CHANNELS} from "../channels/channels.ts";
 
 type SubscriptionEvent<K> = K extends ChannelKey
-    ? { subscription: K; data: MessageTypes[K], params: ParamsTypes[K] }
+    ? { channel: K; data: MessageTypes[K], params: ParamsTypes[K] }
     : never;
 
 type EventHandler<S extends ChannelKey> = (event:SubscriptionEvent<S>) => void
 
-export async function subscribe<S extends ChannelKey>(subscriptions: S[], onMessage: EventHandler<S>) {
+export async function subscribe<S extends ChannelKey>(subscriptions: readonly S[], onMessage: EventHandler<S>) {
     const patterns = subscriptions.map(sub => CHANNELS[sub].pattern);
     redisSubscriber.psubscribe(...patterns);
     redisSubscriber.on("pmessage", (pattern, channel, message) => {
@@ -22,7 +22,7 @@ export async function subscribe<S extends ChannelKey>(subscriptions: S[], onMess
         }
 
         onMessage({
-            subscription: subscriptionKey,
+            channel: subscriptionKey,
             data: JSON.parse(message),
             params: subscriptionInfo.getParams(channel)
         } as SubscriptionEvent<S>);
