@@ -1,0 +1,27 @@
+{
+  "extends": "@repo/typescript-config/base.json",
+  "compilerOptions": {
+    "plugins": [
+      {
+        "name": "next"
+      },
+    ],
+    "moduleResolution": "Bundler",
+    "lib": ["es2022"],
+    "allowImportingTsExtensions": true,
+    "noEmit": true,
+    "module": "ESNext",
+    "declaration": false,
+    "declarationMap": false
+  },
+  "include": [
+    "**/*.ts",
+    "**/*.tsx",
+    "next-env.d.ts",
+    "next.config.js",
+    ".next/types/**/*.ts"
+  ],
+  "exclude": [
+    "node_modules",
+  ],
+}

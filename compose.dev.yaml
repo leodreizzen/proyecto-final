@@ -14,6 +14,7 @@ services:
       - db-modules:/app/packages/db/node_modules
       - eslint-config-modules:/app/packages/eslint-config/node_modules
       - typescript-config-modules:/app/packages/typescript-config/node_modules
+      - pubsub-modules:/app/packages/pubsub/node_modules
       - /app/apps/web/.next
       - pnpm-store:/app/.pnpm-store
     command: ["turbo", "dev", "--filter", "web"]
@@ -57,6 +58,7 @@ services:
       - worker-modules:/app/apps/worker/node_modules
       - scripts-modules:/app/apps/scripts/node_modules
       - db-modules:/app/packages/db/node_modules
+      - pubsub-modules:/app/packages/pubsub/node_modules
       - eslint-config-modules:/app/packages/eslint-config/node_modules
       - typescript-config-modules:/app/packages/typescript-config/node_modules
       - pnpm-store:/app/.pnpm-store
@@ -196,6 +198,7 @@ services:
       - web-modules:/app/apps/web/node_modules
       - worker-modules:/app/apps/worker/node_modules
       - scripts-modules:/app/apps/scripts/node_modules
+      - pubsub-modules:/app/packages/pubsub/node_modules
       - db-modules:/app/packages/db/node_modules
       - eslint-config-modules:/app/packages/eslint-config/node_modules
       - typescript-config-modules:/app/packages/typescript-config/node_modules
@@ -209,6 +212,7 @@ volumes:
   web-modules:
   worker-modules:
   scripts-modules:
+  pubsub-modules:
   db-modules:
   eslint-config-modules:
   typescript-config-modules:

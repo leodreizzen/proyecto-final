@@ -11,6 +11,8 @@
     "check-types": "tsc --noEmit"
   },
   "dependencies": {
+    "@repo/db": "workspace:*",
+    "@repo/pubsub": "workspace:*",
     "@aws-sdk/client-s3": "^3.953.0",
     "@aws-sdk/s3-presigned-post": "^3.953.0",
     "@aws-sdk/s3-request-presigner": "^3.953.0",
@@ -44,7 +46,6 @@
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3.3.3",
-    "@repo/db": "workspace:*",
     "@repo/eslint-config": "workspace:*",
     "@repo/typescript-config": "workspace:*",
     "@types/node": "^22.19.1",

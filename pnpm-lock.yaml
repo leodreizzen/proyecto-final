@@ -103,6 +103,12 @@ importers:
       '@radix-ui/react-slot':
         specifier: ^1.2.4
         version: 1.2.4(@types/react@19.1.0)(react@19.2.1)
+      '@repo/db':
+        specifier: workspace:*
+        version: link:../../packages/db
+      '@repo/pubsub':
+        specifier: workspace:*
+        version: link:../../packages/pubsub
       '@tailwindcss/postcss':
         specifier: ^4.1.17
         version: 4.1.17
@@ -167,9 +173,6 @@ importers:
       '@eslint/eslintrc':
         specifier: ^3.3.3
         version: 3.3.3
-      '@repo/db':
-        specifier: workspace:*
-        version: link:../../packages/db
       '@repo/eslint-config':
         specifier: workspace:*
         version: link:../../packages/eslint-config
@@ -255,6 +258,9 @@ importers:
       '@repo/eslint-config':
         specifier: workspace:*
         version: link:../../packages/eslint-config
+      '@repo/pubsub':
+        specifier: workspace:*
+        version: link:../../packages/pubsub
       '@repo/typescript-config':
         specifier: workspace:*
         version: link:../../packages/typescript-config
@@ -358,6 +364,22 @@ importers:
       typescript-eslint:
         specifier: ^8.40.0
         version: 8.46.0(eslint@9.37.0(jiti@2.6.1))(typescript@5.9.2)
+
+  packages/pubsub:
+    dependencies:
+      '@repo/db':
+        specifier: workspace:*
+        version: link:../db
+      '@repo/typescript-config':
+        specifier: workspace:*
+        version: link:../typescript-config
+      ioredis:
+        specifier: ^5.8.2
+        version: 5.8.2
+    devDependencies:
+      typescript:
+        specifier: ^5.9.3
+        version: 5.9.3
 
   packages/typescript-config: {}
 

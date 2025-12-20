@@ -1,0 +1,39 @@
+{
+  "name": "@repo/pubsub",
+  "version": "1.0.0",
+  "private": true,
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "type": "module",
+  "exports": {
+    "./channels": {
+      "require": "./src/channels/channels.ts",
+      "import": "./src/channels/channels.ts",
+      "types": "./src/channels/channels.ts"
+    },
+    "./publish/*": {
+      "require": "./src/publish/events/*.ts",
+      "import": "./src/publish/events/*.ts",
+      "types": "./src/publish/events/*.ts"
+    },
+    "./subscribe": {
+      "require": "./src/subscribe/subscribe.ts",
+      "import": "./src/subscribe/subscribe.ts",
+      "types": "./src/subscribe/subscribe.ts"
+    }
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@repo/db": "workspace:*",
+    "@repo/typescript-config": "workspace:*",
+    "ioredis": "^5.8.2"
+  },
+  "devDependencies": {
+    "typescript": "^5.9.3"
+  }
+}
