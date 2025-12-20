@@ -40,8 +40,9 @@ worker.on('completed', (job) => {
 worker.on('failed', async (job, err) => {
     console.error(`Job ${job?.id} has failed with error: ${err.message}`);
     if (job?.name == "resolutionUpload" && job.id) {
-        await setUploadStatus({uploadId: job.id, status: "FAILED", errorMessage: formatErrorMessage(err.message)})
-        await publishUploadStatus(job.id, "FAILED");
+        const errorMessage = formatErrorMessage(err.message);
+        await setUploadStatus({uploadId: job.id, status: "FAILED", errorMessage})
+        await publishUploadStatus(job.id, {status: "FAILED", errorMessage});
     }
 });
 

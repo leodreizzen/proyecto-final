@@ -1,13 +1,17 @@
 import {UploadStatus} from "@repo/db/prisma/enums";
-import {ChannelsConfig} from "./types.ts";
+import {ChannelsConfig} from "./types";
 
 type UploadMessage = {
     type: "PROGRESS",
     progress: number,
+} | ({
+    type: "STATUS",
+    status: Exclude<UploadStatus, "FAILED">,
 } | {
     type: "STATUS",
-    status: UploadStatus,
-}
+    status: "FAILED",
+    errorMessage: string,
+})
 
 type GlobalUploadMessage = {
     type: "NEW_UPLOAD",

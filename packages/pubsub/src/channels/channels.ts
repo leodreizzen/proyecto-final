@@ -1,5 +1,5 @@
-import {UPLOADS_CHANNELS, UploadsMessages, UploadsParams} from "./uploads.ts";
-import {ResolutionMessages, ResolutionParams, RESOLUTIONS_CHANNELS} from "./resolutions.ts";
+import {UPLOADS_CHANNELS, UploadsMessages, UploadsParams} from "./uploads";
+import {ResolutionMessages, ResolutionParams, RESOLUTIONS_CHANNELS} from "./resolutions";
 
 export type ChannelKey = keyof typeof CHANNELS;
 export type MessageTypes = UploadsMessages & ResolutionMessages;

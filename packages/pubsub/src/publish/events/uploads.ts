@@ -1,5 +1,5 @@
 import {UploadStatus} from "@repo/db/prisma/enums";
-import {publish} from "../publish.ts";
+import {publish} from "../publish";
 
 export async function publishUploadProgress(uploadId: string, progress: number) {
     await publish("UPLOADS_SPECIFIC", {
@@ -8,10 +8,17 @@ export async function publishUploadProgress(uploadId: string, progress: number) 
     }, {id: uploadId});
 }
 
-export async function publishUploadStatus(uploadId: string, status: UploadStatus) {
+type UploadStatusData = {
+    status: Exclude<UploadStatus, "FAILED">,
+} | {
+    status: "FAILED",
+    errorMessage: string,
+}
+
+export async function publishUploadStatus(uploadId: string, data: UploadStatusData) {
     await publish("UPLOADS_SPECIFIC", {
         type: "STATUS",
-        status: status
+        ...data
     }, {id: uploadId});
 }
 

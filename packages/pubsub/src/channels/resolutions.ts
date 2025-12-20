@@ -1,4 +1,4 @@
-import {ChannelsConfig} from "./types.ts";
+import {ChannelsConfig} from "./types";
 
 export type GlobalResolutionMessage = {
     type: "NEW",

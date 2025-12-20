@@ -27,7 +27,7 @@ export async function processResolutionUpload(job: Job, progressReporter: Progre
     const uploadId = upload.id;
     try {
         await setUploadStatus({uploadId, status: "PROCESSING"});
-        await publishUploadStatus(uploadId, "PROCESSING");
+        await publishUploadStatus(uploadId, {status: "PROCESSING"});
 
         if (!upload.file) {
             throw new Error(`Upload with ID ${uploadId} has no associated file`);
@@ -48,7 +48,7 @@ export async function processResolutionUpload(job: Job, progressReporter: Progre
             await setUploadStatus({uploadId, status: "COMPLETED", tx});
         });
         await publishNewResolution(res!.id)
-        await publishUploadStatus(uploadId, "COMPLETED");
+        await publishUploadStatus(uploadId, {status: "COMPLETED"});
         saveDataReporter.reportProgress(1);
     } catch (e) {
         console.error("Error processing resolution upload:", e);

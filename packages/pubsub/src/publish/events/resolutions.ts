@@ -1,4 +1,4 @@
-import {publish} from "../publish.ts";
+import {publish} from "../publish";
 
 export async function publishResolutionUpdate(resolutionId: string) {
     await publish("RESOLUTIONS_SPECIFIC", {

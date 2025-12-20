@@ -1,5 +1,5 @@
-import {redisSubscriber} from "../redis.ts";
-import {MessageTypes, ParamsTypes, ChannelKey, CHANNELS} from "../channels/channels.ts";
+import {redisSubscriber} from "../redis";
+import {MessageTypes, ParamsTypes, ChannelKey, CHANNELS} from "../channels/channels";
 
 type SubscriptionEvent<K> = K extends ChannelKey
     ? { channel: K; data: MessageTypes[K], params: ParamsTypes[K] }

@@ -1,5 +1,5 @@
-import {ChannelKey, CHANNELS, MessageTypes, ParamsTypes} from "../channels/channels.ts";
-import {redisPublisher} from "../redis.ts";
+import {ChannelKey, CHANNELS, MessageTypes, ParamsTypes} from "../channels/channels";
+import {redisPublisher} from "../redis";
 
 type PublishArgs<K extends ChannelKey> =
     ParamsTypes[K] extends Record<string, never>
