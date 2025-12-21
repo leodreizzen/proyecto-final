@@ -1,0 +1,38 @@
+import {resolutionsFetcher} from "@/app/api/admin/resolutions/fetcher";
+import {queryOptions} from "@tanstack/react-query";
+import {recentlyFinisheddUploadsFetcher} from "@/app/api/admin/uploads/recently-finished/fetcher";
+import {unfinishedUploadsFetcher} from "@/app/api/admin/uploads/unfinished/fetcher";
+import {resolutionCountsFetcher} from "@/app/api/admin/resolutions/counts/fetcher";
+
+export const resolutionKeys = {
+    all: ['resolutions'] as const,
+    list: () => [...resolutionKeys.all, 'list'] as const,
+    counts: () => [...resolutionKeys.all, 'counts'] as const,
+    details: (id: string) => [...resolutionKeys.all, 'details', id] as const,
+};
+
+export const uploadKeys = {
+    all: ['uploads'] as const,
+    recentFinished: () => [...uploadKeys.all, 'recentFinished'] as const,
+    unfinished: () => [...uploadKeys.all, 'unfinished'] as const,
+}
+
+export const resolutionsQuery = queryOptions({
+    queryKey: resolutionKeys.list(),
+    queryFn: resolutionsFetcher
+})
+
+export const recentFinishedUploadsQuery = queryOptions({
+    queryKey: uploadKeys.recentFinished(),
+    queryFn: recentlyFinisheddUploadsFetcher,
+});
+
+export const pendingUploadsQuery = queryOptions({
+    queryKey: uploadKeys.unfinished(),
+    queryFn: unfinishedUploadsFetcher,
+});
+
+export const resolutionCountsQuery = queryOptions({
+    queryKey: resolutionKeys.counts(),
+    queryFn: resolutionCountsFetcher,
+});

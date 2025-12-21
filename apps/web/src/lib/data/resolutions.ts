@@ -1,7 +1,7 @@
 import "server-only"
 import prisma from "@/lib/prisma";
 import {checkResourcePermission} from "@/lib/auth/data-authorization";
-import {ResolutionWithStatus} from "@/lib/definitions/resolutions";
+import {ResolutionCounts, ResolutionWithStatus} from "@/lib/definitions/resolutions";
 import {createDeleteAssetJob} from "@/lib/jobs/assets";
 
 export async function fetchResolutionsWithStatus(): Promise<ResolutionWithStatus[]> {
@@ -15,9 +15,18 @@ export async function fetchResolutionsWithStatus(): Promise<ResolutionWithStatus
     }));
 }
 
-export async function countResolutions() {
+export async function countResolutions(): Promise<ResolutionCounts> {
     await checkResourcePermission("resolution", "read");
-    return prisma.resolution.count();
+    const totalCount = await prisma.resolution.count();
+    const okCount = 0; //TODO
+    const missingCount = 0; //TODO
+    const inconsistentCount = 0; //TODO
+    return {
+        ok: okCount,
+        total: totalCount,
+        missingRef: missingCount,
+        inconsistent: inconsistentCount
+    }
 }
 
 export async function deleteResolutionById(resolutionId: string) {

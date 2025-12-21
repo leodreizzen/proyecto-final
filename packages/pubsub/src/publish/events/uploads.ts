@@ -8,7 +8,7 @@ export async function publishUploadProgress(uploadId: string, progress: number) 
     }, {id: uploadId});
 }
 
-type UploadStatusData = {
+export type UploadStatusData = {
     status: Exclude<UploadStatus, "FAILED">,
 } | {
     status: "FAILED",
