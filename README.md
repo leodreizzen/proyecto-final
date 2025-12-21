@@ -3,6 +3,8 @@ Requirements:
  - Docker
  - dotenvx
 
+For Windows development, it is recommended to use WSL2 with a Linux distribution, and clone the repository inside it. This allows to use file watching instead of polling.
+
 1. Clone this repository
 2. Install precommit hook:
 ``` bash
@@ -20,8 +22,9 @@ Windows (PowerShell):
    dotenvx decrypt -f .env.development --stdout | Set-Content .env -Encoding UTF8
 ```
 
+5. If using windows (outside of WSL), set `POLLING=true` in the .env file
 
-5. Start the Docker containers:
+6. Start the Docker containers:
 ``` bash
     docker compose -f compose.dev.yaml up -d --build
 ```
@@ -37,7 +40,7 @@ Direct connection to web server: http://localhost:3000
 Prisma studio: http://localhost:5555
 
 ## Commands
-To run commands inside a container (ej `worker`, `web`) , use:
+To run commands inside a container (e.g. `worker`, `web`) , use:
 ``` bash
     docker compose exec <container> <command>
 ```

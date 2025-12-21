@@ -34,6 +34,7 @@ services:
       S3_PUBLIC_BUCKET_NAME: "public-assets"
       S3_INTERNAL_BUCKET_NAME: "internal-assets"
       PUBLIC_S3_ENDPOINT: "http://localhost:8080/s3-api"
+      POLLING: "${POLLING}"
     depends_on:
       garage-init:
         condition: service_completed_successfully

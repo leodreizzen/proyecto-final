@@ -4,7 +4,7 @@
   "type": "module",
   "private": true,
   "scripts": {
-    "dev": "NODE_OPTIONS='--inspect=0.0.0.0:9229' next dev --webpack --port 3000",
+    "dev": "sh -c \"NODE_OPTIONS='--inspect=0.0.0.0:9229' next dev $(echo $POLLING | grep -iq '^true$' && echo '--webpack' || echo '--turbopack') --port 3000\"",
     "build": "next build",
     "start": "next start",
     "lint": "eslint --max-warnings 0 .",

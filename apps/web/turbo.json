@@ -6,6 +6,7 @@
   "tasks": {
     "dev": {
       "env": [
+        "POLLING",
         "DATABASE_URL",
         "BETTER_AUTH_SECRET",
         "BETTER_AUTH_URL",
