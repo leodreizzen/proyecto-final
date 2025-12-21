@@ -1,14 +1,17 @@
-export async function uploadFileToSignedURL(signedURL: string, file: File) {
-    const response = await fetch(signedURL, {
-        method: 'PUT',
+import axios from 'axios';
+
+export async function uploadFileToSignedURL(signedURL: string, file: File, {onProgress}: {
+    onProgress?: (progress: number) => void
+} = {}): Promise<void> {
+    await axios.put(signedURL, file, {
         headers: {
             'Content-Type': file.type,
-            'Content-Length': file.size.toString(),
         },
-        body: file,
+        onUploadProgress: (progressEvent) => {
+            if (onProgress && progressEvent.total) {
+                onProgress(progressEvent.loaded / progressEvent.total);
+            }
+        }
     });
-    if (!response.ok) {
-        throw new Error(`Failed to upload file: ${response.statusText}`);
-    }
-    return response;
 }
+

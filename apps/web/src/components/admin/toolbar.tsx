@@ -1,9 +1,10 @@
 "use client"
+import { toast } from "sonner"
 
 import {Search, Upload} from "lucide-react"
 import {Input} from "@/components/ui/input"
 import {Button} from "@/components/ui/button"
-import {useState} from "react";
+import {useEffect, useState} from "react";
 import UploadModal from "@/components/admin/upload-modal";
 import {uploadResolutions} from "@/lib/actions/client/uploads";
 
@@ -14,7 +15,6 @@ interface ToolbarProps {
 
 export function Toolbar({searchQuery, onSearchChange}: ToolbarProps) {
     const [uploadModalOpen, setUploadModalOpen] = useState(false);
-
     return (
         <div className="flex flex-col-reverse sm:flex-row gap-3 mb-4">
             {/* Search */}
