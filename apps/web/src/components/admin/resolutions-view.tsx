@@ -67,7 +67,7 @@ export function ResolutionsView({
             </div>
 
             {/* Status panel - Right column */}
-            <div className="xl:w-80 2xl:w-96 border-t xl:border-t-0 xl:border-l border-border bg-card/50">
+            <div className="h-1/2 xl:h-auto xl:w-80 2xl:w-96 border-t xl:border-t-0 xl:border-l border-border bg-card/50">
                 <StatusPanel unfinished={pendingUploads} recent={recentFinishedUploads}/>
             </div>
         </div>

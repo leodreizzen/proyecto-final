@@ -21,9 +21,9 @@ interface StatusPanelProps {
 
 export function StatusPanel({unfinished, recent}: StatusPanelProps) {
     return (
-        <div className="flex flex-col h-full max-h-[calc(100vh-4rem)] xl:max-h-screen">
+        <div className="flex flex-col h-full xl:max-h-screen overflow-hidden">
             {/* Processing queue - Top section*/}
-            <div className="flex-[3] min-h-0 p-4 border-b border-border overflow-auto">
+            <div className="flex-[2] xl:flex-[3] min-h-0 p-4 border-b border-border overflow-auto">
                 <h3 className="text-sm font-semibold text-foreground mb-4 flex items-center gap-2">
                     {unfinished.length > 0 && <Loader2 className={"h-4 w-4 animate-spin text-status-info"}/>}
                     En proceso
@@ -55,12 +55,12 @@ export function StatusPanel({unfinished, recent}: StatusPanelProps) {
                         ))}
                     </div>
                 ) : (
-                    <p className="text-sm text-muted-foreground text-center py-8">No hay archivos en proceso</p>
+                    <p className="text-sm text-muted-foreground lg:text-center xl:py-8">No hay archivos en proceso</p>
                 )}
             </div>
 
             {/* Recent activity - Bottom section */}
-            <div className="flex-[2] min-h-0 p-4 overflow-auto">
+            <div className="flex-[2] flex flex-col min-h-0 p-4">
                 <div className="flex items-center justify-between mb-4">
                     <h3 className="text-sm font-semibold text-foreground">Actividad reciente</h3>
                     <button className="text-xs text-primary hover:underline flex items-center gap-0.5">
@@ -69,7 +69,7 @@ export function StatusPanel({unfinished, recent}: StatusPanelProps) {
                     </button>
                 </div>
 
-                <div className="space-y-2">
+                <div className="min-h-0 flex-1 space-y-2 overflow-auto">
                     {recent.map((item) => (
                         <RecentItemRow key={item.id} item={item}/>
                     ))}

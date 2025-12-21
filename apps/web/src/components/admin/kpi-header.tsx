@@ -20,7 +20,7 @@ const KPI_CONFIG: {
 }[] = [
   {
     key: "total",
-    label: "Resoluciones subidas",
+    label: "Subidas",
     icon: FileCheck,
     color: "text-status-success",
     bg: "bg-status-success/10",
@@ -32,15 +32,15 @@ const KPI_CONFIG: {
 
 export function KpiHeader({ stats }: KpiHeaderProps) {
   return (
-    <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-6">
+    <div className="flex gap-4 lg:gap-4 xl:gap-5 mb-4 md:mb-6">
       {KPI_CONFIG.map((kpi) => (
-        <div key={kpi.key} className="flex items-center gap-3 p-4 rounded-xl bg-card border border-border">
+        <div key={kpi.key} className="flex-1 min-w-0 flex max-sm:flex-col items-center gap-2 sm:gap-3 p-2 sm:p-3 md:p-4 rounded-xl bg-card border border-border">
           <div className={cn("flex h-10 w-10 items-center justify-center rounded-lg", kpi.bg)}>
             <kpi.icon className={cn("h-5 w-5", kpi.color)} />
           </div>
-          <div>
-            <p className="text-2xl font-bold text-foreground">{stats[kpi.key]}</p>
-            <p className="text-xs text-muted-foreground">{kpi.label}</p>
+          <div className="flex flex-col max-sm:flex-col-reverse max-sm:w-full max-sm:gap-1">
+            <p className="text-xl md:text-2xl font-bold text-foreground max-sm:text-center">{stats[kpi.key]}</p>
+            <p className="text-xs text-muted-foreground text-center truncate">{kpi.label}</p>
           </div>
         </div>
       ))}
