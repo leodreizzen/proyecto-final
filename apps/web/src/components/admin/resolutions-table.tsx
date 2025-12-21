@@ -1,6 +1,6 @@
 "use client"
 
-import {FileText, ExternalLink, Trash2, Check, AlertTriangle, AlertCircle} from "lucide-react"
+import {FileText, ExternalLink, Trash2, Check, AlertTriangle, AlertCircle, Loader2} from "lucide-react"
 import {cn, formatResolutionId} from "@/lib/utils"
 import {Button} from "@/components/ui/button"
 import {
@@ -15,6 +15,8 @@ import {
     AlertDialogTrigger,
 } from "@/components/ui/alert-dialog"
 import {ResolutionWithStatus} from "@/lib/definitions/resolutions";
+import {useMutation} from "@tanstack/react-query";
+import {deleteResolution as deleteResolutionAction} from "@/lib/actions/server/resolutions";
 
 interface ResolutionsTableProps {
     resolutions: ResolutionWithStatus[]
@@ -39,8 +41,24 @@ const statusConfig = {
 }
 
 export function ResolutionsTable({resolutions}: ResolutionsTableProps) {
-    function onDelete(id: string) {
-        console.log("Delete resolution", id)
+    const {mutate: deleteResolution, status: deleteStatus, variables: deleteVariables} = useMutation({
+        mutationFn: async ({id}: { id: string }) => {
+            const res = await deleteResolutionAction({id})
+            if (!res.success) {
+                throw new Error();
+            }
+        },
+        onError: (_error, {id}) => {
+            // TODO toast
+            console.log(`error deleting resolution ${id}`)
+        }
+    })
+
+    const deleting = deleteStatus === "pending";
+    const deleteId = deleteVariables?.id;
+
+    function handleDelete(resolutionId: string) {
+        deleteResolution({id: resolutionId});
     }
 
     return (
@@ -97,39 +115,49 @@ export function ResolutionsTable({resolutions}: ResolutionsTableProps) {
                                             variant="ghost"
                                             size="icon"
                                             className="h-8 w-8 text-muted-foreground hover:text-foreground"
+                                            disabled={deleting}
                                         >
                                             <ExternalLink className="h-4 w-4"/>
                                         </Button>
-                                        <AlertDialog>
-                                            <AlertDialogTrigger asChild>
-                                                <Button
-                                                    variant="ghost"
-                                                    size="icon"
-                                                    className="h-8 w-8 text-muted-foreground hover:text-destructive"
-                                                >
-                                                    <Trash2 className="h-4 w-4"/>
-                                                </Button>
-                                            </AlertDialogTrigger>
-                                            <AlertDialogContent>
-                                                <AlertDialogHeader>
-                                                    <AlertDialogTitle>¿Eliminar resolución?</AlertDialogTitle>
-                                                    <AlertDialogDescription>
-                                                        Esta acción no se puede deshacer. Se eliminará permanentemente
-                                                        la resolución{" "}
-                                                        <span className="font-mono font-semibold">{formatResolutionId(resolution)}</span>.
-                                                    </AlertDialogDescription>
-                                                </AlertDialogHeader>
-                                                <AlertDialogFooter>
-                                                    <AlertDialogCancel>Cancelar</AlertDialogCancel>
-                                                    <AlertDialogAction
-                                                        onClick={() => onDelete(resolution.id)}
-                                                        className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+                                        {(deleting && deleteId === resolution.id) ? (
+                                            <div className="flex items-center justify-center h-8 w-8">
+                                                <Loader2 className={"h-4 w-4 animate-spin text-status-info"}/>
+                                            </div>
+                                        ) : (
+                                            <AlertDialog>
+                                                <AlertDialogTrigger asChild>
+                                                    <Button
+                                                        variant="ghost"
+                                                        size="icon"
+                                                        className="h-8 w-8 text-muted-foreground hover:text-destructive"
+                                                        disabled={deleting}
                                                     >
-                                                        Eliminar
-                                                    </AlertDialogAction>
-                                                </AlertDialogFooter>
-                                            </AlertDialogContent>
-                                        </AlertDialog>
+                                                        <Trash2 className="h-4 w-4"/>
+                                                    </Button>
+                                                </AlertDialogTrigger>
+                                                <AlertDialogContent>
+                                                    <AlertDialogHeader>
+                                                        <AlertDialogTitle>¿Eliminar resolución?</AlertDialogTitle>
+                                                        <AlertDialogDescription>
+                                                            Esta acción no se puede deshacer. Se eliminará
+                                                            permanentemente
+                                                            la resolución{" "}
+                                                            <span
+                                                                className="font-mono font-semibold">{formatResolutionId(resolution)}</span>.
+                                                        </AlertDialogDescription>
+                                                    </AlertDialogHeader>
+                                                    <AlertDialogFooter>
+                                                        <AlertDialogCancel>Cancelar</AlertDialogCancel>
+                                                        <AlertDialogAction
+                                                            onClick={() => deleteResolution({id: resolution.id})}
+                                                            className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+                                                        >
+                                                            Eliminar
+                                                        </AlertDialogAction>
+                                                    </AlertDialogFooter>
+                                                </AlertDialogContent>
+                                            </AlertDialog>
+                                        )}
                                     </div>
                                 </td>
                             </tr>
@@ -164,12 +192,16 @@ export function ResolutionsTable({resolutions}: ResolutionsTableProps) {
                 </span>
                             </div>
                             <div className="flex items-center gap-1">
-                                <Button variant="ghost" size="icon" className="h-8 w-8 text-muted-foreground">
+                                <Button variant="ghost" size="icon" className="h-8 w-8 text-muted-foreground" disabled={deleting}>
                                     <ExternalLink className="h-4 w-4"/>
                                 </Button>
-                                <AlertDialog>
+                                {(deleting && deleteId === resolution.id) ?
+                                        <div className="flex items-center justify-center h-8 w-8">
+                                            <Loader2 className={"h-4 w-4 animate-spin text-status-info"}/>
+                                        </div>
+                                    : <AlertDialog>
                                     <AlertDialogTrigger asChild>
-                                        <Button variant="ghost" size="icon" className="h-8 w-8 text-muted-foreground">
+                                        <Button variant="ghost" size="icon" className="h-8 w-8 text-muted-foreground" disabled={deleting}>
                                             <Trash2 className="h-4 w-4"/>
                                         </Button>
                                     </AlertDialogTrigger>
@@ -179,20 +211,21 @@ export function ResolutionsTable({resolutions}: ResolutionsTableProps) {
                                             <AlertDialogDescription>
                                                 Esta acción no se puede deshacer. Se eliminará permanentemente la
                                                 resolución{" "}
-                                                <span className="font-mono font-semibold">{formatResolutionId(resolution)}</span>.
+                                                <span
+                                                    className="font-mono font-semibold">{formatResolutionId(resolution)}</span>.
                                             </AlertDialogDescription>
                                         </AlertDialogHeader>
                                         <AlertDialogFooter>
                                             <AlertDialogCancel>Cancelar</AlertDialogCancel>
                                             <AlertDialogAction
-                                                onClick={() => onDelete(resolution.id)}
+                                                onClick={() => handleDelete(resolution.id)}
                                                 className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
                                             >
                                                 Eliminar
                                             </AlertDialogAction>
                                         </AlertDialogFooter>
                                     </AlertDialogContent>
-                                </AlertDialog>
+                                </AlertDialog>}
                             </div>
                         </div>
                     )
