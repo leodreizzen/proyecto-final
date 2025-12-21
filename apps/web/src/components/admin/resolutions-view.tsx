@@ -8,11 +8,8 @@ import {ResolutionWithStatus} from "@/lib/definitions/resolutions";
 import {useEffect} from "react";
 import {AdminDashboardEvent} from "@/app/api/events/admin/dashboard/route";
 import {useQuery} from "@tanstack/react-query";
-import {unfinishedUploadsFetcher} from "@/app/api/admin/uploads/unfinished/fetcher";
 import {queryClient} from "@/lib/actions/queryClient";
-import {AdminUnfinishedUploadsReturnType} from "@/app/api/admin/uploads/unfinished/types";
-import {resolutionsFetcher} from "@/app/api/admin/resolutions/fetcher";
-import {recentlyFinisheddUploadsFetcher} from "@/app/api/admin/uploads/recently-finished/fetcher";
+import {pendingUploadsQuery, recentFinishedUploadsQuery, resolutionsQuery} from "@/lib/queries/admin";
 
 export function ResolutionsView({
                                     resolutions: _resolutions,
@@ -26,21 +23,18 @@ export function ResolutionsView({
     resCount: number
 }) {
     const {data: pendingUploads} = useQuery({
-        queryKey: ['pendingUploads'],
-        initialData: _pendingUploads,
-        queryFn: unfinishedUploadsFetcher
+        ...pendingUploadsQuery,
+        initialData: _pendingUploads
     })
 
     const {data: resolutions} = useQuery({
-        queryKey: ['resolutions'],
-        initialData: _resolutions,
-        queryFn: resolutionsFetcher
+        ...resolutionsQuery,
+        initialData: _resolutions
     });
 
     const {data: recentFinishedUploads} = useQuery({
-        queryKey: ['recentFinishedUploads'],
-        initialData: _recentFinishedUploads,
-        queryFn: recentlyFinisheddUploadsFetcher
+        ...recentFinishedUploadsQuery,
+        initialData: _recentFinishedUploads
     });
 
     useEffect(() => {
@@ -53,7 +47,7 @@ export function ResolutionsView({
                         const uploadId = eventData.params.id;
                         const progress = eventData.data.progress;
 
-                        queryClient.setQueryData<AdminUnfinishedUploadsReturnType>(["pendingUploads"], (oldData) => {
+                        queryClient.setQueryData(pendingUploadsQuery.queryKey, (oldData) => {
                             if (!oldData) return oldData;
                             return oldData.map((upload) => {
                                 if (upload.id === uploadId) {
@@ -71,10 +65,10 @@ export function ResolutionsView({
                         const uploadId = eventData.params.id;
                         const status = eventData.data.status;
 
-                        const uploadToUpdate = queryClient.getQueryData<AdminUnfinishedUploadsReturnType>(["pendingUploads"])?.find(u => u.id === uploadId);
+                        const uploadToUpdate = queryClient.getQueryData(pendingUploadsQuery.queryKey)?.find(u => u.id === uploadId);
                         if (!uploadToUpdate) break;
 
-                        queryClient.setQueryData<AdminUnfinishedUploadsReturnType>(["pendingUploads"], (oldData) => {
+                        queryClient.setQueryData(pendingUploadsQuery.queryKey, (oldData) => {
                             if (!oldData) return oldData;
                             if (status === "COMPLETED" || status === "FAILED") {
                                 return oldData.filter((upload) => upload.id !== uploadId);
@@ -96,7 +90,7 @@ export function ResolutionsView({
                                 errorMsg: eventData.data.status === "FAILED" ? eventData.data.errorMessage : null
                             } satisfies typeof uploadToUpdate;
 
-                            queryClient.setQueryData<typeof recentFinishedUploads>(["recentFinishedUploads"], (oldData) => {
+                            queryClient.setQueryData(recentFinishedUploadsQuery.queryKey, (oldData) => {
                                 if (!oldData) return oldData;
                                 return [finishedUpload, ...oldData].slice(0, 10); // Keep only the latest 10
                             });
@@ -107,11 +101,11 @@ export function ResolutionsView({
             } else if (eventData.scope === "UPLOADS_GLOBAL") {
                 await queryClient.invalidateQueries({queryKey: ["pendingUploads"]});
             } else if (eventData.scope === "RESOLUTIONS_GLOBAL") {
-                await queryClient.invalidateQueries({queryKey: ["resolutions"]});
+                await queryClient.invalidateQueries(resolutionsQuery);
             } else if (eventData.scope === "RESOLUTIONS_SPECIFIC") {
                 if (eventData.data.type === "UPDATE") {
-                    if (queryClient.getQueryData<typeof resolutions>(["resolutions"])?.find(res => res.id === eventData.params.id)) {
-                        await queryClient.invalidateQueries({queryKey: ["resolutions"]});
+                    if (queryClient.getQueryData(resolutionsQuery.queryKey)?.find(res => res.id === eventData.params.id)) {
+                        await queryClient.invalidateQueries(resolutionsQuery);
                     }
                 }
             }
