@@ -17,6 +17,7 @@ import {
 import {ResolutionWithStatus} from "@/lib/definitions/resolutions";
 import {useMutation} from "@tanstack/react-query";
 import {deleteResolution as deleteResolutionAction} from "@/lib/actions/server/resolutions";
+import {toast} from "sonner";
 
 interface ResolutionsTableProps {
     resolutions: ResolutionWithStatus[]
@@ -48,8 +49,11 @@ export function ResolutionsTable({resolutions}: ResolutionsTableProps) {
                 throw new Error();
             }
         },
+        onSuccess: () => {
+            toast.success("Resolución eliminada correctamente");
+        },
         onError: (_error, {id}) => {
-            // TODO toast
+            toast.error("Error al eliminar resolución");
             console.log(`error deleting resolution ${id}`)
         }
     })
