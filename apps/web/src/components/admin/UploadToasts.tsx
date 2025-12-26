@@ -1,6 +1,6 @@
 import {Progress} from "@/components/ui/progress";
 import {toast} from "sonner";
-import {AlertCircle, CheckCircle2, FileX2} from "lucide-react";
+import {FileX2} from "lucide-react";
 
 function UploadToasts({currentFile}: {
     currentFile: { index: number, name: string, progress: number }
