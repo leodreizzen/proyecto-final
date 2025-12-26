@@ -24,6 +24,22 @@ COPY --from=prepare /app/out/full/ .
 # ARG TURBO_TEAM
 # ENV TURBO_TEAM=$TURBO_TEAM
 RUN pnpm add -g turbo@^2.5.8
+
+# TODO: improve this
+ENV DATABASE_URL="dummy"
+ENV REDIS_URL="dummy"
+ENV DATABASE_URL="dummy"
+ENV REDIS_URL="dummy"
+ENV BETTER_AUTH_URL="dummy"
+ENV BETTER_AUTH_SECRET="dummy"
+ENV S3_ACCESS_KEY="dummy"
+ENV S3_SECRET_KEY="dummy"
+ENV S3_ENDPOINT="dummy"
+ENV S3_REGION="dummy"
+ENV S3_PUBLIC_BUCKET_NAME="dummy"
+ENV S3_INTERNAL_BUCKET_NAME="dummy"
+ENV PUBLIC_S3_ENDPOINT="dummy"
+
 RUN turbo run build
 
 FROM node:24-alpine AS runner
