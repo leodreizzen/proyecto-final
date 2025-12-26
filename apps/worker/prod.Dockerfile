@@ -35,18 +35,20 @@ RUN pnpm exec prisma generate
 
 WORKDIR /app
 
-RUN pnpm add -g turbo@^2.5.8
-RUN turbo run build
-
-
-FROM base AS runner
-WORKDIR /app
-
-RUN addgroup --system --gid 1001 nodejs
-RUN adduser --system --uid 1001 worker
-USER worker
-
-COPY --from=builder --chown=worker:nodejs /app/apps/worker/build ./
-COPY --from=builder --chown=worker:nodejs /app/apps/worker/.venv ./.venv
-
-CMD ["node", "worker.js"]
+#RUN pnpm add -g turbo@^2.5.8
+WORKDIR /app/apps/worker
+CMD ["pnpm", "run", "dev"]
+#RUN turbo run build
+#
+#
+#FROM base AS runner
+#WORKDIR /app
+#
+#RUN addgroup --system --gid 1001 nodejs
+#RUN adduser --system --uid 1001 worker
+#USER worker
+#
+#COPY --from=builder --chown=worker:nodejs /app/apps/worker/build ./
+#COPY --from=builder --chown=worker:nodejs /app/apps/worker/.venv ./.venv
+#
+#CMD ["node", "worker.js"]
