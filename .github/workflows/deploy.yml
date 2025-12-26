@@ -40,6 +40,7 @@ jobs:
       worker: ${{ steps.changes.outputs.worker }}
       migrator: ${{ steps.changes.outputs.migrator }}
       infra: ${{ steps.changes.outputs.infra }}
+    environment: production
     steps:
       - name: Checkout
         uses: actions/checkout@v4
