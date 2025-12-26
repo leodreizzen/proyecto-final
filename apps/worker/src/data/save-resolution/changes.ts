@@ -19,6 +19,7 @@ import {
 } from "./references";
 import {articleCreationInput} from "@/data/save-resolution/articles";
 import {annexCreationInput} from "@/data/save-resolution/annexes";
+import {suffixToNumber} from "@/data/save-resolution/util";
 
 export function changeCreationInput(change: Parser.Change): ChangeCreateWithoutArticleModifierInput {
     switch (change.type) {
@@ -252,6 +253,8 @@ function changeAddArticleCreationInput(change: Extract<Parser.Change, {
                 ...change.articleToAdd
             })
         },
+        newArticleNumber: change.newArticleNumber,
+        newArticleSuffix: suffixToNumber(change.newArticleSuffix),
         targetAnnex: change.type === "AddArticleToAnnex" && change.target.referenceType === "Annex" ? {
             create: annexReferenceCreateInput(change.target, "CHANGE_ADD_ARTICLE")
         } : undefined,

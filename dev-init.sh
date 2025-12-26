@@ -36,4 +36,4 @@ else
     npx prisma migrate dev
 fi
 
-pnpm exec prisma generate
+pnpm exec prisma generate --sql

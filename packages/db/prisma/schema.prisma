@@ -5,8 +5,9 @@
 // Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
 
 generator client {
-  provider = "prisma-client"
-  output   = "../src/generated/prisma"
+  provider        = "prisma-client"
+  output          = "../src/generated/prisma"
+  previewFeatures = ["typedSql"]
 }
 
 datasource db {
@@ -185,9 +186,10 @@ model ChangeModifyArticle {
 model ChangeReplaceArticle {
   id                       String           @id @db.Uuid
   change                   Change           @relation(fields: [id], references: [id], onDelete: Cascade)
-  newContent               Article?
+  newContent               Article          @relation(fields: [articleId], references: [id])
   targetArticle            ReferenceArticle @relation(fields: [targetArticleReferenceId], references: [id])
   targetArticleReferenceId String           @unique @db.Uuid
+  articleId                String           @db.Uuid
 
   // Trigger: Prevents circular reference (An article cannot modify/replace itself)
   // Trigger: Cleanup target references when this change is deleted

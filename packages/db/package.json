@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "db:generate": "prisma generate"
+    "db:generate": "prisma generate --sql"
   },
   "keywords": [],
   "author": "",
@@ -49,6 +49,11 @@
       "types": "./src/generated/prisma/enums.ts",
       "import": "./src/generated/prisma/enums.ts",
       "default": "./src/generated/prisma/enums.ts"
+    },
+    "./prisma/sql/*": {
+      "types": "./src/generated/prisma/sql/*.ts",
+      "import": "./src/generated/prisma/sql/*.ts",
+      "default": "./src/generated/prisma/sql/*.ts"
     }
   }
 }
