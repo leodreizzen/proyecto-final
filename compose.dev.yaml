@@ -29,11 +29,11 @@ services:
       BETTER_AUTH_SECRET: ${BETTER_AUTH_SECRET}
       S3_ACCESS_KEY: ${S3_ACCESS_KEY}
       S3_SECRET_KEY: ${S3_SECRET_KEY}
-      S3_ENDPOINT: "http://garage:3900"
-      S3_REGION: "us-east-1"
-      S3_PUBLIC_BUCKET_NAME: "public-assets"
-      S3_INTERNAL_BUCKET_NAME: "internal-assets"
-      PUBLIC_S3_ENDPOINT: "http://localhost:8080/s3-api"
+      S3_ENDPOINT: ${S3_ENDPOINT}
+      S3_REGION: ${S3_REGION}
+      S3_PUBLIC_BUCKET_NAME: ${S3_PUBLIC_BUCKET_NAME}
+      S3_INTERNAL_BUCKET_NAME: ${S3_INTERNAL_BUCKET_NAME}
+      PUBLIC_S3_ENDPOINT: ${PUBLIC_S3_ENDPOINT}
       POLLING: "${POLLING}"
     depends_on:
       garage-init:
@@ -72,10 +72,10 @@ services:
       GOOGLE_API_KEY: ${GOOGLE_API_KEY}
       S3_ACCESS_KEY: ${S3_ACCESS_KEY}
       S3_SECRET_KEY: ${S3_SECRET_KEY}
-      S3_ENDPOINT: "http://garage:3900"
-      S3_REGION: "us-east-1"
-      S3_PUBLIC_BUCKET_NAME: "public-assets"
-      S3_INTERNAL_BUCKET_NAME: "internal-assets"
+      S3_ENDPOINT: ${S3_ENDPOINT}
+      S3_REGION: ${S3_REGION}
+      S3_PUBLIC_BUCKET_NAME: ${S3_PUBLIC_BUCKET_NAME}
+      S3_INTERNAL_BUCKET_NAME: ${S3_INTERNAL_BUCKET_NAME}
     depends_on:
       garage-init:
         condition: service_completed_successfully
@@ -129,7 +129,7 @@ services:
     ports:
       - "8080:8080"
     environment:
-      S3_ENDPOINT: "http://garage:3900"
+      S3_ENDPOINT: ${S3_ENDPOINT}
     depends_on:
       - web
       - garage
@@ -158,7 +158,7 @@ services:
       garage:
         condition: service_healthy
     environment:
-      GARAGE_RPC_HOST: "garage:3901"
+      GARAGE_RPC_HOST: ${GARAGE_RPC_HOST}
       GARAGE_RPC_SECRET: ${GARAGE_RPC_SECRET}
       GARAGE_ADMIN_TOKEN: ${GARAGE_ADMIN_TOKEN}
       S3_ACCESS_KEY: ${S3_ACCESS_KEY}

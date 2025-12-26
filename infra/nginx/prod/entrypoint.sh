@@ -12,7 +12,7 @@ if [ "$STAGING" = "1" ]; then
 fi
 
 # Substitute configuration
-envsubst '${DOMAIN}' < /etc/nginx/templates/nginx.conf.template > /etc/nginx/conf.d/default.conf
+envsubst '${DOMAIN} ${S3_ENDPOINT}' < /etc/nginx/templates/nginx.conf.template > /etc/nginx/conf.d/default.conf
 
 # Create dummy certificate if not present so nginx can start
 if [ ! -f "/etc/letsencrypt/live/$DOMAIN/fullchain.pem" ]; then
