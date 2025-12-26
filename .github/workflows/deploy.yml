@@ -96,6 +96,8 @@ jobs:
             ${{ vars.REGISTRY }}/${{ vars.GITLAB_IMAGE_BASE }}/web:${{ steps.slug.outputs.sha8 }}
           cache-from: type=gha,scope=prod-web
           cache-to: type=gha,mode=max,scope=prod-web
+          secrets: |
+            dotenvx_key=${{ secrets.DOTENVX_KEY }}
 
       - name: Build Worker
         if: steps.changes.outputs.worker == 'true'

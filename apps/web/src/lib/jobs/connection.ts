@@ -4,5 +4,5 @@ if (!process.env.REDIS_URL) {
 }
 const redisUrl = process.env.REDIS_URL;
 
-export const redisConnection = new IORedis(redisUrl,{ maxRetriesPerRequest: 5 });
+export const redisConnection = new IORedis(redisUrl,{ maxRetriesPerRequest: 5, lazyConnect: true });
 

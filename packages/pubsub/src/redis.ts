@@ -10,6 +10,6 @@ const globalForRedis = globalThis as unknown as {
     redisSub?: IORedis;
 }
 
-export const redisPublisher = globalForRedis.redisPub ?? (new IORedis(redisUrl, {maxRetriesPerRequest: 5}));
-export const redisSubscriber = globalForRedis.redisSub ?? (new IORedis(redisUrl, {maxRetriesPerRequest: 5}));
+export const redisPublisher = globalForRedis.redisPub ?? (new IORedis(redisUrl, {maxRetriesPerRequest: 5, lazyConnect: true}));
+export const redisSubscriber = globalForRedis.redisSub ?? (new IORedis(redisUrl, {maxRetriesPerRequest: 5, lazyConnect: true}));
 
