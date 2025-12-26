@@ -29,6 +29,12 @@ WORKDIR /app
 # Uncomment and use build args to enable remote caching
 # ARG TURBO_TEAM
 # ENV TURBO_TEAM=$TURBO_TEAM
+
+WORKDIR /app/packages/db
+RUN pnpm exec prisma generate
+
+WORKDIR /app
+
 RUN pnpm add -g turbo@^2.5.8
 RUN turbo run build
 
