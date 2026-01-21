@@ -6,11 +6,10 @@ import {
     ReferenceSelect,
     ResolutionSelect
 } from "@repo/db/prisma/models";
-import {getRelevantChangeIds} from "@/lib/data/changes/relevant-changes";
 import prisma from "@/lib/prisma";
-import {assign} from "@/lib/utils";
 import {checkConcreteChange} from "@/lib/data/polymorphism/change";
 import {checkResourcePermission} from "@/lib/auth/data-authorization";
+import {getRelevantChangesList} from "@/lib/data/changes/relevant-changes";
 
 
 const resolutionSelect = {
@@ -178,7 +177,7 @@ const referenceAllTargetsSelect = {
 
 export async function getChangesForValidityGraph(uuid: string) {
     await checkResourcePermission("resolution", "read");
-    const changesToSearch = await getRelevantChangeIds(uuid);
+    const changesToSearch = await getRelevantChangesList(uuid);
 
     /*
         Get:

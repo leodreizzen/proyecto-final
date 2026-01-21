@@ -1,4 +1,4 @@
-import {GraphNode} from "@/lib/assembly/validity/domain/graph-node";
+import {ValidityGraphNode} from "@/lib/assembly/validity/domain/graph-node";
 import {
     NodeCoordinates,
 } from "@/lib/assembly/validity/types/coordinates";
@@ -11,7 +11,7 @@ import {
     ChangeForGraph,
     ObjectForGraph,
 } from "@/lib/assembly/validity/types/definitions";
-import {Graph} from "@/lib/assembly/validity/domain/graph";
+import {ValidityGraph} from "@/lib/assembly/validity/domain/graph";
 import {NativeHydrator} from "@/lib/assembly/validity/strategies/native-hydrator";
 import {ResultBuilder} from "@/lib/assembly/validity/strategies/result-builder";
 
@@ -20,23 +20,34 @@ type TargetDescriptor = {
     nativePayload: ObjectForGraph | null;
 }
 
-class ChangeValidityService {
-    private validityGraph: Graph = new Graph();
+export class ChangeValidityService {
+    private validityGraph: ValidityGraph = new ValidityGraph();
     private readonly hydrator = new NativeHydrator(this.validityGraph);
     private readonly resultBuilder = new ResultBuilder(this.validityGraph);
+    private changeIds: Set<string> = new Set();
     constructor() {
     }
 
     loadChanges(changes: ChangeForGraph[]) {
         this.validityGraph.clear();
+        this.changeIds.clear();
 
         const sortedChanges = this.sortChangesByDate(changes);
+        changes.forEach(c => this.changeIds.add(c.id));
 
         this.processChanges(sortedChanges);
     }
 
     getValidChanges(): string[] {
-        return this.validityGraph.getValidNodeIds();
+        const validChanges: string[] = [];
+
+        for (const id of this.changeIds) {
+            if (this.validityGraph.isNodeValid(id)) {
+                validChanges.push(id);
+            }
+        }
+
+        return validChanges;
     }
 
 
@@ -65,7 +76,7 @@ class ChangeValidityService {
         });
     }
 
-    private hydrateChange(change: ChangeForGraph, changeNode: GraphNode): void {
+    private hydrateChange(change: ChangeForGraph, changeNode: ValidityGraphNode): void {
         if (change.articleModifier.article) {
             const contextResult = this.hydrator.hydrate({
                 type: 'article',
@@ -75,20 +86,20 @@ class ChangeValidityService {
         }
     }
 
-    private processVictims(change: ChangeForGraph, changeNode: GraphNode, victimDescriptor: TargetDescriptor): void {
+    private processVictims(change: ChangeForGraph, changeNode: ValidityGraphNode, victimDescriptor: TargetDescriptor): void {
             if (victimDescriptor.nativePayload && !this.validityGraph.getActiveVersion(victimDescriptor.coords)) {
                 this.hydrator.hydrate(victimDescriptor.nativePayload);
             }
             const victimNode = this.validityGraph.resolveCurrentNode(victimDescriptor.coords);
             if (victimNode) {
-                changeNode.addRepealer(victimNode);
+                victimNode.addRepealer(changeNode);
             }
     }
 
 
     private buildResults(change: ChangeForGraph, victimDescriptor: TargetDescriptor | null): void {
         const contextCoords = this.getContextCoordsForBuild(change, victimDescriptor);
-        let structuralParent: GraphNode | null = null;
+        let structuralParent: ValidityGraphNode | null = null;
 
         if (contextCoords) {
             const parentCoordsToResolve = change.type === "REPLACE_ARTICLE" || change.type === "REPLACE_ANNEX" ?
@@ -149,7 +160,6 @@ class ChangeValidityService {
             throw new Error("ADD_ANNEX without targetResolution is not implemented yet");
             // TODO subanexes
         }
-        // TODO APPLY_MODIFICATIONS_ANNEX
         return null;
     }
 }

@@ -1,8 +1,8 @@
-export class GraphNode {
+export class ValidityGraphNode {
     readonly id: string;
 
-    private readonly dependencies = new Set<GraphNode>();
-    private readonly repealers = new Set<GraphNode>();
+    private readonly dependencies = new Set<ValidityGraphNode>();
+    private readonly repealers = new Set<ValidityGraphNode>();
 
     private validValue: boolean | null = null;
     private invalidationSubscribers: (() => void)[] = [];
@@ -21,7 +21,7 @@ export class GraphNode {
     }
 
 
-    addRepealer(repealer: GraphNode) {
+    addRepealer(repealer: ValidityGraphNode) {
         if (repealer === this) return;
 
         if (!this.repealers.has(repealer)) {
@@ -31,7 +31,7 @@ export class GraphNode {
         }
     }
 
-    addDependency(dependency: GraphNode) {
+    addDependency(dependency: ValidityGraphNode) {
         if (dependency === this) return;
 
         if (!this.dependencies.has(dependency)) {

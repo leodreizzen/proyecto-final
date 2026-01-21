@@ -12,13 +12,13 @@ import {
     ChapterCoords,
     ResolutionCoords
 } from "@/lib/assembly/validity/types/coordinates";
-import {GraphNode} from "@/lib/assembly/validity/domain/graph-node";
-import {Graph} from "@/lib/assembly/validity/domain/graph";
+import {ValidityGraphNode} from "@/lib/assembly/validity/domain/graph-node";
+import {ValidityGraph} from "@/lib/assembly/validity/domain/graph";
 import {enforceAnnexNumber, enforceArticleNumber} from "@/lib/assembly/validity/utils/numbers";
 
 type HydrateResult<T> =
-    | { isVirtual: false; node: GraphNode; coords: T }
-    | { isVirtual: true;  node: GraphNode };
+    | { isVirtual: false; node: ValidityGraphNode; coords: T }
+    | { isVirtual: true;  node: ValidityGraphNode };
 
 type AnyHydrateResult =
     | HydrateResult<ResolutionCoords>
@@ -29,7 +29,7 @@ type AnyHydrateResult =
 
 export class NativeHydrator {
 
-    constructor(private graph: Graph) {}
+    constructor(private graph: ValidityGraph) {}
 
     hydrate(payload: { type: "resolution"; object: ResolutionForGraph }): HydrateResult<ResolutionCoords>;
     hydrate(payload: { type: "article"; object: ArticleForGraph }): HydrateResult<ArticleCoords>;
@@ -46,7 +46,7 @@ export class NativeHydrator {
         }
     }
 
-    private hydrateResolution(resolution: ResolutionForGraph): { node: GraphNode; coords: ResolutionCoords } {
+    private hydrateResolution(resolution: ResolutionForGraph): { node: ValidityGraphNode; coords: ResolutionCoords } {
         const node = this.graph.acquireNode(resolution.id);
 
         const coords = {
@@ -57,13 +57,13 @@ export class NativeHydrator {
 
         this.graph.registerBaseVersion({ type: "resolution", coords }, node);
 
-        return { node, coords };
+        return {node, coords };
     }
 
     private hydrateAnnexAncestry(annex: AnnexForGraph): HydrateResult<AnnexCoords> {
         const node = this.graph.acquireNode(annex.id);
 
-        let parentNode: GraphNode;
+        let parentNode: ValidityGraphNode;
         let coords: AnnexCoords | null = null;
         let isVirtual = false;
 
@@ -113,7 +113,7 @@ export class NativeHydrator {
     private hydrateArticleAncestry(article: ArticleForGraph): HydrateResult<ArticleCoords> {
         const node = this.graph.acquireNode(article.id);
 
-        let parentNode: GraphNode;
+        let parentNode: ValidityGraphNode;
         let parentCoordsObject: NodeCoordinates | null = null;
 
         if (article.resolution) {

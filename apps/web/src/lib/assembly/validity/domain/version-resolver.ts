@@ -1,11 +1,11 @@
-import {GraphNode} from "@/lib/assembly/validity/domain/graph-node";
+import {ValidityGraphNode} from "@/lib/assembly/validity/domain/graph-node";
 import {NodeCoordinates} from "@/lib/assembly/validity/types/coordinates";
 import {stableStringify} from "@/lib/utils";
 
 export class VersionResolver {
-    private versionHistory = new Map<string, GraphNode[]>();
+    private versionHistory = new Map<string, ValidityGraphNode[]>();
 
-    registerVersion(coordinates: NodeCoordinates, node: GraphNode): void {
+    registerVersion(coordinates: NodeCoordinates, node: ValidityGraphNode): void {
         const key = stableStringify(coordinates);
         if (!this.versionHistory.has(key)) {
             this.versionHistory.set(key, []);
@@ -13,7 +13,7 @@ export class VersionResolver {
         this.versionHistory.get(key)!.push(node);
     }
 
-    getCurrentActiveVersion(coordinates: NodeCoordinates): GraphNode | null {
+    getCurrentActiveVersion(coordinates: NodeCoordinates): ValidityGraphNode | null {
         const key = stableStringify(coordinates);
         const stack = this.versionHistory.get(key);
 
@@ -24,7 +24,7 @@ export class VersionResolver {
         return lastValid ?? null;
     }
 
-    getLatestRegistered(coordinates: NodeCoordinates): GraphNode | null {
+    getLatestRegistered(coordinates: NodeCoordinates): ValidityGraphNode | null {
         const key = stableStringify(coordinates);
         const stack = this.versionHistory.get(key);
         if (!stack || stack.length === 0) return null;
@@ -41,7 +41,7 @@ export class VersionResolver {
         this.versionHistory.clear();
     }
 
-    registerFirstVersion(coordinates: NodeCoordinates, node: GraphNode): void {
+    registerFirstVersion(coordinates: NodeCoordinates, node: ValidityGraphNode): void {
         const key = stableStringify(coordinates);
         const stack = this.versionHistory.get(key);
         if (!stack || stack.length === 0) {

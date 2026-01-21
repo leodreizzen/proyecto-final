@@ -1,9 +1,9 @@
-import {GraphNode} from "@/lib/assembly/validity/domain/graph-node";
+import {ValidityGraphNode} from "@/lib/assembly/validity/domain/graph-node";
 import {VersionResolver} from "@/lib/assembly/validity/domain/version-resolver";
 import {NodeCoordinates} from "@/lib/assembly/validity/types/coordinates";
 
-export class Graph {
-    private readonly nodes: Map<string, GraphNode> = new Map();
+export class ValidityGraph {
+    private readonly nodes: Map<string, ValidityGraphNode> = new Map();
     private readonly resolver: VersionResolver = new VersionResolver();
 
     constructor() {
@@ -14,22 +14,22 @@ export class Graph {
         this.resolver.clear();
     }
 
-    acquireNode(id: string): GraphNode {
+    acquireNode(id: string): ValidityGraphNode {
         if (!this.nodes.has(id)) {
-            this.nodes.set(id, new GraphNode(id));
+            this.nodes.set(id, new ValidityGraphNode(id));
         }
         return this.nodes.get(id)!;
     }
 
-    registerVersion(coords: NodeCoordinates, node: GraphNode) {
+    registerVersion(coords: NodeCoordinates, node: ValidityGraphNode) {
         this.resolver.registerVersion(coords, node);
     }
 
-    registerBaseVersion(coords: NodeCoordinates, node: GraphNode) {
+    registerBaseVersion(coords: NodeCoordinates, node: ValidityGraphNode) {
         this.resolver.registerFirstVersion(coords, node);
     }
 
-    getActiveVersion(coords: NodeCoordinates): GraphNode | null {
+    getActiveVersion(coords: NodeCoordinates): ValidityGraphNode | null {
         return this.resolver.getCurrentActiveVersion(coords);
     }
 
@@ -37,7 +37,12 @@ export class Graph {
         return this.resolver.hasDefinedVersion(coords);
     }
 
-    resolveCurrentNode(coords: NodeCoordinates): GraphNode | null {
+    isNodeValid(id: string): boolean {
+        const node = this.nodes.get(id);
+        return node ? node.isValid() : false;
+    }
+
+    resolveCurrentNode(coords: NodeCoordinates): ValidityGraphNode | null {
         const active = this.resolver.getCurrentActiveVersion(coords);
         if (active) return active;
 

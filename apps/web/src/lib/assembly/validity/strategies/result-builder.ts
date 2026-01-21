@@ -1,6 +1,6 @@
-import {GraphNode} from "@/lib/assembly/validity/domain/graph-node";
+import {ValidityGraphNode} from "@/lib/assembly/validity/domain/graph-node";
 import {NodeCoordinates} from "@/lib/assembly/validity/types/coordinates";
-import {Graph} from "@/lib/assembly/validity/domain/graph";
+import {ValidityGraph} from "@/lib/assembly/validity/domain/graph";
 import {ChangeForGraph, NewAnnex} from "@/lib/assembly/validity/types/definitions";
 import {
     calculateChildAnnexCoords,
@@ -11,12 +11,12 @@ import {enforceArticleNumber} from "@/lib/assembly/validity/utils/numbers";
 
 export class ResultBuilder {
 
-    constructor(private graph: Graph) {
+    constructor(private graph: ValidityGraph) {
     }
 
     build(
         change: ChangeForGraph,
-        structuralParent: GraphNode | null,
+        structuralParent: ValidityGraphNode | null,
         contextCoords: NodeCoordinates | null
     ) {
         const changeNode = this.graph.acquireNode(change.id);
@@ -34,15 +34,18 @@ export class ResultBuilder {
             case "REPLACE_ANNEX":
                 this.buildReplaceAnnex(change, changeNode, structuralParent, contextCoords);
                 break;
+            case "APPLY_MODIFICATIONS_ANNEX":
+                this.buildApplyModificationsAnnex(change, changeNode);
+                break;
         }
     }
 
     private buildAndRegisterNode(
         id: string,
         coords: NodeCoordinates | null,
-        changeNode: GraphNode,
-        structuralParent: GraphNode | null
-    ): GraphNode {
+        changeNode: ValidityGraphNode,
+        structuralParent: ValidityGraphNode | null
+    ): ValidityGraphNode {
         const node = this.graph.acquireNode(id);
 
         node.addDependency(changeNode);
@@ -60,8 +63,8 @@ export class ResultBuilder {
 
     private buildAddArticle(
         change: ChangeForGraph & { type: "ADD_ARTICLE" },
-        changeNode: GraphNode,
-        structuralParent: GraphNode | null,
+        changeNode: ValidityGraphNode,
+        structuralParent: ValidityGraphNode | null,
         parentCoords: NodeCoordinates | null
     ) {
         const {newArticle, newArticleNumber, newArticleSuffix} = change.changeAddArticle;
@@ -84,8 +87,8 @@ export class ResultBuilder {
 
     private buildReplaceArticle(
         change: ChangeForGraph & { type: "REPLACE_ARTICLE" },
-        changeNode: GraphNode,
-        structuralParent: GraphNode | null,
+        changeNode: ValidityGraphNode,
+        structuralParent: ValidityGraphNode | null,
         victimCoords: NodeCoordinates | null
     ) {
         const {newContent} = change.changeReplaceArticle;
@@ -98,8 +101,8 @@ export class ResultBuilder {
 
     private buildAddAnnex(
         change: ChangeForGraph & { type: "ADD_ANNEX" },
-        changeNode: GraphNode,
-        structuralParent: GraphNode | null,
+        changeNode: ValidityGraphNode,
+        structuralParent: ValidityGraphNode | null,
         parentCoords: NodeCoordinates | null
     ) {
         const add = change.changeAddAnnex;
@@ -122,8 +125,8 @@ export class ResultBuilder {
 
     private buildReplaceAnnex(
         change: ChangeForGraph & { type: "REPLACE_ANNEX" },
-        changeNode: GraphNode,
-        structuralParent: GraphNode | null,
+        changeNode: ValidityGraphNode,
+        structuralParent: ValidityGraphNode | null,
         victimCoords: NodeCoordinates | null
     ) {
         const replace = change.changeReplaceAnnex;
@@ -143,8 +146,8 @@ export class ResultBuilder {
     private buildAnnexHierarchy(
         annexData: NewAnnex,
         coords: (NodeCoordinates & { type: 'annex' }) | null,
-        changeNode: GraphNode,
-        structuralParent: GraphNode | null
+        changeNode: ValidityGraphNode,
+        structuralParent: ValidityGraphNode | null
     ) {
         const annexNode = this.buildAndRegisterNode(annexData.id, coords, changeNode, structuralParent);
 
@@ -198,5 +201,18 @@ export class ResultBuilder {
                 }
             }
         }
+    }
+
+    private buildApplyModificationsAnnex(
+        change: ChangeForGraph & { type: "APPLY_MODIFICATIONS_ANNEX" },
+        changeNode: ValidityGraphNode
+    ) {
+        const ref = change.changeApplyModificationsAnnex.annexToApply;
+
+        if (!ref.annexId) return; // We assume the referenced annex is always native
+
+        const annexNode = this.graph.acquireNode(ref.annexId);
+
+        annexNode.addDependency(changeNode); // The annex is subordinate to the change
     }
 }
