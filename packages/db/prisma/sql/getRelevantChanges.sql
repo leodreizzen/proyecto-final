@@ -4,9 +4,9 @@ WITH RECURSIVE
 -- =============================================================================
 -- 1. STRUCTURAL CHANGE MAP
 -- =============================================================================
--- Maps changes that fundamentally alter the structure or existence of an entity.
--- Includes: Repeal, Replace, ApplyModificationsAnnex.
--- Excludes: Add operations (handled in CreationCatalog).
+-- Purpose: Maps "Hard" changes that alter structure (Repeal, Replace).
+-- These are critical because they can invalidate the existence of the target.
+-- Note: 'Add' operations are excluded here; they are handled in the CreationCatalog.
 StructuralChangeMap(change_id, target_ref_id, modifier_author_id) AS (
     SELECT c.id, rep."targetReferenceId", c."articleModifierId"
     FROM "Change" c JOIN "ChangeRepeal" rep ON c.id = rep.id
@@ -24,8 +24,9 @@ StructuralChangeMap(change_id, target_ref_id, modifier_author_id) AS (
 -- =============================================================================
 -- 2. CONTENT CHANGE MAP
 -- =============================================================================
--- Maps changes that modify content (Modify, Ratify) without structural impact.
--- Only applicable when traversing the Main Tree.
+-- Purpose: Maps "Soft" changes (Modify, Ratify) that alter content but not structure.
+-- Logic: These are only relevant when traversing the 'Main Tree' (the target resolution).
+-- Changes to the content of an external parent resolution are ignored.
 ContentChangeMap(change_id, target_ref_id, modifier_author_id) AS (
     SELECT c.id, mod."targetArticleReferenceId", c."articleModifierId"
     FROM "Change" c JOIN "ChangeModifyArticle" mod ON c.id = mod.id
@@ -43,31 +44,31 @@ ContentChangeMap(change_id, target_ref_id, modifier_author_id) AS (
 -- =============================================================================
 -- 3. STRUCTURAL CREATION CATALOG (Virtual Targets)
 -- =============================================================================
--- Defines entities created by 'Add' operations.
--- Normalizes coordinates and determines the 'target_scope_type' to ensure
--- items are injected into the correct container in the recursion.
+-- Purpose: Defines entities created by 'Add' operations (Virtual Entities).
+-- These entities act as valid targets for subsequent changes in the recursion.
+-- We normalize coordinates (Annex/Chapter/Number) to allow strict matching.
 StructuralCreationCatalog AS (
     -- ADD ARTICLE
     SELECT
         add_art.id AS change_id,
         c."articleModifierId" AS modifier_author_id,
         'ARTICLE'::text AS created_entity_type,
-        -- Root Coordinates
+        -- Anchor Coordinates (Resolution Root)
         COALESCE(r_direct.initial, r_annex.initial, r_chap.initial) AS root_res_initial,
         COALESCE(r_direct.number, r_annex.number, r_chap.number)    AS root_res_number,
         COALESCE(r_direct.year, r_annex.year, r_chap.year)          AS root_res_year,
-        -- New Entity Specs
+        -- New Entity Specifications (Number/Suffix)
+        -- If newArticleNumber is NULL, it creates an unnumbered entity.
         add_art."newArticleNumber" AS new_number,
         add_art."newArticleSuffix" AS new_suffix,
-        (add_art."newArticleNumber" IS NULL) AS is_wildcard_creation,
         NULL::int AS new_annex_number,
-        -- Context Coordinates
+        -- Context Coordinates (Where is it inserted?)
         COALESCE(ra."annexNumber", rc."annexNumber") AS created_in_annex_number,
         rc."chapterNumber" AS created_in_chapter_number,
         NULL::uuid AS physical_annex_source_id,
-        -- Linking ID
+        -- Exact Reference ID for linking
         COALESCE(add_art."targetResolutionReferenceId", add_art."targetAnnexReferenceId", add_art."targetChapterReferenceId") AS target_ref_id,
-        -- Scope Type (Container)
+        -- Target Scope Type (To ensure we insert into the correct container)
         CASE
             WHEN add_art."targetResolutionReferenceId" IS NOT NULL THEN 'RESOLUTION'
             WHEN add_art."targetAnnexReferenceId" IS NOT NULL THEN 'ANNEX'
@@ -92,7 +93,6 @@ StructuralCreationCatalog AS (
         COALESCE(r_direct.number, r_parent_annex."resNumber"),
         COALESCE(r_direct.year, r_parent_annex.year),
         NULL, NULL,
-        (add_annex."newAnnexNumber" IS NULL),
         add_annex."newAnnexNumber",
         NULL, NULL,
         source_annex."annexId",
@@ -113,34 +113,31 @@ StructuralCreationCatalog AS (
 -- =============================================================================
 -- 4. TARGET RESOLUTION SCOPE (Anchor)
 -- =============================================================================
--- Initializes the recursion with the physical entities of the target Resolution.
--- Explicitly sets the 'scope_container_type' to allow distinguishing Root vs Annex content.
+-- Initializes the recursion with the physical components of the target Resolution.
 TargetResolutionScope AS (
     -- Resolution Root
     SELECT target_res.id AS entity_id, 'RESOLUTION'::text AS entity_type, target_res.id AS root_id,
            target_res.initial AS root_res_initial, target_res.number AS root_res_number, target_res.year AS root_res_year,
-           NULL::uuid AS causing_change_id, TRUE AS is_main_tree, FALSE AS is_wildcard,
+           NULL::uuid AS causing_change_id, TRUE AS is_main_tree,
            NULL::int as scope_number, NULL::int as scope_suffix, NULL::int as scope_annex_number, NULL::int as scope_chapter_number,
-           NULL::text as scope_container_type -- Resolution has no container
+           NULL::text as scope_container_type
     FROM "Resolution" target_res WHERE target_res.id = $1::uuid
 
     UNION ALL
-    -- Physical Annexes (Container: RESOLUTION)
-    SELECT target_annex.id, 'ANNEX', target_res.id, target_res.initial, target_res.number, target_res.year, NULL::uuid, TRUE, FALSE,
-           NULL, NULL, target_annex.number, NULL,
-           'RESOLUTION'
+    -- Physical Annexes
+    SELECT target_annex.id, 'ANNEX', target_res.id, target_res.initial, target_res.number, target_res.year, NULL::uuid, TRUE,
+           NULL, NULL, target_annex.number, NULL, 'RESOLUTION'
     FROM "Annex" target_annex JOIN "Resolution" target_res ON target_annex."resolutionId" = target_res.id WHERE target_res.id = $1::uuid
 
     UNION ALL
-    -- Physical Chapters (Container: ANNEX)
-    SELECT target_chap.id, 'CHAPTER', target_res.id, target_res.initial, target_res.number, target_res.year, NULL::uuid, TRUE, FALSE,
-           NULL, NULL, target_annex.number, target_chap.number,
-           'ANNEX'
+    -- Physical Chapters
+    SELECT target_chap.id, 'CHAPTER', target_res.id, target_res.initial, target_res.number, target_res.year, NULL::uuid, TRUE,
+           NULL, NULL, target_annex.number, target_chap.number, 'ANNEX'
     FROM "AnnexChapter" target_chap JOIN "AnnexWithArticles" awa ON target_chap."annexId" = awa.id JOIN "Annex" target_annex ON awa.id = target_annex.id JOIN "Resolution" target_res ON target_annex."resolutionId" = target_res.id WHERE target_res.id = $1::uuid
 
     UNION ALL
-    -- Physical Articles (Container varies: RESOLUTION, ANNEX, or CHAPTER)
-    SELECT id, 'ARTICLE', "rootResolutionId", "resInitial", "resNumber", "resYear", NULL::uuid, TRUE, FALSE,
+    -- Physical Articles
+    SELECT id, 'ARTICLE', "rootResolutionId", "resInitial", "resNumber", "resYear", NULL::uuid, TRUE,
            number, suffix, "annexNumber", "chapterNumber",
            CASE
                WHEN "chapterNumber" IS NOT NULL THEN 'CHAPTER'
@@ -153,12 +150,11 @@ TargetResolutionScope AS (
 -- =============================================================================
 -- 5. CHANGE DISCOVERY (Recursive Traversal)
 -- =============================================================================
--- The core engine. Traverses the hierarchy and discovers changes.
--- Now tracks 'scope_container_type' to disambiguate articles in Wildcard Annexes (Num=NULL)
--- from articles in the Resolution Root (Num=NULL).
+-- Core engine: Matches references to the current scope and expands to authors or children.
+-- STRICT MATCHING: Entities with NULL numbers only match references with NULL numbers.
 ChangeDiscovery(
                 entity_id, entity_type, root_id, root_res_initial, root_res_number, root_res_year,
-                causing_change_id, is_main_tree, is_wildcard,
+                causing_change_id, is_main_tree,
                 scope_number, scope_suffix, scope_annex_number, scope_chapter_number, scope_container_type
     ) AS (
     -- ANCHOR
@@ -176,7 +172,6 @@ ChangeDiscovery(
         expanded_hierarchy.root_res_year,
         match_result.change_id,
         expanded_hierarchy.is_main_tree,
-        expanded_hierarchy.is_wildcard,
         expanded_hierarchy.scope_number,
         expanded_hierarchy.scope_suffix,
         expanded_hierarchy.scope_annex_number,
@@ -185,8 +180,10 @@ ChangeDiscovery(
     FROM ChangeDiscovery scope
 
              -- 1. FIND REFERENCES
+             -- We look for any Reference in the DB that points to the current Scope entity.
              CROSS JOIN LATERAL (
-        -- A. Match by ID (Physical Entities)
+        -- A. Match by Physical ID
+        -- For entities that actually exist in the DB (original or exploded).
         SELECT rr.id FROM "ReferenceResolution" rr WHERE scope.entity_id IS NOT NULL AND scope.entity_type = 'RESOLUTION' AND rr."resolutionId" = scope.entity_id
         UNION ALL
         SELECT ra.id FROM "ReferenceArticle" ra WHERE scope.entity_id IS NOT NULL AND scope.entity_type = 'ARTICLE' AND ra."articleId" = scope.entity_id
@@ -197,8 +194,10 @@ ChangeDiscovery(
 
         UNION ALL
 
-        -- B. Match by Exact Coordinates (Virtual Entities)
-        -- STRICT CONTEXT CHECK: Prevents Wildcard Annex contents (AnnexNum=NULL) from matching Root refs (AnnexNum=NULL).
+        -- B. Match by Exact Coordinates (Strict Matching)
+        -- For Virtual entities (Added by changes).
+        -- Uses 'IS NOT DISTINCT FROM' to handle NULLs strictly.
+        -- If scope.scope_number is NULL, it will ONLY match references where articleNumber is also NULL.
         SELECT ref_coord.id FROM (
                                      SELECT ra.id FROM "ReferenceArticle" ra
                                      WHERE scope.entity_type = 'ARTICLE' AND ra."articleId" IS NULL
@@ -206,20 +205,20 @@ ChangeDiscovery(
                                        AND ra."articleNumber" IS NOT DISTINCT FROM scope.scope_number
                                        AND COALESCE(ra."articleSuffix",0) = COALESCE(scope.scope_suffix,0)
                                        AND (
-                                         -- Context Disambiguation Logic:
+                                         -- Context Disambiguation (Res vs Annex vs Chapter)
                                          (scope.scope_container_type = 'RESOLUTION' AND ra."annexNumber" IS NULL)
                                              OR
-                                         (scope.scope_container_type = 'ANNEX' AND ra."annexNumber" IS NOT DISTINCT FROM scope.scope_annex_number AND scope.scope_annex_number IS NOT NULL) -- Block Wildcard Annex matching here
+                                         (scope.scope_container_type = 'ANNEX' AND ra."annexNumber" IS NOT DISTINCT FROM scope.scope_annex_number)
                                              OR
-                                         (scope.scope_container_type = 'CHAPTER' AND ra."chapterNumber" IS NOT DISTINCT FROM scope.scope_chapter_number) -- Chapter implies Annex, usually safe or needs similar check
+                                         (scope.scope_container_type = 'CHAPTER' AND ra."chapterNumber" IS NOT DISTINCT FROM scope.scope_chapter_number)
                                          )
                                      UNION ALL
                                      SELECT rann.id FROM "ReferenceAnnex" rann
                                      WHERE scope.entity_type = 'ANNEX' AND rann."annexId" IS NULL
                                        AND rann."initial" = scope.root_res_initial AND rann."resNumber" = scope.root_res_number AND rann."year" = scope.root_res_year
                                        AND rann."annexNumber" IS NOT DISTINCT FROM scope.scope_annex_number
-                                       -- Disambiguate Wildcard Annex from Root (Resolution doesn't match here anyway by entity_type)
-                                       AND (scope.scope_annex_number IS NOT NULL OR scope.is_wildcard = FALSE) -- Don't match ghosts here, use Magnet
+                                       -- Ensure we don't match Root resolution refs if we are in a Wildcard Annex
+                                       AND (scope.scope_annex_number IS NOT NULL OR scope.scope_container_type = 'RESOLUTION')
                                      UNION ALL
                                      SELECT rc.id FROM "ReferenceChapter" rc
                                      WHERE scope.entity_type = 'CHAPTER' AND rc."chapterId" IS NULL
@@ -231,73 +230,71 @@ ChangeDiscovery(
                                      WHERE scope.entity_type = 'RESOLUTION' AND rr."resolutionId" IS NULL
                                        AND rr."initial" = scope.root_res_initial AND rr."number" = scope.root_res_number AND rr."year" = scope.root_res_year
                                  ) ref_coord
-        WHERE scope.is_wildcard = FALSE -- Standard coordinate matching disabled for wildcards
-
-        UNION ALL
-
-        -- C. WILDCARD MAGNET
-        -- Catches 'Ghost References' (ID IS NULL) that belong to the current container.
-        SELECT magnet.id FROM (
-                                  -- 1. Wildcard Article
-                                  SELECT ra.id FROM "ReferenceArticle" ra
-                                  WHERE scope.entity_type = 'ARTICLE' AND scope.is_wildcard = TRUE
-                                    AND ra."initial" = scope.root_res_initial AND ra."resNumber" = scope.root_res_number AND ra."year" = scope.root_res_year
-                                    AND ra."articleId" IS NULL
-                                    -- Strict Context Match for Magnet
-                                    AND (
-                                      (scope.scope_container_type = 'RESOLUTION' AND ra."annexNumber" IS NULL)
-                                          OR
-                                      (scope.scope_container_type = 'ANNEX' AND ra."annexNumber" IS NOT DISTINCT FROM scope.scope_annex_number)
-                                      )
-
-                                  UNION ALL
-
-                                  -- 2. Wildcard Annex
-                                  SELECT rann.id FROM "ReferenceAnnex" rann
-                                  WHERE scope.entity_type = 'ANNEX' AND scope.is_wildcard = TRUE
-                                    AND rann."initial" = scope.root_res_initial AND rann."resNumber" = scope.root_res_number AND rann."year" = scope.root_res_year
-                                    AND rann."annexId" IS NULL
-
-                                  UNION ALL
-
-                                  -- 3. Wildcard Chapter
-                                  SELECT rc.id FROM "ReferenceChapter" rc
-                                  WHERE scope.entity_type = 'ANNEX' AND scope.is_wildcard = TRUE
-                                    AND rc."initial" = scope.root_res_initial AND rc."resNumber" = scope.root_res_number AND rc."year" = scope.root_res_year
-                                    AND rc."chapterId" IS NULL
-                              ) magnet
         ) AS ref
 
-        -- 2. GATHER CANDIDATES
+        -- 2. GATHER CANDIDATES (Join with Change Definitions)
              LEFT JOIN StructuralChangeMap structural_map ON ref.id = structural_map.target_ref_id
              LEFT JOIN ContentChangeMap content_map ON ref.id = content_map.target_ref_id
              LEFT JOIN StructuralCreationCatalog struct_creator ON struct_creator.target_ref_id = ref.id
 
+             LEFT JOIN "ReferenceArticle" ref_art ON ref.id = ref_art.id
+             LEFT JOIN "ReferenceAnnex" ref_annex ON ref.id = ref_annex.id
+
         -- 3. RESOLVE MATCHES
              CROSS JOIN LATERAL (
-        -- P1: Structural
-        SELECT structural_map.change_id, structural_map.modifier_author_id, NULL::text as virt_type, FALSE as v_is_wild, NULL::int as v_num, NULL::int as v_suf, NULL::int as v_annex_num, NULL::int as v_chap_num, NULL::uuid as v_source_id
+        -- P1: Structural Change
+        SELECT structural_map.change_id, structural_map.modifier_author_id, NULL::text as virt_type, NULL::int as v_num, NULL::int as v_suf, NULL::int as v_annex_num, NULL::int as v_chap_num, NULL::uuid as v_source_id
         WHERE structural_map.change_id IS NOT NULL
 
         UNION ALL
 
-        -- P2: Content
-        SELECT content_map.change_id, content_map.modifier_author_id, NULL, FALSE, NULL, NULL, NULL, NULL, NULL
+        -- P2: Content Change
+        -- Only accepted if we are in the Main Tree.
+        SELECT content_map.change_id, content_map.modifier_author_id, NULL, NULL, NULL, NULL, NULL, NULL
         WHERE content_map.change_id IS NOT NULL AND scope.is_main_tree = TRUE
 
         UNION ALL
 
-        -- P3: Creation
+        -- P3: Creation (Add Operation)
+        -- Logic: Checks if the added entity matches the current scope (Parent -> Child).
         SELECT struct_creator.change_id, struct_creator.modifier_author_id,
                struct_creator.created_entity_type,
-               struct_creator.is_wildcard_creation,
                struct_creator.new_number,
                struct_creator.new_suffix,
                COALESCE(struct_creator.new_annex_number, struct_creator.created_in_annex_number),
                struct_creator.created_in_chapter_number,
                struct_creator.physical_annex_source_id
         WHERE struct_creator.change_id IS NOT NULL
-          AND struct_creator.target_scope_type = scope.entity_type
+          AND (
+            -- A: Strict Match (Numbers match against a physical reference found in Step 1)
+            (struct_creator.new_number IS NOT NULL AND ref_art.id IS NOT NULL AND struct_creator.new_number = ref_art."articleNumber")
+                OR
+            (struct_creator.new_annex_number IS NOT NULL AND ref_annex.id IS NOT NULL AND struct_creator.new_annex_number = ref_annex."annexNumber")
+                OR
+                -- B: Creation Context Match
+                -- Matches 'Add Article' changes to the container scope (Resolution/Annex).
+                -- Allows detecting an added entity even if it has NULL number (so we can find its author).
+            (
+                struct_creator.target_scope_type = scope.entity_type
+                    AND (
+                    -- Resolution Scope accepts Add Article (Root) or Add Annex
+                    (scope.entity_type = 'RESOLUTION' AND (
+                        (struct_creator.created_entity_type = 'ARTICLE' AND struct_creator.created_in_annex_number IS NULL) OR
+                        (struct_creator.created_entity_type = 'ANNEX')
+                        ))
+                        OR
+                        -- Annex Scope accepts Add Article (to this Annex)
+                    (scope.entity_type = 'ANNEX' AND struct_creator.created_entity_type = 'ARTICLE'
+                        AND struct_creator.created_in_annex_number IS NOT DISTINCT FROM scope.scope_annex_number
+                        AND struct_creator.created_in_chapter_number IS NULL)
+                        OR
+                        -- Chapter Scope accepts Add Article (to this Chapter)
+                    (scope.entity_type = 'CHAPTER' AND struct_creator.created_entity_type = 'ARTICLE'
+                        AND struct_creator.created_in_annex_number IS NOT DISTINCT FROM scope.scope_annex_number
+                        AND struct_creator.created_in_chapter_number IS NOT DISTINCT FROM scope.scope_chapter_number)
+                    )
+                )
+            )
         ) AS match_result
 
         -- 4. EXPAND HIERARCHY
@@ -305,15 +302,15 @@ ChangeDiscovery(
              CROSS JOIN LATERAL (
         -- A. AUTHOR (Navigate Up - External)
         SELECT
-            author."rootResolutionId" AS id, 'RESOLUTION'::text AS type, author."rootResolutionId" AS root_id, author."resInitial" AS root_res_initial, author."resNumber" AS root_res_number, author."resYear" AS root_res_year, FALSE AS is_main_tree, FALSE AS is_wildcard,
+            author."rootResolutionId" AS id, 'RESOLUTION'::text AS type, author."rootResolutionId" AS root_id, author."resInitial" AS root_res_initial, author."resNumber" AS root_res_number, author."resYear" AS root_res_year, FALSE AS is_main_tree,
             NULL::int AS scope_number, NULL::int AS scope_suffix, NULL::int AS scope_annex_number, NULL::int AS scope_chapter_number,
             NULL::text AS scope_container_type
         UNION ALL
-        SELECT author."rootAnnexId", 'ANNEX', author."rootResolutionId", author."resInitial", author."resNumber", author."resYear", FALSE, FALSE, NULL, NULL, NULL, NULL, 'RESOLUTION' WHERE author."rootAnnexId" IS NOT NULL
+        SELECT author."rootAnnexId", 'ANNEX', author."rootResolutionId", author."resInitial", author."resNumber", author."resYear", FALSE, NULL, NULL, NULL, NULL, 'RESOLUTION' WHERE author."rootAnnexId" IS NOT NULL
         UNION ALL
-        SELECT author."rootChapterId", 'CHAPTER', author."rootResolutionId", author."resInitial", author."resNumber", author."resYear", FALSE, FALSE, NULL, NULL, NULL, NULL, 'ANNEX' WHERE author."rootChapterId" IS NOT NULL
+        SELECT author."rootChapterId", 'CHAPTER', author."rootResolutionId", author."resInitial", author."resNumber", author."resYear", FALSE, NULL, NULL, NULL, NULL, 'ANNEX' WHERE author."rootChapterId" IS NOT NULL
         UNION ALL
-        SELECT author.id, 'ARTICLE', author."rootResolutionId", author."resInitial", author."resNumber", author."resYear", FALSE, FALSE, NULL, NULL, NULL, NULL, 'RESOLUTION' -- Context lost for author, default to res/irrelevant
+        SELECT author.id, 'ARTICLE', author."rootResolutionId", author."resInitial", author."resNumber", author."resYear", FALSE, NULL, NULL, NULL, NULL, 'RESOLUTION'
 
         UNION ALL
 
@@ -323,9 +320,8 @@ ChangeDiscovery(
             match_result.virt_type,
             scope.root_id, scope.root_res_initial, scope.root_res_number, scope.root_res_year,
             TRUE, -- Main Tree
-            match_result.v_is_wild,
             match_result.v_num, match_result.v_suf, match_result.v_annex_num, match_result.v_chap_num,
-            scope.entity_type -- New entity is contained by the current scope
+            scope.entity_type -- Inherit container type
         WHERE match_result.virt_type IS NOT NULL
 
         UNION ALL
@@ -334,7 +330,7 @@ ChangeDiscovery(
         SELECT
             e_art.id, 'ARTICLE',
             scope.root_id, scope.root_res_initial, scope.root_res_number, scope.root_res_year,
-            TRUE, FALSE,
+            TRUE,
             e_art.number, e_art.suffix,
             match_result.v_annex_num,
             e_chap.number,
@@ -351,7 +347,7 @@ ChangeDiscovery(
         SELECT
             e_chap.id, 'CHAPTER',
             scope.root_id, scope.root_res_initial, scope.root_res_number, scope.root_res_year,
-            TRUE, FALSE,
+            TRUE,
             NULL, NULL,
             match_result.v_annex_num,
             e_chap.number,
@@ -369,7 +365,12 @@ ChangeDiscovery(
 -- =============================================================================
 -- FINAL SELECTION
 -- =============================================================================
-SELECT DISTINCT causing_change_id AS id
-FROM ChangeDiscovery
-WHERE causing_change_id IS NOT NULL
-  AND NOT is_cycle;
+SELECT DISTINCT
+    cd.causing_change_id AS id,
+    r_modifier.date AS date
+FROM ChangeDiscovery cd
+         JOIN "Change" c ON cd.causing_change_id = c.id
+         JOIN "v_ArticleContext" author_ctx ON c."articleModifierId" = author_ctx.id
+         JOIN "Resolution" r_modifier ON author_ctx."rootResolutionId" = r_modifier.id
+WHERE cd.causing_change_id IS NOT NULL
+  AND NOT cd.is_cycle;

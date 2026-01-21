@@ -113,8 +113,7 @@ model Article {
   // Index: Optimized partial indexes for lookups by resolution, annex, or chapter
   // Trigger when concrete type is created: Checks that the type matches the associated model
 
-  //TODO check: article number and suffix must be present if parent is resolution/annex/chapter
-
+  // TODO check: article number and suffix must be present if parent is resolution/annex/chapter
   @@unique([resolutionId, number, suffix])
   @@unique([annexId, number, suffix])
   @@unique([chapterId, number, suffix])
@@ -186,10 +185,9 @@ model ChangeModifyArticle {
 model ChangeReplaceArticle {
   id                       String           @id @db.Uuid
   change                   Change           @relation(fields: [id], references: [id], onDelete: Cascade)
-  newContent               Article          @relation(fields: [articleId], references: [id])
+  newContent               Article?
   targetArticle            ReferenceArticle @relation(fields: [targetArticleReferenceId], references: [id])
   targetArticleReferenceId String           @unique @db.Uuid
-  articleId                String           @db.Uuid
 
   // Trigger: Prevents circular reference (An article cannot modify/replace itself)
   // Trigger: Cleanup target references when this change is deleted

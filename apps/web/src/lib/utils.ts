@@ -1,7 +1,8 @@
-import { clsx, type ClassValue } from "clsx"
-import { twMerge } from "tailwind-merge"
-import { formatInTimeZone } from 'date-fns-tz';
+import {type ClassValue, clsx} from "clsx"
+import {twMerge} from "tailwind-merge"
+import {formatInTimeZone} from 'date-fns-tz';
 import {Resolution} from "@repo/db/prisma/client";
+import _stringify from "json-stable-stringify";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
@@ -66,4 +67,8 @@ export function assign<T, P extends readonly string[], V>(
     ) as T[keyof T];
 
     return copy as SetDeep<T, P, V>
+}
+
+export function stableStringify(obj: object): string {
+    return _stringify(obj)!;
 }
