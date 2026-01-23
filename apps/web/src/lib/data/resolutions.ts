@@ -49,3 +49,76 @@ export async function deleteResolutionById(resolutionId: string) {
     })
     await createDeleteAssetJob(assetId!)
 }
+
+export async function getResolutionIdByNaturalKey(key: {initial: string, number: number, year: number}): Promise<string | null> {
+    await checkResourcePermission("resolution", "read");
+    const res = await prisma.resolution.findFirst({
+        where: {
+            initial: key.initial,
+            number: key.number,
+            year: key.year
+        },
+        select: {
+            id: true
+        }
+    });
+    return res?.id ?? null;
+}
+
+
+export type ResolutionDBDataToShow = NonNullable<Awaited<ReturnType<typeof fetchResolutionDataToShow>>>;
+
+export async function fetchResolutionDataToShow(resolutionId: string) {
+    await checkResourcePermission("resolution", "read");
+    const res = await prisma.resolution.findUnique({
+        where: {
+            id: resolutionId
+        },
+        include: {
+            recitals: {
+                include: {
+                    tables: true
+                }
+            },
+            considerations: {
+                include: {
+                    tables: true
+                }
+            },
+            articles: {
+                include: {
+                    tables: true
+                }
+            },
+            annexes: {
+                include: {
+                    annexWithArticles: {
+                        include: {
+                            standaloneArticles: {
+                                include: {
+                                    tables: true
+                                }
+                            },
+                            chapters: {
+                                include: {
+                                    articles: {
+                                        include: {
+                                            tables: true
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    annexText: {
+                        include: {
+                            tables: true
+                        }
+                    }
+                }
+            }
+        }
+    });
+    // TODO textReferences
+    return res;
+}

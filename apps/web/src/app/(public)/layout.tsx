@@ -7,7 +7,7 @@ export default function PublicLayout({children}: { children: React.ReactNode }) 
             <div className="absolute top-4 right-4">
                 <ThemeToggler/>
             </div>
-            <div className="size-full overflow-y-auto">
+            <div className="size-full overflow-y-auto" id="main-scroller">
                 {children}
             </div>
         </div>
