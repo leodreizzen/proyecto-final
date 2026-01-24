@@ -7,9 +7,9 @@ import {
     ResolutionSelect
 } from "@repo/db/prisma/models";
 import prisma from "@/lib/prisma";
-import {checkConcreteChange} from "@/lib/data/polymorphism/change";
 import {checkResourcePermission} from "@/lib/auth/data-authorization";
-import {getRelevantChangesList} from "@/lib/data/changes/relevant-changes";
+import {ChangeContext} from "@/lib/definitions/changes";
+import {checkConcreteChange} from "@/lib/data/polymorphism/change";
 
 
 const resolutionSelect = {
@@ -175,22 +175,15 @@ const referenceAllTargetsSelect = {
 } as const satisfies ReferenceSelect
 
 
-export async function getChangesForValidityGraph(uuid: string) {
+export async function getChangesDataForValidityGraph(changeIds: string[], contexts: Map<string, ChangeContext>) {
     await checkResourcePermission("resolution", "read");
-    const changesToSearch = await getRelevantChangesList(uuid);
 
     /*
-        Get:
-        - All ancestors.
-        - If change affects validity, its target (concrete reference). If target has a native version, its ancestors as well.
-        - If change creates an entity, its id, target, and number/suffix in destination, plus all children
-     */
-
-    const changeIds = changesToSearch.map(c => c.id);
-    const dates: Map<string, Date> = new Map();
-    changesToSearch.forEach(c => {
-        dates.set(c.id, c.date);
-    });
+    Get:
+    - All ancestors.
+    - If change affects validity, its target (concrete reference). If target has a native version, its ancestors as well.
+    - If change creates an entity, its id, target, and number/suffix in destination, plus all children
+    */
 
     const changes = await prisma.change.findMany({
         where: {
@@ -288,9 +281,10 @@ export async function getChangesForValidityGraph(uuid: string) {
         }
     })
     return changes.map(change => {
-        const date = dates.get(change.id);
+        const context = contexts.get(change.id);
         const checkedChange = checkConcreteChange(change);
-        if (!date) throw new Error("Date missing for change " + change.id);
+        if (!context) throw new Error("Context missing for change " + change.id);
+        const date = context.date;
         return {
             ...checkedChange,
             date

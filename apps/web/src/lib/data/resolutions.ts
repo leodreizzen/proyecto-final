@@ -66,9 +66,9 @@ export async function getResolutionIdByNaturalKey(key: {initial: string, number:
 }
 
 
-export type ResolutionDBDataToShow = NonNullable<Awaited<ReturnType<typeof fetchResolutionDataToShow>>>;
+export type ResolutionDBDataToShow = NonNullable<Awaited<ReturnType<typeof fetchResolutionInitialData>>>;
 
-export async function fetchResolutionDataToShow(resolutionId: string) {
+export async function fetchResolutionInitialData(resolutionId: string) {
     await checkResourcePermission("resolution", "read");
     const res = await prisma.resolution.findUnique({
         where: {

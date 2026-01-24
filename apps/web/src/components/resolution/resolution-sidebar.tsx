@@ -64,7 +64,7 @@ export function ResolutionSidebar({ resolution, className, versions, currentVers
                                         <a href={`#annex-${annex.number}`} className="block font-medium text-foreground hover:text-primary transition-colors">
                                             Anexo {annex.number}
                                         </a>
-                                        {annex.type === "WithArticles" && (
+                                        {annex.type === "WITH_ARTICLES" && (
                                             <ul className="mt-2 ml-2 space-y-5 lg:space-y-2">
                                                 {annex.chapters.map((chap, cIdx) => (
                                                     <li key={`c-${cIdx}`}>

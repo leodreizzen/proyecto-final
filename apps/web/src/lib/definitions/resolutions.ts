@@ -43,7 +43,7 @@ export type ChapterToShow = {
 } & Repealable
 
 export type AnnexToShow = ({
-    type: "WithArticles",
+    type: "WITH_ARTICLES",
     standaloneArticles: ArticleToShow[],
     chapters: ChapterToShow[]
     initialText: string | null;
@@ -60,12 +60,14 @@ export type AnnexToShow = ({
 
 export type RecitalToShow = {
     text: string;
-    tables: TableToShow[]
+    tables: TableToShow[];
+    number: number
 }
 
 export type ConsiderationToShow = {
     text: string;
-    tables: TableToShow[]
+    tables: TableToShow[];
+    number: number;
 }
 
 
@@ -84,7 +86,9 @@ export type ResolutionToShow = {
     annexes: AnnexToShow[];
 
     originalFileId: string
-} & Repealable
+} & Repealable & {
+    ratifiedBy: ResolutionIDToShow[] | null
+}
 
 export type ResolutionVersion = {
     date: Date,

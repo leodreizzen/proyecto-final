@@ -1,6 +1,6 @@
-import {getChangesForValidityGraph} from "@/lib/data/changes/validity-graph";
+import {getChangesDataForValidityGraph} from "@/lib/data/changes/validity-graph";
 
-export type ChangeForGraph = Awaited<ReturnType<typeof getChangesForValidityGraph>>[number];
+export type ChangeForGraph = Awaited<ReturnType<typeof getChangesDataForValidityGraph>>[number];
 export type ArticleForGraph = ChangeForGraph["articleModifier"]["article"];
 export type AnnexForGraph = NonNullable<ArticleForGraph["annex"]>["annex"];
 export type ResolutionForGraph = NonNullable<ArticleForGraph["resolution"]>;

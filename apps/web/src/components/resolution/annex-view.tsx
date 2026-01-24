@@ -126,7 +126,7 @@ export function AnnexView({annex}: AnnexViewProps) {
         </div>
     );
 
-    const body = annex.type === "WithArticles" ? (
+    const body = annex.type === "WITH_ARTICLES" ? (
             <div>
                 {annex.initialText && <p className="font-bold mb-4 text-center">{annex.initialText}</p>}
 

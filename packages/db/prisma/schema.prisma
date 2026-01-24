@@ -7,7 +7,7 @@
 generator client {
   provider        = "prisma-client"
   output          = "../src/generated/prisma"
-  previewFeatures = ["typedSql"]
+  previewFeatures = ["typedSql", "views"]
 }
 
 datasource db {
@@ -43,8 +43,9 @@ model Resolution {
 
   referencedBy ReferenceResolution[]
 
-  upload             ResolutionUpload @relation(fields: [resolutionUploadId], references: [id])
-  resolutionUploadId String           @unique @db.Uuid
+  upload             ResolutionUpload   @relation(fields: [resolutionUploadId], references: [id])
+  resolutionUploadId String             @unique @db.Uuid
+  vArticleContexts   v_ArticleContext[]
 
   // Check: "year" must be between 1000 and 9999 and match the year of "date"
   // Check: "number" > 0
@@ -114,6 +115,9 @@ model Article {
   // Trigger when concrete type is created: Checks that the type matches the associated model
 
   // TODO check: article number and suffix must be present if parent is resolution/annex/chapter
+
+  context v_ArticleContext[]
+
   @@unique([resolutionId, number, suffix])
   @@unique([annexId, number, suffix])
   @@unique([chapterId, number, suffix])
@@ -672,4 +676,22 @@ model Asset {
   resolution Resolution?
 
   @@unique([bucket, path])
+}
+
+view v_ArticleContext {
+  article          Article    @relation(fields: [id], references: [id])
+  id               String     @unique
+  number           Int?
+  suffix           Int?
+  rootResolution   Resolution @relation(fields: [rootResolutionId], references: [id])
+  rootResolutionId String
+  rootAnnexId      String?
+  rootChapterId    String?
+  resInitial       String
+  resNumber        Int
+  resYear          Int
+  annexNumber      Int?
+  chapterNumber    Int?
+  is_structural    Boolean
+  resDate          DateTime
 }

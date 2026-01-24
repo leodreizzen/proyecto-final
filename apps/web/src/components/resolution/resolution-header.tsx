@@ -42,7 +42,7 @@ function getUniqueModifiers(resolution: ResolutionToShow): ResolutionIDToShow[] 
     resolution.annexes.forEach(annex => {
         add(annex.repealedBy);
         
-        if (annex.type === "WithArticles") {
+        if (annex.type === "WITH_ARTICLES") {
             // Standalone Articles
             annex.standaloneArticles.forEach(art => {
                 if (art.modifiedBy) art.modifiedBy.forEach(add);
