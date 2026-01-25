@@ -27,6 +27,11 @@ export async function getAssembledResolution(resolutionId: string, versionDate: 
     const finalResolution = applyChangesToResolution(dataToShow, changes);
     sortResolution(finalResolution);
 
+    versions.unshift({
+        date: resolution.date,
+        causedBy: finalResolution.id
+    })
+
     return {resolutionData: finalResolution, versions};
 }
 
