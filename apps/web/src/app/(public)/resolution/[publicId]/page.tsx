@@ -1,9 +1,10 @@
 import {notFound, redirect} from "next/navigation";
 import {authCheck, publicRoute} from "@/lib/auth/route-authorization";
 import {ResolutionViewer} from "@/components/resolution/resolution-viewer";
-import {slugToResID} from "@/lib/paths";
+import {changeDateInResolutionParams, slugToResID} from "@/lib/paths";
 import {getAssembledResolution} from "@/lib/assembly/assemble-resolution";
 import {getResolutionIdByNaturalKey} from "@/lib/data/resolutions";
+import {ResolutionNaturalID} from "@/lib/definitions/resolutions";
 
 
 export default async function ResolutionPage({params, searchParams: searchParamsPromise}: {
@@ -28,22 +29,35 @@ export default async function ResolutionPage({params, searchParams: searchParams
     let dateToSearch = null;
     if (dateParam !== undefined) {
         if (Array.isArray(dateParam)) {
-            changeDate(publicId, searchParams, null);
+            changeDateServer(resId, searchParams, null);
         }
         dateToSearch = new Date(dateParam as string);
         if (isNaN(dateToSearch.getTime())) {
-            changeDate(publicId, searchParams, null);
+            changeDateServer(resId, searchParams, null);
         }
     }
 
-    const {resolutionData, versions} = await getAssembledResolution(resUUID, dateToSearch);
+    const {resolutionData, versions: versionsAsc} = await getAssembledResolution(resUUID, dateToSearch);
 
-    const currentVersion = versions[0]!;
+    const versions = versionsAsc.reverse();
+
+    let currentVersion;
+    if (dateToSearch) {
+        currentVersion = versions.find(v => v.date.getTime() === dateToSearch.getTime()) || null;
+    }
+
+    if (!currentVersion && dateToSearch) {
+        changeDateServer(resId, searchParams, null);
+    }
+
+    if (!currentVersion) {
+        currentVersion = versions[0]!;
+    }
 
     return <ResolutionViewer resolution={resolutionData} versions={versions} currentVersion={currentVersion}/>;
 }
 
-function changeDate(publicId: string, searchParams: { [key: string]: string | string[] | undefined }, date: Date | null) {
+function changeDateServer(resoutionId: ResolutionNaturalID, searchParams: { [key: string]: string | string[] | undefined }, date: Date | null) {
     const newSearchParams = new URLSearchParams();
 
     for (const [key, value] of Object.entries(searchParams)) {
@@ -53,8 +67,6 @@ function changeDate(publicId: string, searchParams: { [key: string]: string | st
         }
     }
 
-    if (date)
-        newSearchParams.set("date", date.toISOString());
-
-    redirect(`/resolution/${encodeURIComponent(publicId)}/${newSearchParams.toString()}`);
+    redirect(changeDateInResolutionParams(resoutionId, newSearchParams, date));
 }
+

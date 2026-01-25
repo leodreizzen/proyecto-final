@@ -1,3 +1,5 @@
+import {ResolutionNaturalID} from "@/lib/definitions/resolutions";
+
 const paramsRegex = /^(\w+)-(\d+)-(\d+)$/;
 
 export function slugToResID(publicId: string) {
@@ -17,9 +19,23 @@ export function resIDToSlug(resId: { initial: string; number: number; year: numb
     if (resId.initial.includes('-')) {
         throw new Error("Invalid initial: cannot contain hyphens");
     }
-    return `${resId.initial.toUpperCase()}-${resId.number}-${resId.year}`;
+    return encodeURIComponent(`${resId.initial.toUpperCase()}-${resId.number}-${resId.year}`);
 }
 
 export function pathForResolution(resId: { initial: string; number: number; year: number }) {
     return `/resolution/${resIDToSlug(resId)}`;
+}
+
+
+export function changeDateInResolutionParams(resolutionId: ResolutionNaturalID, searchParams: URLSearchParams, date: Date | null) {
+    const newSearchParams = new URLSearchParams(searchParams);
+
+    if (date)
+        newSearchParams.set("date", date.toISOString());
+    else
+        newSearchParams.delete("date");
+
+    const slug = resIDToSlug(resolutionId);
+
+    return `/resolution/${slug}?${newSearchParams.toString()}`;
 }
