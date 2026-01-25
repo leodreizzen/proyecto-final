@@ -2,7 +2,7 @@
 import {ResolutionToShow, ResolutionVersion} from "@/lib/definitions/resolutions";
 import { Check, Clock } from "lucide-react";
 import Link from "next/link";
-import {cn, formatDate} from "@/lib/utils";
+import {cn, formatDateUTC} from "@/lib/utils";
 import {useEffect, useRef} from "react";
 import {useSearchParams} from "next/navigation";
 import {changeDateInResolutionParams} from "@/lib/paths";
@@ -44,7 +44,7 @@ export function VersionSelector({ resolution, versions, currentVersion }: Versio
                             )}
                             
                             <div className="flex flex-col">
-                                <span>{formatDate(ver.date)}</span>
+                                <span>{formatDateUTC(ver.date)}</span>
                                 <span className="text-xs opacity-80">
                                    {isInitialVersion ? "Versión inicial" : (isCurrent ? "(Actual - " : "(") + `Por Res. ${ver.causedBy.initial}-${ver.causedBy.number})`}
                                 </span>

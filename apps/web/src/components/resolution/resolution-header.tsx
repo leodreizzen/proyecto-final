@@ -10,7 +10,7 @@ import {
     DropdownMenuSeparator,
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import {formatDate} from "@/lib/utils";
+import {formatDateUTC} from "@/lib/utils";
 
 interface ResolutionHeaderProps {
     resolution: ResolutionToShow;
@@ -114,7 +114,7 @@ export function ResolutionHeader({resolution, versions, currentVersion}: {
                             </span>
                         )}
                         <span className="text-muted-foreground text-sm">
-                            {formatDate(resolution.date)}
+                            {formatDateUTC(resolution.date)}
                         </span>
                     </div>
 

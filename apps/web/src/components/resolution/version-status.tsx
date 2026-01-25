@@ -4,7 +4,7 @@ import { AlertTriangle, XCircle } from "lucide-react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import {changeDateInResolutionParams, pathForResolution} from "@/lib/paths";
-import {formatDate} from "@/lib/utils";
+import {formatDateUTC} from "@/lib/utils";
 import {useSearchParams} from "next/navigation";
 
 interface VersionStatusProps {
@@ -27,7 +27,7 @@ export function VersionStatus({ resolution, isCurrentVersion }: VersionStatusPro
                         <div>
                             <p className="font-bold">VERSIÓN HISTÓRICA</p>
                             <p className="text-sm opacity-90">
-                                Estás viendo una versión histórica del {formatDate(resolution.date)}.
+                                Estás viendo una versión histórica del {formatDateUTC(resolution.date)}.
                             </p>
                         </div>
                     </div>

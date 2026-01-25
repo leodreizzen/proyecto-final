@@ -12,8 +12,8 @@ export function formatDateTime(date: Date) {
     return formatInTimeZone(date, 'America/Argentina/Buenos_Aires', 'dd/MM/yyyy HH:mm:ss zzz');
 }
 
-export function formatDate(date: Date) {
-    return formatInTimeZone(date, 'America/Argentina/Buenos_Aires', 'dd/MM/yyyy');
+export function formatDateUTC(date: Date) {
+    return formatInTimeZone(date, 'UTC', 'dd/MM/yyyy');
 }
 
 export function formatResolutionId(resolution: Resolution){
