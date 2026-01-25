@@ -10,9 +10,10 @@ export function annexInitialDataToShow(
 ): AnnexToShow {
     const numberToUse = overrides?.number ?? annex.number;
 
-    if (!annex.annexText)
-        throw new Error("Annex text information missing for annex with id " + annex.id);
     if (annex.type === "TEXT") {
+        if (!annex.annexText)
+            throw new Error("Annex text information missing for annex with id " + annex.id);
+
         return {
             ...annex,
             ...annex.annexText,
