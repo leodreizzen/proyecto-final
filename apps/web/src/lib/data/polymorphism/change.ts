@@ -15,4 +15,4 @@ const ChangeConfigMap = {
     RATIFY_AD_REFERENDUM: "changeRatifyAdReferendum"
 } as const satisfies Record<ChangeType, keyof ChangeInclude>;
 
-export const checkConcreteChange = createPolymorphicValidator(ChangeConfigMap, "type");
+export const checkConcreteChange = createPolymorphicValidator(ChangeConfigMap, "type").withObjects();

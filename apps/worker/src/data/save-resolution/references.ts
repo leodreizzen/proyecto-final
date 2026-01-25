@@ -10,7 +10,7 @@ import {
     ReferenceCreateInput,
     ReferenceResolutionCreateInput,
     ReferenceResolutionCreateWithoutReferenceInput,
-    TextReferenceCreateInput
+    TextReferenceCreateWithoutContentBlockInput
 } from "@repo/db/prisma/models";
 import {suffixToNumber} from "@/data/save-resolution/util";
 
@@ -190,7 +190,7 @@ export function chapterReferenceCreateInput(ref: Extract<Parser.Reference, {
     }
 }
 
-export function textReferencesCreationInput(references: Parser.TextReference[]): TextReferenceCreateInput[] {
+export function textReferencesCreationInput(references: Parser.TextReference[]): TextReferenceCreateWithoutContentBlockInput[] {
     return references.map(ref => ({
         textBefore: ref.before,
         textAfter: ref.after,
@@ -198,6 +198,6 @@ export function textReferencesCreationInput(references: Parser.TextReference[]):
         reference: {
             create: genericReferenceCreateInput(ref.reference, "TEXT_REFERENCE")
         }
-    } satisfies TextReferenceCreateInput));
+    } satisfies TextReferenceCreateWithoutContentBlockInput));
 
 }

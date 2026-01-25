@@ -56,15 +56,18 @@ model Resolution {
   @@index([keywords])
 }
 
+enum ContentBlockType {
+  TEXT
+  TABLE
+}
+
 model Recital {
   id String @id @default(dbgenerated("uuidv7()")) @db.Uuid
 
   resolution   Resolution      @relation(fields: [resolutionId], references: [id], onDelete: Cascade)
   resolutionId String          @db.Uuid
   number       Int
-  text         String
-  references   TextReference[]
-  tables       Table[]
+  content      ContentBlock[]
 
   @@unique([resolutionId, number])
 }
@@ -75,9 +78,7 @@ model Consideration {
   resolution   Resolution      @relation(fields: [resolutionId], references: [id], onDelete: Cascade)
   resolutionId String          @db.Uuid
   number       Int
-  text         String
-  references   TextReference[]
-  tables       Table[]
+  content      ContentBlock[]
 
   @@unique([resolutionId, number])
 }
@@ -98,9 +99,7 @@ model Article {
 
   number                Int?
   suffix                Int?
-  text                  String
-  tables                Table[]
-  references            TextReference[]
+  content               ContentBlock[]
   type                  ArticleType
   articleNormative      ArticleNormative?
   articleModifier       ArticleModifier?
@@ -114,7 +113,7 @@ model Article {
   // Index: Optimized partial indexes for lookups by resolution, annex, or chapter
   // Trigger when concrete type is created: Checks that the type matches the associated model
 
-  // TODO check: article number and suffix must be present if parent is resolution/annex/chapter
+  // Check: article number must be present if parent is resolution/annex/chapter
 
   context v_ArticleContext[]
 
@@ -176,8 +175,8 @@ model Change {
 model ChangeModifyArticle {
   id                       String           @id @db.Uuid
   change                   Change           @relation(fields: [id], references: [id], onDelete: Cascade)
-  before                   String
-  after                    String
+  before                   ContentBlock[]   @relation("articleBefore")
+  after                    ContentBlock[]   @relation("articleAfter")
   targetArticle            ReferenceArticle @relation(fields: [targetArticleReferenceId], references: [id])
   targetArticleReferenceId String           @unique @db.Uuid
 
@@ -255,8 +254,8 @@ model ChangeModifyTextAnnex {
   change                 Change         @relation(fields: [id], references: [id], onDelete: Cascade)
   targetAnnex            ReferenceAnnex @relation(fields: [targetAnnexReferenceId], references: [id])
   targetAnnexReferenceId String         @unique @db.Uuid
-  before                 String
-  after                  String
+  before                 ContentBlock[] @relation("annexBefore")
+  after                  ContentBlock[] @relation("annexAfter")
 
   // Trigger: Cleanup references when deleted
   @@index([targetAnnexReferenceId])
@@ -338,7 +337,7 @@ model Annex {
   // Check: Ensures annex belongs to exactly one source (Resolution or ChangeReplaceAnnex)
   // Check: "number" > 0
   // Trigger: Automatically links/unlinks references pointing to this annex on creation or update
-  // TODO check: annex number must be present if parent is resolution
+  // Check: annex number must be present if parent is resolution
   referencedBy ReferenceAnnex[]
 
   @@unique([resolutionId, number])
@@ -348,9 +347,7 @@ model Annex {
 model AnnexText {
   id         String          @id @db.Uuid
   annex      Annex           @relation(fields: [id], references: [id], onDelete: Cascade)
-  content    String
-  references TextReference[]
-  tables     Table[]
+  content    ContentBlock[]
 }
 
 enum AnnexType {
@@ -382,21 +379,62 @@ model AnnexChapter {
   @@unique([annexId, number])
 }
 
-model Table {
-  id      String @id @default(dbgenerated("uuidv7()")) @db.Uuid
-  number  Int
-  content Json
+model ContentBlock {
+  id String @id @default(dbgenerated("uuidv7()")) @db.Uuid
+  type ContentBlockType
+  order Int
+  
+  text String?
+  tableContent Json?
 
-  recital         Recital?       @relation(fields: [recitalId], references: [id], onDelete: Cascade)
-  recitalId       String?        @db.Uuid
-  consideration   Consideration? @relation(fields: [considerationId], references: [id], onDelete: Cascade)
-  considerationId String?        @db.Uuid
-  article         Article?       @relation(fields: [articleId], references: [id], onDelete: Cascade)
-  articleId       String?        @db.Uuid
-  annexText       AnnexText?     @relation(fields: [annexTextId], references: [id], onDelete: Cascade)
-  annexTextId     String?        @db.Uuid
+  // Parents
+  recital Recital? @relation(fields: [recitalId], references: [id], onDelete: Cascade)
+  recitalId String? @db.Uuid
 
-  // Check: Ensures table belongs to exactly one owner (Recital, Consideration, Article, or AnnexText)
+  consideration Consideration? @relation(fields: [considerationId], references: [id], onDelete: Cascade)
+  considerationId String? @db.Uuid
+
+  article Article? @relation(fields: [articleId], references: [id], onDelete: Cascade)
+  articleId String? @db.Uuid
+
+  annexText AnnexText? @relation(fields: [annexTextId], references: [id], onDelete: Cascade)
+  annexTextId String? @db.Uuid
+
+  // Change parents
+  changeModifyArticleBefore ChangeModifyArticle? @relation("articleBefore", fields: [changeModifyArticleBeforeId], references: [id], onDelete: Cascade)
+  changeModifyArticleBeforeId String? @db.Uuid
+
+  changeModifyArticleAfter ChangeModifyArticle? @relation("articleAfter", fields: [changeModifyArticleAfterId], references: [id], onDelete: Cascade)
+  changeModifyArticleAfterId String? @db.Uuid
+
+  changeModifyTextAnnexBefore ChangeModifyTextAnnex? @relation("annexBefore", fields: [changeModifyTextAnnexBeforeId], references: [id], onDelete: Cascade)
+  changeModifyTextAnnexBeforeId String? @db.Uuid
+
+  changeModifyTextAnnexAfter ChangeModifyTextAnnex? @relation("annexAfter", fields: [changeModifyTextAnnexAfterId], references: [id], onDelete: Cascade)
+  changeModifyTextAnnexAfterId String? @db.Uuid
+
+  references TextReference[]
+
+  @@index([recitalId])
+  @@index([considerationId])
+  @@index([articleId])
+  @@index([annexTextId])
+  @@index([changeModifyArticleBeforeId])
+  @@index([changeModifyArticleAfterId])
+  @@index([changeModifyTextAnnexBeforeId])
+  @@index([changeModifyTextAnnexAfterId])
+
+  @@unique([recitalId, order])
+  @@unique([considerationId, order])
+  @@unique([articleId, order])
+  @@unique([annexTextId, order])
+  @@unique([changeModifyArticleBeforeId, order])
+  @@unique([changeModifyArticleAfterId, order])
+  @@unique([changeModifyTextAnnexBeforeId, order])
+  @@unique([changeModifyTextAnnexAfterId, order])
+
+  // Check: Ensures content block belongs to exactly one parent (Recital, Consideration, Article, AnnexText, ChangeModifyArticle (before/after), or ChangeModifyTextAnnex (before/after))
+  // Check: Consistency between type and content. If TEXT, text must be present and tableContent null. If TABLE, tableContent must be present and text null.
 }
 
 model TextReference {
@@ -408,16 +446,9 @@ model TextReference {
   reference   Reference @relation(fields: [referenceId], references: [id])
   referenceId String    @unique @db.Uuid
 
-  recital         Recital?       @relation(fields: [recitalId], references: [id], onDelete: Cascade)
-  recitalId       String?        @db.Uuid
-  consideration   Consideration? @relation(fields: [considerationId], references: [id], onDelete: Cascade)
-  considerationId String?        @db.Uuid
-  article         Article?       @relation(fields: [articleId], references: [id], onDelete: Cascade)
-  articleId       String?        @db.Uuid
-  annexText       AnnexText?     @relation(fields: [annexTextId], references: [id], onDelete: Cascade)
-  annexTextId     String?        @db.Uuid
+  contentBlock ContentBlock @relation(fields: [contentBlockId], references: [id], onDelete: Cascade)
+  contentBlockId String @db.Uuid
 
-  // Check: Ensures text reference belongs to exactly one owner (Recital, Consideration, Article, or AnnexText)
   // Trigger: Cleanup parent "Reference" when this record is deleted
 }
 

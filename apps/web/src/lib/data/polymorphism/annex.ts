@@ -7,4 +7,4 @@ const AnnexConfigMap = {
     WITH_ARTICLES: "annexWithArticles"
 } as const satisfies Record<AnnexType, keyof AnnexInclude>;
 
-export const checkAnnex = createPolymorphicValidator(AnnexConfigMap, "type");
+export const checkAnnex = createPolymorphicValidator(AnnexConfigMap, "type").withObjects();

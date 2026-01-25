@@ -5,8 +5,8 @@ import {
     ContentBlock,
     ResolutionNaturalID,
     ResolutionToShow,
-    TableToShow
 } from "@/lib/definitions/resolutions";
+import {TableContent} from "@repo/db/content-blocks";
 import {sortChangeWithContext} from "@/lib/assembly/utils";
 import {ChangeWithContextForAssembly} from "@/lib/definitions/changes";
 import {checkReference} from "@/lib/data/polymorphism/reference";
@@ -15,22 +15,23 @@ import {applyTextModification} from "@/lib/assembly/text-processor";
 import {articleInitialDataToShow} from "@/lib/data/remapping/article-to-show";
 import {annexInitialDataToShow} from "@/lib/data/remapping/annex-to-show";
 import {parseToContentBlocks} from "@/lib/utils/content-block-parser";
+import {mapContentBlocks} from "@/lib/data/remapping/content-blocks";
 
 type ResolutionID = ResolutionNaturalID;
 
 function contentBlocksToText(blocks: ContentBlock[]): string {
     return blocks.map(b => {
-        if (b.type === "text") return b.value;
-        if (b.type === "table") return `{{tabla ${b.table.number}}}`;
+        if (b.type === "TEXT") return b.text;
+        if (b.type === "TABLE") return `{{tabla ${b.tableContent.number}}}`;
         return "";
     }).join("");
 }
 
-function getTablesFromBlocks(blocks: ContentBlock[]): TableToShow[] {
-    const tables: TableToShow[] = [];
+function getTablesFromBlocks(blocks: ContentBlock[]): TableContent[] {
+    const tables: TableContent[] = [];
     for (const block of blocks) {
-        if (block.type === "table") {
-            tables.push(block.table);
+        if (block.type === "TABLE") {
+            tables.push(block.tableContent);
         }
     }
     return tables;
@@ -288,7 +289,7 @@ export class ResolutionChangeApplier {
     }
 
     private applyRepealChange(change: ChangeWithContextForAssembly & { type: "REPEAL" }) {
-        const targetRef = checkReference(change.changeRepeal.target);
+        const targetRef = checkReference((change).changeRepeal.target);
         const slot = this.getSlotFromRef(targetRef);
 
         if (!slot) {
@@ -533,8 +534,8 @@ export class ResolutionChangeApplier {
         }
 
         const success = slot.modify(
-            changeModify.before, 
-            changeModify.after, 
+            contentBlocksToText(mapContentBlocks(changeModify.before)),
+            contentBlocksToText(mapContentBlocks(changeModify.after)),
             change.context.rootResolution
         );
 
@@ -576,7 +577,15 @@ export class ResolutionChangeApplier {
             return;
         }
 
-        slot.modify(changeModify.before, changeModify.after, change.context.rootResolution);
+        const success = slot.modify(
+            contentBlocksToText(mapContentBlocks(changeModify.before)),
+            contentBlocksToText(mapContentBlocks(changeModify.after)),
+            change.context.rootResolution
+        );
+        
+        if (!success) {
+            this.inapplicableChanges.push(change);
+        }
     }
 
 

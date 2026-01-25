@@ -5,16 +5,24 @@ import {checkConcreteChange} from "@/lib/data/polymorphism/change";
 export type ChangeDataForAssembly = Awaited<ReturnType<typeof fetchChangesDataForAssembly>>[number];
 
 export async function fetchChangesDataForAssembly(changeIds: string[]) {
-    const articleInclude = {
-        tables: true
-    } as const satisfies ArticleInclude;
+    const contentInclude = {
+            content: {
+                include: {
+                    references: true
+                },
+                orderBy: {
+                    order: 'asc' as const
+                }
+            }
+    } as const;
+
+    const articleInclude = contentInclude satisfies ArticleInclude;
 
     const annexInclude = {
         annexText: {
-            include: {
-                tables: true
-            }
-        }, annexWithArticles: {
+            include: contentInclude
+        },
+        annexWithArticles: {
             include: {
                 chapters: {
                     include: {
@@ -37,14 +45,22 @@ export async function fetchChangesDataForAssembly(changeIds: string[]) {
         include: {
             changeModifyArticle: {
                 include: {
-                    targetArticle: true
+                    targetArticle: true,
+                    before: {
+                        include: { references: true },
+                        orderBy: { order: 'asc' }
+                    },
+                    after: {
+                        include: { references: true },
+                        orderBy: { order: 'asc' }
+                    }
                 }
             },
             changeReplaceArticle: {
                 include: {
                     targetArticle: true,
                     newContent: {
-                        include: articleInclude
+                        include: articleInclude,
                     }
                 }
             },
@@ -84,6 +100,14 @@ export async function fetchChangesDataForAssembly(changeIds: string[]) {
             changeModifyTextAnnex: {
                 include: {
                     targetAnnex: true,
+                    before: {
+                        include: { references: true },
+                        orderBy: { order: 'asc' }
+                    },
+                    after: {
+                        include: { references: true },
+                        orderBy: { order: 'asc' }
+                    }
                 }
             },
             changeAddArticle: {

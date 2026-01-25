@@ -4,9 +4,8 @@ import {Asset, ResolutionUpload} from "@repo/db/prisma/client";
 import {PrismaClientKnownRequestError, TransactionPrismaClient} from "@repo/db/prisma";
 import {articleCreationInput} from "@/data/save-resolution/articles";
 import {annexCreationInput} from "@/data/save-resolution/annexes";
-import {textReferencesCreationInput} from "@/data/save-resolution/references";
-import {tablesCreationInput} from "@/data/save-resolution/tables";
 import {ResolutionExistsError} from "@/upload/errors";
+import {parseToContentBlockInputs, withOrder} from "@/data/save-resolution/block-parser";
 
 export async function saveParsedResolution(tx: TransactionPrismaClient, parsedRes: Parser.Resolution, upload: ResolutionUpload, publicAsset: Asset) {
     try {
@@ -72,29 +71,26 @@ export async function saveParsedResolution(tx: TransactionPrismaClient, parsedRe
 }
 
 function recitalsCreationInput(recitals: Parser.Recital[]): RecitalCreateWithoutResolutionInput[] {
-    return recitals.map((recital, index) => (
-        {
+    return recitals.map((recital, index) => {
+        const contentBlocks = parseToContentBlockInputs(recital.text, recital.tables, recital.references);
+        return {
             number: index + 1,
-            text: recital.text,
-            tables: {
-                create: tablesCreationInput(recital.tables)
+            content: {
+                create: withOrder(contentBlocks)
             },
-            references: {
-                create: textReferencesCreationInput(recital.references)
-            }
-        } satisfies RecitalCreateWithoutResolutionInput))
+        } satisfies RecitalCreateWithoutResolutionInput
+    })
 }
 
 
 function considerationsCreationInput(considerations: Parser.Consideration[]): ConsiderationCreateWithoutResolutionInput[] {
-    return considerations.map((consideration, index) => ({
-        number: index + 1,
-        text: consideration.text,
-        tables: {
-            create: tablesCreationInput(consideration.tables)
-        },
-        references: {
-            create: textReferencesCreationInput(consideration.references)
-        }
-    } satisfies ConsiderationCreateWithoutResolutionInput));
+    return considerations.map((consideration, index) => {
+        const contentBlocks = parseToContentBlockInputs(consideration.text, consideration.tables, consideration.references);
+        return {
+            number: index + 1,
+            content: {
+                create: withOrder(contentBlocks)
+            },
+        } satisfies ConsiderationCreateWithoutResolutionInput
+    });
 }

@@ -8,28 +8,32 @@ import {
 import {changeCreationInput} from "@/data/save-resolution/changes";
 import * as Parser from "@/parser/types";
 import {suffixToNumber} from "@/data/save-resolution/util";
-import {tablesCreationInput} from "@/data/save-resolution/tables";
-import {annexReferenceCreateInput, textReferencesCreationInput} from "@/data/save-resolution/references";
+import {annexReferenceCreateInput} from "@/data/save-resolution/references";
+import {parseToContentBlockInputs, withOrder} from "@/data/save-resolution/block-parser";
 
 type GeneralArticle = ({ standalone: true } & Parser.StandaloneArticle) | ({ standalone: false } & Parser.NewArticle);
 
 export function articleCreationInput(article: GeneralArticle): ArticleCreateWithoutResolutionInput {
     const concreteArticleFields = concreateArticleCreationFields(article);
+    
+    // In Parser.types, NewArticle is Article omitted of number, suffix, tables, references.
+    // So we need to handle that.
+    const tables = 'tables' in article ? article.tables : [];
+    const references = 'references' in article ? article.references : [];
+
+    const contentBlocks = parseToContentBlockInputs(article.text, tables, references);
+
     return {
         ...(article.standalone ? {
             number: article.number,
-            suffix: (article.standalone) ? suffixToNumber(article.suffix) : null,
-            tables: {
-                create: tablesCreationInput(article.tables)
-            },
-            references: {
-                create: textReferencesCreationInput(article.references)
-            }
+            suffix: suffixToNumber(article.suffix),
         } : {
             number: null,
             suffix: null,
         }),
-        text: article.text,
+        content: {
+            create: withOrder(contentBlocks)
+        },
         ...concreteArticleFields
     } satisfies ArticleCreateWithoutResolutionInput
 }

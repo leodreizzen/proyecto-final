@@ -1,6 +1,6 @@
 import {PrismaClient} from './generated/prisma/client';
 import {PrismaPg} from '@prisma/adapter-pg'
-import {TableSchema} from "./tables";
+import {TableContentSchema} from "./content-blocks";
 
 let prisma: ReturnType<typeof createPrismaClient>;
 
@@ -26,39 +26,29 @@ function createPrismaClient() {
                     return query(args);
                 }
 
-                if (operation === 'upsert') {
-                    validate(args.create);
-                    validate(args.update);
-                } else {
-                    const data = args.data;
-
-                    if (Array.isArray(data)) {
-                        data.forEach(validate);
-                    } else {
-                        validate(data);
-                    }
-                }
+                // If args.data is present (create/update), validate nested content blocks if possible.
+                // However, Prisma args structure is complex (can be 'create', 'connect', 'update', nested writes).
+                // Validating deeply nested JSONs in a generic extension is hard.
+                // Given we moved logic to Worker (ContentBlock creation), explicit Zod parsing before DB call is safer.
+                // For now, I'll remove the generic 'validate' call as it was specific to the old 'Table' model which had 'content'.
+                // 'ContentBlock' has 'tableContent'.
+                
                 return query(args);
             }
         },
         result: {
-            table: {
-                content: {
-                    needs: { content: true },
+            contentBlock: {
+                tableContent: {
+                    needs: { tableContent: true },
                     compute(data) {
-                        return TableSchema.parse(data.content);
+                        if (!data.tableContent) return null;
+                        return TableContentSchema.parse(data.tableContent);
                     }
                 }
             }
         }
     });
 }
-
-const validate = (data: { content?: unknown }) => {
-    if (data?.content) {
-        data.content = TableSchema.parse(data.content);
-    }
-};
 
 if (process.env.NODE_ENV === 'production') {
     prisma = createPrismaClient();

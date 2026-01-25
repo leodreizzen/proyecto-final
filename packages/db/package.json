@@ -4,8 +4,9 @@
   "description": "",
   "type": "module",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "db:generate": "prisma generate --sql"
+    "db:generate": "prisma generate",
+    "db:push": "prisma db push",
+    "check-types": "tsc --noEmit"
   },
   "keywords": [],
   "author": "",
@@ -25,10 +26,10 @@
     "zod": "^4.2.1"
   },
   "exports": {
-    "./tables": {
-      "types": "./src/tables.ts",
-      "import": "./src/tables.ts",
-      "default": "./src/tables.ts"
+    "./content-blocks": {
+      "types": "./src/content-blocks.ts",
+      "import": "./src/content-blocks.ts",
+      "default": "./src/content-blocks.ts"
     },
     "./prisma": {
       "types": "./src/prisma.ts",

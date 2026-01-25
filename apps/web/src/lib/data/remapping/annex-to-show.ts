@@ -1,9 +1,8 @@
 import {enforceAnnexNumber} from "@/lib/assembly/validity/utils/numbers";
-import {AnnexToShow} from "@/lib/definitions/resolutions";
-import {mapTablesToContent} from "@/lib/data/remapping/tables";
+import {AnnexToShow, ContentBlock} from "@/lib/definitions/resolutions";
 import {ResolutionDBDataToShow} from "@/lib/data/resolutions";
 import {articleInitialDataToShow} from "@/lib/data/remapping/article-to-show";
-import {parseToContentBlocks} from "@/lib/utils/content-block-parser";
+import {mapContentBlocks} from "@/lib/data/remapping/content-blocks";
 
 export function annexInitialDataToShow(
     annex: ResolutionDBDataToShow["annexes"][0],
@@ -14,11 +13,9 @@ export function annexInitialDataToShow(
         if (!annex.annexText)
             throw new Error("Annex text information missing for annex with id " + annex.id);
 
-        const tables = mapTablesToContent(annex.annexText.tables);
-
         return {
             type: "TEXT",
-            content: parseToContentBlocks(annex.annexText.content, tables),
+            content: mapContentBlocks(annex.annexText.content),
             addedBy: null,
             repealedBy: null,
             modifiedBy: [],

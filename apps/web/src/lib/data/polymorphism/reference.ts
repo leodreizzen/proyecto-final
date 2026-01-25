@@ -9,4 +9,4 @@ const ReferenceConfigMap = {
     CHAPTER: "chapter"
 } as const satisfies Record<ReferenceTargetType, keyof ReferenceInclude>;
 
-export const checkReference = createPolymorphicValidator(ReferenceConfigMap, "targetType");
+export const checkReference = createPolymorphicValidator(ReferenceConfigMap, "targetType").withObjects();

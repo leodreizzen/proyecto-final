@@ -6,8 +6,7 @@ import {
     AnnexWithArticlesCreateWithoutAnnexInput
 } from "@repo/db/prisma/models";
 import {AnnexType} from "@repo/db/prisma/enums";
-import {textReferencesCreationInput} from "@/data/save-resolution/references";
-import {tablesCreationInput} from "@/data/save-resolution/tables";
+import {parseToContentBlockInputs, withOrder} from "@/data/save-resolution/block-parser";
 
 type GeneralAnnex = { standalone: true } & Parser.StandaloneAnnex | ({ standalone: false } & Parser.ReplaceAnnexContent);
 
@@ -74,15 +73,15 @@ function chapterCreationInput(chapter: Parser.Chapter) {
 function annexTextCreationInput(annex: Extract<GeneralAnnex, {
     type: "TextOrTables"
 }>): AnnexTextCreateWithoutAnnexInput {
+    const contentBlocks = parseToContentBlockInputs(
+        annex.content,
+        annex.standalone ? annex.tables : [],
+        annex.standalone ? annex.references : []
+    );
+
     return {
-        content: annex.content,
-        ...(annex.standalone ? {
-            references: {
-                create: textReferencesCreationInput(annex.references)
-            },
-            tables: {
-                create: tablesCreationInput(annex.tables)
-            }
-        } : {})
+        content: {
+            create: withOrder(contentBlocks)
+        }
     }
 }

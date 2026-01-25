@@ -1,6 +1,6 @@
-import {TableToShow} from "@/lib/definitions/resolutions";
+import {TableContent} from "@/lib/definitions/resolutions";
 
-export function TableRenderer({table}: { table: TableToShow }) {
+export function TableRenderer({table}: { table: TableContent }) {
     if (!table) return null;
     return (
         <div className="overflow-x-auto border rounded-md my-4">

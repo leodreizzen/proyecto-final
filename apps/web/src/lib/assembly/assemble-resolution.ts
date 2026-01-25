@@ -3,6 +3,7 @@ import {
     AnnexToShow,
     ArticleToShow,
     ConsiderationToShow,
+    ContentBlock,
     RecitalToShow,
     ResolutionNaturalID,
     ResolutionToShow,
@@ -11,13 +12,11 @@ import {notFound} from "next/navigation";
 import {getValidChangesAndVersionsForAssembly} from "@/lib/assembly/validity/valid-changes";
 import {articleInitialDataToShow} from "@/lib/data/remapping/article-to-show";
 import {annexInitialDataToShow} from "@/lib/data/remapping/annex-to-show";
-import {mapTablesToContent} from "@/lib/data/remapping/tables";
 import {ResolutionChangeApplier} from "@/lib/assembly/resolution-change-applier";
 import {ChangeWithContextForAssembly} from "@/lib/definitions/changes";
 import {sortResolution} from "@/lib/assembly/sorter";
 import {getDownloadUrl} from "@/lib/file-storage/urls";
-
-import {parseToContentBlocks} from "@/lib/utils/content-block-parser";
+import {mapContentBlocks} from "@/lib/data/remapping/content-blocks";
 
 export async function getAssembledResolution(resolutionId: string, versionDate: Date | null) {
     const resolution = await fetchResolutionInitialData(resolutionId);
@@ -42,11 +41,11 @@ function getInitialDataToShow(resolution: ResolutionDBDataToShow): ResolutionToS
     const id: ResolutionNaturalID = {initial: resolution.initial, number: resolution.number, year: resolution.year};
     const recitals: RecitalToShow[] = resolution.recitals.map(recital => ({
         number: recital.number,
-        content: parseToContentBlocks(recital.text, mapTablesToContent(recital.tables))
+        content: mapContentBlocks(recital.content)
     }));
     const considerations: ConsiderationToShow[] = resolution.considerations.map(consideration => ({
         number: consideration.number,
-        content: parseToContentBlocks(consideration.text, mapTablesToContent(consideration.tables))
+        content: mapContentBlocks(consideration.content)
     }));
     const articles: ArticleToShow[] = resolution.articles.map(a => articleInitialDataToShow(a));
     const annexes: AnnexToShow[] = resolution.annexes.map(annex => annexInitialDataToShow(annex));

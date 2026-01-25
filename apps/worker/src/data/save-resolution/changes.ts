@@ -20,6 +20,7 @@ import {
 import {articleCreationInput} from "@/data/save-resolution/articles";
 import {annexCreationInput} from "@/data/save-resolution/annexes";
 import {suffixToNumber} from "@/data/save-resolution/util";
+import {parseToContentBlockInputs, withOrder} from "@/data/save-resolution/block-parser";
 
 export function changeCreationInput(change: Parser.Change): ChangeCreateWithoutArticleModifierInput {
     switch (change.type) {
@@ -176,12 +177,19 @@ function changeReplaceAnnexCreationInput(change: Extract<Parser.Change, {
 function changeModifyTextAnnexCreationInput(change: Extract<Parser.Change, {
     type: "ModifyTextAnnex"
 }>): ChangeModifyTextAnnexCreateWithoutChangeInput {
+    const beforeBlocks = parseToContentBlockInputs(change.before, [], []);
+    const afterBlocks = parseToContentBlockInputs(change.after, [], []);
+
     return {
         targetAnnex: {
             create: annexReferenceCreateInput(change.targetAnnex, "CHANGE_MODIFY_TEXT_ANNEX")
         },
-        before: change.before,
-        after: change.after,
+        before: {
+            create: withOrder(beforeBlocks)
+        },
+        after: {
+            create: withOrder(afterBlocks)
+        },
     }
 }
 
@@ -201,12 +209,19 @@ function changeRatifyAdReferendumCreationInput(change: Extract<Parser.Change, {
 function changeModifyArticleCreationInput(change: Extract<Parser.Change, {
     type: "ModifyArticle"
 }>): ChangeModifyArticleCreateWithoutChangeInput {
+    const beforeBlocks = parseToContentBlockInputs(change.before, [], []);
+    const afterBlocks = parseToContentBlockInputs(change.after, [], []);
+
     return {
         targetArticle: {
             create: articleReferenceCreateInput(change.targetArticle, "CHANGE_MODIFY_ARTICLE")
         },
-        before: change.before,
-        after: change.after,
+        before: {
+            create: withOrder(beforeBlocks)
+        },
+        after: {
+            create: withOrder(afterBlocks)
+        },
     }
 }
 

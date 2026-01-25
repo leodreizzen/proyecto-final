@@ -70,56 +70,44 @@ export type ResolutionDBDataToShow = NonNullable<Awaited<ReturnType<typeof fetch
 
 export async function fetchResolutionInitialData(resolutionId: string) {
     await checkResourcePermission("resolution", "read");
+    const contentInclude = {
+        include: {
+            content: {
+                include: {
+                    references: true
+                },
+                orderBy: {
+                    order: 'asc' as const
+                }
+            }
+        }
+    } as const;
+
     const res = await prisma.resolution.findUnique({
         where: {
             id: resolutionId
         },
         include: {
-            recitals: {
-                include: {
-                    tables: true
-                }
-            },
-            considerations: {
-                include: {
-                    tables: true
-                }
-            },
-            articles: {
-                include: {
-                    tables: true
-                }
-            },
+            recitals: contentInclude,
+            considerations: contentInclude,
+            articles: contentInclude,
             annexes: {
                 include: {
                     annexWithArticles: {
                         include: {
-                            standaloneArticles: {
-                                include: {
-                                    tables: true
-                                }
-                            },
+                            standaloneArticles: contentInclude,
                             chapters: {
                                 include: {
-                                    articles: {
-                                        include: {
-                                            tables: true
-                                        }
-                                    }
+                                    articles: contentInclude
                                 }
                             }
                         }
                     },
-                    annexText: {
-                        include: {
-                            tables: true
-                        }
-                    }
+                    annexText: contentInclude
                 }
             },
             originalFile: true
         }
     });
-    // TODO textReferences
     return res;
 }

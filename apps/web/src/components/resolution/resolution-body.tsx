@@ -22,17 +22,17 @@ function RecitalsView({recitals, hasConsiderations}: {
 
                     if (content.length > 0) {
                         const lastBlock = content[content.length - 1]!;
-                        if (lastBlock.type === "text") {
+                        if (lastBlock.type === "TEXT") {
                             let suffix = ";";
                             if (isLastRecital && hasConsiderations) {
                                 suffix += " y,";
                             }
                             
                             // To avoid double punctuation if it was already there
-                            const text = lastBlock.value.trimEnd();
+                            const text = lastBlock.text.trimEnd();
                             const newText = text.endsWith(";") ? text.substring(0, text.length - 1) + suffix : text + suffix;
 
-                            content = [...content.slice(0, -1), { ...lastBlock, value: newText }];
+                            content = [...content.slice(0, -1), { ...lastBlock, text: newText }];
                         }
                     }
 
@@ -58,10 +58,10 @@ function ConsiderationsView({considerations}: { considerations: ResolutionToShow
                     let content = c.content;
                     if (content.length > 0) {
                         const lastBlock = content[content.length - 1]!;
-                        if (lastBlock.type === "text") {
-                            const text = lastBlock.value.trimEnd();
+                        if (lastBlock.type === "TEXT") {
+                            const text = lastBlock.text.trimEnd();
                             const newText = text.endsWith(";") ? text : text + ";";
-                            content = [...content.slice(0, -1), { ...lastBlock, value: newText }];
+                            content = [...content.slice(0, -1), { ...lastBlock, text: newText }];
                         }
                     }
                     return (

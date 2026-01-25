@@ -1,5 +1,7 @@
 import {Resolution} from "@repo/db/prisma/client";
-import {Table} from "@repo/db/tables";
+import {TableContent} from "@repo/db/content-blocks";
+
+export type {TableContent};
 
 export type resolutionStatus = "ok" | "missingRef" | "inconsistent"
 
@@ -24,20 +26,18 @@ export type Repealable = {
     repealedBy: ResolutionNaturalID | null
 }
 
-export type TableToShow = Table
-
 export type TextBlock = {
-    type: "text";
-    value: string;
+    type: "TEXT";
+    text: string;
 };
 
 export type TableBlock = {
-    type: "table";
-    table: TableToShow;
+    type: "TABLE";
+    tableContent: TableContent;
 };
 
 export type ErrorBlock = {
-    type: "error";
+    type: "ERROR";
     message: string;
 };
 

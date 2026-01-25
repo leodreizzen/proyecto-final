@@ -1,8 +1,7 @@
 import {ResolutionDBDataToShow} from "@/lib/data/resolutions";
 import {ArticleToShow} from "@/lib/definitions/resolutions";
 import {enforceArticleNumber} from "@/lib/assembly/validity/utils/numbers";
-import {mapTablesToContent} from "@/lib/data/remapping/tables";
-import {parseToContentBlocks} from "@/lib/utils/content-block-parser";
+import {mapContentBlocks} from "@/lib/data/remapping/content-blocks";
 
 export function articleInitialDataToShow(
 
@@ -14,11 +13,9 @@ export function articleInitialDataToShow(
     const numberToUse = overrides?.number ?? article.number;
     const suffixToUse = overrides?.suffix ?? article.suffix;
 
-    const tables = mapTablesToContent(article.tables);
-
     return {
         ...article,
-        content: parseToContentBlocks(article.text, tables),
+        content: mapContentBlocks(article.content),
         repealedBy: null,
         modifiedBy: [],
         addedBy: null,
