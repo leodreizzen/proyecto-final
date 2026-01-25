@@ -3,20 +3,19 @@ import {getRelevantChangesList} from "@/lib/data/changes/relevant-changes";
 import {getChangesDataForValidityGraph} from "@/lib/data/changes/validity-graph";
 import {getChangesContext} from "@/lib/data/changes/context";
 import {ChangeContext, ChangeWithContextForAssembly, ChangeWithIDAndContext} from "@/lib/definitions/changes";
-import {ResolutionVersion} from "@/lib/definitions/resolutions";
+import {ResolutionNaturalID, ResolutionVersion} from "@/lib/definitions/resolutions";
 import {sortChangeWithContext} from "@/lib/assembly/utils";
 import {stableStringify} from "@/lib/utils";
 import {ChangeDataForAssembly, fetchChangesDataForAssembly} from "@/lib/data/changes/assembly";
 
-export async function getValidChangesAndVersionsForAssembly(resUuid: string, versionDate: Date | null) {
+export async function getValidChangesAndVersionsForAssembly(resUuid: string, naturalId: ResolutionNaturalID ,versionDate: Date | null) {
     const relevantChangeList = await getRelevantChangesList(resUuid);
+    const contexts = await getChangesContext(relevantChangeList.map(c => c.id));
 
     const changeIdsToSearch = relevantChangeList.filter(c => !versionDate || c.date <= versionDate).map(c => c.id);
-
-    const contexts = await getChangesContext(changeIdsToSearch);
     const validChangesIDs = await getValidChangesIds(changeIdsToSearch, contexts);
     const changesData = await fetchChangesDataForAssembly(validChangesIDs);
-    const versions  = getVersionsFromChanges(contexts);
+    const versions  = getVersionsFromChanges(contexts, naturalId);
     const changes = addContextToChanges(changesData, contexts);
 
     return {
@@ -34,7 +33,7 @@ async function getValidChangesIds(changeIds: string[], contexts: Map<string, Cha
 }
 
 
-function getVersionsFromChanges(changes: Map<string, ChangeContext>): ResolutionVersion[] {
+function getVersionsFromChanges(changes: Map<string, ChangeContext>, thisResolutionId: ResolutionNaturalID): ResolutionVersion[] {
     const allChanges: ChangeWithIDAndContext[] = Array.from(changes.entries()).map(([id, context]) => ({
         id,
         context
@@ -44,10 +43,15 @@ function getVersionsFromChanges(changes: Map<string, ChangeContext>): Resolution
 
     const versions: ResolutionVersion[] = [];
     const seenResolutions = new Set<string>();
+    const thisKey = stableStringify(thisResolutionId);
 
     for (const change of allChanges) {
         const res = change.context.rootResolution;
         const key = stableStringify(res);
+        console.log(key, thisKey);
+
+        if (key === thisKey)
+            continue; // Skip versions caused by this resolution itself
 
         if (!seenResolutions.has(key)) {
             seenResolutions.add(key);

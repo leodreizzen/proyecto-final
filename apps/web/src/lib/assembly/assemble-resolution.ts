@@ -22,7 +22,7 @@ export async function getAssembledResolution(resolutionId: string, versionDate: 
         notFound();
     }
     const dataToShow = getInitialDataToShow(resolution);
-    const {changes, versions} = await getValidChangesAndVersionsForAssembly(resolutionId, versionDate);
+    const {changes, versions} = await getValidChangesAndVersionsForAssembly(resolutionId, dataToShow.id, versionDate);
 
     const finalResolution = applyChangesToResolution(dataToShow, changes);
     sortResolution(finalResolution);
