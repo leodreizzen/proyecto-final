@@ -45,7 +45,9 @@ export function ResolutionViewer({ resolution, versions, currentVersion }: Resol
 
                                 {/* Header */}
                                 <ResolutionHeader 
-                                    resolution={resolution} 
+                                    resolution={resolution}
+                                    versions={versions}
+                                    currentVersion={currentVersion}
                                 />
 
                                 {/* Body */}

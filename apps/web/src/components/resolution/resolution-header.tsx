@@ -1,6 +1,6 @@
-import { ResolutionToShow, ResolutionIDToShow } from "@/lib/definitions/resolutions";
-import { Download, FileText, Info } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import {ResolutionToShow, ResolutionNaturalID, ResolutionVersion} from "@/lib/definitions/resolutions";
+import {Download, Info} from "lucide-react";
+import {Button} from "@/components/ui/button";
 import Link from "next/link";
 import {
     DropdownMenu,
@@ -17,20 +17,19 @@ interface ResolutionHeaderProps {
     affectedBy?: { id: string; name: string }[]; // Mocking this for now as it's not in the main type
 }
 
-function getUniqueModifiers(resolution: ResolutionToShow): ResolutionIDToShow[] {
-    const modifiersMap = new Map<string, ResolutionIDToShow>();
+function getUniqueModifiers(resolution: ResolutionToShow, versions: ResolutionVersion[], currentVersion: ResolutionVersion) {
+    const modifiersMap = new Map<string, ResolutionNaturalID>();
 
-    const add = (id: ResolutionIDToShow | null) => {
+    const add = (id: ResolutionNaturalID | null) => {
         if (id) {
             const key = `${id.initial}-${id.number}-${id.year}`;
             modifiersMap.set(key, id);
         }
     };
 
-    // Resolution
-    if(resolution.repealedBy) {
-        add(resolution.repealedBy);
-    }
+    add(resolution.ratifiedBy)
+    add(resolution.repealedBy);
+
 
     // Articles (modifiedBy & repealedBy)
     resolution.articles.forEach(art => {
@@ -41,11 +40,13 @@ function getUniqueModifiers(resolution: ResolutionToShow): ResolutionIDToShow[] 
     // 2. Annexes
     resolution.annexes.forEach(annex => {
         add(annex.repealedBy);
-        
+        add(annex.addedBy)
+
         if (annex.type === "WITH_ARTICLES") {
             // Standalone Articles
             annex.standaloneArticles.forEach(art => {
                 if (art.modifiedBy) art.modifiedBy.forEach(add);
+                add(art.addedBy);
                 add(art.repealedBy);
             });
 
@@ -55,6 +56,7 @@ function getUniqueModifiers(resolution: ResolutionToShow): ResolutionIDToShow[] 
                 // Chapter Articles
                 chap.articles.forEach(art => {
                     if (art.modifiedBy) art.modifiedBy.forEach(add);
+                    add(art.addedBy);
                     add(art.repealedBy);
                 });
             });
@@ -63,14 +65,31 @@ function getUniqueModifiers(resolution: ResolutionToShow): ResolutionIDToShow[] 
         }
     });
 
-    return Array.from(modifiersMap.values());
+    const directModifiers = Array.from(modifiersMap.values());
+
+    const indirectModifiers = versions.filter(v => v.date <= currentVersion.date)
+        .map(v => v.causedBy)
+        .filter(m => {
+            const key = `${m.initial}-${m.number}-${m.year}`;
+            const originalKey = `${resolution.id.initial}-${resolution.id.number}-${resolution.id.year}`;
+            return !directModifiers.some(mod => `${mod.initial}-${mod.number}-${mod.year}` === key) && key !== originalKey;
+        });
+
+    return {
+        direct: directModifiers,
+        indirect: indirectModifiers
+    }
 }
 
-export function ResolutionHeader({ resolution }: { resolution: ResolutionToShow }) {
+export function ResolutionHeader({resolution, versions, currentVersion}: {
+    resolution: ResolutionToShow,
+    versions: ResolutionVersion[],
+    currentVersion: ResolutionVersion
+}) {
     const isRepealed = resolution.repealedBy !== null;
-    const isHistorical = false; // TODO: Logic to determine if it's historical but not repealed (e.g. just modified)
+    const isHistorical = currentVersion !== versions[0];
 
-    const modifiers = getUniqueModifiers(resolution);
+    const {direct: modifiers, indirect: indirectModifiers} = getUniqueModifiers(resolution, versions, currentVersion);
 
     return (
         <div className="mb-8 border-b pb-4">
@@ -79,15 +98,18 @@ export function ResolutionHeader({ resolution }: { resolution: ResolutionToShow 
                     {/* Status Badge */}
                     <div className="flex items-center gap-2">
                         {isRepealed ? (
-                            <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-300 border border-red-200 dark:border-red-800">
+                            <span
+                                className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-300 border border-red-200 dark:border-red-800">
                                 🔴 Estado: DEROGADA
                             </span>
                         ) : isHistorical ? (
-                            <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-amber-100 text-amber-800 dark:bg-amber-900/30 dark:text-amber-300 border border-amber-200 dark:border-amber-800">
+                            <span
+                                className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-amber-100 text-amber-800 dark:bg-amber-900/30 dark:text-amber-300 border border-amber-200 dark:border-amber-800">
                                 🟠 Estado: VERSIÓN ANTIGUA
                             </span>
                         ) : (
-                            <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-300 border border-green-200 dark:border-green-800">
+                            <span
+                                className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-300 border border-green-200 dark:border-green-800">
                                 🟢 Estado: VIGENTE
                             </span>
                         )}
@@ -105,38 +127,62 @@ export function ResolutionHeader({ resolution }: { resolution: ResolutionToShow 
 
                     {/* Metadata: Modifiers & Case Files */}
                     <div className="space-y-2 text-sm">
-                        {modifiers.length > 0 && (
+                        {(modifiers.length + indirectModifiers.length) > 0 && (
                             <div className="flex items-center gap-2">
                                 <DropdownMenu>
                                     <DropdownMenuTrigger asChild>
-                                        <Button 
-                                            variant="ghost" 
-                                            size="sm" 
+                                        <Button
+                                            variant="ghost"
+                                            size="sm"
                                             className="h-auto p-0 text-muted-foreground hover:text-foreground font-normal hover:bg-transparent! px-0!"
                                         >
-                                            <Info className="h-4 w-4 inline-block align-text-bottom" />
+                                            <Info className="h-4 w-4 inline-block align-text-bottom"/>
                                             <span className="font-semibold mr-1">
-                                                Afectada por {modifiers.length} {modifiers.length === 1 ? 'resolución' : 'resoluciones'}
+                                                Afectada por {modifiers.length + indirectModifiers.length} {(modifiers.length + indirectModifiers.length) === 1 ? 'resolución' : 'resoluciones'}
                                             </span>
                                         </Button>
                                     </DropdownMenuTrigger>
                                     <DropdownMenuContent align="start">
-                                        <DropdownMenuLabel>
-                                            {modifiers.length === 1 ? 'Resolución modificatoria' : 'Resoluciones modificatorias'}
-                                        </DropdownMenuLabel>
-                                        <DropdownMenuSeparator />
-                                        {modifiers.map((mod, idx) => (
-                                            <DropdownMenuItem key={idx} asChild>
-                                                <Link href={`/resolution/${mod.initial}-${mod.number}-${mod.year}`} className="cursor-pointer">
-                                                    Res. {mod.initial}-{mod.number}-{mod.year}
-                                                </Link>
-                                            </DropdownMenuItem>
-                                        ))}
+                                        {
+                                            modifiers.length > 0 && <>
+                                                <DropdownMenuLabel>
+                                                    {modifiers.length} {modifiers.length === 1 ? 'resolución modificatoria' : 'resoluciones modificatorias'}
+                                                </DropdownMenuLabel>
+                                                <DropdownMenuSeparator/>
+
+                                                {modifiers.map((mod, idx) => (
+                                                    <DropdownMenuItem key={idx} asChild>
+                                                        <Link href={`/resolution/${mod.initial}-${mod.number}-${mod.year}`}
+                                                              className="cursor-pointer">
+                                                            Res. {mod.initial}-{mod.number}-{mod.year}
+                                                        </Link>
+                                                    </DropdownMenuItem>
+                                                ))}
+                                            </>
+                                        }
+                                        {
+                                            indirectModifiers.length > 0 && <>
+                                                {modifiers.length > 0 && <DropdownMenuSeparator/>}
+                                                <DropdownMenuLabel>
+                                                    {indirectModifiers.length} {indirectModifiers.length === 1 ? 'modificación indirecta' : 'modificaciones indirectas'}
+                                                </DropdownMenuLabel>
+                                                <DropdownMenuSeparator/>
+
+                                                {indirectModifiers.map((mod, idx) => (
+                                                    <DropdownMenuItem key={idx} asChild>
+                                                        <Link href={`/resolution/${mod.initial}-${mod.number}-${mod.year}`}
+                                                              className="cursor-pointer">
+                                                            Res. {mod.initial}-{mod.number}-{mod.year}
+                                                        </Link>
+                                                    </DropdownMenuItem>
+                                                ))}
+                                            </>
+                                        }
                                     </DropdownMenuContent>
                                 </DropdownMenu>
                             </div>
                         )}
-                        
+
                         {resolution.caseFiles.length > 0 && (
                             <p className="text-muted-foreground">
                                 <span className="font-semibold">Expedientes:</span> {resolution.caseFiles.join(", ")}
@@ -148,7 +194,7 @@ export function ResolutionHeader({ resolution }: { resolution: ResolutionToShow 
                 {/* Download Button */}
                 <div className="shrink-0">
                     <Button variant="outline" className="gap-2">
-                        <Download className="h-4 w-4" />
+                        <Download className="h-4 w-4"/>
                         Descargar Original (PDF)
                     </Button>
                 </div>
