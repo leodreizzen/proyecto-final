@@ -34,7 +34,7 @@ export function ResolutionSidebar({resolution, className, versions, currentVersi
 
             {/* Index - Scrollable area */}
             <div className="flex flex-col min-h-0 flex-1 overflow-hidden">
-                <ScrollResetter className="mb-3 shrink-0"><h3
+                <ScrollResetter className="mb-3 shrink-0" scrollerID="content-scroller"><h3
                     className="font-semibold text-sm uppercase tracking-wider text-muted-foreground">Índice</h3>
                 </ScrollResetter>
                 <nav className="overflow-y-auto pr-2 min-h-0 flex-1">
