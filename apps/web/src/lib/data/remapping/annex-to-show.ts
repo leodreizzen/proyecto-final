@@ -9,14 +9,12 @@ export function annexInitialDataToShow(
     overrides?: { number?: number }
 ): AnnexToShow {
     const numberToUse = overrides?.number ?? annex.number;
-
     if (annex.type === "TEXT") {
         if (!annex.annexText)
             throw new Error("Annex text information missing for annex with id " + annex.id);
 
         return {
-            ...annex,
-            ...annex.annexText,
+            content: annex.annexText.content,
             type: "TEXT",
             tables: mapTablesToContent(annex.annexText.tables),
             repealedBy: null,
@@ -28,9 +26,9 @@ export function annexInitialDataToShow(
         if (!annex.annexWithArticles)
             throw new Error("Annex with articles information missing for annex with id " + annex.id);
         return {
-            ...annex,
-            ...annex.annexWithArticles,
             type: "WITH_ARTICLES",
+            initialText: annex.annexWithArticles.initialText,
+            finalText: annex.annexWithArticles.finalText,
             standaloneArticles: annex.annexWithArticles.standaloneArticles.map(a => articleInitialDataToShow(a)),
             chapters: annex.annexWithArticles.chapters.map(chapter => ({
                 ...chapter,
