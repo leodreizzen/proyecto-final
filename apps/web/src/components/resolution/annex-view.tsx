@@ -1,7 +1,6 @@
 "use client";
 
-import {AnnexToShow, ChapterToShow, ResolutionIDToShow} from "@/lib/definitions/resolutions";
-import {ArticleView} from "./article-view";
+import {AnnexToShow, ChapterToShow, ResolutionNaturalID} from "@/lib/definitions/resolutions";
 import {useState} from "react";
 import {Button} from "@/components/ui/button";
 import {AddedNotice} from "./added-notice";
@@ -22,7 +21,7 @@ function RepealedBlock({
                            repealedBy,
                            children,
                        }: {
-    repealedBy: ResolutionIDToShow;
+    repealedBy: ResolutionNaturalID;
     children: React.ReactNode;
 }) {
     const [show, setShow] = useState(false);

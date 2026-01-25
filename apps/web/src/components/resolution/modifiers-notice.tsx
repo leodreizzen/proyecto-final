@@ -1,4 +1,4 @@
-import {ResolutionIDToShow} from "@/lib/definitions/resolutions";
+import {ResolutionNaturalID} from "@/lib/definitions/resolutions";
 import {
     DropdownMenu,
     DropdownMenuContent,
@@ -12,7 +12,7 @@ import {Info} from "lucide-react";
 import Link from "next/link";
 import {pathForResolution} from "@/lib/paths";
 
-export default function ModifiersNotice({modifications}: { modifications: ResolutionIDToShow[] }) {
+export default function ModifiersNotice({modifications}: { modifications: ResolutionNaturalID[] }) {
     const modificationCount = modifications.length;
     return modificationCount > 0 ? (<DropdownMenu>
         <DropdownMenuTrigger asChild>

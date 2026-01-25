@@ -2,7 +2,7 @@ import {
     AnnexToShow,
     ArticleToShow,
     ChapterToShow,
-    ResolutionIDToShow,
+    ResolutionNaturalID,
     ResolutionToShow
 } from "@/lib/definitions/resolutions";
 import {sortChangeWithContext} from "@/lib/assembly/utils";
@@ -13,7 +13,7 @@ import {applyTextModification} from "@/lib/assembly/text-processor";
 import {articleInitialDataToShow} from "@/lib/data/remapping/article-to-show";
 import {annexInitialDataToShow} from "@/lib/data/remapping/annex-to-show";
 
-type ResolutionID = ResolutionIDToShow;
+type ResolutionID = ResolutionNaturalID;
 
 abstract class Slot<T> {
     abstract get relevant(): boolean;

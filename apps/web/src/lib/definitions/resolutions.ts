@@ -14,14 +14,14 @@ export type ResolutionCounts = {
     inconsistent: number;
 }
 
-export type ResolutionIDToShow = {
+export type ResolutionNaturalID = {
     initial: string;
     number: number;
     year: number;
 }
 
 export type Repealable = {
-    repealedBy: ResolutionIDToShow | null
+    repealedBy: ResolutionNaturalID | null
 }
 
 export type TableToShow = Table
@@ -31,15 +31,15 @@ export type ArticleToShow = {
     suffix: number;
     text: string;
     tables: TableToShow[];
-    modifiedBy: ResolutionIDToShow[];
-    addedBy: ResolutionIDToShow | null;
+    modifiedBy: ResolutionNaturalID[];
+    addedBy: ResolutionNaturalID | null;
 } & Repealable;
 
 export type ChapterToShow = {
     title: string;
     number: number;
     articles: ArticleToShow[];
-    addedBy: ResolutionIDToShow | null;
+    addedBy: ResolutionNaturalID | null;
 } & Repealable
 
 export type AnnexToShow = ({
@@ -52,10 +52,10 @@ export type AnnexToShow = ({
     type: "TEXT";
     content: string;
     tables: TableToShow[];
-    modifiedBy?: ResolutionIDToShow[];
+    modifiedBy?: ResolutionNaturalID[];
 }) & Repealable & {
     number: number;
-    addedBy: ResolutionIDToShow | null;
+    addedBy: ResolutionNaturalID | null;
 }
 
 export type RecitalToShow = {
@@ -72,7 +72,7 @@ export type ConsiderationToShow = {
 
 
 export type ResolutionToShow = {
-    id: ResolutionIDToShow;
+    id: ResolutionNaturalID;
 
     decisionBy: string;
     date: Date;
@@ -87,10 +87,10 @@ export type ResolutionToShow = {
 
     originalFileId: string
 } & Repealable & {
-    ratifiedBy: ResolutionIDToShow[] | null
+    ratifiedBy: ResolutionNaturalID[] | null
 }
 
 export type ResolutionVersion = {
     date: Date,
-    causedBy: ResolutionIDToShow
+    causedBy: ResolutionNaturalID
 }

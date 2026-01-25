@@ -3,7 +3,7 @@ import {
     AnnexToShow,
     ArticleToShow,
     ConsiderationToShow, RecitalToShow,
-    ResolutionIDToShow,
+    ResolutionNaturalID,
     ResolutionToShow,
 } from "@/lib/definitions/resolutions";
 import {notFound} from "next/navigation";
@@ -31,7 +31,7 @@ export async function getAssembledResolution(resolutionId: string, versionDate: 
 }
 
 function getInitialDataToShow(resolution: ResolutionDBDataToShow): ResolutionToShow {
-    const id: ResolutionIDToShow = {initial: resolution.initial, number: resolution.number, year: resolution.year};
+    const id: ResolutionNaturalID = {initial: resolution.initial, number: resolution.number, year: resolution.year};
     const recitals: RecitalToShow[] = resolution.recitals.map(recital => assign(recital, ["tables"], mapTablesToContent(recital.tables)));
     const considerations: ConsiderationToShow[] = resolution.considerations.map(consideration => assign(consideration, ["tables"], mapTablesToContent(consideration.tables)));
     const articles: ArticleToShow[] = resolution.articles.map(a => articleInitialDataToShow(a));

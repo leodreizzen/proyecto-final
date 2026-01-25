@@ -1,7 +1,7 @@
-import { ResolutionIDToShow } from "@/lib/definitions/resolutions";
+import { ResolutionNaturalID } from "@/lib/definitions/resolutions";
 import Link from "next/link";
 
-export function AddedNotice({ id }: { id: ResolutionIDToShow | null }) {
+export function AddedNotice({ id }: { id: ResolutionNaturalID | null }) {
     if (!id || id.year === 0) return null;
 
     return (
