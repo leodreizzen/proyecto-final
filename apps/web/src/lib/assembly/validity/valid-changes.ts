@@ -48,7 +48,6 @@ function getVersionsFromChanges(changes: Map<string, ChangeContext>, thisResolut
     for (const change of allChanges) {
         const res = change.context.rootResolution;
         const key = stableStringify(res);
-        console.log(key, thisKey);
 
         if (key === thisKey)
             continue; // Skip versions caused by this resolution itself
