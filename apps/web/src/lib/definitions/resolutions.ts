@@ -87,7 +87,7 @@ export type ResolutionToShow = {
 
     originalFileId: string
 } & Repealable & {
-    ratifiedBy: ResolutionNaturalID[] | null
+    ratifiedBy: ResolutionNaturalID | null
 }
 
 export type ResolutionVersion = {

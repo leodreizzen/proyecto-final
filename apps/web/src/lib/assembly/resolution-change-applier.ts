@@ -55,11 +55,7 @@ class ConcreteResolutionSlot extends ResolutionSlot {
     }
     ratify(by: ResolutionID) {
         const obj = this.getter();
-        if (obj.ratifiedBy) {
-            obj.ratifiedBy.push(by);
-        } else {
-            obj.ratifiedBy = [by];
-        }
+       obj.ratifiedBy = by;
     }
     modify(_before: string, _after: string, _by: ResolutionID) {
         // Resolutions themselves don't have text to modify via this mechanism directly yet
