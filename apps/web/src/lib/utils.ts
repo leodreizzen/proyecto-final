@@ -3,6 +3,7 @@ import {twMerge} from "tailwind-merge"
 import {formatInTimeZone} from 'date-fns-tz';
 import {Resolution} from "@repo/db/prisma/client";
 import _stringify from "json-stable-stringify";
+import {ResolutionNaturalID} from "@/lib/definitions/resolutions";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
@@ -16,8 +17,8 @@ export function formatDateUTC(date: Date) {
     return formatInTimeZone(date, 'UTC', 'dd/MM/yyyy');
 }
 
-export function formatResolutionId(resolution: Resolution){
-    return `${resolution.initial}-${resolution.number}-${resolution.year}`;
+export function formatResolutionId(resolutionID: ResolutionNaturalID): string{
+    return `${resolutionID.initial}-${resolutionID.number}-${resolutionID.year}`;
 }
 
 type ValidPath<T> = T extends object

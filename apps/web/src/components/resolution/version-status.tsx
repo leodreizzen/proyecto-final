@@ -4,7 +4,7 @@ import { AlertTriangle, XCircle } from "lucide-react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import {changeDateInResolutionParams, pathForResolution} from "@/lib/paths";
-import {formatDateUTC} from "@/lib/utils";
+import {formatDateUTC, formatResolutionId} from "@/lib/utils";
 import {useSearchParams} from "next/navigation";
 
 interface VersionStatusProps {
@@ -51,7 +51,7 @@ export function VersionStatus({ resolution, isCurrentVersion }: VersionStatusPro
                         <p className="font-bold">Resolución derogada</p>
                         <p className="text-sm opacity-90">Esta {resolutionText} fue derogada por
                             <Link className="font-bold hover:underline ml-1" href={pathForResolution(resolution.repealedBy)}>
-                                {resolution.repealedBy.initial}-{resolution.repealedBy.number}-{resolution.repealedBy.year}</Link>.</p>
+                                {formatResolutionId(resolution.repealedBy)}</Link>.</p>
                     </div>
                 </div>
             </div>

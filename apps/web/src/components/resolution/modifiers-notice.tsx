@@ -11,6 +11,7 @@ import {Button} from "@/components/ui/button";
 import {Info} from "lucide-react";
 import Link from "next/link";
 import {pathForResolution} from "@/lib/paths";
+import {formatResolutionId} from "@/lib/utils";
 
 export default function ModifiersNotice({modifications}: { modifications: ResolutionNaturalID[] }) {
     const modificationCount = modifications.length;
@@ -28,7 +29,7 @@ export default function ModifiersNotice({modifications}: { modifications: Resolu
             {modifications.map((mod, idx) => (
                 <DropdownMenuItem key={idx} asChild>
                     <Link href={pathForResolution(mod)} className="cursor-pointer">
-                        Res. {mod.initial}-{mod.number}-{mod.year}
+                        Res. {formatResolutionId(mod)}
                     </Link>
                 </DropdownMenuItem>
             ))}

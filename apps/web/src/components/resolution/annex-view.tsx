@@ -8,7 +8,7 @@ import ModifiersNotice from "./modifiers-notice";
 import Link from "next/link";
 import {pathForResolution} from "@/lib/paths";
 import ArticlesContainer from "@/components/resolution/articles-container";
-import {cn} from "@/lib/utils";
+import {cn, formatResolutionId} from "@/lib/utils";
 import {getChapterId} from "@/lib/utils/resolution-formatters";
 
 interface AnnexViewProps {
@@ -31,7 +31,7 @@ function RepealedBlock({
             <div className="flex items-baseline gap-2 text-muted-foreground">
                 <span className="text-[1rem]">
                     Derogado por Res. <Link className="font-bold hover:underline"
-                                            href={pathForResolution(repealedBy)}>{repealedBy.initial}-{repealedBy.number}-{repealedBy.year}</Link>.
+                                            href={pathForResolution(repealedBy)}>{formatResolutionId(repealedBy)}</Link>.
                 </span>
                 <Button
                     variant="link"

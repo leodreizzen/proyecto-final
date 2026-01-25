@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Menu } from "lucide-react";
 import { ResolutionSidebar } from "./resolution-sidebar";
 import { useState } from "react";
+import {formatResolutionId} from "@/lib/utils";
 
 interface MobileMenuProps {
     resolution: ResolutionToShow;
@@ -20,7 +21,7 @@ export function MobileMenu({ resolution, versions, currentVersion }: MobileMenuP
         <div className="lg:hidden flex items-center justify-between p-4 border-b bg-background">
             <div className="flex-1 min-w-0 mr-4">
                 <h1 className="font-serif font-bold text-lg truncate">
-                    Res. {resolution.id.initial}-{resolution.id.number}-{resolution.id.year}
+                    Res. {formatResolutionId(resolution.id)}
                 </h1>
             </div>
             <Sheet open={open} onOpenChange={setOpen}>

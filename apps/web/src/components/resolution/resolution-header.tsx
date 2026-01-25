@@ -10,7 +10,7 @@ import {
     DropdownMenuSeparator,
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import {formatDateUTC} from "@/lib/utils";
+import {formatDateUTC, formatResolutionId} from "@/lib/utils";
 import {pathForResolution} from "@/lib/paths";
 
 interface ResolutionHeaderProps {
@@ -122,7 +122,7 @@ export function ResolutionHeader({resolution, versions, currentVersion}: {
                     {/* Title */}
                     <div className="space-y-2 mb-2">
                         <h1 className="text-3xl md:text-4xl font-serif font-bold text-foreground leading-tight">
-                            RESOLUCIÓN {resolution.id.initial}-{resolution.id.number}-{resolution.id.year}
+                            RESOLUCIÓN {formatResolutionId(resolution.id)}
                         </h1>
                     </div>
 
@@ -153,9 +153,9 @@ export function ResolutionHeader({resolution, versions, currentVersion}: {
 
                                                 {modifiers.map((mod, idx) => (
                                                     <DropdownMenuItem key={idx} asChild>
-                                                        <Link href={`/resolution/${mod.initial}-${mod.number}-${mod.year}`}
+                                                        <Link href={pathForResolution(mod)}
                                                               className="cursor-pointer">
-                                                            Res. {mod.initial}-{mod.number}-{mod.year}
+                                                            Res. {formatResolutionId(mod)}
                                                         </Link>
                                                     </DropdownMenuItem>
                                                 ))}
@@ -171,9 +171,9 @@ export function ResolutionHeader({resolution, versions, currentVersion}: {
 
                                                 {indirectModifiers.map((mod, idx) => (
                                                     <DropdownMenuItem key={idx} asChild>
-                                                        <Link href={`/resolution/${mod.initial}-${mod.number}-${mod.year}`}
+                                                        <Link href={pathForResolution(mod)}
                                                               className="cursor-pointer">
-                                                            Res. {mod.initial}-{mod.number}-{mod.year}
+                                                            Res. {formatResolutionId(mod)}
                                                         </Link>
                                                     </DropdownMenuItem>
                                                 ))}
@@ -187,7 +187,7 @@ export function ResolutionHeader({resolution, versions, currentVersion}: {
                         {
                             resolution.ratifiedBy && (
                                 <p className="text-muted-foreground">
-                                    <span className="font-semibold">Ratificada por:</span> <Link className="hover:underline" href={pathForResolution(resolution.ratifiedBy)}> Res. {resolution.ratifiedBy.initial}-{resolution.ratifiedBy.number}-{resolution.ratifiedBy.year} </Link>
+                                    <span className="font-semibold">Ratificada por:</span> <Link className="hover:underline" href={pathForResolution(resolution.ratifiedBy)}> Res. {formatResolutionId(resolution.ratifiedBy)} </Link>
                                 </p>
                             )
                         }
