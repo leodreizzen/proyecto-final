@@ -1,8 +1,8 @@
 export function getSuffixOrdinal(suffix: number): string {
-    if (suffix <= 0) return "";
-    const ordinals = ["", "BIS", "TER", "QUATER", "QUINQUIES", "SEXIES", "SEPTIES", "OCTIES", "NONIES", "DECIES"];
+    if (suffix < 0) return "";
+    const ordinals = ["", "", "BIS", "TER", "QUATER", "QUINQUIES", "SEXIES", "SEPTIES", "OCTIES", "NONIES", "DECIES"];
     // Fallback for > 10 if needed, or just return suffix number
-    return ordinals[suffix] || `(${suffix})`;
+    return ordinals[suffix] ?? `(${suffix})`;
 }
 
 export function formatArticleTitle(number: number, suffix: number): string {
