@@ -12,11 +12,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import {formatDateUTC, formatResolutionId} from "@/lib/utils";
 import {pathForResolution} from "@/lib/paths";
-
-interface ResolutionHeaderProps {
-    resolution: ResolutionToShow;
-    affectedBy?: { id: string; name: string }[]; // Mocking this for now as it's not in the main type
-}
+import {DownloadButton} from "@/components/resolution/download-button";
 
 function getUniqueModifiers(resolution: ResolutionToShow, versions: ResolutionVersion[], currentVersion: ResolutionVersion) {
     const modifiersMap = new Map<string, ResolutionNaturalID>();
@@ -201,12 +197,7 @@ export function ResolutionHeader({resolution, versions, currentVersion}: {
                 </div>
 
                 {/* Download Button */}
-                <div className="shrink-0">
-                    <Button variant="outline" className="gap-2">
-                        <Download className="h-4 w-4"/>
-                        Descargar Original (PDF)
-                    </Button>
-                </div>
+                <DownloadButton fileUrl={resolution.originalFileUrl}/>
             </div>
         </div>
     );

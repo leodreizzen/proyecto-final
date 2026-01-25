@@ -85,7 +85,7 @@ export type ResolutionToShow = {
 
     annexes: AnnexToShow[];
 
-    originalFileId: string
+    originalFileUrl: string
 } & Repealable & {
     ratifiedBy: ResolutionNaturalID | null
 }

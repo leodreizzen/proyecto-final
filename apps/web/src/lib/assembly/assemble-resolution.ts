@@ -2,7 +2,8 @@ import {fetchResolutionInitialData, ResolutionDBDataToShow} from "@/lib/data/res
 import {
     AnnexToShow,
     ArticleToShow,
-    ConsiderationToShow, RecitalToShow,
+    ConsiderationToShow,
+    RecitalToShow,
     ResolutionNaturalID,
     ResolutionToShow,
 } from "@/lib/definitions/resolutions";
@@ -15,6 +16,7 @@ import {mapTablesToContent} from "@/lib/data/remapping/tables";
 import {ResolutionChangeApplier} from "@/lib/assembly/resolution-change-applier";
 import {ChangeWithContextForAssembly} from "@/lib/definitions/changes";
 import {sortResolution} from "@/lib/assembly/sorter";
+import {getDownloadUrl} from "@/lib/file-storage/urls";
 
 export async function getAssembledResolution(resolutionId: string, versionDate: Date | null) {
     const resolution = await fetchResolutionInitialData(resolutionId);
@@ -53,7 +55,7 @@ function getInitialDataToShow(resolution: ResolutionDBDataToShow): ResolutionToS
         date: resolution.date,
         repealedBy: null,
         ratifiedBy: null,
-        originalFileId: resolution.originalFileId
+        originalFileUrl: getDownloadUrl(resolution.originalFile)
     }
 }
 

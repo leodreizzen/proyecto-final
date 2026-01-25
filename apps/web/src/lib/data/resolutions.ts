@@ -116,7 +116,8 @@ export async function fetchResolutionInitialData(resolutionId: string) {
                         }
                     }
                 }
-            }
+            },
+            originalFile: true
         }
     });
     // TODO textReferences
