@@ -26,11 +26,28 @@ export type Repealable = {
 
 export type TableToShow = Table
 
+export type TextBlock = {
+    type: "text";
+    value: string;
+};
+
+export type TableBlock = {
+    type: "table";
+    table: TableToShow;
+};
+
+export type ErrorBlock = {
+    type: "error";
+    message: string;
+};
+
+export type ContentBlock = TextBlock | TableBlock | ErrorBlock;
+
+
 export type ArticleToShow = {
     number: number;
     suffix: number;
-    text: string;
-    tables: TableToShow[];
+    content: ContentBlock[];
     modifiedBy: ResolutionNaturalID[];
     addedBy: ResolutionNaturalID | null;
 } & Repealable;
@@ -50,8 +67,7 @@ export type AnnexToShow = ({
     finalText: string | null;
 } | {
     type: "TEXT";
-    content: string;
-    tables: TableToShow[];
+    content: ContentBlock[];
     modifiedBy?: ResolutionNaturalID[];
 }) & Repealable & {
     number: number;
@@ -59,14 +75,12 @@ export type AnnexToShow = ({
 }
 
 export type RecitalToShow = {
-    text: string;
-    tables: TableToShow[];
+    content: ContentBlock[];
     number: number
 }
 
 export type ConsiderationToShow = {
-    text: string;
-    tables: TableToShow[];
+    content: ContentBlock[];
     number: number;
 }
 

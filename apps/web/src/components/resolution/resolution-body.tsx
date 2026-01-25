@@ -1,8 +1,7 @@
-import {ResolutionToShow} from "@/lib/definitions/resolutions";
+import {ContentBlock, ResolutionToShow} from "@/lib/definitions/resolutions";
 import {AnnexView} from "./annex-view";
-import {TableRenderer} from "./table-renderer";
 import ArticlesContainer from "@/components/resolution/articles-container";
-import MultiParagraphText from "@/components/ui/multi-paragraph-text";
+import {ContentBlockRenderer} from "@/components/resolution/content-block-renderer";
 
 interface ResolutionBodyProps {
     resolution: ResolutionToShow;
@@ -18,15 +17,28 @@ function RecitalsView({recitals, hasConsiderations}: {
             <h2 className="font-bold text-xl mb-4">VISTO:</h2>
             <div className="space-y-4">
                 {recitals.map((r, i) => {
-                    let text = r.text;
-                    if (!text.endsWith(";"))
-                        text += ";";
-                    if (i === recitals.length - 1 && hasConsiderations)
-                        text += " y,";
+                    const isLastRecital = i === recitals.length - 1;
+                    let content = r.content;
+
+                    if (content.length > 0) {
+                        const lastBlock = content[content.length - 1]!;
+                        if (lastBlock.type === "text") {
+                            let suffix = ";";
+                            if (isLastRecital && hasConsiderations) {
+                                suffix += " y,";
+                            }
+                            
+                            // To avoid double punctuation if it was already there
+                            const text = lastBlock.value.trimEnd();
+                            const newText = text.endsWith(";") ? text.substring(0, text.length - 1) + suffix : text + suffix;
+
+                            content = [...content.slice(0, -1), { ...lastBlock, value: newText }];
+                        }
+                    }
+
                     return (
                         <div key={i} className="text-justify">
-                            <p>{text}</p>
-                            <TableRenderer tables={r.tables}/>
+                            <ContentBlockRenderer content={content} />
                         </div>
                     )
                 })
@@ -42,12 +54,22 @@ function ConsiderationsView({considerations}: { considerations: ResolutionToShow
         <div className="mb-8" id="considerations">
             <h2 className="font-bold text-xl mb-4">CONSIDERANDO:</h2>
             <div className="space-y-4">
-                {considerations.map((c, i) => (
-                    <div key={i} className="text-justify">
-                        <MultiParagraphText text={`${c.text}${c.text.endsWith(";") ? "" : ";"}`}/>
-                        <TableRenderer tables={c.tables}/>
-                    </div>
-                ))}
+                {considerations.map((c, i) => {
+                    let content = c.content;
+                    if (content.length > 0) {
+                        const lastBlock = content[content.length - 1]!;
+                        if (lastBlock.type === "text") {
+                            const text = lastBlock.value.trimEnd();
+                            const newText = text.endsWith(";") ? text : text + ";";
+                            content = [...content.slice(0, -1), { ...lastBlock, value: newText }];
+                        }
+                    }
+                    return (
+                        <div key={i} className="text-justify">
+                            <ContentBlockRenderer content={content} />
+                        </div>
+                    );
+                })}
             </div>
         </div>
     );

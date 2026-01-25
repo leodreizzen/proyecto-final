@@ -2,8 +2,10 @@ import {
     AnnexToShow,
     ArticleToShow,
     ChapterToShow,
+    ContentBlock,
     ResolutionNaturalID,
-    ResolutionToShow
+    ResolutionToShow,
+    TableToShow
 } from "@/lib/definitions/resolutions";
 import {sortChangeWithContext} from "@/lib/assembly/utils";
 import {ChangeWithContextForAssembly} from "@/lib/definitions/changes";
@@ -12,8 +14,27 @@ import {ReferenceWithConcreteWithoutPayload} from "@/lib/definitions/references"
 import {applyTextModification} from "@/lib/assembly/text-processor";
 import {articleInitialDataToShow} from "@/lib/data/remapping/article-to-show";
 import {annexInitialDataToShow} from "@/lib/data/remapping/annex-to-show";
+import {parseToContentBlocks} from "@/lib/utils/content-block-parser";
 
 type ResolutionID = ResolutionNaturalID;
+
+function contentBlocksToText(blocks: ContentBlock[]): string {
+    return blocks.map(b => {
+        if (b.type === "text") return b.value;
+        if (b.type === "table") return `{{tabla ${b.table.number}}}`;
+        return "";
+    }).join("");
+}
+
+function getTablesFromBlocks(blocks: ContentBlock[]): TableToShow[] {
+    const tables: TableToShow[] = [];
+    for (const block of blocks) {
+        if (block.type === "table") {
+            tables.push(block.table);
+        }
+    }
+    return tables;
+}
 
 abstract class Slot<T> {
     abstract get relevant(): boolean;
@@ -149,12 +170,14 @@ class ArticleSlot extends BaseCollectionSlot<ArticleToShow> {
         const item = this.get();
         if (!item) return false;
 
-        const modifiedText = applyTextModification(item.text, before, after);
+        const currentText = contentBlocksToText(item.content);
+        const modifiedText = applyTextModification(currentText, before, after);
         if (modifiedText === null) {
             return false;
         }
 
-        item.text = modifiedText;
+        const tables = getTablesFromBlocks(item.content);
+        item.content = parseToContentBlocks(modifiedText, tables);
         item.modifiedBy = item.modifiedBy ? [...item.modifiedBy, by] : [by];
         return true;
     }
@@ -174,6 +197,22 @@ class AnnexSlot extends BaseCollectionSlot<AnnexToShow> {
 
     protected patch(item: AnnexToShow): void {
         item.number = this.number;
+    }
+
+    modify(before: string, after: string, by: ResolutionID): boolean {
+        const item = this.get();
+        if (!item || item.type !== "TEXT") return false;
+
+        const currentText = contentBlocksToText(item.content);
+        const modifiedText = applyTextModification(currentText, before, after);
+        if (modifiedText === null) {
+            return false;
+        }
+
+        const tables = getTablesFromBlocks(item.content);
+        item.content = parseToContentBlocks(modifiedText, tables);
+        item.modifiedBy = item.modifiedBy ? [...item.modifiedBy, by] : [by];
+        return true;
     }
 }
 

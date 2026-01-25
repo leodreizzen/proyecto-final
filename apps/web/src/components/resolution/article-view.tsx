@@ -3,13 +3,12 @@
 import {ArticleToShow} from "@/lib/definitions/resolutions";
 import {Button} from "@/components/ui/button";
 import {useState} from "react";
-import {TableRenderer} from "@/components/resolution/table-renderer";
 import ModifiersNotice from "@/components/resolution/modifiers-notice";
 import {AddedNotice} from "@/components/resolution/added-notice";
 import {pathForResolution} from "@/lib/paths";
 import Link from "next/link";
 import {formatArticleTitle} from "@/lib/utils/resolution-formatters";
-import MultiParagraphText from "@/components/ui/multi-paragraph-text";
+import {ContentBlockRenderer} from "@/components/resolution/content-block-renderer";
 
 interface ArticleViewProps {
     article: ArticleToShow;
@@ -63,20 +62,14 @@ export function ArticleView({article, title, htmlId}: ArticleViewProps) {
                     {showRepealed && (
                         <div className="mt-3 pl-4 border-l-2 border-muted-foreground/20 max-w-none text-justify">
                             <p className="text-[0.7rem] font-bold text-muted-foreground uppercase mb-2 tracking-wider">Texto anterior:</p>
-                            <div className="prose prose-sm dark:prose-invert text-muted-foreground/80">
-                                <MultiParagraphText text={article.text}/>
-                                <TableRenderer tables={article.tables}/>
+                            <div className="text-muted-foreground/80">
+                                <ContentBlockRenderer content={article.content} />
                             </div>
                         </div>
                     )}
                 </div>
             ) : (
-                <>
-                    <div className="prose dark:prose-invert max-w-none text-justify">
-                        <MultiParagraphText text={article.text}/>
-                    </div>
-                    <TableRenderer tables={article.tables}/>
-                </>
+                <ContentBlockRenderer content={article.content} />
             )}
         </div>
     );

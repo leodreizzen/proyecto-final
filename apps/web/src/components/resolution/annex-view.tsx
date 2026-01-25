@@ -11,6 +11,8 @@ import ArticlesContainer from "@/components/resolution/articles-container";
 import {cn, formatResolutionId} from "@/lib/utils";
 import {getChapterId} from "@/lib/utils/resolution-formatters";
 
+import {ContentBlockRenderer} from "@/components/resolution/content-block-renderer";
+
 interface AnnexViewProps {
     annex: AnnexToShow;
     index: number;
@@ -149,7 +151,7 @@ export function AnnexView({annex}: AnnexViewProps) {
         ) :
         (
             <div className="prose dark:prose-invert max-w-none">
-                <p>{annex.content}</p>
+                <ContentBlockRenderer content={annex.content} />
             </div>
         );
 
