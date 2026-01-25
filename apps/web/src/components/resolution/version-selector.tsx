@@ -1,7 +1,9 @@
+"use client";
 import {ResolutionToShow, ResolutionVersion} from "@/lib/definitions/resolutions";
 import { Check, Clock } from "lucide-react";
 import Link from "next/link";
 import {cn, formatDate} from "@/lib/utils";
+import {useEffect, useRef} from "react";
 
 interface VersionSelectorProps {
     resolution: ResolutionToShow
@@ -10,6 +12,12 @@ interface VersionSelectorProps {
 }
 
 export function VersionSelector({ resolution, versions, currentVersion }: VersionSelectorProps) {
+    const currentVersionRef = useRef<HTMLLIElement | null>(null);
+
+    useEffect(() => {
+        currentVersionRef.current?.scrollIntoView({block: "center"});
+    }, [currentVersionRef]);
+
 
     return (
         <ul className="space-y-2">
@@ -18,7 +26,7 @@ export function VersionSelector({ resolution, versions, currentVersion }: Versio
                 const isActive = ver === currentVersion;
                 const isInitialVersion = ver.causedBy.initial === resolution.id.initial && ver.causedBy.number === resolution.id.number && ver.causedBy.year === resolution.id.year;
                 return (
-                    <li key={idx}>
+                    <li key={idx} ref={isActive ? currentVersionRef : null}>
                         <Link 
                             href="#" 
                             className={cn(

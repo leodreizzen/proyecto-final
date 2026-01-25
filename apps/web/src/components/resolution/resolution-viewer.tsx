@@ -15,11 +15,11 @@ interface ResolutionViewerProps {
 export function ResolutionViewer({ resolution, versions, currentVersion }: ResolutionViewerProps) {
     const isCurrentVersion = versions[0]! === currentVersion;
     return (
-        <div className="min-h-screen bg-background text-foreground">
+        <div className="h-screen flex flex-col bg-background text-foreground overflow-hidden">
             {/* Mobile Header & Sticky Status */}
-            <div className="sticky top-0 z-40 w-full bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 lg:static lg:bg-transparent">
+            <div className="shrink-0 z-40 w-full bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 lg:hidden">
                  {/* Version Status - Mobile Sticky if present */}
-                 <div className="lg:hidden">
+                 <div>
                     <VersionStatus resolution={resolution} isCurrentVersion={isCurrentVersion} />
                  </div>
                  
@@ -27,12 +27,12 @@ export function ResolutionViewer({ resolution, versions, currentVersion }: Resol
                  <MobileMenu resolution={resolution} versions={versions} currentVersion={currentVersion}/>
             </div>
 
-            <div className="container mx-auto px-4 py-8 md:py-12">
-                <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
+            <div className="flex-1 min-h-0 container mx-auto px-4">
+                <div className="grid grid-cols-1 lg:grid-cols-4 gap-8 h-full">
                     {/* Main Content Area */}
-                    <main className="lg:col-span-3">
+                    <main className="lg:col-span-3 h-full overflow-y-auto py-8 md:py-12">
                         {/* The "Paper" */}
-                        <div className="bg-background md:bg-card md:shadow-lg md:border rounded-xl overflow-hidden min-h-screen">
+                        <div className="bg-background md:bg-card md:shadow-lg md:border rounded-xl overflow-hidden min-h-fit">
                             
                             {/* Version Status - Desktop (Full Width inside Paper) */}
                             <div className="hidden lg:block">
@@ -55,8 +55,13 @@ export function ResolutionViewer({ resolution, versions, currentVersion }: Resol
                     </main>
 
                     {/* Sidebar Area - Desktop Only */}
-                    <div className="hidden lg:block lg:col-span-1">
-                        <ResolutionSidebar resolution={resolution} versions={versions} currentVersion={currentVersion}/>
+                    <div className="hidden lg:block lg:col-span-1 py-8 md:py-12 h-screen">
+                        <ResolutionSidebar 
+                            resolution={resolution} 
+                            versions={versions} 
+                            currentVersion={currentVersion}
+                            className="h-full"
+                        />
                     </div>
                 </div>
             </div>
