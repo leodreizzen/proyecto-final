@@ -11,6 +11,7 @@ import {
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import {formatDateUTC} from "@/lib/utils";
+import {pathForResolution} from "@/lib/paths";
 
 interface ResolutionHeaderProps {
     resolution: ResolutionToShow;
@@ -182,6 +183,14 @@ export function ResolutionHeader({resolution, versions, currentVersion}: {
                                 </DropdownMenu>
                             </div>
                         )}
+
+                        {
+                            resolution.ratifiedBy && (
+                                <p className="text-muted-foreground">
+                                    <span className="font-semibold">Ratificada por:</span> <Link className="hover:underline" href={pathForResolution(resolution.ratifiedBy)}> Res. {resolution.ratifiedBy.initial}-{resolution.ratifiedBy.number}-{resolution.ratifiedBy.year} </Link>
+                                </p>
+                            )
+                        }
 
                         {resolution.caseFiles.length > 0 && (
                             <p className="text-muted-foreground">
