@@ -1,14 +1,13 @@
 import * as Parser from "@/parser/types";
-import {articleCreationInput} from "@/data/save-resolution/articles";
+import {articleCreationInput, contentBlockCreationInput} from "@/data/save-resolution/articles";
 import {
     AnnexCreateWithoutResolutionInput,
     AnnexTextCreateWithoutAnnexInput,
     AnnexWithArticlesCreateWithoutAnnexInput
 } from "@repo/db/prisma/models";
 import {AnnexType} from "@repo/db/prisma/enums";
-import {parseToContentBlockInputs, withOrder} from "@/data/save-resolution/block-parser";
 
-type GeneralAnnex = { standalone: true } & Parser.StandaloneAnnex | ({ standalone: false } & Parser.ReplaceAnnexContent);
+type GeneralAnnex = { standalone: true } & Parser.StandaloneAnnex | ({ standalone: false } & Parser.NewAnnex);
 
 export function annexCreationInput(annex: GeneralAnnex): AnnexCreateWithoutResolutionInput {
     let concreteAnnexFields: Partial<AnnexCreateWithoutResolutionInput> & {
@@ -45,7 +44,7 @@ export function annexCreationInput(annex: GeneralAnnex): AnnexCreateWithoutResol
     } satisfies AnnexCreateWithoutResolutionInput
 }
 
-function annexWithArticlesCreationInput(annex: Extract<Parser.Resolution["annexes"][number], {
+function annexWithArticlesCreationInput(annex: Extract<GeneralAnnex, {
     type: "WithArticles"
 }>): AnnexWithArticlesCreateWithoutAnnexInput {
     return {
@@ -73,15 +72,10 @@ function chapterCreationInput(chapter: Parser.Chapter) {
 function annexTextCreationInput(annex: Extract<GeneralAnnex, {
     type: "TextOrTables"
 }>): AnnexTextCreateWithoutAnnexInput {
-    const contentBlocks = parseToContentBlockInputs(
-        annex.content,
-        annex.standalone ? annex.tables : [],
-        annex.standalone ? annex.references : []
-    );
-
+    const content = annex.content;
     return {
         content: {
-            create: withOrder(contentBlocks)
+            create: content.map((block, i) => contentBlockCreationInput(block, i + 1))
         }
     }
 }

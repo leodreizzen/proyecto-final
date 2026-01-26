@@ -15,6 +15,7 @@ services:
       - eslint-config-modules:/app/packages/eslint-config/node_modules
       - typescript-config-modules:/app/packages/typescript-config/node_modules
       - pubsub-modules:/app/packages/pubsub/node_modules
+      - text-utils-modules:/app/packages/text-utils/node_modules
       - /app/apps/web/.next
       - pnpm-store:/app/.pnpm-store
     command: ["turbo", "dev", "--filter", "web"]
@@ -60,6 +61,7 @@ services:
       - scripts-modules:/app/apps/scripts/node_modules
       - db-modules:/app/packages/db/node_modules
       - pubsub-modules:/app/packages/pubsub/node_modules
+      - text-utils-modules:/app/packages/text-utils/node_modules
       - eslint-config-modules:/app/packages/eslint-config/node_modules
       - typescript-config-modules:/app/packages/typescript-config/node_modules
       - pnpm-store:/app/.pnpm-store
@@ -206,6 +208,7 @@ services:
       - db-modules:/app/packages/db/node_modules
       - eslint-config-modules:/app/packages/eslint-config/node_modules
       - typescript-config-modules:/app/packages/typescript-config/node_modules
+      - text-utils-modules:/app/packages/text-utils/node_modules
       - pnpm-store:/app/.pnpm-store
     environment:
       DATABASE_URL: ${DATABASE_URL}
@@ -218,6 +221,7 @@ volumes:
   scripts-modules:
   pubsub-modules:
   db-modules:
+  text-utils-modules:
   eslint-config-modules:
   typescript-config-modules:
   pg_data:

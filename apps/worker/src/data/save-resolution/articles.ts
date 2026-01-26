@@ -3,25 +3,21 @@ import {
     ArticleCreateWithoutResolutionInput,
     ArticleFormalityCreateWithoutArticleInput,
     ArticleModifierCreateWithoutArticleInput,
-    ArticleNormativeCreateWithoutArticleInput
+    ArticleNormativeCreateWithoutArticleInput,
+    ContentBlockCreateWithoutArticleInput
 } from "@repo/db/prisma/models";
 import {changeCreationInput} from "@/data/save-resolution/changes";
 import * as Parser from "@/parser/types";
 import {suffixToNumber} from "@/data/save-resolution/util";
-import {annexReferenceCreateInput} from "@/data/save-resolution/references";
-import {parseToContentBlockInputs, withOrder} from "@/data/save-resolution/block-parser";
+import {annexReferenceCreateInput, textReferencesCreationInput} from "@/data/save-resolution/references";
 
 type GeneralArticle = ({ standalone: true } & Parser.StandaloneArticle) | ({ standalone: false } & Parser.NewArticle);
 
 export function articleCreationInput(article: GeneralArticle): ArticleCreateWithoutResolutionInput {
     const concreteArticleFields = concreateArticleCreationFields(article);
     
-    // In Parser.types, NewArticle is Article omitted of number, suffix, tables, references.
-    // So we need to handle that.
-    const tables = 'tables' in article ? article.tables : [];
-    const references = 'references' in article ? article.references : [];
-
-    const contentBlocks = parseToContentBlockInputs(article.text, tables, references);
+    // StandaloneArticle has 'content'. NewArticle has 'content' if it was assembled.
+    const content = article.content!;
 
     return {
         ...(article.standalone ? {
@@ -32,10 +28,29 @@ export function articleCreationInput(article: GeneralArticle): ArticleCreateWith
             suffix: null,
         }),
         content: {
-            create: withOrder(contentBlocks)
+            create: content.map((block, i) => contentBlockCreationInput(block, i + 1))
         },
         ...concreteArticleFields
     } satisfies ArticleCreateWithoutResolutionInput
+}
+
+export function contentBlockCreationInput(block: Parser.ContentBlock, order: number): ContentBlockCreateWithoutArticleInput {
+    if (block.type === "TEXT") {
+        return {
+            type: "TEXT",
+            text: block.text,
+            order,
+            references: {
+                create: textReferencesCreationInput(block.references)
+            }
+        };
+    } else {
+        return {
+            type: "TABLE",
+            tableContent: block.tableContent,
+            order,
+        };
+    }
 }
 
 function concreateArticleCreationFields(article: GeneralArticle): Pick<ArticleCreateWithoutResolutionInput, "type" | "articleNormative" | "articleModifier" | "articleCreateDocument" | "articleFormality"> {
@@ -104,5 +119,3 @@ function articleModifierCreationInput(article: Extract<GeneralArticle, {
         }
     }
 }
-
-

@@ -11,6 +11,7 @@ import {validateReferenceConsistency} from "@/parser/llms/analyzer/reference_con
 import {LLMConsistencyValidationError} from "@/parser/llms/errors";
 import {withLlmConsistencyRetry} from "@/util/llm/retries";
 import ProgressReporter from "@/util/progress-reporter";
+import {validateAnalysisChangesTableReferences} from "@/parser/llms/validation/table_validator";
 
 export async function analyzeFullResolution(resolution: ResolutionStructure, firstAttempt: boolean, reporter: ProgressReporter): Promise<ResultWithData<FullResolutionAnalysis, ParseResolutionError>> {
     const mainResolutionReporter = reporter.addSubreporter("analyzeMainResolution", 60);
@@ -67,12 +68,19 @@ export async function analyzeFullResolution(resolution: ResolutionStructure, fir
         return referenceAnalysisResult;
     })
 
+    const analysis = merge({
+        ...mainResolutionAnalysis,
+        annexes: annexes,
+        tables: tableAnalysis
+    }, referenceAnalysisResult);
+
+    const changeTableErrors = validateAnalysisChangesTableReferences(resolution, analysis);
+    if (changeTableErrors.length > 0) {
+        throw new LLMConsistencyValidationError(`Inconsistent table references in analysis changes: ${changeTableErrors.join(", ")}`);
+    }
+
     return {
         success: true,
-        data: merge({
-            ...mainResolutionAnalysis,
-            annexes: annexes,
-            tables: tableAnalysis
-        }, referenceAnalysisResult)
+        data: analysis
     }
 }

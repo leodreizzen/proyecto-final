@@ -53,11 +53,15 @@ export const ReplaceAnnexNewContentSchema = z.discriminatedUnion("contentType", 
     }).meta({title: "ReemplazoAnexoContenidoNuevoReferencia"}),
 ]).meta({title: "ReemplazoAnexoContenidoNuevo"});
 
+export type ReplaceAnnexNewContent = z.infer<typeof ReplaceAnnexNewContentSchema>;
+
 export const ChangeReplaceAnnexSchema = z.object({
     type: z.literal("ReplaceAnnex").describe("Reemplazar un anexo"),
     targetAnnex: AnnexReferenceSchema.describe("Anexo a reemplazar"),
     newContent: ReplaceAnnexNewContentSchema.describe("Contenido nuevo del anexo. Puede ser inline o una referencia a otro anexo"),
 }).meta({title: "CambioReemplazarAnexo"});
+
+export type ChangeReplaceAnnex = z.infer<typeof ChangeReplaceAnnexSchema>;
 
 export const ChangeAddAnnexToResolutionSchema = z.object({
     type: z.literal("AddAnnexToResolution").describe("Agregar un anexo a una resolución"),

@@ -17,10 +17,9 @@ import {
     articleReferenceCreateInput, chapterReferenceCreateInput,
     genericReferenceCreateInput, resolutionReferenceCreateInput
 } from "./references";
-import {articleCreationInput} from "@/data/save-resolution/articles";
+import {articleCreationInput, contentBlockCreationInput} from "@/data/save-resolution/articles";
 import {annexCreationInput} from "@/data/save-resolution/annexes";
 import {suffixToNumber} from "@/data/save-resolution/util";
-import {parseToContentBlockInputs, withOrder} from "@/data/save-resolution/block-parser";
 
 export function changeCreationInput(change: Parser.Change): ChangeCreateWithoutArticleModifierInput {
     switch (change.type) {
@@ -177,18 +176,15 @@ function changeReplaceAnnexCreationInput(change: Extract<Parser.Change, {
 function changeModifyTextAnnexCreationInput(change: Extract<Parser.Change, {
     type: "ModifyTextAnnex"
 }>): ChangeModifyTextAnnexCreateWithoutChangeInput {
-    const beforeBlocks = parseToContentBlockInputs(change.before, [], []);
-    const afterBlocks = parseToContentBlockInputs(change.after, [], []);
-
     return {
         targetAnnex: {
             create: annexReferenceCreateInput(change.targetAnnex, "CHANGE_MODIFY_TEXT_ANNEX")
         },
         before: {
-            create: withOrder(beforeBlocks)
+            create: change.before.map((block, i) => contentBlockCreationInput(block, i + 1))
         },
         after: {
-            create: withOrder(afterBlocks)
+            create: change.after.map((block, i) => contentBlockCreationInput(block, i + 1))
         },
     }
 }
@@ -209,18 +205,15 @@ function changeRatifyAdReferendumCreationInput(change: Extract<Parser.Change, {
 function changeModifyArticleCreationInput(change: Extract<Parser.Change, {
     type: "ModifyArticle"
 }>): ChangeModifyArticleCreateWithoutChangeInput {
-    const beforeBlocks = parseToContentBlockInputs(change.before, [], []);
-    const afterBlocks = parseToContentBlockInputs(change.after, [], []);
-
     return {
         targetArticle: {
             create: articleReferenceCreateInput(change.targetArticle, "CHANGE_MODIFY_ARTICLE")
         },
         before: {
-            create: withOrder(beforeBlocks)
+            create: change.before.map((block, i) => contentBlockCreationInput(block, i + 1))
         },
         after: {
-            create: withOrder(afterBlocks)
+            create: change.after.map((block, i) => contentBlockCreationInput(block, i + 1))
         },
     }
 }

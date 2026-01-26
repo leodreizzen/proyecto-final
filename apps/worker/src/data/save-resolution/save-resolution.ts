@@ -2,10 +2,9 @@ import * as Parser from "@/parser/types";
 import {ConsiderationCreateWithoutResolutionInput, RecitalCreateWithoutResolutionInput} from "@repo/db/prisma/models";
 import {Asset, ResolutionUpload} from "@repo/db/prisma/client";
 import {PrismaClientKnownRequestError, TransactionPrismaClient} from "@repo/db/prisma";
-import {articleCreationInput} from "@/data/save-resolution/articles";
+import {articleCreationInput, contentBlockCreationInput} from "@/data/save-resolution/articles";
 import {annexCreationInput} from "@/data/save-resolution/annexes";
 import {ResolutionExistsError} from "@/upload/errors";
-import {parseToContentBlockInputs, withOrder} from "@/data/save-resolution/block-parser";
 
 export async function saveParsedResolution(tx: TransactionPrismaClient, parsedRes: Parser.Resolution, upload: ResolutionUpload, publicAsset: Asset) {
     try {
@@ -72,11 +71,10 @@ export async function saveParsedResolution(tx: TransactionPrismaClient, parsedRe
 
 function recitalsCreationInput(recitals: Parser.Recital[]): RecitalCreateWithoutResolutionInput[] {
     return recitals.map((recital, index) => {
-        const contentBlocks = parseToContentBlockInputs(recital.text, recital.tables, recital.references);
         return {
             number: index + 1,
             content: {
-                create: withOrder(contentBlocks)
+                create: recital.content.map((block, i) => contentBlockCreationInput(block, i + 1))
             },
         } satisfies RecitalCreateWithoutResolutionInput
     })
@@ -85,11 +83,10 @@ function recitalsCreationInput(recitals: Parser.Recital[]): RecitalCreateWithout
 
 function considerationsCreationInput(considerations: Parser.Consideration[]): ConsiderationCreateWithoutResolutionInput[] {
     return considerations.map((consideration, index) => {
-        const contentBlocks = parseToContentBlockInputs(consideration.text, consideration.tables, consideration.references);
         return {
             number: index + 1,
             content: {
-                create: withOrder(contentBlocks)
+                create: consideration.content.map((block, i) => contentBlockCreationInput(block, i + 1))
             },
         } satisfies ConsiderationCreateWithoutResolutionInput
     });

@@ -1,12 +1,11 @@
 import {ResolutionStructure} from "@/parser/schemas/structure_parser/schemas";
 import {
-    AnnexWithMappedChanges,
     AnnexWithoutTables,
     ArticleWithoutTables, ChangeMapped,
     FullResolutionAnalysis,
-    Resolution
+    Resolution,
+    Article, StandaloneAnnex, NewAnnexWithoutTables, NewAnnex
 } from "@/parser/types";
-import {moveTablesInResolution} from "@/parser/postprocessing/move_tables";
 import {RowJoin, TableAnalysis} from "@/parser/schemas/analyzer/tables/table";
 import {TableStructure} from "@/parser/schemas/structure_parser/table";
 import {mergeDeep} from "@/util/merge";
@@ -14,34 +13,45 @@ import {Change} from "@/parser/schemas/analyzer/change";
 import {TextReference} from "@/parser/schemas/references/schemas";
 import {ResolutionID} from "@/parser/schemas/common";
 import {isEqual} from "lodash-es";
+import {textToContentBlocks} from "@/parser/postprocessing/block_utils";
+import {
+    mapConsiderationToContentBlocks,
+    mapRecitalToContentBlocks,
+    mapTextAnnexToContentBlocks
+} from "@/parser/postprocessing/content_blocks";
 
 // Resolution parts must be validated before calling this function
-export function assembleResolution(structure: ResolutionStructure, analysis: FullResolutionAnalysis): Resolution {
-    const recitals = structure.recitals.map((recital, index) => ({
-        text: recital,
-        references: analysis.recitals[index]!.references
-    }));
-
-    const considerations = structure.considerations.map((consideration, index) => ({
-        text: consideration,
-        references: analysis.considerations[index]!.references
-    }));
+export function assembleResolution(structure: ResolutionStructure, _analysis: FullResolutionAnalysis): Resolution {
+    const usedTableNumbers = new Set<number>();
+    const analysisPatched = patchReferencesInAnalysis(_analysis);
 
     const tables = structure.tables.map((tableStructure, index) => {
-        const tableAnalysis = analysis.tables[index]!;
+        const tableAnalysis = analysisPatched.tables[index]!;
         return applyAnalysisToTable(tableStructure, tableAnalysis);
     });
 
+    const recitals = structure.recitals.map((recital, index) => (
+        mapRecitalToContentBlocks({
+            text: recital,
+            references: analysisPatched.recitals[index]!.references,
+        }, index + 1, tables, usedTableNumbers)));
+
+    const considerations = structure.considerations.map((consideration, index) => (
+        mapConsiderationToContentBlocks({
+            text: consideration,
+            references: analysisPatched.considerations[index]!.references
+        }, index + 1, tables, usedTableNumbers)));
+
     const articles = structure.articles.map((article, index) => {
-        const articleAnalysis = analysis.articles[index]!;
-        return {
+        const articleAnalysis = analysisPatched.articles[index]!;
+        return mapArticle({
             ...article,
-            ...articleAnalysis
-        }
+            ...articleAnalysis,
+        }, structure.id, tables, usedTableNumbers, "Resolution");
     });
 
     const annexes: AnnexWithoutTables[] = structure.annexes.map((annex, index) => {
-        const annexAnalysis = analysis.annexes[index]!;
+        const annexAnalysis = analysisPatched.annexes[index]!;
         return mergeDeep(
             annex,
             annexAnalysis
@@ -50,34 +60,19 @@ export function assembleResolution(structure: ResolutionStructure, analysis: Ful
 
     const currentResolutionId = structure.id;
 
-    const finalArticles = mapArticlesWithChanges(articles, currentResolutionId);
-    const finalAnnexes: AnnexWithMappedChanges[] = annexes.map(annex => {
-        if (annex.type !== "WithArticles")
-            return annex;
-        return {
-            ...annex,
-            articles: mapArticlesWithChanges(annex.articles, currentResolutionId),
-            chapters: annex.chapters.map(chapter => ({
-                ...chapter,
-                articles: mapArticlesWithChanges(chapter.articles, currentResolutionId)
-            }))
-        };
-    });
+    const finalAnnexes: StandaloneAnnex[] = annexes.map(annex => mapAnnex(annex, currentResolutionId, tables, usedTableNumbers, "Resolution"));
 
-    const assembledResolution = {
+    return {
         id: structure.id,
         decisionBy: structure.decisionBy,
-        metadata: analysis.metadata,
+        metadata: analysisPatched.metadata,
         date: structure.date,
         caseFiles: structure.caseFiles,
         recitals: recitals,
         considerations: considerations,
-        articles: finalArticles,
+        articles: articles,
         annexes: finalAnnexes,
-        tables: tables,
     }
-    const resolutionWithMovedTables = moveTablesInResolution(assembledResolution);
-    return mapDocumentReferences(resolutionWithMovedTables);
 }
 
 function applyAnalysisToTable(tableStructure: TableStructure, tableAnalysis: TableAnalysis): TableStructure {
@@ -139,27 +134,62 @@ function applyJoinsToTable(table: TableStructure, rowJoins: RowJoin[]): TableStr
     return {...table, rows: resultRows};
 }
 
-function mapArticlesWithChanges(articles: ArticleWithoutTables[], currentResolutionId: ResolutionID) {
-    return articles.map(article => {
-        if (article.type !== "Modifier")
-            return article;
+function mapAnnex(annex: AnnexWithoutTables, currentResolutionId: ResolutionID, tables: TableStructure[], usedTableNumbers: Set<number>, context: string): StandaloneAnnex;
+function mapAnnex(annex: NewAnnexWithoutTables, currentResolutionId: ResolutionID, tables: TableStructure[], usedTableNumbers: Set<number>, context: string): NewAnnex;
+function mapAnnex(annex: NewAnnexWithoutTables | AnnexWithoutTables, currentResolutionId: ResolutionID, tables: TableStructure[], usedTableNumbers: Set<number>, context: string): StandaloneAnnex | NewAnnex {
+    if (annex.type !== "WithArticles")
+        return mapTextAnnexToContentBlocks(annex, tables, usedTableNumbers);
+    return {
+        ...annex,
+        articles: annex.articles.map(article => mapArticle(article, currentResolutionId, tables, usedTableNumbers, `${context} Annex ${(annex as AnnexWithoutTables)["number"] ?? ""}`)),
+        chapters: annex.chapters.map(chapter => ({
+            ...chapter,
+            articles: chapter.articles.map(article => mapArticle(article, currentResolutionId, tables, usedTableNumbers, `${context} Annex ${(annex as AnnexWithoutTables)["number"] ?? ""} chapter ${chapter.number}`))
+        }))
+    };
 
-        const changes = article.changes.map(change => {
-            const changeWithMappedAnalysis = mapAnalysis(change);
-            return mapChangeDocumentReferences(changeWithMappedAnalysis, currentResolutionId);
-        });
-        return {...article, changes};
-    });
 }
 
-function mapAnalysis(change: Change): ChangeMapped {
+function mapArticle(article: ArticleWithoutTables, currentResolutionId: ResolutionID, allTables: TableStructure[], usedTableNumbers: Set<number>, context: string): Article {
+    const usedTableNumbersClone = new Set<number>(usedTableNumbers); // we allow to reuse tables between structure and analysis within the same article
+    const {text, references, ...restArticle} = article;
+    const content = textToContentBlocks(text, allTables, references, usedTableNumbersClone, `${context} article ${article.number} ${article.suffix || ""}`);
+
+    let mappedArticle;
+    if (restArticle.type !== "Modifier")
+        mappedArticle = {
+            ...restArticle,
+            content
+        } satisfies Article
+    else {
+        const changes = restArticle.changes.map(change => {
+            const changeWithMappedAnalysis = mapAnalysis(change, currentResolutionId, allTables, references, usedTableNumbers);
+            return mapChangeDocumentReferences(changeWithMappedAnalysis, currentResolutionId);
+        });
+
+        mappedArticle = {
+            ...restArticle,
+            content,
+            changes
+        } satisfies Article
+    }
+
+    usedTableNumbersClone.forEach(n => usedTableNumbers.add(n));
+
+    return mappedArticle;
+}
+
+
+function mapAnalysis(change: Change, currentResolutionId: ResolutionID, allTables: TableStructure[], references: TextReference[], usedTableNumbers: Set<number>): ChangeMapped {
+    // TODO replaceAnnex?
     if (change.type === "AddArticleToResolution" || change.type === "AddArticleToAnnex") {
         const articleToAdd = change.articleToAdd;
-        const {analysis, ...restArticle} = articleToAdd;
+
+        const {analysis, text, ...restArticle} = articleToAdd;
 
         let mappedAnalysis;
-        if(analysis.type === "Modifier"){
-            const mappedChanges = analysis.changes.map(change => mapAnalysis(change));
+        if (analysis.type === "Modifier") {
+            const mappedChanges = analysis.changes.map(change => mapAnalysis(change, currentResolutionId, allTables, references, usedTableNumbers));
             mappedAnalysis = {
                 ...analysis,
                 changes: mappedChanges
@@ -167,21 +197,25 @@ function mapAnalysis(change: Change): ChangeMapped {
         } else {
             mappedAnalysis = analysis;
         }
+
+        const blocks = textToContentBlocks(text, allTables, references, usedTableNumbers, "Add Article Change");
 
         return {
             ...change,
             articleToAdd: {
                 ...restArticle,
-                ...mappedAnalysis
+                ...mappedAnalysis,
+                content: blocks,
             }
-        }
+        };
     } else if (change.type === "ReplaceArticle") {
         const newContent = change.newContent;
-        const {analysis, ...restArticle} = newContent;
+
+        const {analysis, text, ...restArticle} = newContent;
 
         let mappedAnalysis;
-        if(analysis.type === "Modifier"){
-            const mappedChanges = analysis.changes.map(change => mapAnalysis(change));
+        if (analysis.type === "Modifier") {
+            const mappedChanges = analysis.changes.map(change => mapAnalysis(change, currentResolutionId, allTables, references, usedTableNumbers));
             mappedAnalysis = {
                 ...analysis,
                 changes: mappedChanges
@@ -190,11 +224,40 @@ function mapAnalysis(change: Change): ChangeMapped {
             mappedAnalysis = analysis;
         }
 
+        const blocks = textToContentBlocks(text, allTables, references, usedTableNumbers, "Replace Article Change");
+
         return {
             ...change,
             newContent: {
                 ...restArticle,
-                ...mappedAnalysis
+                ...mappedAnalysis,
+                content: blocks
+            }
+        };
+    } else if (change.type === "ModifyArticle" || change.type === "ModifyTextAnnex") {
+        const beforeBlocks = textToContentBlocks(change.before, allTables, [], usedTableNumbers, "Modify Change (before)");
+        const afterBlocks = textToContentBlocks(change.after, allTables, [], usedTableNumbers, "Modify Change (after)");
+
+        return {
+            ...change,
+            before: beforeBlocks,
+            after: afterBlocks
+        };
+    } else if (change.type === "ReplaceAnnex") {
+        if (change.newContent.contentType === "Inline") {
+            const annexContentMapped = mapAnnex({...change.newContent.content, references: references}, currentResolutionId, allTables, usedTableNumbers, "Replace Annex Change");
+            return {
+                ...change,
+                newContent: {
+                    ...change.newContent,
+                    content: annexContentMapped
+                }
+            };
+        } else {
+            const newContent = change.newContent;
+            return {
+                ...change,
+                newContent
             }
         }
     } else {
@@ -222,9 +285,9 @@ function mapChangeDocumentReferences(change: ChangeMapped, currentResolutionId: 
                     },
                     articleNumber: targetArticle.articleNumber
                 }
-            }
+            };
         }
-    } else if (change.type === "Repeal"){
+    } else if (change.type === "Repeal") {
         if (change.target.referenceType == "NormalArticle" && change.target.isDocument) {
             if (isEqual(change.target.resolutionId, currentResolutionId)) {
                 return change;
@@ -241,10 +304,9 @@ function mapChangeDocumentReferences(change: ChangeMapped, currentResolutionId: 
                     },
                     articleNumber: target.articleNumber
                 }
-            }
+            };
         }
-    }
-    else if (change.type == "AdvancedChange") {
+    } else if (change.type == "AdvancedChange") {
         if (change.target.referenceType == "Resolution" && change.target.isDocument) {
             if (isEqual(change.target.resolutionId, currentResolutionId)) {
                 return change;
@@ -257,7 +319,7 @@ function mapChangeDocumentReferences(change: ChangeMapped, currentResolutionId: 
                     resolutionId: target.resolutionId,
                     annexNumber: 1
                 }
-            }
+            };
         }
         if (change.target.referenceType == "NormalArticle" && change.target.isDocument) {
             if (isEqual(change.target.resolutionId, currentResolutionId)) {
@@ -275,7 +337,7 @@ function mapChangeDocumentReferences(change: ChangeMapped, currentResolutionId: 
                     },
                     articleNumber: target.articleNumber
                 }
-            }
+            };
         }
     } else if (change.type === "AddAnnexToResolution") {
         if (change.targetIsDocument) {
@@ -291,36 +353,74 @@ function mapChangeDocumentReferences(change: ChangeMapped, currentResolutionId: 
                     resolutionId: targetResolution,
                     annexNumber: 1
                 }
-            }
+            };
         }
     }
     return change;
 }
 
-function mapDocumentReferences(resolution: Resolution): Resolution {
+//
+// function mapDocumentReferences(resolution: Resolution): Resolution {
+//     return {
+//         ...resolution,
+//         recitals: patchReferencesInObjectArray(resolution.recitals),
+//         considerations: patchReferencesInObjectArray(resolution.considerations),
+//         articles: patchReferencesInObjectArray(resolution.articles),
+//         annexes: resolution.annexes.map(annex => {
+//             if (annex.type === "WithArticles") {
+//                 return {
+//                     ...annex,
+//                     articles: patchReferencesInObjectArray(annex.articles),
+//                     chapters: annex.chapters.map(chapter => ({
+//                         ...chapter,
+//                         articles: patchReferencesInObjectArray(chapter.articles)
+//                     }))
+//                 }
+//             } else if (annex.type === "TextOrTables") {
+//                 return {
+//                     ...annex,
+//                     content: annex.content.map(block => {
+//                         if (block.type === "TEXT") {
+//                             return {
+//                                 ...block,
+//                                 references: block.references.map(ref => patchReference(ref))
+//                             }
+//                         }
+//                         return block;
+//                     })
+//                 }
+//             } else {
+//                 const _: never = annex;
+//                 return annex;
+//             }
+//         })
+//     }
+// }
+
+
+function patchReferencesInAnalysis(analysis: FullResolutionAnalysis): FullResolutionAnalysis {
     return {
-        ...resolution,
-        recitals: mapReferencesInObjectArray(resolution.recitals),
-        considerations: mapReferencesInObjectArray(resolution.considerations),
-        articles: mapReferencesInObjectArray(resolution.articles),
-        annexes: resolution.annexes.map(annex => {
+        ...analysis,
+        recitals: patchReferencesInObjectArray(analysis.recitals),
+        considerations: patchReferencesInObjectArray(analysis.considerations),
+        articles: patchReferencesInObjectArray(analysis.articles) as typeof analysis.articles,
+        annexes: analysis.annexes.map(_annex => {
+            const annex = _annex as typeof analysis.annexes[number];
             if (annex.type === "WithArticles") {
                 return {
                     ...annex,
-                    articles: mapReferencesInObjectArray(annex.articles),
-                    chapters: annex.chapters.map(chapter => ({
-                        ...chapter,
-                        articles: mapReferencesInObjectArray(chapter.articles)
-                    }))
-                }
-            }
-            else if (annex.type === "TextOrTables") {
-                return {
-                    ...annex,
-                    references: annex.references.map(ref => mapReference(ref))
-                }
-            }
-            else {
+                    articles: patchReferencesInObjectArray(annex.articles) as typeof annex.articles,
+                    chapters: annex.chapters.map(_chapter => {
+                        const chapter = _chapter as typeof annex.chapters[number];
+                        return {
+                            ...chapter,
+                            articles: patchReferencesInObjectArray(chapter.articles)
+                        }
+                    }) as typeof annex.chapters
+                };
+            } else if (annex.type === "TextOrTables") {
+                return patchReferencesInObject(annex);
+            } else {
                 const _: never = annex;
                 return annex;
             }
@@ -328,24 +428,27 @@ function mapDocumentReferences(resolution: Resolution): Resolution {
     }
 }
 
-function mapReferencesInObjectArray<T extends { references: TextReference[] }>(objects: T[]): T[] {
-    return objects.map(obj => ({
-        ...obj,
-        references: obj.references.map(ref => mapReference(ref))
-    }))
+function patchReferencesInObjectArray<T extends { references: TextReference[] }>(arr: T[]): T[] {
+    return arr.map(obj => patchReferencesInObject(obj));
 }
 
-function mapReference(ref: TextReference): TextReference{
+function patchReferencesInObject<T extends { references: TextReference[] }>(obj: T): T {
+    return {
+        ...obj,
+        references: obj.references.map(ref => patchReference(ref))
+    }
+}
+
+function patchReference(ref: TextReference): TextReference {
     const reference = ref.reference;
     let mappedReference: typeof reference;
     if (reference.referenceType === "Resolution" && reference.isDocument) {
-        mappedReference =  {
+        mappedReference = {
             referenceType: "Annex",
             resolutionId: reference.resolutionId,
             annexNumber: 1
         }
-    }
-    else if (reference.referenceType === "NormalArticle" && reference.isDocument) {
+    } else if (reference.referenceType === "NormalArticle" && reference.isDocument) {
         mappedReference = {
             referenceType: "AnnexArticle",
             annex: {
@@ -355,8 +458,7 @@ function mapReference(ref: TextReference): TextReference{
             },
             articleNumber: reference.articleNumber
         }
-    }
-    else {
+    } else {
         mappedReference = reference;
     }
     return {

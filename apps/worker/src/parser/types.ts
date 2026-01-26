@@ -4,7 +4,8 @@ import {
 import {AnnexAnalysis} from "@/parser/schemas/analyzer/annexes/annex";
 import {MainResolutionAnalysis} from "@/parser/schemas/analyzer/resolution/resolution";
 import {
-    Change as ChangeAnalysis, ChangeAddArticleToAnnex, ChangeAddArticleToResolution, ChangeReplaceArticle,
+    Change as ChangeAnalysis, ChangeAddArticleToAnnex, ChangeAddArticleToResolution,
+    ChangeReplaceAnnex, ChangeReplaceArticle, ReplaceAnnexNewContent,
 } from "@/parser/schemas/analyzer/change";
 import {
     RawReference,
@@ -16,6 +17,13 @@ import {AnnexWithArticlesStructure, TextAnnexStructure} from "@/parser/schemas/s
 import {ArticleStructure} from "@/parser/schemas/structure_parser/article";
 import {TableStructure} from "@/parser/schemas/structure_parser/table";
 import {TextReference} from "@/parser/schemas/references/schemas";
+import {ContentBlockType} from "@repo/db/prisma/client";
+import {TableContent} from "@repo/db/content-blocks";
+
+
+//eslint-disable-next-line @typescript-eslint/no-explicit-any
+export type DistributiveOmit<T, K extends keyof any> = T extends any ? Omit<T, K> : never;
+
 
 export type ParseResolutionError = {
     code: "invalid_format"
@@ -24,13 +32,22 @@ export type ParseResolutionError = {
     code: "too_large"
 };
 
+
+export type ContentBlock = ({
+    type: typeof ContentBlockType.TEXT;
+    text: string;
+} | {
+    type: typeof ContentBlockType.TABLE;
+    tableContent: TableContent;
+}) & {
+    references: TextReference[];
+};
+
+export type WithContentBlocks<T> = DistributiveOmit<T, "text" | "tables" | "references"> & { content: ContentBlock[] };
+
 export type Reference =
     Exclude<RawReference, { referenceType: "Resolution" }>
     | Omit<RawResolutionReference, "isDocument">;
-
-export type WithTables<T> = T & {
-    tables: TableStructure[];
-}
 
 type FullArticleAnalysis = FullResolutionAnalysis["articles"][number];
 type FullAnnexAnalysis = FullResolutionAnalysis["annexes"][number];
@@ -40,12 +57,10 @@ type FullAnnexWithArticlesAnalysis = Extract<FullAnnexAnalysis, { type: "WithArt
 export type ArticleWithoutTables = ArticleStructure & FullArticleAnalysis;
 
 type ChangeAddArticleToResolutionMapped = Omit<ChangeAddArticleToResolution, "articleToAdd"> & {
-    //articleToAdd: ArticleSchemaWithTextMapped
     articleToAdd: NewArticle
 }
 
 type ChangeAddArticleToAnnexMapped = Omit<ChangeAddArticleToAnnex, "articleToAdd"> & {
-    //articleToAdd: ArticleSchemaWithTextMapped
     articleToAdd: NewArticle
 }
 
@@ -53,9 +68,28 @@ type ChangeReplaceArticleMapped = Omit<ChangeReplaceArticle, "newContent"> & {
     newContent: NewArticle
 }
 
-export type ChangeMapped = Exclude<ChangeAnalysis, {
-    type: "AddArticleToResolution" | "AddArticleToAnnex" | "ReplaceArticle"
-}> | ChangeAddArticleToResolutionMapped | ChangeAddArticleToAnnexMapped | ChangeReplaceArticleMapped;
+type ReplaceAnnexNewContentMapped = Exclude<ReplaceAnnexNewContent, { contentType: "Inline" }> | (
+    Omit<Extract<ReplaceAnnexNewContent, { contentType: "Inline" }>, "content"> & {
+    content: NewAnnex
+})
+
+type ChangeReplaceAnnexMapped = Omit<ChangeReplaceAnnex, "newContent"> & {
+    newContent: ReplaceAnnexNewContentMapped
+}
+
+type ChangeModifyArticleMapped = Omit<Extract<ChangeAnalysis, { type: "ModifyArticle" }>, "before" | "after"> & {
+    before: ContentBlock[],
+    after: ContentBlock[]
+}
+
+type ChangeModifyTextAnnexMapped = Omit<Extract<ChangeAnalysis, { type: "ModifyTextAnnex" }>, "before" | "after"> & {
+    before: ContentBlock[],
+    after: ContentBlock[]
+}
+
+export type ChangeMapped = (Exclude<ChangeAnalysis, {
+    type: "AddArticleToResolution" | "AddArticleToAnnex" | "ReplaceArticle" | "ModifyArticle" | "ModifyTextAnnex" | "ReplaceAnnex"
+}> | ChangeAddArticleToResolutionMapped | ChangeAddArticleToAnnexMapped | ChangeReplaceArticleMapped | ChangeReplaceAnnexMapped | ChangeModifyArticleMapped | ChangeModifyTextAnnexMapped);
 
 
 type ArticleModifier = Extract<ArticleStructure & FullArticleAnalysis, { type: "Modifier" }>;
@@ -79,8 +113,8 @@ export type ConsiderationWithoutTables = {
     text: string,
     references: TextReference[];
 }
-type TextAnnexWithoutTables = TextAnnexStructure & FullTextAnnexAnalysis
-type AnnexWithArticlesWithoutTables =
+export type TextAnnexWithoutTables = TextAnnexStructure & FullTextAnnexAnalysis
+export type AnnexWithArticlesWithoutTables =
     Omit<AnnexWithArticlesStructure & FullAnnexWithArticlesAnalysis, "articles" | "chapters">
     & {
     articles: (AnnexWithArticlesStructure["articles"][number] & FullAnnexWithArticlesAnalysis["articles"][number])[];
@@ -105,32 +139,41 @@ type AnnexWithArticlesWithMappedChanges = Omit<AnnexWithArticlesWithoutTables, "
     })[]
 }
 
-export type AnnexWithMappedChanges = TextAnnexWithoutTables | AnnexWithArticlesWithMappedChanges;
+// An article that is created by a change (ej. articleToAdd)
+export type NewArticle = DistributiveOmit<Article, "number" | "suffix">;
 
-type TextAnnex = WithTables<TextAnnexWithoutTables>
+export type NewAnnex = DistributiveOmit<StandaloneAnnex, "number">;
 
-type AnnexWithArticles = Omit<AnnexWithArticlesWithMappedChanges, "articles" | "chapters"> & {
-    articles: WithTables<AnnexWithArticlesWithMappedChanges["articles"][number]>[];
-    chapters: (Omit<AnnexWithArticlesWithMappedChanges["chapters"][number], "articles"> & {
-        articles: WithTables<AnnexWithArticlesWithMappedChanges["chapters"][number]["articles"][number]>[]
-    })[]
-}
+export type Article = DistributiveOmit<ArticleWithMappedChanges, "text" | "tables" | "references"> & {
+    content: ContentBlock[]
+};
 
-export type NewArticle = DistributiveOmit<Article, "number" | "suffix" | "tables" | "references">
-export type StandaloneArticle = Article
+export type StandaloneArticle = Article;
 
 
 export type AnnexWithoutTables = TextAnnexWithoutTables | AnnexWithArticlesWithoutTables;
+export type NewTextAnnexWithoutTables = DistributiveOmit<TextAnnexWithoutTables, "number" | "tables">;
+export type NewAnnexWithArticlesWithoutTables = DistributiveOmit<AnnexWithArticlesWithoutTables, "number">;
+export type NewAnnexWithoutTables = NewTextAnnexWithoutTables | NewAnnexWithArticlesWithoutTables;
 
-export type StandaloneAnnex = TextAnnex | AnnexWithArticles;
-export type Article = WithTables<ArticleWithMappedChanges>;
-export type Recital = WithTables<RecitalWithoutTables>;
-export type Consideration = WithTables<ConsiderationWithoutTables>;
 
-//eslint-disable-next-line @typescript-eslint/no-explicit-any
-type DistributiveOmit<T, K extends keyof any> = T extends any ? Omit<T, K> : never;
+export type StandaloneTextAnnex = WithContentBlocks<Omit<TextAnnexWithoutTables, "content">>
+export type NewTextAnnex = WithContentBlocks<Omit<NewTextAnnexWithoutTables, "content">>;
+
+export type StandaloneAnnex =
+    StandaloneTextAnnex
+    | (Omit<AnnexWithArticlesWithMappedChanges, "articles" | "chapters"> & {
+    articles: Article[];
+    chapters: (Omit<AnnexWithArticlesWithMappedChanges["chapters"][number], "articles"> & {
+        articles: Article[]
+    })[]
+});
+
+export type Recital = WithContentBlocks<RecitalWithoutTables>;
+export type Consideration = WithContentBlocks<ConsiderationWithoutTables>
+
 export type Change = ChangeMapped;
-export type Chapter = AnnexWithArticles["chapters"][number];
+export type Chapter = Extract<StandaloneAnnex, { type: "WithArticles" }>["chapters"][number];
 export type Table = TableStructure;
 
 
