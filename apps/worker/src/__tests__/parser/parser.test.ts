@@ -2,12 +2,28 @@ import {parseFileResolution} from "@/parser/parser";
 import path from "node:path";
 
 import {expect, describe, jest, test} from "@jest/globals";
-import {StandaloneAnnex, Article, Resolution} from "@/parser/types";
+import {StandaloneAnnex, Article, Resolution, ContentBlock} from "@/parser/types";
 import {ResolutionID} from "@/parser/schemas/common";
 import ProgressReporter from "@/util/progress-reporter";
+import {ContentBlockType} from "@repo/db/prisma/client";
 
 
 describe("E2E Resolution Parsing", () => {
+    function getText(content?: ContentBlock[]): string {
+        if (!content) return "";
+        return content
+            .filter(b => b.type === ContentBlockType.TEXT)
+            .map(b => b.text)
+            .join("");
+    }
+
+    function getTables(content?: ContentBlock[]) {
+        if (!content) return [];
+        return content
+            .filter(b => b.type === ContentBlockType.TABLE)
+            .map(b => b.tableContent);
+    }
+
     function structureChecks(resolution: Resolution, expected: {
         id: ResolutionID,
         numRecitals: number,
@@ -27,7 +43,7 @@ describe("E2E Resolution Parsing", () => {
         expect(resolution.decisionBy.toLowerCase()).toBe(expected.decisionBy.toLowerCase());
 
         resolution.articles.forEach(article => {
-            expect(article.text).not.toMatch(/^(art[ií]culo)/i)
+            expect(getText(article.content)).not.toMatch(/^(art[ií]culo)/i)
         })
 
     }
@@ -337,8 +353,9 @@ describe("E2E Resolution Parsing", () => {
         expect(annexWithArticles.articles).toHaveLength(2);
         expect(annexWithArticles.chapters).toHaveLength(0);
 
-        expect(annexWithArticles.articles[0]!.tables).toHaveLength(1);
-        const table = annexWithArticles.articles[0]!.tables[0]!;
+        const tables = getTables(annexWithArticles.articles[0]!.content);
+        expect(tables).toHaveLength(1);
+        const table = tables[0]!;
         expect(table.number).toBe(1);
         expect(table.rows).toHaveLength(9);
         table.rows.forEach(row => {
@@ -733,8 +750,10 @@ describe("E2E Resolution Parsing", () => {
         const annex = parseResData.annexes[0]!;
         expect(annex.type).toBe("TextOrTables");
         const annexTextOrTables = annex as Extract<typeof annex, { type: "TextOrTables" }>;
-        expect(annexTextOrTables.tables).toHaveLength(1);
-        const table = annexTextOrTables.tables[0]!;
+        
+        const tables = getTables(annexTextOrTables.content);
+        expect(tables).toHaveLength(1);
+        const table = tables[0]!;
         expect(table.number).toBe(1);
         expect(table.rows).toHaveLength(5);
         expect(table.rows[0]!.header).toBe(true);
@@ -829,7 +848,7 @@ describe("E2E Resolution Parsing", () => {
         expect(firstAnnexWithArticles.articles).toHaveLength(0);
         firstAnnexWithArticles.chapters.forEach(chapter => {
             chapter.articles.forEach(article => {
-                expect(article.text).not.toMatch(/^(art[ií]culo)/i);
+                expect(getText(article.content)).not.toMatch(/^(art[ií]culo)/i);
                 expect(article.type).toEqual("Normative");
             });
         });
