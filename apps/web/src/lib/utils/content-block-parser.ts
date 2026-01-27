@@ -23,6 +23,7 @@ export function parseToContentBlocks(text: string, tables: TableContent[]): Cont
                 blocks.push({
                     type: "TEXT",
                     text: value,
+                    referenceMarkers: [] 
                 });
             }
         }
@@ -52,6 +53,7 @@ export function parseToContentBlocks(text: string, tables: TableContent[]): Cont
             blocks.push({
                 type: "TEXT",
                 text: value,
+                referenceMarkers: []
             });
         }
     }

@@ -1,7 +1,7 @@
 import "server-only"
 import prisma from "@/lib/prisma";
 import {checkResourcePermission} from "@/lib/auth/data-authorization";
-import {ResolutionCounts, ResolutionWithStatus} from "@/lib/definitions/resolutions";
+import {ResolutionCounts, ResolutionNaturalID, ResolutionWithStatus} from "@/lib/definitions/resolutions";
 import {createDeleteAssetJob} from "@/lib/jobs/assets";
 
 export async function fetchResolutionsWithStatus(): Promise<ResolutionWithStatus[]> {
@@ -74,7 +74,18 @@ export async function fetchResolutionInitialData(resolutionId: string) {
         include: {
             content: {
                 include: {
-                    references: true
+                    references: {
+                        include: {
+                            reference: {
+                                include: {
+                                    resolution: true,
+                                    article: true,
+                                    annex: true,
+                                    chapter: true
+                                }
+                            }
+                        }
+                    }
                 },
                 orderBy: {
                     order: 'asc' as const
@@ -110,4 +121,11 @@ export async function fetchResolutionInitialData(resolutionId: string) {
         }
     });
     return res;
+}
+
+export async function checkResolutionsExistance(resIds: ResolutionNaturalID[]){
+    return  prisma.resolution.findMany({
+        where: { OR: resIds },
+        select: { initial: true, number: true, year: true }
+    });
 }

@@ -1,6 +1,8 @@
 import {Resolution} from "@repo/db/prisma/client";
 import {TableContent} from "@repo/db/content-blocks";
 
+import {ReferenceMarker} from "@/lib/processing/reference-processor";
+
 export type {TableContent};
 
 export type resolutionStatus = "ok" | "missingRef" | "inconsistent"
@@ -29,6 +31,7 @@ export type Repealable = {
 export type TextBlock = {
     type: "TEXT";
     text: string;
+    referenceMarkers: ReferenceMarker[];
 };
 
 export type TableBlock = {

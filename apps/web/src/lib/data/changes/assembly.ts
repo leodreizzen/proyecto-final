@@ -1,26 +1,41 @@
 import prisma from "@/lib/prisma";
-import {AnnexInclude, ArticleInclude} from "@repo/db/prisma/models";
+import {AnnexInclude, ArticleInclude, ContentBlockInclude} from "@repo/db/prisma/models";
 import {checkConcreteChange} from "@/lib/data/polymorphism/change";
 
 export type ChangeDataForAssembly = Awaited<ReturnType<typeof fetchChangesDataForAssembly>>[number];
 
 export async function fetchChangesDataForAssembly(changeIds: string[]) {
-    const contentInclude = {
-            content: {
-                include: {
-                    references: true
-                },
-                orderBy: {
-                    order: 'asc' as const
+    const contentBlocksInclude = {
+        references: {
+            include: {
+                reference: {
+                    include: {
+                        resolution: true,
+                        article: true,
+                        annex: true,
+                        chapter: true
+                    }
                 }
             }
-    } as const;
+        }
+    } as const satisfies ContentBlockInclude;
 
-    const articleInclude = contentInclude satisfies ArticleInclude;
+    const contentBlocksData = {
+        include: contentBlocksInclude,
+        orderBy: {
+            order: 'asc' as const
+        }
+    }
+
+    const articleInclude = {
+        content: contentBlocksData
+    } as const satisfies ArticleInclude;
 
     const annexInclude = {
         annexText: {
-            include: contentInclude
+            include: {
+                content: contentBlocksData
+            }
         },
         annexWithArticles: {
             include: {
@@ -47,12 +62,12 @@ export async function fetchChangesDataForAssembly(changeIds: string[]) {
                 include: {
                     targetArticle: true,
                     before: {
-                        include: { references: true },
-                        orderBy: { order: 'asc' }
+                        include: contentBlocksInclude,
+                        orderBy: {order: 'asc'}
                     },
                     after: {
-                        include: { references: true },
-                        orderBy: { order: 'asc' }
+                        include: contentBlocksInclude,
+                        orderBy: {order: 'asc'}
                     }
                 }
             },
@@ -101,12 +116,12 @@ export async function fetchChangesDataForAssembly(changeIds: string[]) {
                 include: {
                     targetAnnex: true,
                     before: {
-                        include: { references: true },
-                        orderBy: { order: 'asc' }
+                        include: contentBlocksInclude,
+                        orderBy: {order: 'asc'}
                     },
                     after: {
-                        include: { references: true },
-                        orderBy: { order: 'asc' }
+                        include: contentBlocksInclude,
+                        orderBy: {order: 'asc'}
                     }
                 }
             },
@@ -132,10 +147,8 @@ export async function fetchChangesDataForAssembly(changeIds: string[]) {
                     }
                 }
             },
-            changeApplyModificationsAnnex: {
-            },
-            changeAdvanced: {
-            }
+            changeApplyModificationsAnnex: {},
+            changeAdvanced: {}
         }
     });
     return changes.map(checkConcreteChange);

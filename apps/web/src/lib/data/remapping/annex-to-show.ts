@@ -3,10 +3,12 @@ import {AnnexToShow, ContentBlock} from "@/lib/definitions/resolutions";
 import {ResolutionDBDataToShow} from "@/lib/data/resolutions";
 import {articleInitialDataToShow} from "@/lib/data/remapping/article-to-show";
 import {mapContentBlocks} from "@/lib/data/remapping/content-blocks";
+import {ValidationContext} from "@/lib/processing/reference-processor";
 
 export function annexInitialDataToShow(
     annex: ResolutionDBDataToShow["annexes"][0],
-    overrides?: { number: number }
+    overrides: { number: number } | undefined,
+    validationContext: ValidationContext
 ): AnnexToShow {
     const numberToUse = overrides?.number ?? annex.number;
     if (annex.type === "TEXT") {
@@ -15,7 +17,7 @@ export function annexInitialDataToShow(
 
         return {
             type: "TEXT",
-            content: mapContentBlocks(annex.annexText.content),
+            content: mapContentBlocks(annex.annexText.content, validationContext),
             addedBy: null,
             repealedBy: null,
             modifiedBy: [],
@@ -28,10 +30,10 @@ export function annexInitialDataToShow(
             type: "WITH_ARTICLES",
             initialText: annex.annexWithArticles.initialText,
             finalText: annex.annexWithArticles.finalText,
-            standaloneArticles: annex.annexWithArticles.standaloneArticles.map(a => articleInitialDataToShow(a)),
+            standaloneArticles: annex.annexWithArticles.standaloneArticles.map(a => articleInitialDataToShow(a, undefined, validationContext)),
             chapters: annex.annexWithArticles.chapters.map(chapter => ({
                 ...chapter,
-                articles: chapter.articles.map(a => articleInitialDataToShow(a)),
+                articles: chapter.articles.map(a => articleInitialDataToShow(a, undefined, validationContext)),
                 addedBy: null,
                 repealedBy: null,
             })),

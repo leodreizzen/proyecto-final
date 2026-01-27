@@ -12,7 +12,7 @@ export function ContentBlockRenderer({content}: { content: ContentBlock[] }) {
                 if (block.type === "TEXT") {
                     return (
                         <div key={idx} className="prose dark:prose-invert max-w-none text-justify">
-                            <MultiParagraphText text={block.text}/>
+                            <MultiParagraphText text={block.text} referenceMarkers={block.referenceMarkers}/>
                         </div>
                     );
                 } else if (block.type === "TABLE") {

@@ -3,7 +3,7 @@ import {
     ReferenceAnnex,
     ReferenceArticle,
     ReferenceChapter,
-    ReferenceResolution
+    ReferenceResolution, TextReference
 } from "@repo/db/prisma/client";
 
 export type ReferenceWithConcreteWithoutPayload = Omit<Reference, "id" | "sourceType"> & ({
@@ -19,3 +19,12 @@ export type ReferenceWithConcreteWithoutPayload = Omit<Reference, "id" | "source
     targetType: "CHAPTER",
     chapter: Omit<ReferenceChapter, "chapterId" | "id">
 })
+
+export type TextReferenceWithReference = TextReference & {
+    reference: Reference & {
+        article: ReferenceArticle | null,
+        annex: ReferenceAnnex | null,
+        chapter: ReferenceChapter | null,
+        resolution: ReferenceResolution | null
+    };
+}

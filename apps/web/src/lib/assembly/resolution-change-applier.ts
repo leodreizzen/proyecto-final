@@ -16,6 +16,7 @@ import {articleInitialDataToShow} from "@/lib/data/remapping/article-to-show";
 import {annexInitialDataToShow} from "@/lib/data/remapping/annex-to-show";
 import {parseToContentBlocks} from "@/lib/utils/content-block-parser";
 import {mapContentBlocks} from "@/lib/data/remapping/content-blocks";
+import {ValidationContext} from "@/lib/processing/reference-processor";
 
 type ResolutionID = ResolutionNaturalID;
 
@@ -153,7 +154,8 @@ class ArticleSlot extends BaseCollectionSlot<ArticleToShow> {
     constructor(
         container: ArticleToShow[],
         private number: number,
-        private suffix: number
+        private suffix: number,
+        private validationContext: ValidationContext
     ) {
         super(container);
     }
@@ -178,6 +180,7 @@ class ArticleSlot extends BaseCollectionSlot<ArticleToShow> {
         }
 
         const tables = getTablesFromBlocks(item.content);
+        // TODO: This currently loses references as parseToContentBlocks doesn't support them yet
         item.content = parseToContentBlocks(modifiedText, tables);
         item.modifiedBy = item.modifiedBy ? [...item.modifiedBy, by] : [by];
         return true;
@@ -187,7 +190,8 @@ class ArticleSlot extends BaseCollectionSlot<ArticleToShow> {
 class AnnexSlot extends BaseCollectionSlot<AnnexToShow> {
     constructor(
         container: AnnexToShow[],
-        private number: number
+        private number: number,
+        private validationContext: ValidationContext
     ) {
         super(container);
     }
@@ -211,6 +215,7 @@ class AnnexSlot extends BaseCollectionSlot<AnnexToShow> {
         }
 
         const tables = getTablesFromBlocks(item.content);
+        // TODO: This currently loses references as parseToContentBlocks doesn't support them yet
         item.content = parseToContentBlocks(modifiedText, tables);
         item.modifiedBy = item.modifiedBy ? [...item.modifiedBy, by] : [by];
         return true;
@@ -237,7 +242,7 @@ class ChapterSlot extends BaseCollectionSlot<ChapterToShow> {
 export class ResolutionChangeApplier {
     inapplicableChanges: ChangeWithContextForAssembly[] = [];
 
-    constructor(private resolution: ResolutionToShow) {
+    constructor(private resolution: ResolutionToShow, private validationContext: ValidationContext) {
     }
 
     applyChanges(changes: ChangeWithContextForAssembly[]) {
@@ -383,7 +388,7 @@ export class ResolutionChangeApplier {
         const convertedArticle = articleInitialDataToShow(articleToAdd, {
             number: coords.articleNumber,
             suffix: coords.articleSuffix
-        });
+        }, this.validationContext);
         slot.set(convertedArticle, change.context.rootResolution);
     }
 
@@ -420,7 +425,7 @@ export class ResolutionChangeApplier {
 
         const convertedAnnex = annexInitialDataToShow(annexToAdd, {
             number: changeAddAnnex.newAnnexNumber!
-        });
+        }, this.validationContext);
         slot.set(convertedAnnex, change.context.rootResolution);
     }
 
@@ -458,7 +463,7 @@ export class ResolutionChangeApplier {
         const convertedArticle = articleInitialDataToShow(newContent, {
             number: targetRef.articleNumber,
             suffix: targetRef.articleSuffix
-        });
+        }, this.validationContext);
 
         slot.set(convertedArticle, change.context.rootResolution);
     }
@@ -503,7 +508,7 @@ export class ResolutionChangeApplier {
         }
         const convertedAnnex = annexInitialDataToShow(newContent, {
             number: targetRef.annexNumber
-        });
+        }, this.validationContext);
         slot.set(convertedAnnex, change.context.rootResolution);
     }
 
@@ -534,8 +539,8 @@ export class ResolutionChangeApplier {
         }
 
         const success = slot.modify(
-            contentBlocksToText(mapContentBlocks(changeModify.before)),
-            contentBlocksToText(mapContentBlocks(changeModify.after)),
+            contentBlocksToText(mapContentBlocks(changeModify.before, this.validationContext)),
+            contentBlocksToText(mapContentBlocks(changeModify.after, this.validationContext)),
             change.context.rootResolution
         );
 
@@ -578,8 +583,8 @@ export class ResolutionChangeApplier {
         }
 
         const success = slot.modify(
-            contentBlocksToText(mapContentBlocks(changeModify.before)),
-            contentBlocksToText(mapContentBlocks(changeModify.after)),
+            contentBlocksToText(mapContentBlocks(changeModify.before, this.validationContext)),
+            contentBlocksToText(mapContentBlocks(changeModify.after, this.validationContext)),
             change.context.rootResolution
         );
         
@@ -659,7 +664,7 @@ export class ResolutionChangeApplier {
             container = this.resolution.articles;
         }
 
-        return new ArticleSlot(container, coords.articleNumber, coords.articleSuffix);
+        return new ArticleSlot(container, coords.articleNumber, coords.articleSuffix, this.validationContext);
     }
 
 
@@ -670,7 +675,7 @@ export class ResolutionChangeApplier {
         if (!this.affectsCurrentResolution(resId)) {
             return new IrrelevantSlot();
         }
-        return new AnnexSlot(this.resolution.annexes, annexNumber);
+        return new AnnexSlot(this.resolution.annexes, annexNumber, this.validationContext);
     }
 
     private getChapterSlot(
