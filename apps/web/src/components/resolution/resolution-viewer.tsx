@@ -22,45 +22,47 @@ export function ResolutionViewer({ resolution, versions, currentVersion }: Resol
                  <div>
                     <VersionStatus resolution={resolution} isCurrentVersion={isCurrentVersion} />
                  </div>
-                 
+
                  {/* Mobile Menu Bar */}
                  <MobileMenu resolution={resolution} versions={versions} currentVersion={currentVersion}/>
             </div>
 
             <div className="flex-1 min-h-0 container mx-auto px-4">
-                <div className="grid grid-cols-1 lg:grid-cols-4 gap-8 h-full">
+                <div className="grid grid-cols-1 lg:grid-cols-4 gap-5 h-full">
                     {/* Main Content Area */}
-                    <main className="lg:col-span-3 h-full overflow-y-auto py-8 md:py-12" id={"content-scroller"}>
-                        {/* The "Paper" */}
-                        <div className="bg-background md:bg-card md:shadow-lg md:border rounded-xl overflow-hidden min-h-fit">
-                            
-                            {/* Version Status - Desktop (Full Width inside Paper) */}
-                            <div className="hidden lg:block">
-                                <VersionStatus resolution={resolution} isCurrentVersion={isCurrentVersion} />
-                            </div>
+                    <main className="lg:col-span-3 h-full overflow-y-auto" id={"content-scroller"}>
+                        <div className="w-full py-8 md:py-12 pe-3">
+                            {/* The "Paper" */}
+                            <div className="bg-background md:bg-card md:shadow-lg md:border rounded-xl overflow-hidden min-h-fit">
 
-                            <div className="p-6 md:p-10">
-                                {/* AI Warning */}
-                                <AIWarning />
+                                {/* Version Status - Desktop (Full Width inside Paper) */}
+                                <div className="hidden lg:block">
+                                    <VersionStatus resolution={resolution} isCurrentVersion={isCurrentVersion} />
+                                </div>
 
-                                {/* Header */}
-                                <ResolutionHeader 
-                                    resolution={resolution}
-                                    versions={versions}
-                                    currentVersion={currentVersion}
-                                />
+                                <div className="p-6 md:p-10">
+                                    {/* AI Warning */}
+                                    <AIWarning />
 
-                                {/* Body */}
-                                <ResolutionBody resolution={resolution} />
+                                    {/* Header */}
+                                    <ResolutionHeader
+                                        resolution={resolution}
+                                        versions={versions}
+                                        currentVersion={currentVersion}
+                                    />
+
+                                    {/* Body */}
+                                    <ResolutionBody resolution={resolution} />
+                                </div>
                             </div>
                         </div>
                     </main>
 
                     {/* Sidebar Area - Desktop Only */}
                     <div className="hidden lg:block lg:col-span-1 py-8 md:py-12 h-screen">
-                        <ResolutionSidebar 
-                            resolution={resolution} 
-                            versions={versions} 
+                        <ResolutionSidebar
+                            resolution={resolution}
+                            versions={versions}
                             currentVersion={currentVersion}
                             className="h-full"
                         />
