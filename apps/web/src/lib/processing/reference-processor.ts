@@ -3,10 +3,7 @@ import {checkReference} from "@/lib/data/polymorphism/reference";
 import {stableStringify} from "@/lib/utils";
 import {checkResolutionsExistance} from "@/lib/data/resolutions";
 import {ResolutionNaturalID} from "@/lib/definitions/resolutions";
-import {
-    TextReferenceWithReferenceWithoutPayload
-} from "@/lib/definitions/references";
-
+import {TextReferenceWithReference} from "@/lib/definitions/references";
 
 // --- Output Types ---
 
@@ -46,7 +43,7 @@ export type ValidationContext = Set<string>; // stableStringified keys
 /**
  * Validates references against the DB.
  */
-export async function validateReferences(references: TextReferenceWithReferenceWithoutPayload[]): Promise<ValidationContext> {
+export async function validateReferences(references: TextReferenceWithReference[]): Promise<ValidationContext> {
     const keysToCheck = new Set<string>();
 
     for (const ref of references) {
@@ -90,7 +87,7 @@ export async function validateReferences(references: TextReferenceWithReferenceW
 
 export function processBlockReferences(
     blockText: string,
-    references: TextReferenceWithReferenceWithoutPayload[],
+    references: TextReferenceWithReference[],
     validKeys: ValidationContext
 ): ReferenceMarker[] {
     const markers: ReferenceMarker[] = [];
