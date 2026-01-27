@@ -69,7 +69,8 @@ export async function makeResolutionFilePublic(file: Asset, resId: {
     number: number,
     year: number
 }): Promise<Asset> {
-    const publicKey = `resolutions/${crypto.randomInt(1000)}-${resId.initial}/${resId.number.toString().padStart(5, '0')}-${resId.year}.pdf`;
+    const fileName = `${resId.initial}-${resId.number.toString().padStart(5, '0')}-${resId.year}-${crypto.randomInt(1000)}.pdf`
+    const publicKey = `resolutions/${fileName.replace(/\//g, "-")}`;
 
     const publicFile = await prisma.asset.create({
         data: {
