@@ -85,24 +85,30 @@ export function textToContentBlocks(
             if (block.type === ContentBlockType.TEXT) {
                 // Try full context first
                 let range = findFuzzyRange(block.text, fullSearchString);
-                
-                // Fallback to just the reference text if context is too broad/missing
-                if (!range && ref.text.length > 5) {
-                    range = findFuzzyRange(block.text, ref.text);
-                }
-
                 if (range) {
                     block.references.push(ref);
                     assigned = true;
                     break; // Assign to first matching block
                 }
+                // Fallback to just the reference text if context is too broad/missing
+                else if (ref.text.length > 5) {
+                    const reducedRange = findFuzzyRange(block.text, ref.text);
+                    if (reducedRange) {
+                        const prefix = block.text.substring(0, reducedRange.start);
+                        const suffix = block.text.substring(reducedRange.end);
+                        if (!findFuzzyRange(prefix, ref.text) && !findFuzzyRange(suffix, ref.text) ) {
+                            block.references.push({...ref, after: "", before: ""});
+                            assigned = true;
+                            break;
+                        }
+                    }
+                }
+
             }
         }
 
         if (!assigned) {
             console.warn(`Reference "${ref.text}" could not be fuzzy-matched to any text block in ${context}.`);
-            // Optional: assign to the first text block as fallback? 
-            // For now, let's keep it unassigned to be safe.
         }
     }
 
