@@ -277,6 +277,7 @@ export class ResolutionChangeApplier {
                 this.applyModifyTextAnnexChange(change);
                 break;
             case "ADVANCED":
+                console.error(`Failed to apply change ${change.id}: Advanced change type not supported yet`);
                 this.inapplicableChanges.push(change);
                 break;
             case "APPLY_MODIFICATIONS_ANNEX":
@@ -287,6 +288,7 @@ export class ResolutionChangeApplier {
                 break;
             default: {
                 const _exhaustiveCheck: never = change;
+                console.error(`Failed to apply change ${(change as {id: string}).id}: Unknown change type`);
                 this.inapplicableChanges.push(change);
             }
         }
@@ -301,6 +303,7 @@ export class ResolutionChangeApplier {
         const slot = this.getSlotFromRef(targetRef);
 
         if (!slot) {
+            console.error(`Failed to apply change ${change.id}: Target slot not found from reference`);
             this.inapplicableChanges.push(change);
             return;
         }
@@ -308,6 +311,7 @@ export class ResolutionChangeApplier {
         if (!slot.relevant) return;
 
         if (!slot.exists) {
+            console.error(`Failed to apply change ${change.id}: Target slot does not exist`);
             this.inapplicableChanges.push(change);
             return;
         }
@@ -376,11 +380,13 @@ export class ResolutionChangeApplier {
                 }
             );
         } else {
+            console.error(`Failed to apply change ${change.id}: No valid target specified`);
             this.inapplicableChanges.push(change);
             return;
         }
 
         if (!slot) {
+            console.error(`Failed to apply change ${change.id}: Target slot resolution logic returned null`);
             this.inapplicableChanges.push(change);
             return;
         }
@@ -388,6 +394,7 @@ export class ResolutionChangeApplier {
         if (!slot.relevant) return;
 
         if (slot.exists) {
+            console.error(`Failed to apply change ${change.id}: Article already exists`);
             this.inapplicableChanges.push(change);
             return;
         }
@@ -417,11 +424,13 @@ export class ResolutionChangeApplier {
                 index
             );
         } else {
+            console.error(`Failed to apply change ${change.id}: No target resolution specified`);
             this.inapplicableChanges.push(change);
             return;
         }
 
         if (!slot) {
+            console.error(`Failed to apply change ${change.id}: Target slot resolution logic returned null`);
             this.inapplicableChanges.push(change);
             return;
         }
@@ -429,6 +438,7 @@ export class ResolutionChangeApplier {
         if (!slot.relevant) return;
 
         if (slot.exists) {
+            console.error(`Failed to apply change ${change.id}: Annex already exists`);
             this.inapplicableChanges.push(change);
             return;
         }
@@ -458,6 +468,7 @@ export class ResolutionChangeApplier {
         );
 
         if (!slot) {
+            console.error(`Failed to apply change ${change.id}: Target slot resolution logic returned null`);
             this.inapplicableChanges.push(change);
             return;
         }
@@ -465,6 +476,7 @@ export class ResolutionChangeApplier {
         if (!slot.relevant) return;
 
         if (!slot.exists) {
+            console.error(`Failed to apply change ${change.id}: Target article to replace does not exist`);
             this.inapplicableChanges.push(change);
             return;
         }
@@ -493,6 +505,7 @@ export class ResolutionChangeApplier {
             {type: "defined", number: targetRef.annexNumber}
         );
         if (!slot) {
+            console.error(`Failed to apply change ${change.id}: Target slot resolution logic returned null`);
             this.inapplicableChanges.push(change);
             return;
         }
@@ -500,6 +513,7 @@ export class ResolutionChangeApplier {
         if (!slot.relevant) return;
 
         if (!slot.exists) {
+            console.error(`Failed to apply change ${change.id}: Target annex to replace does not exist`);
             this.inapplicableChanges.push(change);
             return;
         }
@@ -547,6 +561,7 @@ export class ResolutionChangeApplier {
         );
 
         if (!slot) {
+            console.error(`Failed to apply change ${change.id}: Target slot resolution logic returned null`);
             this.inapplicableChanges.push(change);
             return;
         }
@@ -554,6 +569,7 @@ export class ResolutionChangeApplier {
         if (!slot.relevant) return;
 
         if (!slot.exists) {
+            console.error(`Failed to apply change ${change.id}: Target article to modify does not exist`);
             this.inapplicableChanges.push(change);
             return;
         }
@@ -565,6 +581,7 @@ export class ResolutionChangeApplier {
         );
 
         if (!success) {
+            console.error(`Failed to apply change ${change.id}: Content modification failed (fuzzy match or structure mismatch)`);
             this.inapplicableChanges.push(change);
         }
     }
@@ -585,6 +602,7 @@ export class ResolutionChangeApplier {
         );
 
         if (!slot) {
+            console.error(`Failed to apply change ${change.id}: Target slot resolution logic returned null`);
             this.inapplicableChanges.push(change);
             return;
         }
@@ -592,12 +610,14 @@ export class ResolutionChangeApplier {
         if (!slot.relevant) return;
 
         if (!slot.exists) {
+            console.error(`Failed to apply change ${change.id}: Target annex to modify does not exist`);
             this.inapplicableChanges.push(change);
             return;
         }
 
         const annex = slot.get();
         if (!annex || annex.type !== "TEXT") {
+            console.error(`Failed to apply change ${change.id}: Target annex is not a TEXT annex`);
             this.inapplicableChanges.push(change);
             return;
         }
@@ -609,6 +629,7 @@ export class ResolutionChangeApplier {
         );
 
         if (!success) {
+            console.error(`Failed to apply change ${change.id}: Content modification failed`);
             this.inapplicableChanges.push(change);
         }
     }
