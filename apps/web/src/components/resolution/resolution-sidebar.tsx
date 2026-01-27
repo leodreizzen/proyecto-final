@@ -1,4 +1,4 @@
-import {ResolutionToShow, ResolutionVersion} from "@/lib/definitions/resolutions";
+import {ResolutionToShow, ResolutionVersion, ArticleIndex} from "@/lib/definitions/resolutions";
 import {cn} from "@/lib/utils";
 import {VersionSelector} from "./version-selector";
 import {getSuffixOrdinal, getArticleId, getChapterId} from "@/lib/utils/resolution-formatters";
@@ -12,9 +12,10 @@ interface ResolutionSidebarProps {
     currentVersion: ResolutionVersion;
 }
 
-function getArtLabel(num: number, suf: number) {
-    const s = getSuffixOrdinal(suf);
-    return `Art. ${num}º${s ? ` ${s}` : ''}`;
+function getArtLabel(index: ArticleIndex) {
+    if (index.type === "generated") return "Art. (S/N)";
+    const s = getSuffixOrdinal(index.suffix);
+    return `Art. ${index.number}º${s ? ` ${s}` : ''}`;
 }
 
 export function ResolutionSidebar({resolution, className, versions, currentVersion}: ResolutionSidebarProps) {
@@ -55,10 +56,10 @@ export function ResolutionSidebar({resolution, className, versions, currentVersi
                             </a>
                             <ul className="mt-2 ml-4 space-y-4 lg:space-y-1 border-l pl-4">
                                 {resolution.articles.map((art) => (
-                                    <li key={`${art.number}-${art.suffix}`}>
-                                        <a href={`#${getArticleId('art', art.number, art.suffix)}`}
+                                    <li key={art.index.type === "generated" ? `gen-${art.index.value}` : `${art.index.number}-${art.index.suffix}`}>
+                                        <a href={`#${getArticleId('art', art.index)}`}
                                            className="block text-muted-foreground hover:text-foreground truncate transition-colors">
-                                            {getArtLabel(art.number, art.suffix)}
+                                            {getArtLabel(art.index)}
                                         </a>
                                     </li>
                                 ))}
@@ -73,22 +74,22 @@ export function ResolutionSidebar({resolution, className, versions, currentVersi
                                 <ul className="ml-4 space-y-8 lg:space-y-4 border-l pl-4">
                                     {resolution.annexes.map((annex, idx) => (
                                         <li key={idx}>
-                                            <a href={`#annex-${annex.number}`}
+                                            <a href={`#${annex.index.type === "generated" ? `annex-gen-${annex.index.value}` : `annex-${annex.index.number}`}`}
                                                className="block font-medium text-foreground hover:text-primary transition-colors">
-                                                Anexo {annex.number}
+                                                Anexo {annex.index.type === "generated" ? "(S/N)" : annex.index.number}
                                             </a>
                                             {annex.type === "WITH_ARTICLES" && (
                                                 <ul className="mt-2 ml-2 space-y-5 lg:space-y-2">
                                                     {annex.chapters.map((chap, cIdx) => (
                                                         <li key={`c-${cIdx}`}>
-                                                            <a href={`#${getChapterId(annex.number, chap.number)}`}
+                                                            <a href={`#${getChapterId(annex.index, chap.number)}`}
                                                                className="text-xs text-muted-foreground uppercase block mb-2 lg:mb-1">{`Capítulo ${chap.number}${chap.title ? ` - ${chap.title}` : ""}`}</a>
                                                             <ul className="ml-2 mt-1 space-y-4 lg:space-y-1 border-l pl-2">
                                                                 {chap.articles.map((art) => (
-                                                                    <li key={`ca-${art.number}-${art.suffix}`}>
-                                                                        <a href={`#${getArticleId(`annex-${annex.number}-chap-${chap.number}-art`, art.number, art.suffix)}`}
+                                                                    <li key={art.index.type === "generated" ? `c-gen-${art.index.value}` : `ca-${art.index.number}-${art.index.suffix}`}>
+                                                                        <a href={`#${getArticleId(`annex-${annex.index.type === "generated" ? `gen-${annex.index.value}` : annex.index.number}-chap-${chap.number}-art`, art.index)}`}
                                                                            className="block text-xs text-muted-foreground hover:text-foreground truncate">
-                                                                            {getArtLabel(art.number, art.suffix)}
+                                                                            {getArtLabel(art.index)}
                                                                         </a>
                                                                     </li>
                                                                 ))}
@@ -96,10 +97,10 @@ export function ResolutionSidebar({resolution, className, versions, currentVersi
                                                         </li>
                                                     ))}
                                                     {annex.standaloneArticles.map((art) => (
-                                                        <li key={`aa-${art.number}-${art.suffix}`}>
-                                                            <a href={`#${getArticleId(`annex-${annex.number}-art`, art.number, art.suffix)}`}
+                                                        <li key={art.index.type === "generated" ? `a-gen-${art.index.value}` : `aa-${art.index.number}-${art.index.suffix}`}>
+                                                            <a href={`#${getArticleId(`annex-${annex.index.type === "generated" ? `gen-${annex.index.value}` : annex.index.number}-art`, art.index)}`}
                                                                className="block text-xs text-muted-foreground hover:text-foreground truncate">
-                                                                {getArtLabel(art.number, art.suffix)}
+                                                                {getArtLabel(art.index)}
                                                             </a>
                                                         </li>
                                                     ))}

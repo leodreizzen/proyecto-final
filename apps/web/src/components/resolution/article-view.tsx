@@ -20,8 +20,10 @@ export function ArticleView({article, title, htmlId}: ArticleViewProps) {
     const modifications = article.modifiedBy || [];
     const [showRepealed, setShowRepealed] = useState(false);
 
-    const articleTitle = title || formatArticleTitle(article.number, article.suffix);
-    const idToUse = htmlId || `art-${article.number}${article.suffix > 0 ? `-${article.suffix}` : ''}`; // Fallback if no htmlId provided
+    const articleTitle = title || formatArticleTitle(article.index);
+    const idToUse = htmlId || (article.index.type === "generated" 
+        ? `art-gen-${article.index.value}` 
+        : `art-${article.index.number}${article.index.suffix > 0 ? `-${article.index.suffix}` : ''}`); // Fallback if no htmlId provided
 
     return (
         <div className="mb-6 group" id={idToUse}>

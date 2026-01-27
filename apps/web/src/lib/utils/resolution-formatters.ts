@@ -1,3 +1,5 @@
+import {ArticleIndex, AnnexIndex} from "@/lib/definitions/resolutions";
+
 export function getSuffixOrdinal(suffix: number): string {
     if (suffix < 0) return "";
     const ordinals = ["", "", "BIS", "TER", "QUATER", "QUINQUIES", "SEXIES", "SEPTIES", "OCTIES", "NONIES", "DECIES"];
@@ -5,16 +7,26 @@ export function getSuffixOrdinal(suffix: number): string {
     return ordinals[suffix] ?? `(${suffix})`;
 }
 
-export function formatArticleTitle(number: number, suffix: number): string {
-    const suffixText = getSuffixOrdinal(suffix);
-    return `ARTÍCULO ${number}º${suffixText ? ` ${suffixText}` : ''}`;
+export function formatArticleTitle(index: ArticleIndex): string {
+    if (index.type === "generated") {
+        return "ARTÍCULO (SIN NÚMERO)";
+    }
+    const suffixText = getSuffixOrdinal(index.suffix);
+    return `ARTÍCULO ${index.number}º${suffixText ? ` ${suffixText}` : ''}`;
 }
 
-export function getArticleId(prefix: string, number: number, suffix: number): string {
-    const suffixPart = suffix > 0 ? `-${suffix}` : '';
-    return `${prefix}-${number}${suffixPart}`;
+export function getArticleId(prefix: string, index: ArticleIndex): string {
+    if (index.type === "generated") {
+        return `${prefix}-gen-${index.value}`;
+    }
+    const suffixPart = index.suffix > 0 ? `-${index.suffix}` : '';
+    return `${prefix}-${index.number}${suffixPart}`;
 }
 
-export function getChapterId(annexNumber: number, chapterNumber: number): string {
-    return `annex-${annexNumber}-chapter-${chapterNumber}`;
+export function getChapterId(annexNumber: number | AnnexIndex, chapterNumber: number): string {
+    const annexNumStr = (typeof annexNumber === "object" && annexNumber.type === "generated") 
+        ? `gen-${annexNumber.value}` 
+        : (typeof annexNumber === "object" ? annexNumber.number : annexNumber);
+        
+    return `annex-${annexNumStr}-chapter-${chapterNumber}`;
 }

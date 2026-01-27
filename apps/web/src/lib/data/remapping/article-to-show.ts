@@ -1,16 +1,19 @@
 import {ResolutionDBDataToShow} from "@/lib/data/resolutions";
-import {ArticleToShow} from "@/lib/definitions/resolutions";
+import {ArticleIndex, ArticleToShow} from "@/lib/definitions/resolutions";
 import {enforceArticleNumber} from "@/lib/assembly/validity/utils/numbers";
 import {mapContentBlocks} from "@/lib/data/remapping/content-blocks";
 import {ValidationContext} from "@/lib/processing/reference-processor";
 
 export function articleInitialDataToShow(
     article: ResolutionDBDataToShow["articles"][0],
-    overrides: { number?: number; suffix?: number | null } | undefined,
+    overrides: { index?: ArticleIndex } | undefined,
     validationContext: ValidationContext
 ): ArticleToShow {
-    const numberToUse = overrides?.number ?? article.number;
-    const suffixToUse = overrides?.suffix ?? article.suffix;
+    const indexToUse = overrides?.index ?? {
+        type: "defined",
+        number: enforceArticleNumber(article.number),
+        suffix: article.suffix || 0
+    };
 
     return {
         ...article,
@@ -18,7 +21,6 @@ export function articleInitialDataToShow(
         repealedBy: null,
         modifiedBy: [],
         addedBy: null,
-        number: enforceArticleNumber(numberToUse),
-        suffix: suffixToUse || 0
+        index: indexToUse
     };
 }

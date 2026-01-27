@@ -47,9 +47,16 @@ export type ErrorBlock = {
 export type ContentBlock = TextBlock | TableBlock | ErrorBlock;
 
 
+export type ArticleIndex =
+    | { type: "defined"; number: number; suffix: number }
+    | { type: "generated"; value: number };
+
+export type AnnexIndex =
+    | { type: "defined"; number: number }
+    | { type: "generated"; value: number };
+
 export type ArticleToShow = {
-    number: number;
-    suffix: number;
+    index: ArticleIndex;
     content: ContentBlock[];
     modifiedBy: ResolutionNaturalID[];
     addedBy: ResolutionNaturalID | null;
@@ -73,7 +80,7 @@ export type AnnexToShow = ({
     content: ContentBlock[];
     modifiedBy?: ResolutionNaturalID[];
 }) & Repealable & {
-    number: number;
+    index: AnnexIndex;
     addedBy: ResolutionNaturalID | null;
 }
 

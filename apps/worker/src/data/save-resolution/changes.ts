@@ -254,6 +254,7 @@ function changeAddAnnexCreationInput(change: Extract<Parser.Change, {
 function changeAddArticleCreationInput(change: Extract<Parser.Change, {
     type: "AddArticleToResolution" | "AddArticleToAnnex"
 }>): ChangeAddArticleCreateWithoutChangeInput {
+    const hasNumber = (change.newArticleNumber !== null && change.newArticleNumber !== undefined );
     return {
         newArticle: {
             create: articleCreationInput({
@@ -262,7 +263,7 @@ function changeAddArticleCreationInput(change: Extract<Parser.Change, {
             })
         },
         newArticleNumber: change.newArticleNumber,
-        newArticleSuffix: suffixToNumber(change.newArticleSuffix),
+        newArticleSuffix: hasNumber ? suffixToNumber(change.newArticleSuffix) : null,
         targetAnnex: change.type === "AddArticleToAnnex" && change.target.referenceType === "Annex" ? {
             create: annexReferenceCreateInput(change.target, "CHANGE_ADD_ARTICLE")
         } : undefined,

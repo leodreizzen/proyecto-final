@@ -37,7 +37,11 @@ export function pathForResolution(resId: { initial: string; number: number; year
         }
         if (resId.articleNumber !== undefined) {
             prefix += "art";
-            fragment += getArticleId(prefix, resId.articleNumber, resId.articleSuffix ?? 0);
+            fragment += getArticleId(prefix, { 
+                type: "defined", 
+                number: resId.articleNumber, 
+                suffix: resId.articleSuffix ?? 0 
+            });
         }
         else {
             fragment += prefix;

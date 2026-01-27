@@ -1,5 +1,5 @@
 import {enforceAnnexNumber} from "@/lib/assembly/validity/utils/numbers";
-import {AnnexToShow, ContentBlock} from "@/lib/definitions/resolutions";
+import {AnnexIndex, AnnexToShow} from "@/lib/definitions/resolutions";
 import {ResolutionDBDataToShow} from "@/lib/data/resolutions";
 import {articleInitialDataToShow} from "@/lib/data/remapping/article-to-show";
 import {mapContentBlocks} from "@/lib/data/remapping/content-blocks";
@@ -7,10 +7,11 @@ import {ValidationContext} from "@/lib/processing/reference-processor";
 
 export function annexInitialDataToShow(
     annex: ResolutionDBDataToShow["annexes"][0],
-    overrides: { number: number } | undefined,
+    overrides: { index?: AnnexIndex } | undefined,
     validationContext: ValidationContext
 ): AnnexToShow {
-    const numberToUse = overrides?.number ?? annex.number;
+    const indexToUse = overrides?.index ?? { type: "defined", number: enforceAnnexNumber(annex.number) };
+
     if (annex.type === "TEXT") {
         if (!annex.annexText)
             throw new Error("Annex text information missing for annex with id " + annex.id);
@@ -21,7 +22,7 @@ export function annexInitialDataToShow(
             addedBy: null,
             repealedBy: null,
             modifiedBy: [],
-            number: enforceAnnexNumber(numberToUse)
+            index: indexToUse
         } satisfies AnnexToShow
     } else if (annex.type === "WITH_ARTICLES") {
         if (!annex.annexWithArticles)
@@ -39,7 +40,7 @@ export function annexInitialDataToShow(
             })),
             addedBy: null,
             repealedBy: null,
-            number: enforceAnnexNumber(numberToUse)
+            index: indexToUse
         } satisfies AnnexToShow
     } else {
         const _exhaustiveCheck: never = annex.type;

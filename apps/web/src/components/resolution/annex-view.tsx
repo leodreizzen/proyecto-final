@@ -1,6 +1,6 @@
 "use client";
 
-import {AnnexToShow, ChapterToShow, ResolutionNaturalID} from "@/lib/definitions/resolutions";
+import {AnnexIndex, AnnexToShow, ChapterToShow, ResolutionNaturalID} from "@/lib/definitions/resolutions";
 import {useState} from "react";
 import {Button} from "@/components/ui/button";
 import {AddedNotice} from "./added-notice";
@@ -58,7 +58,7 @@ function RepealedBlock({
     );
 }
 
-function ChapterView({chapter, annexNumber}: { chapter: ChapterToShow, annexNumber: number }) {
+function ChapterView({chapter, annexNumber}: { chapter: ChapterToShow, annexNumber: AnnexIndex }) {
     const titleText = `CAPÍTULO ${chapter.number}${chapter.title ? `: ${chapter.title}` : ""}`;
     const chapterId = getChapterId(annexNumber, chapter.number);
     const header = (
@@ -108,8 +108,8 @@ function ChapterView({chapter, annexNumber}: { chapter: ChapterToShow, annexNumb
 
 export function AnnexView({annex}: AnnexViewProps) {
     const isRepealed = annex.repealedBy !== null;
-    const annexLabel = `ANEXO ${annex.number}`;
-    const annexId = `annex-${annex.number}`;
+    const annexLabel = annex.index.type === "generated" ? "ANEXO (SIN NÚMERO)" : `ANEXO ${annex.index.number}`;
+    const annexId = annex.index.type === "generated" ? `annex-gen-${annex.index.value}` : `annex-${annex.index.number}`;
 
     const modifications = (annex.type === "TEXT" && annex.modifiedBy) ? annex.modifiedBy : [];
 
@@ -137,12 +137,12 @@ export function AnnexView({annex}: AnnexViewProps) {
                     <ArticlesContainer 
                         articles={annex.standaloneArticles} 
                         className={(annex.standaloneArticles.length > 0 && annex.chapters.length > 0) ? "ml-6": ""}
-                        idPrefix={`annex-${annex.number}-art`}
+                        idPrefix={`annex-${annex.index.type === "generated" ? `gen-${annex.index.value}` : annex.index.number}-art`}
                     />
 
                     {/* Chapters */}
                     {annex.chapters.map((chapter, cIdx) => (
-                        <ChapterView key={cIdx} chapter={chapter} annexNumber={annex.number} />
+                        <ChapterView key={cIdx} chapter={chapter} annexNumber={annex.index} />
                     ))}
                 </div>
 

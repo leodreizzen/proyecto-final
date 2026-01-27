@@ -5,6 +5,8 @@ import {
     ContentBlock,
     ResolutionNaturalID,
     ResolutionToShow,
+    ArticleIndex,
+    AnnexIndex
 } from "@/lib/definitions/resolutions";
 import {sortChangeWithContext} from "@/lib/assembly/utils";
 import {ChangeWithContextForAssembly} from "@/lib/definitions/changes";
@@ -20,20 +22,40 @@ type ResolutionID = ResolutionNaturalID;
 
 abstract class Slot<T> {
     abstract get relevant(): boolean;
+
     abstract get exists(): boolean;
+
     abstract get(): T | undefined;
+
     abstract set(value: T, by: ResolutionID): void;
+
     abstract repeal(by: ResolutionID): void;
+
     abstract modify(before: ContentBlock[], after: ContentBlock[], by: ResolutionID): boolean;
 }
 
 class IrrelevantSlot<T> extends Slot<T> {
-    get relevant() { return false; }
-    get exists() { return false; }
-    get() { return undefined; }
-    set(_: T, __: ResolutionID) {}
-    repeal(_: ResolutionID) {}
-    modify(_before: ContentBlock[], _after: ContentBlock[], _by: ResolutionID) { return false; }
+    get relevant() {
+        return false;
+    }
+
+    get exists() {
+        return false;
+    }
+
+    get() {
+        return undefined;
+    }
+
+    set(_: T, __: ResolutionID) {
+    }
+
+    repeal(_: ResolutionID) {
+    }
+
+    modify(_before: ContentBlock[], _after: ContentBlock[], _by: ResolutionID) {
+        return false;
+    }
 }
 
 abstract class ResolutionSlot extends Slot<ResolutionToShow> {
@@ -58,11 +80,12 @@ class ConcreteResolutionSlot extends ResolutionSlot {
     }
     ratify(by: ResolutionID) {
         const obj = this.getter();
-       obj.ratifiedBy = by;
+        obj.ratifiedBy = by;
     }
+
     modify(_before: ContentBlock[], _after: ContentBlock[], _by: ResolutionID) {
         // Resolutions themselves don't have text to modify via this mechanism directly yet
-        return false; 
+        return false;
     }
 }
 
@@ -76,8 +99,8 @@ class IrrelevantResolutionSlot extends ResolutionSlot {
     modify(_before: ContentBlock[], _after: ContentBlock[], _by: ResolutionID) { return false; }
 }
 
-type CollectionItem = { 
-    repealedBy: ResolutionID | null, 
+type CollectionItem = {
+    repealedBy: ResolutionID | null,
     addedBy: ResolutionID | null,
     modifiedBy?: ResolutionID[]
 };
@@ -133,19 +156,21 @@ abstract class BaseCollectionSlot<T extends CollectionItem> extends Slot<T> {
 class ArticleSlot extends BaseCollectionSlot<ArticleToShow> {
     constructor(
         container: ArticleToShow[],
-        private number: number,
-        private suffix: number,
+        private index: ArticleIndex,
     ) {
         super(container);
     }
 
     protected matches(item: ArticleToShow): boolean {
-        return item.number === this.number && item.suffix === this.suffix;
+        if (this.index.type === "generated") return false;
+        if (item.index.type === "generated") return false;
+
+        return item.index.number === this.index.number &&
+            item.index.suffix === this.index.suffix;
     }
 
     protected patch(item: ArticleToShow): void {
-        item.number = this.number;
-        item.suffix = this.suffix;
+        item.index = this.index;
     }
 
     modify(before: ContentBlock[], after: ContentBlock[], by: ResolutionID): boolean {
@@ -165,17 +190,20 @@ class ArticleSlot extends BaseCollectionSlot<ArticleToShow> {
 class AnnexSlot extends BaseCollectionSlot<AnnexToShow> {
     constructor(
         container: AnnexToShow[],
-        private number: number,
+        private index: AnnexIndex,
     ) {
         super(container);
     }
 
     protected matches(item: AnnexToShow): boolean {
-        return item.number === this.number;
+        if (this.index.type === "generated") return false;
+        if (item.index.type === "generated") return false;
+
+        return item.index.number === this.index.number;
     }
 
     protected patch(item: AnnexToShow): void {
-        item.number = this.number;
+        item.index = this.index;
     }
 
     modify(before: ContentBlock[], after: ContentBlock[], by: ResolutionID): boolean {
@@ -211,8 +239,13 @@ class ChapterSlot extends BaseCollectionSlot<ChapterToShow> {
 
 export class ResolutionChangeApplier {
     inapplicableChanges: ChangeWithContextForAssembly[] = [];
+    private generatedCounter = 0;
 
     constructor(private resolution: ResolutionToShow, private validationContext: ValidationContext) {
+    }
+
+    private getNextGeneratedNumber(): number {
+        return this.generatedCounter++;
     }
 
     applyChanges(changes: ChangeWithContextForAssembly[]) {
@@ -250,8 +283,8 @@ export class ResolutionChangeApplier {
                 // ignore the change
                 break;
             case "RATIFY_AD_REFERENDUM":
-                 this.applyRatifyChange(change);
-                 break;
+                this.applyRatifyChange(change);
+                break;
             default: {
                 const _exhaustiveCheck: never = change;
                 this.inapplicableChanges.push(change);
@@ -283,15 +316,15 @@ export class ResolutionChangeApplier {
 
     private applyRatifyChange(change: ChangeWithContextForAssembly & { type: "RATIFY_AD_REFERENDUM" }) {
         const targetRef = change.changeRatifyAdReferendum.targetResolution;
-         const slot = this.getResolutionSlot({
-             initial: targetRef.initial,
-             number: targetRef.number,
-             year: targetRef.year
-         });
+        const slot = this.getResolutionSlot({
+            initial: targetRef.initial,
+            number: targetRef.number,
+            year: targetRef.year
+        });
 
-         if (!slot.relevant) return;
+        if (!slot.relevant) return;
 
-         slot.ratify(change.context.rootResolution);
+        slot.ratify(change.context.rootResolution);
     }
 
 
@@ -303,15 +336,19 @@ export class ResolutionChangeApplier {
         }
 
         let slot: Slot<ArticleToShow> | null;
-        const coords = {
-            articleNumber: changeAddArticle.newArticleNumber!, // TODO case when number is autogenerated
-            articleSuffix: changeAddArticle.newArticleSuffix || 0
-        };
+
+        const index: ArticleIndex = changeAddArticle.newArticleNumber !== null
+            ? {
+                type: "defined",
+                number: changeAddArticle.newArticleNumber,
+                suffix: changeAddArticle.newArticleSuffix || 0
+            }
+            : {type: "generated", value: this.getNextGeneratedNumber()};
 
         if (changeAddArticle.targetResolution) {
             slot = this.getArticleSlot(
                 changeAddArticle.targetResolution,
-                coords
+                { articleIndex: index }
             );
         } else if (changeAddArticle.targetAnnex) {
             slot = this.getArticleSlot(
@@ -322,7 +359,7 @@ export class ResolutionChangeApplier {
                 },
                 {
                     annexNumber: changeAddArticle.targetAnnex.annexNumber,
-                    ...coords
+                    articleIndex: index
                 }
             );
         } else if (changeAddArticle.targetChapter) {
@@ -335,7 +372,7 @@ export class ResolutionChangeApplier {
                 {
                     annexNumber: changeAddArticle.targetChapter.annexNumber,
                     chapterNumber: changeAddArticle.targetChapter.chapterNumber,
-                    ...coords
+                    articleIndex: index
                 }
             );
         } else {
@@ -356,9 +393,9 @@ export class ResolutionChangeApplier {
         }
 
         const convertedArticle = articleInitialDataToShow(articleToAdd, {
-            number: coords.articleNumber,
-            suffix: coords.articleSuffix
+            index: index
         }, this.validationContext);
+        
         slot.set(convertedArticle, change.context.rootResolution);
     }
 
@@ -369,11 +406,15 @@ export class ResolutionChangeApplier {
             throw new Error("Annex to add is missing for change " + change.id);
         }
 
+        const index: AnnexIndex = changeAddAnnex.newAnnexNumber !== null
+            ? {type: "defined", number: changeAddAnnex.newAnnexNumber}
+            : {type: "generated", value: this.getNextGeneratedNumber()};
+
         let slot: Slot<AnnexToShow> | null;
         if (changeAddAnnex.targetResolution) {
             slot = this.getAnnexSlot(
                 changeAddAnnex.targetResolution,
-                changeAddAnnex.newAnnexNumber! // TODO case when number is autogenerated
+                index
             );
         } else {
             this.inapplicableChanges.push(change);
@@ -394,22 +435,25 @@ export class ResolutionChangeApplier {
         // TODO subannex
 
         const convertedAnnex = annexInitialDataToShow(annexToAdd, {
-            number: changeAddAnnex.newAnnexNumber!
+            index: index
         }, this.validationContext);
+
         slot.set(convertedAnnex, change.context.rootResolution);
     }
 
     private applyReplaceArticleChange(change: ChangeWithContextForAssembly & { type: "REPLACE_ARTICLE" }) {
         const changeReplace = change.changeReplaceArticle;
         const targetRef = changeReplace.targetArticle;
-
         const slot = this.getArticleSlot(
             {initial: targetRef.initial, number: targetRef.resNumber, year: targetRef.year},
             {
                 annexNumber: targetRef.annexNumber,
                 chapterNumber: targetRef.chapterNumber,
-                articleNumber: targetRef.articleNumber,
-                articleSuffix: targetRef.articleSuffix
+                articleIndex: {
+                    type: "defined",
+                    number: targetRef.articleNumber,
+                    suffix: targetRef.articleSuffix
+                }
             }
         );
 
@@ -431,8 +475,11 @@ export class ResolutionChangeApplier {
         }
 
         const convertedArticle = articleInitialDataToShow(newContent, {
-            number: targetRef.articleNumber,
-            suffix: targetRef.articleSuffix
+            index: { 
+                type: "defined", 
+                number: targetRef.articleNumber, 
+                suffix: targetRef.articleSuffix 
+            }
         }, this.validationContext);
 
         slot.set(convertedArticle, change.context.rootResolution);
@@ -441,10 +488,9 @@ export class ResolutionChangeApplier {
     private applyReplaceAnnexChange(change: ChangeWithContextForAssembly & { type: "REPLACE_ANNEX" }) {
         const changeReplace = change.changeReplaceAnnex;
         const targetRef = changeReplace.targetAnnex;
-
         const slot = this.getAnnexSlot(
             {initial: targetRef.initial, number: targetRef.resNumber, year: targetRef.year},
-            targetRef.annexNumber
+            {type: "defined", number: targetRef.annexNumber}
         );
         if (!slot) {
             this.inapplicableChanges.push(change);
@@ -477,8 +523,9 @@ export class ResolutionChangeApplier {
             return;
         }
         const convertedAnnex = annexInitialDataToShow(newContent, {
-            number: targetRef.annexNumber
+            index: { type: "defined", number: targetRef.annexNumber }
         }, this.validationContext);
+
         slot.set(convertedAnnex, change.context.rootResolution);
     }
 
@@ -491,8 +538,11 @@ export class ResolutionChangeApplier {
             {
                 annexNumber: targetRef.annexNumber,
                 chapterNumber: targetRef.chapterNumber,
-                articleNumber: targetRef.articleNumber,
-                articleSuffix: targetRef.articleSuffix
+                articleIndex: {
+                    type: "defined",
+                    number: targetRef.articleNumber,
+                    suffix: targetRef.articleSuffix
+                }
             }
         );
 
@@ -531,7 +581,7 @@ export class ResolutionChangeApplier {
 
         const slot = this.getAnnexSlot(
             {initial: targetRef.initial, number: targetRef.resNumber, year: targetRef.year},
-            targetRef.annexNumber
+            {type: "defined", number: targetRef.annexNumber}
         );
 
         if (!slot) {
@@ -557,7 +607,7 @@ export class ResolutionChangeApplier {
             mapContentBlocks(changeModify.after, this.validationContext),
             change.context.rootResolution
         );
-        
+
         if (!success) {
             this.inapplicableChanges.push(change);
         }
@@ -574,14 +624,17 @@ export class ResolutionChangeApplier {
                     {
                         annexNumber: ref.article.annexNumber,
                         chapterNumber: ref.article.chapterNumber,
-                        articleNumber: ref.article.articleNumber,
-                        articleSuffix: ref.article.articleSuffix
+                        articleIndex: {
+                            type: "defined",
+                            number: ref.article.articleNumber,
+                            suffix: ref.article.articleSuffix
+                        }
                     }
                 );
             case "ANNEX":
                 return this.getAnnexSlot(
                     {initial: ref.annex.initial, number: ref.annex.resNumber, year: ref.annex.year},
-                    ref.annex.annexNumber
+                    {type: "defined", number: ref.annex.annexNumber}
                 );
             case "CHAPTER":
                 return this.getChapterSlot(
@@ -599,7 +652,9 @@ export class ResolutionChangeApplier {
         }
         return new ConcreteResolutionSlot(
             () => this.resolution,
-            (val) => { this.resolution = val; }
+            (val) => {
+                this.resolution = val;
+            }
         );
     }
 
@@ -608,8 +663,7 @@ export class ResolutionChangeApplier {
         coords: {
             annexNumber?: number | null,
             chapterNumber?: number | null,
-            articleNumber: number,
-            articleSuffix: number
+            articleIndex: ArticleIndex,
         }
     ): ArticleSlot | IrrelevantSlot<ArticleToShow> | null {
         if (!this.affectsCurrentResolution(resId)) {
@@ -618,12 +672,12 @@ export class ResolutionChangeApplier {
 
         let container: ArticleToShow[];
 
-        if (coords.annexNumber) {
-            const annex = this.resolution.annexes.find(a => a.number === coords.annexNumber);
+        if (coords.annexNumber !== null && coords.annexNumber !== undefined) {
+            const annex = this.resolution.annexes.find(a => a.index.type === "defined" && a.index.number === coords.annexNumber);
             if (!annex) return null;
             if (annex.type !== "WITH_ARTICLES") return null;
 
-            if (coords.chapterNumber) {
+            if (coords.chapterNumber !== null && coords.chapterNumber !== undefined) {
                 const chapter = annex.chapters.find(c => c.number === coords.chapterNumber);
                 if (!chapter) return null;
                 container = chapter.articles;
@@ -634,18 +688,18 @@ export class ResolutionChangeApplier {
             container = this.resolution.articles;
         }
 
-        return new ArticleSlot(container, coords.articleNumber, coords.articleSuffix);
+        return new ArticleSlot(container, coords.articleIndex);
     }
 
 
     private getAnnexSlot(
         resId: { initial: string, number: number, year: number },
-        annexNumber: number
+        index: AnnexIndex
     ): AnnexSlot | IrrelevantSlot<AnnexToShow> | null {
         if (!this.affectsCurrentResolution(resId)) {
             return new IrrelevantSlot();
         }
-        return new AnnexSlot(this.resolution.annexes, annexNumber);
+        return new AnnexSlot(this.resolution.annexes, index);
     }
 
     private getChapterSlot(
@@ -655,9 +709,9 @@ export class ResolutionChangeApplier {
         if (!this.affectsCurrentResolution(resId)) {
             return new IrrelevantSlot();
         }
-        const annex = this.resolution.annexes.find(a => a.number === loc.annexNumber);
+        const annex = this.resolution.annexes.find(a => a.index.type === "defined" && a.index.number === loc.annexNumber);
         if (!annex || annex.type !== "WITH_ARTICLES") return null;
-
         return new ChapterSlot(annex.chapters, loc.chapterNumber);
     }
 }
+        

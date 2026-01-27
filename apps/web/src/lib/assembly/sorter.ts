@@ -3,14 +3,36 @@ import {
     ArticleToShow,
     ChapterToShow, ConsiderationToShow,
     RecitalToShow,
-    ResolutionToShow
+    ResolutionToShow,
+    ArticleIndex,
+    AnnexIndex
 } from "@/lib/definitions/resolutions";
 
-function compareArticles(a: ArticleToShow, b: ArticleToShow): number {
-    if (a.number !== b.number) {
+function compareArticleIndices(a: ArticleIndex, b: ArticleIndex): number {
+    if (a.type === "defined" && b.type === "generated") return -1;
+    if (a.type === "generated" && b.type === "defined") return 1;
+    
+    if (a.type === "defined" && b.type === "defined") {
+        if (a.number !== b.number) return a.number - b.number;
+        return a.suffix - b.suffix;
+    }
+
+    return (a as typeof a & {type: "generated"}).value - (b as typeof b & {type: "generated"}).value;
+}
+
+function compareAnnexIndices(a: AnnexIndex, b: AnnexIndex): number {
+    if (a.type === "defined" && b.type === "generated") return -1;
+    if (a.type === "generated" && b.type === "defined") return 1;
+
+    if (a.type === "defined" && b.type === "defined") {
         return a.number - b.number;
     }
-    return a.suffix - b.suffix;
+
+    return (a as typeof a & {type: "generated"}).value - (b as typeof b & {type: "generated"}).value;
+}
+
+function compareArticles(a: ArticleToShow, b: ArticleToShow): number {
+    return compareArticleIndices(a.index, b.index);
 }
 
 function compareChapters(a: ChapterToShow, b: ChapterToShow): number {
@@ -18,7 +40,7 @@ function compareChapters(a: ChapterToShow, b: ChapterToShow): number {
 }
 
 function compareAnnexes(a: AnnexToShow, b: AnnexToShow): number {
-    return a.number - b.number;
+    return compareAnnexIndices(a.index, b.index);
 }
 
 function compareRecitals(a: RecitalToShow , b: RecitalToShow): number {

@@ -10,7 +10,7 @@ export default function ArticlesContainer({articles, className, idPrefix}: { art
                 <ArticleView 
                     key={idx} 
                     article={article}
-                    htmlId={idPrefix ? getArticleId(idPrefix, article.number, article.suffix) : undefined}
+                    htmlId={idPrefix ? getArticleId(idPrefix, article.index) : undefined}
                 />
             ))}
         </div>
