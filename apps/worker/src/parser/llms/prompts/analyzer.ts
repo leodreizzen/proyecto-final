@@ -31,6 +31,7 @@ const commonAnalyzerRules = `
     
     ## Sobre los artículos:
         - En el before y after de los cambios, debes omitir las partes que digan "Artículo X", "Art. X", "Artículo X bis", etc. Solo debe ir el contenido del artículo.
+        - En el before y after, es MUY IMPORTANTE que respetes el texto original y su estructura. Si hay una tabla, usa el marcador {{tabla X}} tal y como viene en la entrada. No lo modifiques ni copies el contenido de la tabla.
         - Los siguientes tipos de cambios **deben simplemente ser considerados cambios avanzados**, (Usa el tipo \`"AdvancedChange"\`) y serán realizado por completo por otro llm. Esta lista NO es exhaustiva:
             - Reemplazar un renglón por otro, sin decir el contenido anterior del mismo.
             - Cualquier cambio que no pueda ser expresado con la estructura de cambios suministrada.

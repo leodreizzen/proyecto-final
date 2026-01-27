@@ -48,7 +48,7 @@ export function parseToContentBlockInputs(
             // Since DB only allows TEXT or TABLE, we'll store error as a TEXT block for now or a special error text
             blocks.push({
                 type: ContentBlockType.TEXT,
-                text: `[ERROR: Referencia a Tabla ${tableNumber} no encontrada]`,
+                text: `[Error cargando tabla ${tableNumber}]`,
             });
         }
 

@@ -5,7 +5,7 @@ export const TableCellSchema = z.object({
 }).meta({title: "CeldaTabla", schemaDescription: "Celda de la tabla"});
 
 export const TableRowSchema = z.object({
-    header: z.boolean().describe("Indica si la fila es encabezado. Usar true en la primera, salvo que se sepa que la tabla es un recorte de otra y por lo tanto no tiene encabezados"),
+    header: z.boolean().describe("Indica si la fila es encabezado. Usar true en la primera, SOLO si contiene los nombres de las columnas"),
     cells: z.array(TableCellSchema).describe("Celdas de la fila"),
 }).meta({title: "FilaTabla", schemaDescription: "Fila de la tabla"});
 

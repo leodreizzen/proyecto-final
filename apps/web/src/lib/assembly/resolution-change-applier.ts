@@ -6,37 +6,17 @@ import {
     ResolutionNaturalID,
     ResolutionToShow,
 } from "@/lib/definitions/resolutions";
-import {TableContent} from "@repo/db/content-blocks";
 import {sortChangeWithContext} from "@/lib/assembly/utils";
 import {ChangeWithContextForAssembly} from "@/lib/definitions/changes";
 import {checkReference} from "@/lib/data/polymorphism/reference";
 import {ReferenceWithConcreteWithoutPayload} from "@/lib/definitions/references";
-import {applyTextModification} from "@/lib/assembly/text-processor";
 import {articleInitialDataToShow} from "@/lib/data/remapping/article-to-show";
 import {annexInitialDataToShow} from "@/lib/data/remapping/annex-to-show";
-import {parseToContentBlocks} from "@/lib/utils/content-block-parser";
 import {mapContentBlocks} from "@/lib/data/remapping/content-blocks";
 import {ValidationContext} from "@/lib/processing/reference-processor";
+import {applyModifications} from "@/lib/assembly/modification-service";
 
 type ResolutionID = ResolutionNaturalID;
-
-function contentBlocksToText(blocks: ContentBlock[]): string {
-    return blocks.map(b => {
-        if (b.type === "TEXT") return b.text;
-        if (b.type === "TABLE") return `{{tabla ${b.tableContent.number}}}`;
-        return "";
-    }).join("");
-}
-
-function getTablesFromBlocks(blocks: ContentBlock[]): TableContent[] {
-    const tables: TableContent[] = [];
-    for (const block of blocks) {
-        if (block.type === "TABLE") {
-            tables.push(block.tableContent);
-        }
-    }
-    return tables;
-}
 
 abstract class Slot<T> {
     abstract get relevant(): boolean;
@@ -44,7 +24,7 @@ abstract class Slot<T> {
     abstract get(): T | undefined;
     abstract set(value: T, by: ResolutionID): void;
     abstract repeal(by: ResolutionID): void;
-    abstract modify(before: string, after: string, by: ResolutionID): boolean;
+    abstract modify(before: ContentBlock[], after: ContentBlock[], by: ResolutionID): boolean;
 }
 
 class IrrelevantSlot<T> extends Slot<T> {
@@ -53,7 +33,7 @@ class IrrelevantSlot<T> extends Slot<T> {
     get() { return undefined; }
     set(_: T, __: ResolutionID) {}
     repeal(_: ResolutionID) {}
-    modify(_before: string, _after: string, _by: ResolutionID) { return false; }
+    modify(_before: ContentBlock[], _after: ContentBlock[], _by: ResolutionID) { return false; }
 }
 
 abstract class ResolutionSlot extends Slot<ResolutionToShow> {
@@ -80,7 +60,7 @@ class ConcreteResolutionSlot extends ResolutionSlot {
         const obj = this.getter();
        obj.ratifiedBy = by;
     }
-    modify(_before: string, _after: string, _by: ResolutionID) {
+    modify(_before: ContentBlock[], _after: ContentBlock[], _by: ResolutionID) {
         // Resolutions themselves don't have text to modify via this mechanism directly yet
         return false; 
     }
@@ -93,7 +73,7 @@ class IrrelevantResolutionSlot extends ResolutionSlot {
     set(_: ResolutionToShow, __: ResolutionID) {}
     repeal(_: ResolutionID) {}
     ratify(_: ResolutionID) {}
-    modify(_before: string, _after: string, _by: ResolutionID) { return false; }
+    modify(_before: ContentBlock[], _after: ContentBlock[], _by: ResolutionID) { return false; }
 }
 
 type CollectionItem = { 
@@ -142,7 +122,7 @@ abstract class BaseCollectionSlot<T extends CollectionItem> extends Slot<T> {
     }
 
     // Default implementation returns false, override in specific slots
-    modify(_before: string, _after: string, _by: ResolutionID): boolean {
+    modify(_before: ContentBlock[], _after: ContentBlock[], _by: ResolutionID): boolean {
         return false;
     }
 
@@ -155,7 +135,6 @@ class ArticleSlot extends BaseCollectionSlot<ArticleToShow> {
         container: ArticleToShow[],
         private number: number,
         private suffix: number,
-        private validationContext: ValidationContext
     ) {
         super(container);
     }
@@ -169,21 +148,17 @@ class ArticleSlot extends BaseCollectionSlot<ArticleToShow> {
         item.suffix = this.suffix;
     }
 
-    modify(before: string, after: string, by: ResolutionID): boolean {
+    modify(before: ContentBlock[], after: ContentBlock[], by: ResolutionID): boolean {
         const item = this.get();
         if (!item) return false;
 
-        const currentText = contentBlocksToText(item.content);
-        const modifiedText = applyTextModification(currentText, before, after);
-        if (modifiedText === null) {
-            return false;
+        const { blocks, success } = applyModifications(item.content, before, after);
+        
+        if (success) {
+            item.content = blocks;
+            item.modifiedBy = item.modifiedBy ? [...item.modifiedBy, by] : [by];
         }
-
-        const tables = getTablesFromBlocks(item.content);
-        // TODO: This currently loses references as parseToContentBlocks doesn't support them yet
-        item.content = parseToContentBlocks(modifiedText, tables);
-        item.modifiedBy = item.modifiedBy ? [...item.modifiedBy, by] : [by];
-        return true;
+        return success;
     }
 }
 
@@ -191,7 +166,6 @@ class AnnexSlot extends BaseCollectionSlot<AnnexToShow> {
     constructor(
         container: AnnexToShow[],
         private number: number,
-        private validationContext: ValidationContext
     ) {
         super(container);
     }
@@ -204,21 +178,17 @@ class AnnexSlot extends BaseCollectionSlot<AnnexToShow> {
         item.number = this.number;
     }
 
-    modify(before: string, after: string, by: ResolutionID): boolean {
+    modify(before: ContentBlock[], after: ContentBlock[], by: ResolutionID): boolean {
         const item = this.get();
         if (!item || item.type !== "TEXT") return false;
 
-        const currentText = contentBlocksToText(item.content);
-        const modifiedText = applyTextModification(currentText, before, after);
-        if (modifiedText === null) {
-            return false;
+        const { blocks, success } = applyModifications(item.content, before, after);
+        
+        if (success) {
+            item.content = blocks;
+            item.modifiedBy = item.modifiedBy ? [...item.modifiedBy, by] : [by];
         }
-
-        const tables = getTablesFromBlocks(item.content);
-        // TODO: This currently loses references as parseToContentBlocks doesn't support them yet
-        item.content = parseToContentBlocks(modifiedText, tables);
-        item.modifiedBy = item.modifiedBy ? [...item.modifiedBy, by] : [by];
-        return true;
+        return success;
     }
 }
 
@@ -539,8 +509,8 @@ export class ResolutionChangeApplier {
         }
 
         const success = slot.modify(
-            contentBlocksToText(mapContentBlocks(changeModify.before, this.validationContext)),
-            contentBlocksToText(mapContentBlocks(changeModify.after, this.validationContext)),
+            mapContentBlocks(changeModify.before, this.validationContext),
+            mapContentBlocks(changeModify.after, this.validationContext),
             change.context.rootResolution
         );
 
@@ -583,8 +553,8 @@ export class ResolutionChangeApplier {
         }
 
         const success = slot.modify(
-            contentBlocksToText(mapContentBlocks(changeModify.before, this.validationContext)),
-            contentBlocksToText(mapContentBlocks(changeModify.after, this.validationContext)),
+            mapContentBlocks(changeModify.before, this.validationContext),
+            mapContentBlocks(changeModify.after, this.validationContext),
             change.context.rootResolution
         );
         
@@ -664,7 +634,7 @@ export class ResolutionChangeApplier {
             container = this.resolution.articles;
         }
 
-        return new ArticleSlot(container, coords.articleNumber, coords.articleSuffix, this.validationContext);
+        return new ArticleSlot(container, coords.articleNumber, coords.articleSuffix);
     }
 
 
@@ -675,7 +645,7 @@ export class ResolutionChangeApplier {
         if (!this.affectsCurrentResolution(resId)) {
             return new IrrelevantSlot();
         }
-        return new AnnexSlot(this.resolution.annexes, annexNumber, this.validationContext);
+        return new AnnexSlot(this.resolution.annexes, annexNumber);
     }
 
     private getChapterSlot(

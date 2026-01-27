@@ -46,8 +46,9 @@ Si el esquema de salida incluye un campo para tablas:
 1. Detecta estructuras Markdown (filas con \`|\`).
 2. **CORTA** la tabla del texto original.
 3. **PÉGALA** en el array/objeto de tablas correspondiente.
-4. **INSERTA** el marcador \`{{tabla ID}}\` en el lugar exacto del corte.
+4. **INSERTA** el marcador \`{{tabla ID}}\` en el lugar exacto del corte. Si hay múltiples tablas, numéralas secuencialmente (1, 2, 3...). Si hay textos entre medio, respeta la estructura (ej. Texto 1 {{tabla 1}} Texto 2 {{tabla 2}}).)
 5. Esto aplica también dentro de Anexos.
+**Sobre el campo \`isHeader\`**: Ponlo en true SI Y SOLO SI la fila es un encabezado. Es decir, si contiene los nombres de las columnas. De lo contrario, o ante la duda, **ponlo en false**.
 
 ## 6. ANEXOS (Inferencia Agresiva)
 - **Ubicación:** Todo lo que aparece DESPUÉS de las firmas (fecha, firma del rector/decano) es considerado ANEXO.

@@ -181,7 +181,6 @@ function mapArticle(article: ArticleWithoutTables, currentResolutionId: Resoluti
 
 
 function mapAnalysis(change: Change, currentResolutionId: ResolutionID, allTables: TableStructure[], references: TextReference[], usedTableNumbers: Set<number>): ChangeMapped {
-    // TODO replaceAnnex?
     if (change.type === "AddArticleToResolution" || change.type === "AddArticleToAnnex") {
         const articleToAdd = change.articleToAdd;
 
@@ -235,8 +234,8 @@ function mapAnalysis(change: Change, currentResolutionId: ResolutionID, allTable
             }
         };
     } else if (change.type === "ModifyArticle" || change.type === "ModifyTextAnnex") {
-        const beforeBlocks = textToContentBlocks(change.before, allTables, [], usedTableNumbers, "Modify Change (before)");
-        const afterBlocks = textToContentBlocks(change.after, allTables, [], usedTableNumbers, "Modify Change (after)");
+        const beforeBlocks = textToContentBlocks(patchModifyText(change.before), allTables, references, usedTableNumbers, "Modify Change (before)");
+        const afterBlocks = textToContentBlocks(patchModifyText(change.after), allTables, references, usedTableNumbers, "Modify Change (after)");
 
         return {
             ...change,
@@ -245,7 +244,10 @@ function mapAnalysis(change: Change, currentResolutionId: ResolutionID, allTable
         };
     } else if (change.type === "ReplaceAnnex") {
         if (change.newContent.contentType === "Inline") {
-            const annexContentMapped = mapAnnex({...change.newContent.content, references: references}, currentResolutionId, allTables, usedTableNumbers, "Replace Annex Change");
+            const annexContentMapped = mapAnnex({
+                ...change.newContent.content,
+                references: references
+            }, currentResolutionId, allTables, usedTableNumbers, "Replace Annex Change");
             return {
                 ...change,
                 newContent: {
@@ -359,45 +361,6 @@ function mapChangeDocumentReferences(change: ChangeMapped, currentResolutionId: 
     return change;
 }
 
-//
-// function mapDocumentReferences(resolution: Resolution): Resolution {
-//     return {
-//         ...resolution,
-//         recitals: patchReferencesInObjectArray(resolution.recitals),
-//         considerations: patchReferencesInObjectArray(resolution.considerations),
-//         articles: patchReferencesInObjectArray(resolution.articles),
-//         annexes: resolution.annexes.map(annex => {
-//             if (annex.type === "WithArticles") {
-//                 return {
-//                     ...annex,
-//                     articles: patchReferencesInObjectArray(annex.articles),
-//                     chapters: annex.chapters.map(chapter => ({
-//                         ...chapter,
-//                         articles: patchReferencesInObjectArray(chapter.articles)
-//                     }))
-//                 }
-//             } else if (annex.type === "TextOrTables") {
-//                 return {
-//                     ...annex,
-//                     content: annex.content.map(block => {
-//                         if (block.type === "TEXT") {
-//                             return {
-//                                 ...block,
-//                                 references: block.references.map(ref => patchReference(ref))
-//                             }
-//                         }
-//                         return block;
-//                     })
-//                 }
-//             } else {
-//                 const _: never = annex;
-//                 return annex;
-//             }
-//         })
-//     }
-// }
-
-
 function patchReferencesInAnalysis(analysis: FullResolutionAnalysis): FullResolutionAnalysis {
     return {
         ...analysis,
@@ -465,4 +428,12 @@ function patchReference(ref: TextReference): TextReference {
         ...ref,
         reference: mappedReference
     }
+}
+
+function patchModifyText(text: string): string {
+    return text
+        .trim()
+        .replace(/^["«']/, "")
+        .replace(/["«']$/, "")
+        .trim();
 }

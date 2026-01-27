@@ -144,10 +144,22 @@ export function findFuzzyRange(originalText: string, searchString: string): { st
     return null;
 }
 
-export function applyTextModification(originalText: string, searchString: string, replacementString: string): string | null {
+export type ModificationResult = {
+    text: string;
+    rangeRemoved: { start: number, end: number };
+}
+
+export function applyTextModification(originalText: string, searchString: string, replacementString: string): ModificationResult | null {
     // Literal match
-    if (originalText.includes(searchString)) {
-        return originalText.replace(searchString, replacementString);
+    const literalIndex = originalText.indexOf(searchString);
+    if (literalIndex !== -1) {
+        return {
+            text: originalText.substring(0, literalIndex) + replacementString + originalText.substring(literalIndex + searchString.length),
+            rangeRemoved: {
+                start: literalIndex,
+                end: literalIndex + searchString.length
+            }
+        };
     }
 
     // Fuzzy match
@@ -159,7 +171,13 @@ export function applyTextModification(originalText: string, searchString: string
         const normalizedSearchString = normalizeForToken(searchString);
         
         if (normalizedOriginal === normalizedSearchString && normalizedOriginal.length > 0) {
-             return replacementString;
+             return {
+                 text: replacementString,
+                 rangeRemoved: {
+                     start: 0,
+                     end: originalText.length
+                 }
+             };
         }
         return null; 
     }
@@ -167,5 +185,11 @@ export function applyTextModification(originalText: string, searchString: string
     const originalTextPrefix = originalText.substring(0, targetRange.start);
     const originalTextSuffix = originalText.substring(targetRange.end);
     
-    return originalTextPrefix + replacementString + originalTextSuffix;
+    return {
+        text: originalTextPrefix + replacementString + originalTextSuffix,
+        rangeRemoved: {
+            start: targetRange.start,
+            end: targetRange.end
+        }
+    };
 }

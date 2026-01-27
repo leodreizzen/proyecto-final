@@ -40,7 +40,7 @@ export function parseToContentBlocks(text: string, tables: TableContent[]): Cont
         } else {
             blocks.push({
                 type: "ERROR",
-                message: `Referencia a Tabla ${tableNumber} rota (no encontrada).`
+                message: `Error cargando tabla ${tableNumber}`
             });
         }
 

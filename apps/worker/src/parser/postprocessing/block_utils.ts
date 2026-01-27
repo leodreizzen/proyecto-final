@@ -78,7 +78,7 @@ export function textToContentBlocks(
 
     // Assign references to text blocks using fuzzy search
     for (const ref of references) {
-        const fullSearchString = (ref.before + ref.text + ref.after).trim();
+        const fullSearchString = (ref.before + " " + ref.text + " " + ref.after).trim();
         let assigned = false;
 
         for (const block of filteredBlocks) {
