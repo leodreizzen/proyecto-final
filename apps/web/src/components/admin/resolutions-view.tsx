@@ -5,8 +5,8 @@ import {ResolutionsTable} from "./resolutions-table"
 import {StatusPanel} from "./status-panel"
 import {UploadWithFile, UploadWithProgressAndFile} from "@/lib/definitions/uploads";
 import {ResolutionCounts, ResolutionWithStatus} from "@/lib/definitions/resolutions";
-import {useEffect} from "react";
-import {useQuery} from "@tanstack/react-query";
+import {useEffect, useMemo} from "react";
+import {useInfiniteQuery, useQuery} from "@tanstack/react-query";
 import {
     pendingUploadsQuery,
     recentFinishedUploadsQuery,
@@ -31,9 +31,9 @@ export function ResolutionsView({
         initialData: _pendingUploads
     })
 
-    const {data: resolutions} = useQuery({
+    const {data: {pages: resolutionsPages}, fetchNextPage: fetchNextResolutionsPage} = useInfiniteQuery({
         ...resolutionsQuery,
-        initialData: _resolutions
+        initialData: {pages: [_resolutions], pageParams: [null]}
     });
 
     const {data: recentFinishedUploads} = useQuery({
@@ -46,6 +46,8 @@ export function ResolutionsView({
         initialData: _resCounts
     });
 
+    const resolutions = useMemo(() => resolutionsPages.flat(), [resolutionsPages]);
+
     useEffect(() => {
         return mountDashboardEventStream();
     }, []);
@@ -57,13 +59,17 @@ export function ResolutionsView({
         inconsistent: resCounts.inconsistent,
     }
 
+    function handleResolutionsRefetch() {
+        fetchNextResolutionsPage({cancelRefetch: false});
+    }
+
     return (
         <div className="flex flex-col xl:flex-row h-full">
             {/* Main content - Central column */}
             <div className="flex-1 flex flex-col min-w-0 p-4 lg:p-6 overflow-auto">
                 <KpiHeader stats={stats}/>
                 <Toolbar/>
-                <ResolutionsTable resolutions={resolutions}/>
+                <ResolutionsTable resolutions={resolutions} fetchNextPage={handleResolutionsRefetch}/>
             </div>
 
             {/* Status panel - Right column */}

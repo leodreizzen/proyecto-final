@@ -6,7 +6,7 @@ import {fetchRecentFinishedUploads, fetchUnfinishedUploads} from "@/lib/data/upl
 export default async function AdminPage() {
     await authCheck(["ADMIN"]);
     const [resolutions, pendingUploads, recentFinishedUploads, resCounts] = await Promise.all([
-        fetchResolutionsWithStatus(),
+        fetchResolutionsWithStatus(null),
             fetchUnfinishedUploads(),
             fetchRecentFinishedUploads(),
             countResolutions()

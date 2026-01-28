@@ -3,12 +3,31 @@ import prisma from "@/lib/prisma";
 import {checkResourcePermission} from "@/lib/auth/data-authorization";
 import {ResolutionCounts, ResolutionNaturalID, ResolutionWithStatus} from "@/lib/definitions/resolutions";
 import {createDeleteAssetJob} from "@/lib/jobs/assets";
+import {ResolutionFindManyArgs} from "@repo/db/prisma/models";
 
-export async function fetchResolutionsWithStatus(): Promise<ResolutionWithStatus[]> {
-    //TODO PAGINATION
+export async function fetchResolutionsWithStatus(cursor: string | null): Promise<ResolutionWithStatus[]> {
     await checkResourcePermission("resolution", "read");
 
-    const resolutions = await prisma.resolution.findMany({});
+    const cursorParams = cursor ? {
+        skip: 1,
+        cursor: {
+            id: cursor
+        }
+    } satisfies Partial<ResolutionFindManyArgs> : {}
+
+    const resolutions = await prisma.resolution.findMany({
+        ...cursorParams,
+        take: 15,
+        orderBy:[ {
+            date: "desc"
+        }, {
+            year: "desc"
+        }, {
+            number: "desc"
+        }, {
+            initial: "asc"
+        }]
+    });
     return resolutions.map(resolution => ({
         ...resolution,
         status: "ok" //TODO

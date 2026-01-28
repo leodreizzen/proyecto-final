@@ -1,5 +1,5 @@
 import {resolutionsFetcher} from "@/app/api/admin/resolutions/fetcher";
-import {queryOptions} from "@tanstack/react-query";
+import {infiniteQueryOptions, queryOptions} from "@tanstack/react-query";
 import {recentlyFinisheddUploadsFetcher} from "@/app/api/admin/uploads/recently-finished/fetcher";
 import {unfinishedUploadsFetcher} from "@/app/api/admin/uploads/unfinished/fetcher";
 import {resolutionCountsFetcher} from "@/app/api/admin/resolutions/counts/fetcher";
@@ -17,9 +17,17 @@ export const uploadKeys = {
     unfinished: () => [...uploadKeys.all, 'unfinished'] as const,
 }
 
-export const resolutionsQuery = queryOptions({
+export const resolutionsQuery = infiniteQueryOptions({
     queryKey: resolutionKeys.list(),
-    queryFn: resolutionsFetcher
+    queryFn: resolutionsFetcher,
+    initialPageParam: null,
+    getNextPageParam: (data) => {
+        if(data.length > 0){
+            return data[data.length - 1]!.id;
+        } else
+            return null
+    },
+    staleTime: 5 * 60 * 1000, // 5 minutes
 })
 
 export const recentFinishedUploadsQuery = queryOptions({
