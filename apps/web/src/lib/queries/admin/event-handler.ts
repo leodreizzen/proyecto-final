@@ -9,7 +9,6 @@ import {
 } from "@/lib/queries/admin/queries";
 import {UploadStatusData} from "@repo/pubsub/publish/uploads";
 
-
 export function mountDashboardEventStream(): () => void {
     const eventSource = new EventSource('/api/events/admin/dashboard');
     eventSource.onmessage = handleAdminEvent
@@ -41,9 +40,9 @@ async function handleAdminEvent(event: MessageEvent) {
         await queryClient.invalidateQueries({queryKey: resolutionKeys.all});
     } else if (eventData.scope === "RESOLUTIONS_SPECIFIC") {
         if (eventData.data.type === "UPDATE") {
-            if (queryClient.getQueryData(resolutionsQuery.queryKey)?.find(res => res.id === eventData.params.id)) {
-                await queryClient.invalidateQueries({queryKey: resolutionKeys.list()});
-            }
+            // Invalidate all resolution lists as we don't know which filter contains the updated resolution
+            await queryClient.invalidateQueries({ queryKey: ['resolutions', 'list'] });
+            
             await queryClient.invalidateQueries({queryKey: resolutionKeys.counts()});
             await queryClient.invalidateQueries({queryKey: resolutionKeys.details(eventData.params.id)});
         }

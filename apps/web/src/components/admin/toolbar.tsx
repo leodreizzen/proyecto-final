@@ -6,14 +6,17 @@ import {Button} from "@/components/ui/button"
 import {useState} from "react";
 import UploadModal from "@/components/admin/upload-modal";
 import {uploadResolutions} from "@/lib/actions/client/uploads";
+import {useDebounceCallback} from "usehooks-ts";
 
 interface ToolbarProps {
-    searchQuery?: string // TODO MAKE THIS REQUIRED
-    onSearchChange?: (value: string) => void // TODO MAKE THIS REQUIRED
+    initialSearchQuery: string
+    onSearch: (value: string) => void
 }
 
-export function Toolbar({searchQuery, onSearchChange}: ToolbarProps) {
+export function Toolbar({initialSearchQuery, onSearch}: ToolbarProps) {
+    const searchDebounced = useDebounceCallback(onSearch, 300)
     const [uploadModalOpen, setUploadModalOpen] = useState(false);
+
     return (
         <div className="flex flex-col-reverse sm:flex-row gap-3 mb-4">
             {/* Search */}
@@ -21,9 +24,9 @@ export function Toolbar({searchQuery, onSearchChange}: ToolbarProps) {
                 <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground"/>
                 <Input
                     type="text"
-                    placeholder="Buscar por ID, año..."
-                    value={searchQuery}
-                    onChange={(e) => onSearchChange?.(e.target.value)}
+                    placeholder="Buscar por ID, año... (ej. 60-2025 o CSU-60)"
+                    defaultValue={initialSearchQuery}
+                    onChange={(e) => searchDebounced(e.target.value)}
                     className="pl-9 bg-card"
                 />
             </div>

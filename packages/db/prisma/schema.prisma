@@ -43,6 +43,8 @@ model Resolution {
 
   referencedBy ReferenceResolution[]
 
+  search v_ResolutionSearch?
+
   upload             ResolutionUpload   @relation(fields: [resolutionUploadId], references: [id])
   resolutionUploadId String             @unique @db.Uuid
   vArticleContexts   v_ArticleContext[]
@@ -725,4 +727,10 @@ view v_ArticleContext {
   chapterNumber    Int?
   is_structural    Boolean
   resDate          DateTime
+}
+
+view v_ResolutionSearch {
+  resolution Resolution @relation(fields: [id], references: [id])
+  id         String     @unique
+  search_id  String
 }

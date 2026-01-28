@@ -5,7 +5,7 @@ import {ResolutionCounts, ResolutionNaturalID, ResolutionWithStatus} from "@/lib
 import {createDeleteAssetJob} from "@/lib/jobs/assets";
 import {ResolutionFindManyArgs} from "@repo/db/prisma/models";
 
-export async function fetchResolutionsWithStatus(cursor: string | null): Promise<ResolutionWithStatus[]> {
+export async function fetchResolutionsWithStatus(cursor: string | null, query?: string | null): Promise<ResolutionWithStatus[]> {
     await checkResourcePermission("resolution", "read");
 
     const cursorParams = cursor ? {
@@ -15,8 +15,17 @@ export async function fetchResolutionsWithStatus(cursor: string | null): Promise
         }
     } satisfies Partial<ResolutionFindManyArgs> : {}
 
+    const where = (query ? {
+        search: {
+            search_id: {
+                contains: query.toUpperCase()
+            }
+        }
+    } : {}) satisfies ResolutionFindManyArgs["where"];
+
     const resolutions = await prisma.resolution.findMany({
         ...cursorParams,
+        where,
         take: 15,
         orderBy:[ {
             date: "desc"

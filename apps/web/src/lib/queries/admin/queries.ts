@@ -1,12 +1,13 @@
+import {AdminResolutionsReturnType} from "@/app/api/admin/resolutions/types";
 import {resolutionsFetcher} from "@/app/api/admin/resolutions/fetcher";
-import {infiniteQueryOptions, queryOptions} from "@tanstack/react-query";
+import {infiniteQueryOptions, InfiniteData, queryOptions} from "@tanstack/react-query";
 import {recentlyFinisheddUploadsFetcher} from "@/app/api/admin/uploads/recently-finished/fetcher";
 import {unfinishedUploadsFetcher} from "@/app/api/admin/uploads/unfinished/fetcher";
 import {resolutionCountsFetcher} from "@/app/api/admin/resolutions/counts/fetcher";
 
 export const resolutionKeys = {
     all: ['resolutions'] as const,
-    list: () => [...resolutionKeys.all, 'list'] as const,
+    list: (query?: string | null) => [...resolutionKeys.all, 'list', { query }] as const,
     counts: () => [...resolutionKeys.all, 'counts'] as const,
     details: (id: string) => [...resolutionKeys.all, 'details', id] as const,
 };
@@ -17,9 +18,9 @@ export const uploadKeys = {
     unfinished: () => [...uploadKeys.all, 'unfinished'] as const,
 }
 
-export const resolutionsQuery = infiniteQueryOptions({
-    queryKey: resolutionKeys.list(),
-    queryFn: resolutionsFetcher,
+export const resolutionsQuery = (query?: string | null) => infiniteQueryOptions<AdminResolutionsReturnType, Error, InfiniteData<AdminResolutionsReturnType>, readonly ["resolutions", "list", { readonly query: string | null | undefined; }], string | null>({
+    queryKey: resolutionKeys.list(query),
+    queryFn: ({ signal, pageParam }) => resolutionsFetcher({ signal, pageParam, query }),
     initialPageParam: null,
     getNextPageParam: (data) => {
         if(data.length > 0){
