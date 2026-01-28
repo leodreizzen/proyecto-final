@@ -13,6 +13,8 @@ import {
 import {formatDateUTC, formatResolutionId} from "@/lib/utils";
 import {pathForResolution} from "@/lib/paths";
 import {DownloadButton} from "@/components/resolution/download-button";
+import {InapplicableChange} from "@/lib/definitions/changes";
+import {InapplicableChangesAlert} from "@/components/resolution/inapplicable-changes-alert";
 
 function getUniqueModifiers(resolution: ResolutionToShow, versions: ResolutionVersion[], currentVersion: ResolutionVersion) {
     const modifiersMap = new Map<string, ResolutionNaturalID>();
@@ -78,10 +80,11 @@ function getUniqueModifiers(resolution: ResolutionToShow, versions: ResolutionVe
     }
 }
 
-export function ResolutionHeader({resolution, versions, currentVersion}: {
+export function ResolutionHeader({resolution, versions, currentVersion, inapplicableChanges}: {
     resolution: ResolutionToShow,
     versions: ResolutionVersion[],
-    currentVersion: ResolutionVersion
+    currentVersion: ResolutionVersion,
+    inapplicableChanges: InapplicableChange[]
 }) {
     const isRepealed = resolution.repealedBy !== null;
     const isHistorical = currentVersion !== versions[0];
@@ -93,7 +96,7 @@ export function ResolutionHeader({resolution, versions, currentVersion}: {
             <div className="flex flex-col lg:flex-row gap-6 lg:items-start justify-between">
                 <div className="space-y-4 flex-1">
                     {/* Status Badge */}
-                    <div className="flex items-center gap-2">
+                    <div className="flex flex-wrap items-center gap-2">
                         {isRepealed ? (
                             <span
                                 className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-300 border border-red-200 dark:border-red-800">
@@ -113,6 +116,10 @@ export function ResolutionHeader({resolution, versions, currentVersion}: {
                         <span className="text-muted-foreground text-sm">
                             {formatDateUTC(resolution.date)}
                         </span>
+                        
+                        {inapplicableChanges && inapplicableChanges.length > 0 && (
+                            <InapplicableChangesAlert changes={inapplicableChanges} />
+                        )}
                     </div>
 
                     {/* Title */}

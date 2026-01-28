@@ -51,7 +51,13 @@ export async function getChangesContext(changeIds: string[]): Promise<Map<string
                 number: context.resNumber,
                 year: context.resYear
             },
-            date: context.resDate
+            date: context.resDate,
+            structuralElement: {
+                articleNumber: context.number,
+                articleSuffix: context.suffix,
+                annexNumber: context.annexNumber,
+                chapterNumber: context.chapterNumber
+            }
         });
     });
 

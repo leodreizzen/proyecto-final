@@ -9,7 +9,7 @@ import {
     AnnexIndex
 } from "@/lib/definitions/resolutions";
 import {sortChangeWithContext} from "@/lib/assembly/utils";
-import {ChangeWithContextForAssembly} from "@/lib/definitions/changes";
+import {ChangeWithContextForAssembly, InapplicableChange} from "@/lib/definitions/changes";
 import {checkReference} from "@/lib/data/polymorphism/reference";
 import {ReferenceWithConcreteWithoutPayload} from "@/lib/definitions/references";
 import {articleInitialDataToShow} from "@/lib/data/remapping/article-to-show";
@@ -238,7 +238,7 @@ class ChapterSlot extends BaseCollectionSlot<ChapterToShow> {
 }
 
 export class ResolutionChangeApplier {
-    inapplicableChanges: ChangeWithContextForAssembly[] = [];
+    private inapplicableChanges: ChangeWithContextForAssembly[] = [];
     private generatedCounter = 0;
 
     constructor(private resolution: ResolutionToShow, private validationContext: ValidationContext) {
@@ -251,6 +251,15 @@ export class ResolutionChangeApplier {
     applyChanges(changes: ChangeWithContextForAssembly[]) {
         const sortedChanges = changes.toSorted(sortChangeWithContext);
         sortedChanges.forEach((c) => this.applyChange(c))
+    }
+
+    getInapplicableChanges(): InapplicableChange[] {
+        const mapped = this.inapplicableChanges.map(c => ({
+            id: c.id,
+            type: c.type,
+            context: c.context
+        }));
+        return structuredClone(mapped);
     }
 
     applyChange(change: ChangeWithContextForAssembly) {

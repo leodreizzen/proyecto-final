@@ -1,9 +1,9 @@
 import {type ClassValue, clsx} from "clsx"
 import {twMerge} from "tailwind-merge"
 import {formatInTimeZone} from 'date-fns-tz';
-import {Resolution} from "@repo/db/prisma/client";
 import _stringify from "json-stable-stringify";
 import {ResolutionNaturalID} from "@/lib/definitions/resolutions";
+import {ChangeContext} from "@/lib/definitions/changes";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
@@ -19,6 +19,57 @@ export function formatDateUTC(date: Date) {
 
 export function formatResolutionId(resolutionID: ResolutionNaturalID): string{
     return `${resolutionID.initial}-${resolutionID.number}-${resolutionID.year}`;
+}
+
+export function formatArticleId(
+    resId: ResolutionNaturalID,
+    articleNumber: number | null,
+    articleSuffix: number | null,
+    annexNumber: number | null,
+    chapterNumber: number | null
+): string {
+    const resString = formatResolutionId(resId);
+    const parts: string[] = [resString];
+
+    if (annexNumber !== null && annexNumber !== undefined) {
+        parts.push(`Anexo ${annexNumber}`);
+        if (chapterNumber !== null && chapterNumber !== undefined) {
+            parts.push(`Capítulo ${chapterNumber}`);
+        }
+    }
+
+    if (articleNumber !== null && articleNumber !== undefined) {
+        const suffixStr = articleSuffix ? ` bis ${articleSuffix}` : '';
+        parts.push(`Artículo ${articleNumber}${suffixStr}`);
+    }
+
+    return parts.join(' - ');
+}
+
+export function formatChangeSource(context: ChangeContext): string {
+    return formatArticleId(
+        context.rootResolution,
+        context.structuralElement.articleNumber,
+        context.structuralElement.articleSuffix,
+        context.structuralElement.annexNumber,
+        context.structuralElement.chapterNumber
+    );
+}
+
+export function formatChangeType(type: string): string {
+    switch (type) {
+        case "MODIFY_ARTICLE": return "Modificación de Artículo";
+        case "REPLACE_ARTICLE": return "Reemplazo de Artículo";
+        case "ADD_ARTICLE": return "Agregado de Artículo";
+        case "REPEAL": return "Derogación";
+        case "RATIFY_AD_REFERENDUM": return "Ratificación";
+        case "REPLACE_ANNEX": return "Reemplazo de Anexo";
+        case "ADD_ANNEX": return "Agregado de Anexo";
+        case "MODIFY_TEXT_ANNEX": return "Modificación de Texto de Anexo";
+        case "APPLY_MODIFICATIONS_ANNEX": return "Aplicación de Anexo de Modificaciones";
+        case "ADVANCED": return "Cambio Avanzado";
+        default: return type;
+    }
 }
 
 type ValidPath<T> = T extends object

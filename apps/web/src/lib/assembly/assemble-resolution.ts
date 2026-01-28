@@ -12,7 +12,7 @@ import {getValidChangesAndVersionsForAssembly} from "@/lib/assembly/validity/val
 import {articleInitialDataToShow} from "@/lib/data/remapping/article-to-show";
 import {annexInitialDataToShow} from "@/lib/data/remapping/annex-to-show";
 import {ResolutionChangeApplier} from "@/lib/assembly/resolution-change-applier";
-import {ChangeWithContextForAssembly} from "@/lib/definitions/changes";
+import {ChangeWithContextForAssembly, InapplicableChange} from "@/lib/definitions/changes";
 import {sortResolution} from "@/lib/assembly/sorter";
 import {getDownloadUrl} from "@/lib/file-storage/urls";
 import {mapContentBlocks} from "@/lib/data/remapping/content-blocks";
@@ -40,7 +40,7 @@ export async function getAssembledResolution(resolutionId: string, versionDate: 
 
     const dataToShow = getInitialDataToShow(resolution, validationContext);
 
-    const finalResolution = applyChangesToResolution(dataToShow, changes, validationContext);
+    const { updatedResolution: finalResolution, inapplicableChanges } = applyChangesToResolution(dataToShow, changes, validationContext);
     sortResolution(finalResolution);
 
     versions.unshift({
@@ -48,7 +48,7 @@ export async function getAssembledResolution(resolutionId: string, versionDate: 
         causedBy: finalResolution.id
     })
 
-    return {resolutionData: finalResolution, versions};
+    return {resolutionData: finalResolution, versions, inapplicableChanges};
 }
 
 function getInitialDataToShow(resolution: ResolutionDBDataToShow, validationContext: ValidationContext): ResolutionToShow {
@@ -79,8 +79,11 @@ function getInitialDataToShow(resolution: ResolutionDBDataToShow, validationCont
     }
 }
 
-function applyChangesToResolution(resolution: ResolutionToShow, changes: ChangeWithContextForAssembly[], validationContext: ValidationContext): ResolutionToShow {
+function applyChangesToResolution(resolution: ResolutionToShow, changes: ChangeWithContextForAssembly[], validationContext: ValidationContext): { updatedResolution: ResolutionToShow, inapplicableChanges: InapplicableChange[] } {
     const applier = new ResolutionChangeApplier(resolution, validationContext);
     applier.applyChanges(changes);
-    return applier.getUpdatedResolution();
+    return {
+        updatedResolution: applier.getUpdatedResolution(),
+        inapplicableChanges: applier.getInapplicableChanges()
+    };
 }

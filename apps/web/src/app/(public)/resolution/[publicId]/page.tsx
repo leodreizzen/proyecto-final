@@ -37,7 +37,7 @@ export default async function ResolutionPage({params, searchParams: searchParams
         }
     }
 
-    const {resolutionData, versions: versionsAsc} = await getAssembledResolution(resUUID, dateToSearch);
+    const {resolutionData, versions: versionsAsc, inapplicableChanges} = await getAssembledResolution(resUUID, dateToSearch);
 
     const versions = versionsAsc.reverse();
 
@@ -54,7 +54,7 @@ export default async function ResolutionPage({params, searchParams: searchParams
         currentVersion = versions[0]!;
     }
 
-    return <ResolutionViewer resolution={resolutionData} versions={versions} currentVersion={currentVersion}/>;
+    return <ResolutionViewer resolution={resolutionData} versions={versions} currentVersion={currentVersion} inapplicableChanges={inapplicableChanges}/>;
 }
 
 function changeDateServer(resoutionId: ResolutionNaturalID, searchParams: { [key: string]: string | string[] | undefined }, date: Date | null) {

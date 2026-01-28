@@ -1,4 +1,5 @@
 import {ResolutionToShow, ResolutionVersion} from "@/lib/definitions/resolutions";
+import {InapplicableChange} from "@/lib/definitions/changes";
 import { AIWarning } from "./ai-warning";
 import { VersionStatus } from "./version-status";
 import { ResolutionHeader } from "./resolution-header";
@@ -10,9 +11,10 @@ interface ResolutionViewerProps {
     resolution: ResolutionToShow;
     versions: ResolutionVersion[];
     currentVersion: ResolutionVersion;
+    inapplicableChanges: InapplicableChange[];
 }
 
-export function ResolutionViewer({ resolution, versions, currentVersion }: ResolutionViewerProps) {
+export function ResolutionViewer({ resolution, versions, currentVersion, inapplicableChanges }: ResolutionViewerProps) {
     const isCurrentVersion = versions[0]! === currentVersion;
     return (
         <div className="h-screen flex flex-col bg-background text-foreground overflow-hidden">
@@ -49,6 +51,7 @@ export function ResolutionViewer({ resolution, versions, currentVersion }: Resol
                                         resolution={resolution}
                                         versions={versions}
                                         currentVersion={currentVersion}
+                                        inapplicableChanges={inapplicableChanges}
                                     />
 
                                     {/* Body */}
