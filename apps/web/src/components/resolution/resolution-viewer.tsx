@@ -19,7 +19,7 @@ export function ResolutionViewer({ resolution, versions, currentVersion, inappli
     return (
         <div className="h-screen flex flex-col bg-background text-foreground overflow-hidden">
             {/* Mobile Header & Sticky Status */}
-            <div className="shrink-0 z-40 w-full bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 lg:hidden">
+            <div className="shrink-0 z-40 w-full bg-background/95 backdrop-blur supports-backdrop-filter:bg-background/60 lg:hidden">
                  {/* Version Status - Mobile Sticky if present */}
                  <div>
                     <VersionStatus resolution={resolution} isCurrentVersion={isCurrentVersion} />

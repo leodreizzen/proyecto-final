@@ -1,7 +1,7 @@
 import {InapplicableChange} from "@/lib/definitions/changes";
 import {Popover, PopoverContent, PopoverTrigger} from "@/components/ui/popover";
 import {Button} from "@/components/ui/button";
-import {AlertTriangle, ArrowUpRight} from "lucide-react";
+import {AlertTriangle} from "lucide-react";
 import {formatChangeSource, formatChangeType} from "@/lib/utils";
 import Link from "next/link";
 import {pathForResolution} from "@/lib/paths";

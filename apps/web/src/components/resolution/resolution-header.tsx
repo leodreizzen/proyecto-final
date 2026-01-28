@@ -1,5 +1,5 @@
 import {ResolutionToShow, ResolutionNaturalID, ResolutionVersion} from "@/lib/definitions/resolutions";
-import {Download, Info} from "lucide-react";
+import {Info} from "lucide-react";
 import {Button} from "@/components/ui/button";
 import Link from "next/link";
 import {
