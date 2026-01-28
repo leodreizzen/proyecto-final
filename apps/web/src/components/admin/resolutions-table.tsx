@@ -18,11 +18,17 @@ import {ResolutionWithStatus} from "@/lib/definitions/resolutions";
 import {useMutation} from "@tanstack/react-query";
 import {deleteResolution as deleteResolutionAction} from "@/lib/actions/server/resolutions";
 import {toast} from "sonner";
-import {TableVirtuoso, Virtuoso} from 'react-virtuoso'
+import {TableVirtuoso, TableVirtuosoHandle, Virtuoso, VirtuosoHandle} from 'react-virtuoso'
+import React, {useImperativeHandle, useRef} from "react";
+
+export type ResolutionsTableHandle = {
+    scrollToTop: () => void;
+}
 
 interface ResolutionsTableProps {
     resolutions: ResolutionWithStatus[],
     fetchNextPage: () => void,
+    ref?: React.Ref<ResolutionsTableHandle>
 }
 
 const statusConfig = {
@@ -43,7 +49,8 @@ const statusConfig = {
     },
 }
 
-export function ResolutionsTable({resolutions, fetchNextPage}: ResolutionsTableProps) {
+
+export function ResolutionsTable({resolutions, fetchNextPage, ref}: ResolutionsTableProps) {
     const {mutate: deleteResolution, status: deleteStatus, variables: deleteVariables} = useMutation({
         mutationFn: async ({id}: { id: string }) => {
             const res = await deleteResolutionAction({id})
@@ -60,8 +67,18 @@ export function ResolutionsTable({resolutions, fetchNextPage}: ResolutionsTableP
         }
     })
 
+    const desktopRef = useRef<TableVirtuosoHandle | null>(null);
+    const mobileRef = useRef<VirtuosoHandle>(null);
+
     const deleting = deleteStatus === "pending";
     const deleteId = deleteVariables?.id;
+
+    useImperativeHandle(ref, () => ({
+        scrollToTop: () => {
+            desktopRef.current?.scrollToIndex({index: 0, align: "start"});
+            mobileRef.current?.scrollToIndex({index: 0, align: "start"});
+        }
+    }))
 
     function handleDelete(resolutionId: string) {
         deleteResolution({id: resolutionId});
@@ -71,7 +88,7 @@ export function ResolutionsTable({resolutions, fetchNextPage}: ResolutionsTableP
         <div className="flex-1 bg-card rounded-xl border border-border overflow-hidden">
             {/* Desktop table */}
             <div className="hidden md:block size-full">
-                <TableVirtuoso className="w-full" fixedHeaderContent={() => (
+                <TableVirtuoso ref={desktopRef} className="w-full" fixedHeaderContent={() => (
                     <tr className="bg-card">
 
                         <th className="px-4 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider w-16 bg-muted/30 shadow-[inset_0px_-1.5px_0px_0px_var(--border)]"></th>
@@ -183,6 +200,7 @@ export function ResolutionsTable({resolutions, fetchNextPage}: ResolutionsTableP
             {/* Mobile cards */}
             <div className="md:hidden size-full">
             <Virtuoso data={resolutions}
+                      ref={mobileRef}
                       endReached={fetchNextPage}
                       computeItemKey={(_, item) => item.id}
                       components={{

@@ -1,11 +1,11 @@
 "use client"
 import {KpiHeader} from "./kpi-header"
 import {Toolbar} from "./toolbar"
-import {ResolutionsTable} from "./resolutions-table"
+import {ResolutionsTable, ResolutionsTableHandle} from "./resolutions-table"
 import {StatusPanel} from "./status-panel"
 import {UploadWithFile, UploadWithProgressAndFile} from "@/lib/definitions/uploads";
 import {ResolutionCounts, ResolutionWithStatus} from "@/lib/definitions/resolutions";
-import {useEffect, useMemo, useState} from "react";
+import {useEffect, useMemo, useRef, useState} from "react";
 import {useInfiniteQuery, useQuery, keepPreviousData} from "@tanstack/react-query";
 
 import {
@@ -30,6 +30,7 @@ export function ResolutionsView({
     initialSearch?: string
 }) {
     const [search, setSearch] = useState(initialSearch);
+    const resolutionsTableRef = useRef<ResolutionsTableHandle>(null);
 
     function handleSearch(value: string) {
         setSearch(value);
@@ -47,11 +48,11 @@ export function ResolutionsView({
         initialData: _pendingUploads
     })
 
-    const {data: resolutionsData, fetchNextPage: fetchNextResolutionsPage} = useInfiniteQuery({
+    const {data: resolutionsData, fetchNextPage: fetchNextResolutionsPage, isPlaceholderData: resolutionsIsPlaceholder} = useInfiniteQuery({
         ...resolutionsQuery(search),
         initialData: () => (search === initialSearch) ? {pages: [_resolutions], pageParams: [null]} : undefined,
         placeholderData: keepPreviousData,
-        initialDataUpdatedAt: search !== initialSearch ? 0 : undefined,
+        initialDataUpdatedAt: search !== initialSearch ? 0 : undefined
     });
 
     const {data: recentFinishedUploads} = useQuery({
@@ -65,6 +66,16 @@ export function ResolutionsView({
     });
 
     const resolutions = useMemo(() => resolutionsData?.pages?.flat() ?? [], [resolutionsData]);
+
+    const lastScrolledSearch = useRef(initialSearch);
+
+    // scroll to top on new search, but only after data arrives
+    useEffect(() => {
+        if (!resolutionsIsPlaceholder && lastScrolledSearch.current !== search){
+            resolutionsTableRef.current?.scrollToTop();
+            lastScrolledSearch.current = search;
+        }
+    }, [resolutionsIsPlaceholder, search]);
 
     useEffect(() => {
         return mountDashboardEventStream();
@@ -87,7 +98,7 @@ export function ResolutionsView({
             <div className="flex-1 flex flex-col min-w-0 p-4 lg:p-6 overflow-auto">
                 <KpiHeader stats={stats}/>
                 <Toolbar initialSearchQuery={initialSearch} onSearch={handleSearch}/>
-                <ResolutionsTable resolutions={resolutions} fetchNextPage={handleResolutionsRefetch}/>
+                <ResolutionsTable resolutions={resolutions} fetchNextPage={handleResolutionsRefetch} ref={resolutionsTableRef}/>
             </div>
 
             {/* Status panel - Right column */}
