@@ -60,6 +60,11 @@ export async function fetchRecentFinishedUploads(): Promise<UploadWithFile[]> {
         take: 10,
         include: {
             file: true,
+            uploader: {
+                select: {
+                    name: true
+                }
+            },
             resolution: {
                 select: {
                     originalFile: true,

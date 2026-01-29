@@ -2,6 +2,9 @@ import {Asset, ResolutionUpload} from "@repo/db/prisma/client";
 
 export type UploadWithFile = ResolutionUpload & {
     file: Asset | null,
+    uploader?: {
+        name: string;
+    } | null,
     resolution?: {
         initial: string;
         number: number;

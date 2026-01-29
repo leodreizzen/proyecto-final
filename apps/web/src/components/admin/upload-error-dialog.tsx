@@ -8,14 +8,19 @@ import {
     DialogTitle,
     DialogTrigger,
 } from "@/components/ui/dialog"
-import {X, FileText} from "lucide-react"
+import {X, FileText, User, Calendar} from "lucide-react"
 import React from "react";
+import {formatDateTime} from "@/lib/utils";
 
 interface UploadErrorItem {
     file?: {
         originalFileName: string;
     } | null;
     errorMsg: string | null;
+    uploader?: {
+        name: string;
+    } | null;
+    uploadedAt?: Date;
 }
 
 interface UploadErrorDialogProps {
@@ -55,6 +60,27 @@ export function UploadErrorDialog({children, item, open, onOpenChange}: UploadEr
                                 {item.errorMsg || "Error desconocido"}
                             </p>
                         </div>
+                    </div>
+
+                    <div className="grid grid-cols-2 gap-4">
+                        {item.uploader && (
+                            <div className="flex flex-col gap-1">
+                                <span className="text-xs font-medium text-muted-foreground flex items-center gap-1">
+                                    <User className="h-3 w-3"/>
+                                    Subido por
+                                </span>
+                                <span className="text-sm truncate">{item.uploader.name}</span>
+                            </div>
+                        )}
+                        {item.uploadedAt && (
+                            <div className="flex flex-col gap-1">
+                                <span className="text-xs font-medium text-muted-foreground flex items-center gap-1">
+                                    <Calendar className="h-3 w-3"/>
+                                    Fecha
+                                </span>
+                                <span className="text-sm">{formatDateTime(item.uploadedAt)}</span>
+                            </div>
+                        )}
                     </div>
                 </div>
             </DialogContent>
