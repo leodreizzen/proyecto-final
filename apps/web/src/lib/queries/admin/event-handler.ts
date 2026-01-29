@@ -38,10 +38,12 @@ async function handleAdminEvent(event: MessageEvent) {
         await queryClient.invalidateQueries({queryKey: uploadKeys.all});
     } else if (eventData.scope === "RESOLUTIONS_GLOBAL") {
         await queryClient.invalidateQueries({queryKey: resolutionKeys.all});
+        await queryClient.invalidateQueries({queryKey: ['resolutions', 'missing']});
     } else if (eventData.scope === "RESOLUTIONS_SPECIFIC") {
         if (eventData.data.type === "UPDATE") {
             // Invalidate all resolution lists as we don't know which filter contains the updated resolution
             await queryClient.invalidateQueries({ queryKey: ['resolutions', 'list'] });
+            await queryClient.invalidateQueries({ queryKey: ['resolutions', 'missing'] });
             
             await queryClient.invalidateQueries({queryKey: resolutionKeys.counts()});
             await queryClient.invalidateQueries({queryKey: resolutionKeys.details(eventData.params.id)});

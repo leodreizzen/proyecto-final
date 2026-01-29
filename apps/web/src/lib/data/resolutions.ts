@@ -1,9 +1,14 @@
 import "server-only"
 import prisma from "@/lib/prisma";
 import {checkResourcePermission} from "@/lib/auth/data-authorization";
-import {ResolutionCounts, ResolutionNaturalID, ResolutionWithStatus} from "@/lib/definitions/resolutions";
+import {
+    MissingResolution,
+    ResolutionCounts,
+    ResolutionNaturalID,
+    ResolutionWithStatus
+} from "@/lib/definitions/resolutions";
 import {createDeleteAssetJob} from "@/lib/jobs/assets";
-import {ResolutionFindManyArgs} from "@repo/db/prisma/models";
+import {ResolutionFindManyArgs, v_MissingResolutionFindManyArgs} from "@repo/db/prisma/models";
 
 export async function fetchResolutionsWithStatus(cursor: string | null, query?: string | null): Promise<ResolutionWithStatus[]> {
     await checkResourcePermission("resolution", "read");
@@ -43,14 +48,42 @@ export async function fetchResolutionsWithStatus(cursor: string | null, query?: 
     }));
 }
 
+export async function fetchMissingResolutions(cursor: { initial: string, number: number, year: number } | null, query?: string | null): Promise<MissingResolution[]> {
+    await checkResourcePermission("resolution", "read");
+
+    const cursorParams = cursor ? {
+        skip: 1,
+        cursor: {
+            initial_number_year: cursor
+        }
+    } : {}
+
+    const where = (query ? {
+        search_id: {
+            contains: query.toUpperCase().trim()
+        }
+    } : {}) satisfies v_MissingResolutionFindManyArgs["where"];
+
+    const missing = await prisma.v_MissingResolution.findMany({
+        ...cursorParams,
+        where,
+        take: 15,
+        orderBy: [
+            { referencesCount: 'desc' },
+            { year: 'desc' },
+            { number: 'desc' }
+        ]
+    });
+
+    return missing;
+}
+
 export async function countResolutions(): Promise<ResolutionCounts> {
     await checkResourcePermission("resolution", "read");
     const totalCount = await prisma.resolution.count();
-    const okCount = 0; //TODO
-    const missingCount = 0; //TODO
+    const missingCount = await prisma.v_MissingResolution.count();
     const inconsistentCount = 0; //TODO
     return {
-        ok: okCount,
         total: totalCount,
         missingRef: missingCount,
         inconsistent: inconsistentCount

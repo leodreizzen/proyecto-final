@@ -734,3 +734,13 @@ view v_ResolutionSearch {
   id         String     @unique
   search_id  String
 }
+
+view v_MissingResolution {
+  initial         String
+  number          Int
+  year            Int
+  referencesCount Int
+  search_id       String
+
+  @@unique([initial, number, year])
+}

@@ -13,24 +13,26 @@ import {
 } from "@/components/ui/dropdown-menu"
 import {Avatar, AvatarFallback} from "@/components/ui/avatar"
 import {logoutClient} from "@/lib/auth/auth-client";
-import {useRouter} from "next/navigation";
+import {usePathname, useRouter} from "next/navigation";
+import Link from "next/link";
 
 const NAV_ITEMS: {
     route: string,
     label: string,
     icon: React.ComponentType<React.SVGProps<SVGSVGElement>>,
     badge?: number,
-    active?: boolean,
 }[] = [
-    {route: "resolutions", label: "Resoluciones", icon: FileText, active: true},
-    {route: "revision", label: "Revisión", icon: AlertTriangle, badge: 15},
-    {route: "history", label: "Historial", icon: Clock},
+    {route: "/admin", label: "Resoluciones", icon: FileText},
+    {route: "/admin/revision", label: "Revisión", icon: AlertTriangle}, // TODO: dynamic badge?
+    {route: "/admin/history", label: "Historial", icon: Clock},
 ]
 
 
 export function Sidebar({user}: { user: { name: string, email: string } }) {
     const {setTheme} = useTheme()
     const router = useRouter();
+    const pathname = usePathname();
+    
     const currentUser = {
         name: user.name,
         email: user.email,
@@ -56,12 +58,15 @@ export function Sidebar({user}: { user: { name: string, email: string } }) {
 
             {/* Navigation */}
             <nav className="flex-1 px-3 py-4 space-y-1">
-                {NAV_ITEMS.map((item) => (
-                    <button
+                {NAV_ITEMS.map((item) => {
+                    const isActive = pathname === item.route || (item.route !== "/admin" && pathname?.startsWith(item.route));
+                    return (
+                    <Link
                         key={item.route}
+                        href={item.route}
                         className={cn(
                             "flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors",
-                            item.active
+                            isActive
                                 ? "bg-sidebar-accent text-sidebar-accent-foreground"
                                 : "text-sidebar-muted hover:bg-sidebar-accent/50 hover:text-sidebar-foreground",
                         )}
@@ -74,8 +79,8 @@ export function Sidebar({user}: { user: { name: string, email: string } }) {
                                 {item.badge}
                             </span>
                         )}
-                    </button>
-                ))}
+                    </Link>
+                )})}
             </nav>
 
             <div className="px-3 py-4 border-t border-sidebar-border">

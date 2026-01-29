@@ -13,9 +13,15 @@ export interface ResolutionWithStatus extends Resolution {
 
 export type ResolutionCounts = {
     total: number;
-    ok: number;
     missingRef: number;
     inconsistent: number;
+}
+
+export type MissingResolution = {
+    initial: string;
+    number: number;
+    year: number;
+    referencesCount: number;
 }
 
 export type ResolutionNaturalID = {

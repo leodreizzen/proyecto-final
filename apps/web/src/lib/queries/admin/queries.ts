@@ -41,6 +41,26 @@ export const pendingUploadsQuery = queryOptions({
     queryFn: unfinishedUploadsFetcher,
 });
 
+import {missingResolutionsFetcher} from "@/app/api/admin/missing-resolutions/fetcher";
+import {AdminMissingResolutionsReturnType} from "@/app/api/admin/missing-resolutions/types";
+import {resIDToSlug} from "@/lib/paths";
+
+export const missingResolutionsQuery = (query?: string | null) => infiniteQueryOptions<AdminMissingResolutionsReturnType, Error, InfiniteData<AdminMissingResolutionsReturnType>, readonly ["resolutions", "missing", { readonly query: string | null | undefined; }], string | null>({
+    queryKey: ["resolutions", "missing", {query}],
+    queryFn: ({pageParam, signal}) => missingResolutionsFetcher({pageParam, query, signal}),
+    initialPageParam: null,
+    getNextPageParam: (lastPage) => {
+        if (!lastPage || lastPage.length === 0) return null;
+        const last = lastPage[lastPage.length - 1];
+        if (!last) return null;
+        return resIDToSlug({
+            initial: last.initial,
+            number: last.number,
+            year: last.year
+        });
+    }
+});
+
 export const resolutionCountsQuery = queryOptions({
     queryKey: resolutionKeys.counts(),
     queryFn: resolutionCountsFetcher,

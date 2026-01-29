@@ -4,7 +4,6 @@ import {countResolutions} from "@/lib/data/resolutions";
 import {AdminResolutionsCountsReturnType} from "@/app/api/admin/resolutions/counts/types";
 
 export async function GET():Promise<NextResponse<AdminResolutionsCountsReturnType>> {
-    //TODO pagination
     await authCheck(["ADMIN"]);
 
     const resolutions = await countResolutions()
