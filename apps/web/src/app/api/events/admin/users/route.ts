@@ -1,14 +1,13 @@
 import {authCheck} from "@/lib/auth/route-authorization";
-import {eventBus, ResolutionEvent} from "@/lib/events";
+import {AdminUserEvent, eventBus} from "@/lib/events";
 
-const scopesToSend = ["UPLOADS_GLOBAL", "UPLOADS_SPECIFIC", "RESOLUTIONS_GLOBAL", "RESOLUTIONS_SPECIFIC"] as const;
-export type AdminDashboardEvent = ResolutionEvent & {scope: typeof scopesToSend[number]};
+const scopesToSend = ["USERS_GLOBAL", "USERS_SPECIFIC"] as const;
 
 export async function GET() {
     await authCheck(["ADMIN"]);
     const encoder = new TextEncoder();
     let keepAliveInterval: NodeJS.Timeout | null = null;
-    let eventListener: ((event: ResolutionEvent) => void) | null = null;
+    let eventListener: ((event: AdminUserEvent) => void) | null = null;
 
     const stream = new ReadableStream({
         start(controller) {
@@ -19,14 +18,14 @@ export async function GET() {
                 }
             }
 
-            eventBus.on("broadcast", eventListener)
+            eventBus.on("user", eventListener)
             keepAliveInterval = setInterval(() => {
                 controller.enqueue(encoder.encode(': keep-alive\n\n'));
             }, 30000);
         },
         cancel() {
             if(eventListener)
-                eventBus.off('broadcast', eventListener);
+                eventBus.off('user', eventListener);
             if(keepAliveInterval)
                 clearInterval(keepAliveInterval);
         }

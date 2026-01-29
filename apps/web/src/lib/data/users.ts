@@ -1,8 +1,10 @@
 import {checkResourcePermission} from "@/lib/auth/data-authorization";
 import prisma from "@/lib/prisma";
 import {UserRole} from "@repo/db/prisma/enums";
-import {auth} from "@/lib/auth/auth";
+import {auth, transactionAuth} from "@/lib/auth/auth";
 import {headers} from "next/headers";
+import {UserWhereInput} from "@repo/db/prisma/models";
+import {publishDeleteUser, publishNewUser, publishUserUpdate} from "@repo/pubsub/publish/users";
 
 export type UserListItem = {
     id: string;
@@ -23,22 +25,25 @@ export async function fetchUsers(cursor: string | null, query?: string | null): 
         }
     } : {}
 
-    const where = query ? {
-        OR: [
-            {
-                name: {
-                    contains: query,
-                    mode: 'insensitive' as const
+    const where = {
+        deletedAt: null,
+        ...(query ? {
+            OR: [
+                {
+                    name: {
+                        contains: query,
+                        mode: 'insensitive' as const
+                    }
+                },
+                {
+                    email: {
+                        contains: query,
+                        mode: 'insensitive' as const
+                    }
                 }
-            },
-            {
-                email: {
-                    contains: query,
-                    mode: 'insensitive' as const
-                }
-            }
-        ]
-    } : {};
+            ]
+        } : {})
+    } satisfies UserWhereInput;
 
     const users = await prisma.user.findMany({
         ...cursorParams,
@@ -53,8 +58,8 @@ export async function fetchUsers(cursor: string | null, query?: string | null): 
             email: true,
             role: true,
             createdAt: true,
-            emailVerified: true
-        }
+            emailVerified: true,
+        },
     });
 
     return users;
@@ -62,7 +67,7 @@ export async function fetchUsers(cursor: string | null, query?: string | null): 
 
 export async function createUser(name: string, email: string, role: UserRole, password: string): Promise<void> {
     await checkResourcePermission("user", "create");
-    await auth.api.createUser({
+    const {user} = await auth.api.createUser({
         body: {
             email,
             password,
@@ -70,6 +75,8 @@ export async function createUser(name: string, email: string, role: UserRole, pa
             role,
         },
     });
+
+    await publishNewUser(user.id);
 }
 
 export async function changeUserPassword(userId: string, newPassword: string): Promise<void> {
@@ -81,4 +88,31 @@ export async function changeUserPassword(userId: string, newPassword: string): P
         },
         headers: await headers()
     });
+
+    await publishUserUpdate(userId, ["password"]);
+}
+
+export async function deleteUser(userId: string): Promise<void> {
+    await checkResourcePermission("user", "delete");
+    await prisma.$transaction(async (tx) => {
+        await transactionAuth(tx).api.banUser({
+            body: {
+                userId,
+                banReason: "User deleted"
+            },
+            headers: await headers(),
+        })
+        await tx.user.update({
+            where: {
+                id: userId,
+                deletedAt: null
+            },
+            data: {
+                deletedAt: new Date(),
+                email: `deleted_${userId}@deleted`
+            }
+        })
+    });
+
+    await publishDeleteUser(userId);
 }

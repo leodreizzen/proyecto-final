@@ -6,6 +6,7 @@ import {headers} from "next/headers";
 import { admin as adminPlugin } from "better-auth/plugins"
 import {ac, roles} from "@/lib/auth/data-permissions";
 import prisma from "@/lib/prisma";
+import {TransactionPrismaClient} from "@repo/db/prisma";
 
 
 export const authConfig = {
@@ -47,6 +48,16 @@ export const authConfig = {
 } satisfies Parameters<typeof betterAuth>[0]
 
 export const auth = betterAuth(authConfig);
+
+export function transactionAuth(tx: TransactionPrismaClient) {
+    return betterAuth({
+        ...authConfig,
+        database: prismaAdapter(tx, {
+            provider: "postgresql",
+            transaction: false
+        })
+    })
+}
 
 
 export async function getSessionServer() {

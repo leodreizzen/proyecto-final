@@ -22,7 +22,7 @@ import {ChangePasswordDialog} from "@/components/admin/change-password-dialog";
 import {useMutation} from "@tanstack/react-query";
 import {NewPasswordSchema} from "@/lib/form-schemas/admin/create-user";
 import {toast} from "sonner";
-import {changUserPasswordAction} from "@/lib/actions/server/users";
+import {changUserPasswordAction, deleteUserAction} from "@/lib/actions/server/users";
 import {z} from "zod";
 
 export type UsersTableHandle = {
@@ -35,7 +35,12 @@ interface UsersTableProps {
     ref?: React.Ref<UsersTableHandle>
 }
 
-function DeleteConfirmationModal(props: { user: UserListItem, onClick: () => void }) {
+function DeleteConfirmationModal({user, onClick, disabled = false, inProgress = false}: {
+    user: UserListItem,
+    onClick: () => void,
+    disabled: boolean,
+    inProgress: boolean
+}) {
     return <AlertDialog>
         <AlertDialogTrigger asChild>
             <Button
@@ -43,8 +48,11 @@ function DeleteConfirmationModal(props: { user: UserListItem, onClick: () => voi
                 size="icon"
                 className="h-8 w-8 text-muted-foreground hover:text-destructive"
                 title="Eliminar usuario"
+                disabled={disabled}
             >
-                <Trash2 className="h-4 w-4"/>
+                {inProgress ? <Loader2 className="h-4 w-4 animate-spin"/> :
+                    <Trash2 className="h-4 w-4"/>
+                }
             </Button>
         </AlertDialogTrigger>
         <AlertDialogContent>
@@ -52,13 +60,13 @@ function DeleteConfirmationModal(props: { user: UserListItem, onClick: () => voi
                 <AlertDialogTitle>¿Eliminar usuario?</AlertDialogTitle>
                 <AlertDialogDescription>
                     Esta acción no se puede deshacer. Se eliminará permanentemente al
-                    usuario <strong>{props.user.name}</strong> ({props.user.email}).
+                    usuario <strong>{user.name}</strong> ({user.email}).
                 </AlertDialogDescription>
             </AlertDialogHeader>
             <AlertDialogFooter>
                 <AlertDialogCancel>Cancelar</AlertDialogCancel>
                 <AlertDialogAction
-                    onClick={props.onClick}
+                    onClick={onClick}
                     className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
                 >
                     Eliminar
@@ -95,6 +103,23 @@ export function UsersTable({users, fetchNextPage, ref}: UsersTableProps) {
         }
     })
 
+    const {mutate: mutateDeleteuser, status: deleteUserStatus, variables: deleteUserVariables} = useMutation({
+        mutationFn: async ({user}: { user: UserListItem }) => {
+            const res = await deleteUserAction(user.id);
+            if (!res.success) {
+                throw new Error();
+            }
+        },
+        onSuccess: (_, {user}) => {
+            toast.success(`Usuario ${user.name} eliminado correctamente`);
+        },
+        onError: (_error, {user}) => {
+            toast.error(`Error al eliminar el usuario ${user.name}`);
+        }
+    })
+
+    const processing = changePasswordStatus === "pending" || deleteUserStatus === "pending";
+
     useImperativeHandle(ref, () => ({
         scrollToTop: () => {
             desktopRef.current?.scrollToIndex({index: 0, align: "start"});
@@ -102,9 +127,8 @@ export function UsersTable({users, fetchNextPage, ref}: UsersTableProps) {
         }
     }))
 
-    function handleDeleteUser(userId: string) {
-        console.log(`Delete user: ${userId}`);
-        // TODO: Implement backend mutation here
+    function handleDeleteUser(user: UserListItem) {
+        mutateDeleteuser({user});
     }
 
     function handleChangePassword(user: UserListItem, passwordData: z.infer<typeof NewPasswordSchema>) {
@@ -184,7 +208,7 @@ export function UsersTable({users, fetchNextPage, ref}: UsersTableProps) {
                                             size="icon"
                                             className="h-8 w-8 text-muted-foreground hover:text-foreground"
                                             onClick={() => setUserToChangePassword(user)}
-                                            disabled={changePasswordStatus === "pending"}
+                                            disabled={processing}
                                             title="Cambiar contraseña"
                                         >
                                             {(changePasswordStatus === "pending" && changePasswordVariables?.user.id === user.id) ?
@@ -193,7 +217,9 @@ export function UsersTable({users, fetchNextPage, ref}: UsersTableProps) {
                                             }
                                         </Button>
 
-                                        <DeleteConfirmationModal user={user} onClick={() => handleDeleteUser(user.id)}/>
+                                        <DeleteConfirmationModal disabled={processing} inProgress={
+                                            deleteUserStatus === "pending" && deleteUserVariables?.user.id === user.id
+                                        } user={user} onClick={() => handleDeleteUser(user)}/>
                                     </div>
                                 </td>
                             </>
@@ -244,7 +270,7 @@ export function UsersTable({users, fetchNextPage, ref}: UsersTableProps) {
                                                   size="sm"
                                                   className="h-8 gap-1.5"
                                                   onClick={() => setUserToChangePassword(user)}
-                                                  disabled={changePasswordStatus === "pending"}
+                                                  disabled={processing}
                                               >
                                                   {(changePasswordStatus === "pending" && changePasswordVariables?.user.id === user.id) ?
                                                       <Loader2 className="h-4 w-4 animate-spin"/> :
@@ -252,8 +278,12 @@ export function UsersTable({users, fetchNextPage, ref}: UsersTableProps) {
                                                   }
                                                   Contraseña
                                               </Button>
-                                              <DeleteConfirmationModal user={user}
-                                                                       onClick={() => handleDeleteUser(user.id)}/>
+                                              <DeleteConfirmationModal
+                                                  disabled={processing} inProgress={
+                                                  deleteUserStatus === "pending" && deleteUserVariables?.user.id === user.id
+                                              }
+                                                  user={user}
+                                                  onClick={() => handleDeleteUser(user)}/>
                                           </div>
                                       </div>
                                   </div>

@@ -4,13 +4,22 @@ import {
     pendingUploadsQuery,
     recentFinishedUploadsQuery,
     resolutionKeys,
-    uploadKeys
+    uploadKeys, userKeys
 } from "@/lib/queries/admin/queries";
 import {UploadStatusData} from "@repo/pubsub/publish/uploads";
+import {AdminUserEvent} from "@/lib/events";
 
 export function mountDashboardEventStream(): () => void {
     const eventSource = new EventSource('/api/events/admin/dashboard');
     eventSource.onmessage = handleAdminEvent
+    return () => {
+        eventSource.close();
+    }
+}
+
+export function mountDashboardUserEventStream(): () => void {
+    const eventSource = new EventSource('/api/events/admin/users');
+    eventSource.onmessage = handleAdminUserEvent
     return () => {
         eventSource.close();
     }
@@ -100,5 +109,17 @@ async function handleUploadStatusUpdate(uploadId: string, data: UploadStatusData
             if (!oldData) return oldData;
             return [finishedUpload, ...oldData].slice(0, 10); // Keep only the latest 10
         });
+    }
+}
+
+async function handleAdminUserEvent(event: MessageEvent) {
+    const eventData = JSON.parse(event.data) as AdminUserEvent;
+    if (eventData.scope === "USERS_GLOBAL") {
+        queryClient.invalidateQueries({queryKey: userKeys.all});
+    } else if (eventData.scope === "USERS_SPECIFIC") {
+        if (eventData.data.type === "UPDATE") {
+            if (eventData.data.fields.find(f => f !== "password"))
+                await queryClient.invalidateQueries({queryKey: userKeys.all});
+        }
     }
 }

@@ -18,6 +18,11 @@ export const uploadKeys = {
     unfinished: () => [...uploadKeys.all, 'unfinished'] as const,
 }
 
+export const userKeys = {
+    all: ['users'] as const,
+    list: (query?: string | null) => [...userKeys.all, 'list', { query }] as const,
+}
+
 export const resolutionsQuery = (query?: string | null) => infiniteQueryOptions<AdminResolutionsReturnType, Error, InfiniteData<AdminResolutionsReturnType>, readonly ["resolutions", "list", { readonly query: string | null | undefined; }], string | null>({
     queryKey: resolutionKeys.list(query),
     queryFn: ({ signal, pageParam }) => resolutionsFetcher({ signal, pageParam, query }),
@@ -66,7 +71,7 @@ export const missingResolutionsQuery = (query?: string | null) => infiniteQueryO
 });
 
 export const usersQuery = (query?: string | null) => infiniteQueryOptions<AdminUsersReturnType, Error, InfiniteData<AdminUsersReturnType>, readonly ["users", "list", { readonly query: string | null | undefined; }], string | null>({
-    queryKey: ["users", "list", {query}],
+    queryKey: userKeys.list(query),
     queryFn: ({pageParam, signal}) => usersFetcher({pageParam, query, signal}),
     initialPageParam: null,
     getNextPageParam: (lastPage) => {

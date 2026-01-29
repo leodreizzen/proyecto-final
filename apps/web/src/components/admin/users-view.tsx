@@ -7,7 +7,7 @@ import {usersQuery} from "@/lib/queries/admin/queries";
 import {UsersTable, UsersTableHandle} from "@/components/admin/users-table";
 import {CreateUserDialog} from "@/components/admin/create-user-dialog";
 import {AdminSearchBar} from "@/components/admin/admin-search-bar";
-import {mountDashboardEventStream} from "@/lib/queries/admin/event-handler";
+import {mountDashboardUserEventStream} from "@/lib/queries/admin/event-handler";
 
 export function UsersView({
                               initialUsers,
@@ -37,6 +37,7 @@ export function UsersView({
         initialDataUpdatedAt: search !== initialSearch ? 0 : undefined
     });
 
+
     const users = useMemo(() => usersData?.pages?.flat() ?? [], [usersData]);
 
     const lastScrolledSearch = useRef(initialSearch);
@@ -50,7 +51,7 @@ export function UsersView({
     }, [isPlaceholderData, search]);
 
     useEffect(() => {
-        mountDashboardEventStream()
+        mountDashboardUserEventStream()
     }, []);
 
     return (
