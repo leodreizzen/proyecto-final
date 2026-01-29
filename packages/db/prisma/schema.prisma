@@ -635,9 +635,13 @@ model User {
   uploads            ResolutionUpload[]
 
   name          String
-  email         String   @unique
-  emailVerified Boolean  @default(false)
+  email         String    @unique
+  emailVerified Boolean   @default(false)
   role          UserRole
+  banned        Boolean   @default(false)
+  banReason     String?
+  banExpires    DateTime?
+  impersonating Session[] @relation(name: "impersonatedByAdmin")
 
   image     String?
   createdAt DateTime @default(now())
@@ -653,15 +657,17 @@ enum UserRole {
 }
 
 model Session {
-  id        String   @id @default(dbgenerated("uuidv7()")) @db.Uuid
-  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  userId    String   @db.Uuid
-  token     String   @unique
-  expiresAt DateTime
-  ipAddress String?
-  userAgent String?
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id                  String   @id @default(dbgenerated("uuidv7()")) @db.Uuid
+  user                User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId              String   @db.Uuid
+  token               String   @unique
+  expiresAt           DateTime
+  ipAddress           String?
+  userAgent           String?
+  createdAt           DateTime @default(now())
+  updatedAt           DateTime @updatedAt
+  impersonatedBy      String?  @db.Uuid
+  inpersonatedByAdmin User?    @relation(name: "impersonatedByAdmin", fields: [impersonatedBy], references: [id])
 }
 
 model Account {

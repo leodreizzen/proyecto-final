@@ -27,6 +27,7 @@ const NAV_ITEMS: {
     {route: "/admin", label: "Resoluciones", icon: FileText},
     {route: "/admin/revision", label: "Revisión", icon: AlertTriangle},
     {route: "/admin/history", label: "Historial", icon: Clock},
+    {route: "/admin/users", label: "Usuarios", icon: User},
 ]
 
 

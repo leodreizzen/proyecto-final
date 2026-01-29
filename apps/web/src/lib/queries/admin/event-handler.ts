@@ -4,7 +4,6 @@ import {
     pendingUploadsQuery,
     recentFinishedUploadsQuery,
     resolutionKeys,
-    resolutionsQuery,
     uploadKeys
 } from "@/lib/queries/admin/queries";
 import {UploadStatusData} from "@repo/pubsub/publish/uploads";

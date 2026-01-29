@@ -1,11 +1,11 @@
 "use client"
-import {Toolbar} from "./toolbar"
 import {MissingResolutionsTable, MissingResolutionsTableHandle} from "./missing-resolutions-table"
 import {MissingResolution} from "@/lib/definitions/resolutions";
 import {useEffect, useMemo, useRef, useState} from "react";
 import {keepPreviousData, useInfiniteQuery} from "@tanstack/react-query";
 import {missingResolutionsQuery} from "@/lib/queries/admin/queries";
 import {mountDashboardEventStream} from "@/lib/queries/admin/event-handler";
+import {AdminSearchBar} from "@/components/admin/admin-search-bar";
 
 export function RevisionView({
                                 initialResolutions,
@@ -62,7 +62,12 @@ export function RevisionView({
                     </p>
                 </div>
                 
-                <Toolbar initialSearchQuery={initialSearch} onSearch={handleSearch}/>
+                <AdminSearchBar 
+                    initialQuery={initialSearch} 
+                    onSearch={handleSearch} 
+                    placeholder="Buscar por ID, año... (ej. 60-2025 o CSU-60)"
+                    className="mb-4"
+                />
                 <MissingResolutionsTable 
                     resolutions={resolutions} 
                     fetchNextPage={() => fetchNextPage({cancelRefetch: false})} 

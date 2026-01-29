@@ -1,9 +1,13 @@
 import "server-only"
 import {betterAuth} from "better-auth"
 import {prismaAdapter} from "better-auth/adapters/prisma";
-import prisma from "@repo/db/prisma";
 import {nextCookies} from "better-auth/next-js";
 import {headers} from "next/headers";
+import { admin as adminPlugin } from "better-auth/plugins"
+import {ac, roles} from "@/lib/auth/data-permissions";
+import prisma from "@/lib/prisma";
+
+
 export const authConfig = {
     database: prismaAdapter(prisma, {
         provider: "postgresql",
@@ -36,7 +40,10 @@ export const authConfig = {
             }
         }
     },
-    plugins: [nextCookies()]
+    plugins: [nextCookies(), adminPlugin({
+        ac: ac,
+        roles: roles
+    })]
 } satisfies Parameters<typeof betterAuth>[0]
 
 export const auth = betterAuth(authConfig);

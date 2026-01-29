@@ -6,7 +6,7 @@ import {fetchRecentFinishedUploads, fetchUnfinishedUploads} from "@/lib/data/upl
 export default async function AdminPage(props: { searchParams: Promise<{ q?: string }> }) {
     await authCheck(["ADMIN"]);
     const searchParams = await props.searchParams;
-    const query = searchParams.q || "";
+    const query = typeof searchParams.q === "string" ? searchParams.q || "" : "";
 
     const [resolutions, pendingUploads, recentFinishedUploads, resCounts] = await Promise.all([
         fetchResolutionsWithStatus(null, query),
