@@ -20,6 +20,8 @@ import {deleteResolution as deleteResolutionAction} from "@/lib/actions/server/r
 import {toast} from "sonner";
 import {TableVirtuoso, TableVirtuosoHandle, Virtuoso, VirtuosoHandle} from 'react-virtuoso'
 import React, {useImperativeHandle, useRef} from "react";
+import Link from "next/link";
+import {pathForResolution} from "@/lib/paths";
 
 export type ResolutionsTableHandle = {
     scrollToTop: () => void;
@@ -141,12 +143,13 @@ export function ResolutionsTable({resolutions, fetchNextPage, ref}: ResolutionsT
                             <td className="px-4 py-3">
                                 <div className="flex items-center justify-end gap-1">
                                     <Button
+                                        asChild
                                         variant="ghost"
                                         size="icon"
                                         className="h-8 w-8 text-muted-foreground hover:text-foreground"
                                         disabled={deleting}
                                     >
-                                        <ExternalLink className="h-4 w-4"/>
+                                        <Link prefetch={false} href={pathForResolution({initial: resolution.initial, number: resolution.number, year: resolution.year})}><ExternalLink className="h-4 w-4"/></Link>
                                     </Button>
                                     {(deleting && deleteId === resolution.id) ? (
                                         <div className="flex items-center justify-center h-8 w-8">
