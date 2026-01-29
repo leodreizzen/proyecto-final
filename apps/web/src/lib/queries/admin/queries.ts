@@ -44,6 +44,8 @@ export const pendingUploadsQuery = queryOptions({
 import {missingResolutionsFetcher} from "@/app/api/admin/missing-resolutions/fetcher";
 import {AdminMissingResolutionsReturnType} from "@/app/api/admin/missing-resolutions/types";
 import {resIDToSlug} from "@/lib/paths";
+import {uploadHistoryFetcher} from "@/app/api/admin/uploads/history/fetcher";
+import {AdminUploadHistoryReturnType} from "@/app/api/admin/uploads/history/types";
 
 export const missingResolutionsQuery = (query?: string | null) => infiniteQueryOptions<AdminMissingResolutionsReturnType, Error, InfiniteData<AdminMissingResolutionsReturnType>, readonly ["resolutions", "missing", { readonly query: string | null | undefined; }], string | null>({
     queryKey: ["resolutions", "missing", {query}],
@@ -58,6 +60,16 @@ export const missingResolutionsQuery = (query?: string | null) => infiniteQueryO
             number: last.number,
             year: last.year
         });
+    }
+});
+
+export const uploadHistoryQuery = infiniteQueryOptions<AdminUploadHistoryReturnType, Error, InfiniteData<AdminUploadHistoryReturnType>, readonly ["uploads", "history"], string | null>({
+    queryKey: ["uploads", "history"],
+    queryFn: ({pageParam, signal}) => uploadHistoryFetcher({pageParam, signal}),
+    initialPageParam: null,
+    getNextPageParam: (lastPage) => {
+        if (!lastPage || lastPage.length === 0) return null;
+        return lastPage[lastPage.length - 1]?.id ?? null;
     }
 });
 

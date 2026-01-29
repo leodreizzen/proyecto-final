@@ -1,18 +1,12 @@
 "use client"
-import {FileText, Check, X, ChevronRight, Loader2} from "lucide-react"
+import {Check, X, ChevronRight} from "lucide-react"
 import {cn, formatDateTime} from "@/lib/utils"
-import {Progress} from "@/components/ui/progress"
-import {
-    Dialog,
-    DialogContent,
-    DialogDescription,
-    DialogHeader,
-    DialogTitle,
-    DialogTrigger,
-} from "@/components/ui/dialog"
 import {UploadWithFile, UploadWithProgressAndFile} from "@/lib/definitions/uploads";
-//TODO don't depend on the repo package
 import {UploadStatus} from "@repo/db/prisma/enums";
+import {ProcessingQueue} from "@/components/admin/processing-queue";
+import Link from "next/link";
+import {UploadSuccessDialog} from "@/components/admin/upload-success-dialog";
+import {UploadErrorDialog} from "@/components/admin/upload-error-dialog";
 
 interface StatusPanelProps {
     unfinished: UploadWithProgressAndFile[]
@@ -23,50 +17,18 @@ export function StatusPanel({unfinished, recent}: StatusPanelProps) {
     return (
         <div className="flex flex-col h-full xl:max-h-screen overflow-hidden">
             {/* Processing queue - Top section*/}
-            <div className="flex-[2] xl:flex-[3] min-h-0 p-4 border-b border-border overflow-auto">
-                <h3 className="text-sm font-semibold text-foreground mb-4 flex items-center gap-2">
-                    {unfinished.length > 0 && <Loader2 className={"h-4 w-4 animate-spin text-status-info"}/>}
-                    En proceso
-                </h3>
-
-                {unfinished.length > 0 ? (
-                    <div className="space-y-3">
-                        {unfinished.map((job) => (
-                            <div key={job.id} className="p-3 rounded-lg bg-muted/50 border border-border">
-                                <div className="flex items-center gap-2 mb-2">
-                                    <FileText className="h-4 w-4 text-muted-foreground shrink-0"/>
-                                    {job.file && <span
-                                        className="text-sm font-medium text-foreground truncate">{job.file.originalFileName}</span>}
-                                </div>
-                                {
-                                    job.status === "PROCESSING" ? (
-                                        <>
-                                            <Progress value={job.progress * 100} className="h-1.5 mb-2"/>
-                                            <div
-                                                className="flex items-center justify-between text-xs text-muted-foreground">
-                                                <span>{(job.progress * 100).toFixed(0)}%</span>
-                                            </div>
-                                        </>
-                                    ) : job.status === "PENDING" ? (
-                                        <span className="text-xs text-muted-foreground mb-2 block">En cola...</span>
-                                    ) : null
-                                }
-                            </div>
-                        ))}
-                    </div>
-                ) : (
-                    <p className="text-sm text-muted-foreground lg:text-center xl:py-8">No hay archivos en proceso</p>
-                )}
+            <div className="flex-2 xl:flex-3 min-h-0 border-b border-border overflow-hidden">
+                <ProcessingQueue uploads={unfinished} />
             </div>
 
             {/* Recent activity - Bottom section */}
-            <div className="flex-[2] flex flex-col min-h-0 p-4">
+            <div className="flex-2 flex flex-col min-h-0 p-4">
                 <div className="flex items-center justify-between mb-4">
                     <h3 className="text-sm font-semibold text-foreground">Actividad reciente</h3>
-                    <button className="text-xs text-primary hover:underline flex items-center gap-0.5">
+                    <Link href="/admin/history" className="text-xs text-primary hover:underline flex items-center gap-0.5">
                         Ver historial
                         <ChevronRight className="h-3 w-3"/>
-                    </button>
+                    </Link>
                 </div>
 
                 <div className="min-h-0 flex-1 space-y-2 overflow-auto">
@@ -79,14 +41,14 @@ export function StatusPanel({unfinished, recent}: StatusPanelProps) {
     )
 }
 
-function RecentItemRow({item}: { item: UploadWithFile }) {
+function RecentItemRow({item}: { item: UploadWithFile & { resolution?: { initial: string; number: number; year: number } | null } }) {
     const isError = item.status === UploadStatus.FAILED
 
     const content = (
         <div
             className={cn(
                 "flex items-center gap-3 p-2.5 rounded-lg transition-colors",
-                isError ? "hover:bg-status-error/5 cursor-pointer" : "hover:bg-muted/50",
+                isError ? "hover:bg-status-error/5 cursor-pointer" : "hover:bg-muted/50 cursor-pointer",
             )}
         >
             <div
@@ -106,26 +68,17 @@ function RecentItemRow({item}: { item: UploadWithFile }) {
         </div>
     )
 
-    if (isError && item.errorMsg) {
+    if (isError) {
         return (
-            <Dialog>
-                <DialogTrigger asChild>{content}</DialogTrigger>
-                <DialogContent>
-                    <DialogHeader>
-                        <DialogTitle className="flex items-center gap-2 text-status-error">
-                            <X className="h-5 w-5"/>
-                            Error de procesamiento
-                        </DialogTitle>
-                        <DialogDescription className="pt-2">
-                            {item.file &&
-                                <span className="font-mono text-sm block mb-2">{item.file.originalFileName}</span>}
-                            <span className="text-foreground">{item.errorMsg}</span>
-                        </DialogDescription>
-                    </DialogHeader>
-                </DialogContent>
-            </Dialog>
+            <UploadErrorDialog item={item}>
+                {content}
+            </UploadErrorDialog>
         )
     }
 
-    return content
+    return (
+        <UploadSuccessDialog item={item}>
+            {content}
+        </UploadSuccessDialog>
+    )
 }

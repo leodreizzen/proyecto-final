@@ -3,6 +3,7 @@ import prisma from "@/lib/prisma";
 import {UploadWithFile, UploadWithProgressAndFile} from "@/lib/definitions/uploads";
 import {RESOLUTION_UPLOAD_BUCKET} from "@/lib/file-storage/assignments";
 import {getUploadProgress} from "@/lib/jobs/resolutions";
+import {Mutable} from "@/lib/definitions/util";
 
 export async function fetchUnfinishedUploads(): Promise<UploadWithProgressAndFile[]> {
     await checkResourcePermission("upload", "read");
@@ -17,6 +18,9 @@ export async function fetchUnfinishedUploads(): Promise<UploadWithProgressAndFil
             file: true,
             resolution: {
                 select: {
+                    initial: true,
+                    number: true,
+                    year: true,
                     originalFile: true
                 }
             }
@@ -31,6 +35,7 @@ export async function fetchUnfinishedUploads(): Promise<UploadWithProgressAndFil
             return {
                 ...upload,
                 file,
+                resolution: upload.resolution,
                 progress: await getUploadProgress(upload.id) ?? 0
             }
         }
@@ -57,7 +62,10 @@ export async function fetchRecentFinishedUploads(): Promise<UploadWithFile[]> {
             file: true,
             resolution: {
                 select: {
-                    originalFile: true
+                    originalFile: true,
+                    initial: true,
+                    number: true,
+                    year: true
                 }
             }
         }
@@ -111,6 +119,84 @@ export async function createResolutionUpload(fileKey: string, uploaderId: string
             data: upload
         }
     })
+}
+
+export type UploadHistoryItem = {
+    id: string;
+    file: {
+        originalFileName: string;
+    } | null;
+    uploader: {
+        name: string;
+    };
+    uploadedAt: Date;
+    status: "COMPLETED" | "FAILED";
+    errorMsg: string | null;
+    resolution: {
+        initial: string;
+        number: number;
+        year: number;
+    } | null;
+}
+
+
+export async function fetchUploadHistory(cursor: string | null): Promise<UploadHistoryItem[]> {
+    await checkResourcePermission("upload", "read");
+
+    const allowedStatuses = ["COMPLETED", "FAILED"] as const;
+
+    const cursorParams = cursor ? {
+        skip: 1,
+        cursor: {
+            id: cursor
+        }
+    } : {}
+
+    const uploads = await prisma.resolutionUpload.findMany({
+        ...cursorParams,
+        where: {
+            status: {
+                in: allowedStatuses as Mutable<typeof allowedStatuses>
+            }
+        },
+        orderBy: {
+            uploadedAt: "desc"
+        },
+        take: 15,
+        select: {
+            id: true,
+            file: {
+                select: {
+                    originalFileName: true
+                }
+            },
+            uploader: {
+                select: {
+                    name: true
+                }
+            },
+            uploadedAt: true,
+            status: true,
+            errorMsg: true,
+            resolution: {
+                select: {
+                    initial: true,
+                    number: true,
+                    year: true
+                }
+            }
+        }
+    });
+
+    return uploads.map(u => ({
+        id: u.id,
+        file: u.file,
+        uploader: u.uploader,
+        uploadedAt: u.uploadedAt,
+        status: u.status as typeof allowedStatuses[number],
+        errorMsg: u.errorMsg,
+        resolution: u.resolution
+    }));
 }
 
 export async function deleteFailedUpload(uploadId: string) {

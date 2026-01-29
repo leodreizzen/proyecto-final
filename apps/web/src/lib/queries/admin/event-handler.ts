@@ -36,6 +36,7 @@ async function handleAdminEvent(event: MessageEvent) {
         }
     } else if (eventData.scope === "UPLOADS_GLOBAL") {
         await queryClient.invalidateQueries({queryKey: uploadKeys.all});
+        await queryClient.invalidateQueries({queryKey: ["uploads", "history"]});
     } else if (eventData.scope === "RESOLUTIONS_GLOBAL") {
         await queryClient.invalidateQueries({queryKey: resolutionKeys.all});
         await queryClient.invalidateQueries({queryKey: ['resolutions', 'missing']});

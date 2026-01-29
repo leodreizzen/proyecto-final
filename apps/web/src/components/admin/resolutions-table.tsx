@@ -90,7 +90,7 @@ export function ResolutionsTable({resolutions, fetchNextPage, ref}: ResolutionsT
         <div className="flex-1 bg-card rounded-xl border border-border overflow-hidden">
             {/* Desktop table */}
             <div className="hidden md:block size-full">
-                <TableVirtuoso ref={desktopRef} className="w-full" fixedHeaderContent={() => (
+                <TableVirtuoso ref={desktopRef} className="w-full" overscan={600} fixedHeaderContent={() => (
                     <tr className="bg-card">
 
                         <th className="px-4 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider w-16 bg-muted/30 shadow-[inset_0px_-1.5px_0px_0px_var(--border)]"></th>
@@ -206,6 +206,7 @@ export function ResolutionsTable({resolutions, fetchNextPage, ref}: ResolutionsT
                       ref={mobileRef}
                       endReached={fetchNextPage}
                       computeItemKey={(_, item) => item.id}
+                      overscan={600}
                       components={{
                         List: (props) => (
                             <div {...props} className="divide-y divide-border"/>
