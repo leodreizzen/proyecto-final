@@ -56,7 +56,8 @@
       "ioredis",
       "@prisma/client",
       "pg",
-      "python-shell"
+      "python-shell",
+      "@aws-sdk/client-s3"
     ]
   }
 }
