@@ -1,8 +1,8 @@
 "use client"
 
-export function ScrollResetter({children, className, scrollerID}: { children: React.ReactNode, className?: string, scrollerID: string }) {
+export function ScrollResetter({children, className, scrollerSelector}: { children: React.ReactNode, className?: string, scrollerSelector: string }) {
     function resetScroll() {
-        document.getElementById(scrollerID)?.scrollTo(0,0);
+        document.querySelector(scrollerSelector)?.scrollTo(0,0);
     }
 
     return (

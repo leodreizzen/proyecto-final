@@ -1,11 +1,11 @@
 import {ResolutionToShow, ResolutionVersion} from "@/lib/definitions/resolutions";
 import {InapplicableChange} from "@/lib/definitions/changes";
-import { AIWarning } from "./ai-warning";
-import { VersionStatus } from "./version-status";
-import { ResolutionHeader } from "./resolution-header";
-import { ResolutionBody } from "./resolution-body";
-import { ResolutionSidebar } from "./resolution-sidebar";
-import { MobileMenu } from "./mobile-menu";
+import {AIWarning} from "./ai-warning";
+import {VersionStatus} from "./version-status";
+import {ResolutionHeader} from "./resolution-header";
+import {ResolutionBody} from "./resolution-body";
+import {ResolutionSidebar} from "./resolution-sidebar";
+import {ResolutionFabWrapper} from "@/components/resolution/client-fab-wrapper";
 
 interface ResolutionViewerProps {
     resolution: ResolutionToShow;
@@ -14,61 +14,56 @@ interface ResolutionViewerProps {
     inapplicableChanges: InapplicableChange[];
 }
 
-export function ResolutionViewer({ resolution, versions, currentVersion, inapplicableChanges }: ResolutionViewerProps) {
+export function ResolutionViewer({resolution, versions, currentVersion, inapplicableChanges}: ResolutionViewerProps) {
     const isCurrentVersion = versions[0]! === currentVersion;
+
     return (
-        <div className="h-screen flex flex-col bg-background text-foreground overflow-hidden">
-            {/* Mobile Header & Sticky Status */}
-            <div className="shrink-0 z-40 w-full bg-background/95 backdrop-blur supports-backdrop-filter:bg-background/60 lg:hidden">
-                 {/* Version Status - Mobile Sticky if present */}
-                 <div>
-                    <VersionStatus resolution={resolution} isCurrentVersion={isCurrentVersion} />
-                 </div>
+        <div className="bg-background text-foreground min-h-screen">
+            <div className="mx-10 lg:mx-16 xl:mx-24 px-4 pb-20 lg:pb-12">
+                <div className="grid grid-cols-1 lg:grid-cols-4 gap-8 relative">
 
-                 {/* Mobile Menu Bar */}
-                 <MobileMenu resolution={resolution} versions={versions} currentVersion={currentVersion}/>
-            </div>
-
-            <div className="flex-1 min-h-0 container mx-auto px-4">
-                <div className="grid grid-cols-1 lg:grid-cols-4 gap-5 h-full">
-                    {/* Main Content Area */}
-                    <main className="lg:col-span-3 h-full overflow-y-auto" id={"content-scroller"}>
-                        <div className="w-full py-8 md:py-12 pe-3">
-                            {/* The "Paper" */}
+                    <ResolutionFabWrapper
+                        resolution={resolution}
+                        versions={versions}
+                        currentVersion={currentVersion}
+                    >
+                        <div className="w-full pe-0 lg:pe-6">
                             <div className="bg-background md:bg-card md:shadow-lg md:border rounded-xl overflow-hidden min-h-fit">
 
-                                {/* Version Status - Desktop (Full Width inside Paper) */}
+                                {/* Version Status - Desktop */}
                                 <div className="hidden lg:block">
-                                    <VersionStatus resolution={resolution} isCurrentVersion={isCurrentVersion} />
+                                    <VersionStatus resolution={resolution} isCurrentVersion={isCurrentVersion}/>
                                 </div>
 
-                                <div className="p-6 md:p-10">
-                                    {/* AI Warning */}
-                                    <AIWarning />
+                                {/* Version Status - Mobile */}
+                                <div className="lg:hidden mb-6">
+                                    <VersionStatus resolution={resolution} isCurrentVersion={isCurrentVersion}/>
+                                </div>
 
-                                    {/* Header */}
+                                <div className="p-0 max-lg:pb-20 md:px-10 md:pt-10 lg:pb-10">
+                                    <AIWarning/>
                                     <ResolutionHeader
                                         resolution={resolution}
                                         versions={versions}
                                         currentVersion={currentVersion}
                                         inapplicableChanges={inapplicableChanges}
                                     />
-
-                                    {/* Body */}
-                                    <ResolutionBody resolution={resolution} />
+                                    <ResolutionBody resolution={resolution}/>
                                 </div>
+
                             </div>
                         </div>
-                    </main>
+                    </ResolutionFabWrapper>
 
-                    {/* Sidebar Area - Desktop Only */}
-                    <div className="hidden lg:block lg:col-span-1 py-8 md:py-12 h-screen">
+                    <div className="hidden lg:block lg:col-span-1 pt-12 h-full">
+                        <div className="sticky top-24 h-[calc(100vh-6rem)] custom-scrollbar">
                         <ResolutionSidebar
                             resolution={resolution}
                             versions={versions}
                             currentVersion={currentVersion}
-                            className="h-full"
+                            className=""
                         />
+                        </div>
                     </div>
                 </div>
             </div>

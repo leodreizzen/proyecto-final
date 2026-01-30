@@ -125,6 +125,25 @@ export function assign<T, P extends readonly string[], V>(
     return copy as SetDeep<T, P, V>
 }
 
+export function formatTimeAgo(date: Date, locale = 'es-AR'): string {
+    const now = new Date();
+    // Normalize both dates to UTC midnight to compare calendar days only
+    const utcNow = Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate());
+    const utcDate = Date.UTC(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate());
+    
+    const diffInDays = Math.floor((utcNow - utcDate) / (1000 * 60 * 60 * 24));
+
+    if (diffInDays < 1) return "Hace menos de un día";
+
+    const rtf = new Intl.RelativeTimeFormat(locale, { numeric: 'auto' });
+
+    if (diffInDays < 30) return rtf.format(-diffInDays, 'day');
+    const diffInMonths = Math.floor(diffInDays / 30);
+    if (diffInMonths < 12) return rtf.format(-diffInMonths, 'month');
+    const diffInYears = Math.floor(diffInDays / 365);
+    return rtf.format(-diffInYears, 'year');
+}
+
 export function stableStringify(obj: object): string {
     return _stringify(obj)!;
 }

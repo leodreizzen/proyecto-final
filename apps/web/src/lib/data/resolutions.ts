@@ -190,3 +190,22 @@ export async function checkResolutionsExistance(resIds: ResolutionNaturalID[]){
         select: { initial: true, number: true, year: true }
     });
 }
+
+
+export async function fetchLastResolutions(limit: number){
+    return await prisma.resolution.findMany({
+        orderBy: [
+            { date: 'desc' },
+            { year: 'desc' },
+            { number: 'desc' }
+        ],
+        take: limit,
+        select: {
+            initial: true,
+            number: true,
+            year: true,
+            date: true,
+            summary: true,
+        }
+    });
+}
