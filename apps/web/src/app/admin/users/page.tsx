@@ -1,6 +1,11 @@
 import {fetchUsers} from "@/lib/data/users";
 import {UsersView} from "@/components/admin/users-view";
 import {authCheck} from "@/lib/auth/route-authorization";
+import {Metadata} from "next";
+
+export const metadata: Metadata = {
+    title: "Usuarios"
+}
 
 export default async function UsersPage({
                                             searchParams

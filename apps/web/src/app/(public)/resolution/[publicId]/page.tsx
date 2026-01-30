@@ -5,6 +5,33 @@ import {changeDateInResolutionParams, slugToResID} from "@/lib/paths";
 import {getAssembledResolution} from "@/lib/assembly/assemble-resolution";
 import {getResolutionIdByNaturalKey} from "@/lib/data/resolutions";
 import {ResolutionNaturalID} from "@/lib/definitions/resolutions";
+import type { Metadata, ResolvingMetadata } from 'next'
+import {formatResolutionId} from "@/lib/utils";
+
+type Props = {
+    params: Promise<{ publicId: string }>
+    searchParams: Promise<{ [key: string]: string | string[] | undefined }>
+}
+
+
+export async function generateMetadata(
+    { params }: Props,
+    parent: ResolvingMetadata
+): Promise<Metadata> {
+    const publicId = (await params).publicId
+    const parentTitle = (await parent).title?.absolute;
+
+    const resId = slugToResID(publicId);
+    if (!resId) {
+        return {
+            title: parentTitle
+        }
+    }
+
+    return {
+        title: `${formatResolutionId(resId)} - ${parentTitle}`,
+    }
+}
 
 
 export default async function ResolutionPage({params, searchParams: searchParamsPromise}: {

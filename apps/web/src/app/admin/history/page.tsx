@@ -1,6 +1,11 @@
 import {fetchUnfinishedUploads, fetchUploadHistory} from "@/lib/data/uploads";
 import {HistoryView} from "@/components/admin/history-view";
 import {authCheck} from "@/lib/auth/route-authorization";
+import {Metadata} from "next";
+
+export const metadata: Metadata = {
+    title: "Historial"
+}
 
 export default async function HistoryPage() {
     await authCheck(["ADMIN"])

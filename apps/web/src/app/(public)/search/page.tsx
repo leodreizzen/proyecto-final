@@ -5,6 +5,7 @@ import {SearchResults} from "./search-results";
 import {SearchSummary} from "@/components/search/search-summary";
 import {z} from "zod";
 import {redirect} from "next/navigation";
+import {Metadata} from "next";
 
 type SearchPageProps = {
     searchParams: Promise<{ [key: string]: string | string[] | undefined }>
@@ -16,6 +17,10 @@ const SearchByIdParamsSchema = z.object({
     number: z.coerce.number().optional(),
     year: z.coerce.number().optional(),
 })
+
+export const metadata: Metadata = {
+    title: "Búsqueda"
+}
 
 export default async function SearchPage({searchParams}: SearchPageProps) {
     await authCheck(publicRoute);
