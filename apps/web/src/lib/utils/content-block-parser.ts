@@ -18,7 +18,7 @@ export function parseToContentBlocks(text: string, tables: TableContent[]): Cont
         const matchLength = match[0].length;
 
         if (matchIndex > lastIndex) {
-            let value = text.substring(lastIndex, matchIndex).trimEnd();
+            const value = text.substring(lastIndex, matchIndex).trimEnd();
             if (value.length > 0) {
                 blocks.push({
                     type: "TEXT",
@@ -48,7 +48,7 @@ export function parseToContentBlocks(text: string, tables: TableContent[]): Cont
     }
 
     if (lastIndex < text.length) {
-        let value = text.substring(lastIndex).trimStart();
+        const value = text.substring(lastIndex).trimStart();
         if (value.length > 0) {
             blocks.push({
                 type: "TEXT",

@@ -24,7 +24,7 @@ export function parseToContentBlockInputs(
 
         // Text block before the table
         if (matchIndex > lastIndex) {
-            let value = text.substring(lastIndex, matchIndex).trimEnd();
+            const value = text.substring(lastIndex, matchIndex).trimEnd();
             if (value.length > 0) {
                 blocks.push({
                     type: ContentBlockType.TEXT,
@@ -57,7 +57,7 @@ export function parseToContentBlockInputs(
 
     // Remaining text
     if (lastIndex < text.length) {
-        let value = text.substring(lastIndex).trimStart();
+        const value = text.substring(lastIndex).trimStart();
         if (value.length > 0) {
             blocks.push({
                 type: ContentBlockType.TEXT,

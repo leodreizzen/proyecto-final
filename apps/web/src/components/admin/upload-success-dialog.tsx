@@ -12,7 +12,7 @@ import {
 import {Button} from "@/components/ui/button"
 import {Check, FileText, ExternalLink} from "lucide-react"
 import Link from "next/link"
-import {cn, formatDateTime, formatResolutionId} from "@/lib/utils"
+import {formatDateTime, formatResolutionId} from "@/lib/utils"
 import {pathForResolution} from "@/lib/paths";
 import React from "react";
 import {User, Calendar} from "lucide-react"

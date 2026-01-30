@@ -1,4 +1,4 @@
-import {ContentBlock, ResolutionToShow} from "@/lib/definitions/resolutions";
+import {ResolutionToShow} from "@/lib/definitions/resolutions";
 import {AnnexView} from "./annex-view";
 import ArticlesContainer from "@/components/resolution/articles-container";
 import {ContentBlockRenderer} from "@/components/resolution/content-block-renderer";

@@ -1,6 +1,6 @@
 "use client"
 
-import {FileText, Check, X, Loader2} from "lucide-react"
+import {FileText, Loader2} from "lucide-react"
 import {Progress} from "@/components/ui/progress"
 import {UploadWithProgressAndFile} from "@/lib/definitions/uploads";
 

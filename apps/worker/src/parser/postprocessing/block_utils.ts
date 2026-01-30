@@ -23,7 +23,7 @@ export function textToContentBlocks(
         const matchLength = match[0].length;
 
         if (matchIndex > lastIndex) {
-            let value = text.substring(lastIndex, matchIndex).trimEnd();
+            const value = text.substring(lastIndex, matchIndex).trimEnd();
             if (value.length > 0) {
                 blocks.push({
                     type: ContentBlockType.TEXT,
@@ -55,7 +55,7 @@ export function textToContentBlocks(
     }
 
     if (lastIndex < text.length) {
-        let value = text.substring(lastIndex).trimStart();
+        const value = text.substring(lastIndex).trimStart();
         if (value.length > 0) {
             blocks.push({
                 type: ContentBlockType.TEXT,
@@ -84,7 +84,7 @@ export function textToContentBlocks(
         for (const block of filteredBlocks) {
             if (block.type === ContentBlockType.TEXT) {
                 // Try full context first
-                let range = findFuzzyRange(block.text, fullSearchString);
+                const range = findFuzzyRange(block.text, fullSearchString);
                 if (range) {
                     block.references.push(ref);
                     assigned = true;
@@ -115,18 +115,3 @@ export function textToContentBlocks(
     return filteredBlocks;
 }
 
-export function appendUnusedTables(blocks: ContentBlock[], tables: TableStructure[], usedTableNumbers: Set<number>) {
-    const remainingTables = tables.filter(t => !usedTableNumbers.has(t.number));
-    if (remainingTables.length > 0) {
-        console.warn(`Found ${remainingTables.length} tables not referenced in text. Appending to end.`);
-        remainingTables.sort((a, b) => a.number - b.number);
-        for (const table of remainingTables) {
-            blocks.push({
-                type: ContentBlockType.TABLE,
-                tableContent: table,
-                references: []
-            });
-            usedTableNumbers.add(table.number);
-        }
-    }
-}

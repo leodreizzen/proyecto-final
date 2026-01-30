@@ -1,4 +1,3 @@
-import Link from "next/link";
 import {ReferenceMarker} from "@/lib/processing/reference-processor";
 import {pathForResolution} from "@/lib/paths";
 import {
@@ -7,7 +6,7 @@ import {
     PopoverTrigger,
 } from "@/components/ui/popover";
 import {AlertCircle} from "lucide-react";
-import {cn, formatResolutionId} from "@/lib/utils";
+import {formatResolutionId} from "@/lib/utils";
 
 interface TextWithReferencesProps {
     text: string;
@@ -36,7 +35,7 @@ export function TextWithReferences({text, markers, className}: TextWithReference
         const content = text.substring(marker.start, marker.end);
 
         if (marker.data.valid) {
-            let href = pathForResolution(marker.data.target);
+            const href = pathForResolution(marker.data.target);
 
             segments.push(
                 <a

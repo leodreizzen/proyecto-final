@@ -4,7 +4,7 @@ import {TableVirtuoso, TableVirtuosoHandle, Virtuoso, VirtuosoHandle} from 'reac
 import React, {useImperativeHandle, useRef, useState} from "react";
 import {UserListItem} from "@/lib/data/users";
 import {formatDateTime} from "@/lib/utils";
-import {Shield, User, Trash2, KeyRound, Loader2, Plus} from "lucide-react";
+import {Shield, User, Trash2, KeyRound, Loader2} from "lucide-react";
 import {cn} from "@/lib/utils";
 import {Button} from "@/components/ui/button";
 import {

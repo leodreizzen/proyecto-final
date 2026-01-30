@@ -1,10 +1,9 @@
-// --- 1. Type Utilities ---
-
 type ValueOf<T> = T[keyof T];
 
 type ValidPolymorphicShape<
     Map extends Record<string, string>,
     DiscriminatorKey extends string,
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     FieldTypes extends Record<ValueOf<Map>, any>
 > = {
     [K in keyof Map]:
@@ -16,6 +15,7 @@ type ValidPolymorphicShape<
 type ValidatorFunction<
     Map extends Record<string, string>,
     DiscriminatorKey extends string,
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     FieldTypes extends Record<ValueOf<Map>, any>
 > = <
     T extends { [K in DiscriminatorKey]: keyof Map } & Partial<{ [P in ValueOf<Map>]: FieldTypes[P] | null }>
@@ -29,6 +29,7 @@ export function createPolymorphicValidator<
     configMap: Map,
     discriminatorKey: DiscriminatorKey
 ) {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const runValidation = (input: any) => {
         if (!(discriminatorKey in input)) {
             throw new Error(`Input object is missing discriminator: '${discriminatorKey}'.`);
@@ -61,6 +62,7 @@ export function createPolymorphicValidator<
             return runValidation;
         },
 
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         withTypes: <FieldTypes extends Record<ValueOf<Map>, any>>(): ValidatorFunction<Map, DiscriminatorKey, FieldTypes> => {
             return runValidation;
         }

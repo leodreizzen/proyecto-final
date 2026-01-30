@@ -643,8 +643,7 @@ export class ResolutionChangeApplier {
         }
     }
 
-
-    private getSlotFromRef(ref: ReferenceWithConcreteWithoutPayload): Slot<any> | null {
+    private getSlotFromRef(ref: ReferenceWithConcreteWithoutPayload): Slot<unknown> | null {
         switch (ref.targetType) {
             case "RESOLUTION":
                 return this.getResolutionSlot(ref.resolution);
