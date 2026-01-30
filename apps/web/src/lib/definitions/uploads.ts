@@ -4,6 +4,7 @@ export type UploadWithFile = ResolutionUpload & {
     file: Asset | null,
     uploader?: {
         name: string;
+        deleted: boolean;
     } | null,
     resolution?: {
         initial: string;

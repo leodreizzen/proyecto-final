@@ -62,7 +62,8 @@ export async function fetchRecentFinishedUploads(): Promise<UploadWithFile[]> {
             file: true,
             uploader: {
                 select: {
-                    name: true
+                    name: true,
+                    deletedAt: true
                 }
             },
             resolution: {
@@ -82,6 +83,10 @@ export async function fetchRecentFinishedUploads(): Promise<UploadWithFile[]> {
         }
         return {
             ...upload,
+            uploader: {
+                name: upload.uploader.name,
+                deleted: !!upload.uploader.deletedAt
+            },
             file,
         }
     });
@@ -133,6 +138,7 @@ export type UploadHistoryItem = {
     } | null;
     uploader: {
         name: string;
+        deleted: boolean;
     };
     uploadedAt: Date;
     status: "COMPLETED" | "FAILED";
@@ -177,7 +183,8 @@ export async function fetchUploadHistory(cursor: string | null): Promise<UploadH
             },
             uploader: {
                 select: {
-                    name: true
+                    name: true,
+                    deletedAt: true
                 }
             },
             uploadedAt: true,
@@ -196,7 +203,10 @@ export async function fetchUploadHistory(cursor: string | null): Promise<UploadH
     return uploads.map(u => ({
         id: u.id,
         file: u.file,
-        uploader: u.uploader,
+        uploader: {
+            name: u.uploader.name,
+            deleted: !!u.uploader.deletedAt
+        },
         uploadedAt: u.uploadedAt,
         status: u.status as typeof allowedStatuses[number],
         errorMsg: u.errorMsg,

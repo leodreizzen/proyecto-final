@@ -56,6 +56,10 @@ export function formatChangeSource(context: ChangeContext): string {
     );
 }
 
+export function formatUserName(user: {name: string; deleted: boolean}): string {
+    return user.deleted ? `Usuario eliminado (${user.name})`: user.name;
+}
+
 export function formatChangeType(type: string): string {
     switch (type) {
         case "MODIFY_ARTICLE": return "Modificación de Artículo";

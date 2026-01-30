@@ -1,7 +1,7 @@
 "use client"
 
 import {FileText, Check, X} from "lucide-react"
-import {cn, formatDateTime} from "@/lib/utils"
+import {cn, formatDateTime, formatUserName} from "@/lib/utils"
 import {TableVirtuoso, TableVirtuosoHandle, Virtuoso, VirtuosoHandle} from 'react-virtuoso'
 import React, {useImperativeHandle, useRef, useState} from "react";
 import {UploadHistoryItem} from "@/lib/data/uploads";
@@ -76,8 +76,8 @@ export function UploadHistoryTable({uploads, fetchNextPage, ref}: UploadHistoryT
                                     </div>
                                 </td>
                                 <td className="px-4 py-3" onClick={() => setSelectedItem(item)}>
-                                    <span className="text-sm text-muted-foreground truncate block max-w-[150px]" title={item.uploader.name}>
-                                        {item.uploader.name}
+                                    <span className="text-sm text-wrap text-muted-foreground truncate block max-w-[150px]" title={item.uploader.name}>
+                                        {formatUserName(item.uploader)}
                                     </span>
                                 </td>
                                 <td className="px-4 py-3" onClick={() => setSelectedItem(item)}>
@@ -131,7 +131,7 @@ export function UploadHistoryTable({uploads, fetchNextPage, ref}: UploadHistoryT
                                   <div className="flex-1 min-w-0">
                                       <p className="font-medium text-sm text-foreground truncate">{item.file?.originalFileName}</p>
                                       <div className="flex items-center gap-2 mt-1">
-                                          <span className="text-xs text-muted-foreground">{item.uploader.name}</span>
+                                          <span className="text-xs text-muted-foreground">{formatUserName(item.uploader)}</span>
                                           <span className="text-xs text-muted-foreground">•</span>
                                           <span className="text-xs text-muted-foreground">{formatDateTime(item.uploadedAt)}</span>
                                       </div>

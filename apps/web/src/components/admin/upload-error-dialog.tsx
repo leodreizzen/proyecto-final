@@ -10,7 +10,7 @@ import {
 } from "@/components/ui/dialog"
 import {X, FileText, User, Calendar} from "lucide-react"
 import React from "react";
-import {formatDateTime} from "@/lib/utils";
+import {formatDateTime, formatUserName} from "@/lib/utils";
 
 interface UploadErrorItem {
     file?: {
@@ -19,6 +19,7 @@ interface UploadErrorItem {
     errorMsg: string | null;
     uploader?: {
         name: string;
+        deleted: boolean;
     } | null;
     uploadedAt?: Date;
 }
@@ -69,7 +70,7 @@ export function UploadErrorDialog({children, item, open, onOpenChange}: UploadEr
                                     <User className="h-3 w-3"/>
                                     Subido por
                                 </span>
-                                <span className="text-sm truncate">{item.uploader.name}</span>
+                                <span className="text-sm text-wrap">{formatUserName(item.uploader)}</span>
                             </div>
                         )}
                         {item.uploadedAt && (

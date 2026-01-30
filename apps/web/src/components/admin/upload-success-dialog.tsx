@@ -12,7 +12,7 @@ import {
 import {Button} from "@/components/ui/button"
 import {Check, FileText, ExternalLink} from "lucide-react"
 import Link from "next/link"
-import {formatDateTime, formatResolutionId} from "@/lib/utils"
+import {formatDateTime, formatResolutionId, formatUserName} from "@/lib/utils"
 import {pathForResolution} from "@/lib/paths";
 import React from "react";
 import {User, Calendar} from "lucide-react"
@@ -28,6 +28,7 @@ interface UploadSuccessItem {
     } | null;
     uploader?: {
         name: string;
+        deleted: boolean;
     } | null;
     uploadedAt?: Date;
 }
@@ -86,7 +87,7 @@ export function UploadSuccessDialog({children, item, open, onOpenChange}: Upload
                                     <User className="h-3 w-3"/>
                                     Subido por
                                 </span>
-                                <span className="text-sm truncate">{item.uploader.name}</span>
+                                <span className="text-sm text-wrap">{formatUserName(item.uploader)}</span>
                             </div>
                         )}
                         {item.uploadedAt && (
