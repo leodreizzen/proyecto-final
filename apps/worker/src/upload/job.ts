@@ -5,7 +5,7 @@ import {deleteAsset, fetchAsset, makeResolutionFilePublic} from "@/util/assets";
 import {saveParsedResolution} from "@/data/save-resolution/save-resolution";
 import {Asset} from "@repo/db/prisma/client";
 import {formatErrorMessage, ResolutionRejectError} from "@/upload/errors";
-import {fetchUploadWithFile, setUploadStatus} from "@/data/uploads";
+import {fetchUploadWithFileToProcess, setUploadStatus} from "@/data/uploads";
 import ProgressReporter from "@/util/progress-reporter";
 import {publishUploadStatus} from "@repo/pubsub/publish/uploads";
 import {publishNewResolution} from "@repo/pubsub/publish/resolutions";
@@ -18,7 +18,7 @@ export async function processResolutionUpload(job: Job, progressReporter: Progre
     const parseResolutionReporter = progressReporter.addSubreporter("parseResolution", 140);
     const saveDataReporter = progressReporter.addSubreporter("saveData", 0.5);
 
-    const upload = await fetchUploadWithFile(job.id);
+    const upload = await fetchUploadWithFileToProcess(job.id);
     if (!upload) {
         throw new Error(`Upload with ID ${job.data.uploadId} not found`);
     }

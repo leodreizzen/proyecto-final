@@ -26,10 +26,13 @@ export async function setUploadStatus({uploadId, status, tx = prisma, errorMessa
     });
 }
 
-export async function fetchUploadWithFile(uploadId: string) {
+export async function fetchUploadWithFileToProcess(uploadId: string) {
     return prisma.resolutionUpload.findUnique({
         where: {
             id: uploadId,
+            status: {
+                in: ["PENDING", "PROCESSING"]
+            }
         },
         include: {
             file: true,
