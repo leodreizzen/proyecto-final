@@ -55,7 +55,8 @@
       "bullmq",
       "ioredis",
       "@prisma/client",
-      "pg"
+      "pg",
+      "python-shell"
     ]
   }
 }
