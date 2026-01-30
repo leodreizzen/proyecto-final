@@ -49,5 +49,13 @@
     "tsx": "^4.20.6",
     "type-fest": "^5.2.0",
     "typescript": "5.9.2"
+  },
+  "_bundlerConfig": {
+    "external": [
+      "bullmq",
+      "ioredis",
+      "@prisma/client",
+      "pg"
+    ]
   }
 }

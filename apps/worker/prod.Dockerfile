@@ -32,20 +32,33 @@ WORKDIR /app
 
 WORKDIR /app
 
-#RUN pnpm add -g turbo@^2.5.8
+RUN pnpm add -g turbo@^2.5.8
+
+RUN turbo run build
+
+FROM builder AS prod_deps
+RUN apk add --no-cache jq
+
+# Remove non external dependencies from package.json
+RUN jq ' \
+  ._bundlerConfig.external as $list | \
+  .dependencies |= with_entries(select(.key as $k | $list | index($k))) \
+  ' apps/worker/package.json > apps/worker/package.json.tmp && \
+  mv apps/worker/package.json.tmp apps/worker/package.json
+
+RUN pnpm prune --prod
+FROM base AS runner
+WORKDIR /app
+
+RUN addgroup --system --gid 1001 nodejs
+RUN adduser --system --uid 1001 worker
+USER worker
+
+COPY --from=prod_deps --chown=worker:nodejs /app/node_modules ./node_modules
+COPY --from=prod_deps --chown=worker:nodejs /app/apps/worker/node_modules ./apps/worker/node_modules
+
+COPY --from=builder --chown=worker:nodejs /app/apps/worker/build ./apps/worker
+COPY --from=builder --chown=worker:nodejs /app/apps/worker/.venv ./apps/worker/.venv
+
 WORKDIR /app/apps/worker
-CMD ["pnpm", "run", "dev"]
-#RUN turbo run build
-#
-#
-#FROM base AS runner
-#WORKDIR /app
-#
-#RUN addgroup --system --gid 1001 nodejs
-#RUN adduser --system --uid 1001 worker
-#USER worker
-#
-#COPY --from=builder --chown=worker:nodejs /app/apps/worker/build ./
-#COPY --from=builder --chown=worker:nodejs /app/apps/worker/.venv ./.venv
-#
-#CMD ["node", "worker.js"]
+CMD ["node", "worker.js"]
