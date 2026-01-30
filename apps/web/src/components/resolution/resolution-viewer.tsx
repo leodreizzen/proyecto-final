@@ -18,8 +18,8 @@ export function ResolutionViewer({resolution, versions, currentVersion, inapplic
     const isCurrentVersion = versions[0]! === currentVersion;
 
     return (
-        <div className="bg-background text-foreground min-h-screen">
-            <div className="mx-10 lg:mx-16 xl:mx-24 px-4 pb-20 lg:pb-12">
+        <div className="bg-background text-foreground min-h-screen flex justify-center">
+            <div className="max-md:px-8 lg:px-8 pb-20 lg:pb-12 container mx-auto">
                 <div className="grid grid-cols-1 lg:grid-cols-4 gap-8 relative">
 
                     <ResolutionFabWrapper

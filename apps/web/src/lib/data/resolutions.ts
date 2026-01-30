@@ -185,6 +185,7 @@ export async function fetchResolutionInitialData(resolutionId: string) {
 }
 
 export async function checkResolutionsExistance(resIds: ResolutionNaturalID[]){
+    await checkResourcePermission("resolution", "read");
     return  prisma.resolution.findMany({
         where: { OR: resIds },
         select: { initial: true, number: true, year: true }
@@ -192,7 +193,8 @@ export async function checkResolutionsExistance(resIds: ResolutionNaturalID[]){
 }
 
 
-export async function fetchLastResolutions(limit: number){
+export async function fetchLatestResolutions(limit: number){
+    await checkResourcePermission("resolution", "read");
     return await prisma.resolution.findMany({
         orderBy: [
             { date: 'desc' },

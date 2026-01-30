@@ -1,28 +1,43 @@
 "use client";
 
-import { useState } from "react";
+import React, { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Search, Sparkles } from "lucide-react";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 
-export function SearchWidget() {
+interface SearchWidgetProps {
+    initialValues?: {
+        initial?: string;
+        number?: string;
+        year?: string;
+    }
+}
+
+export function SearchWidget({ initialValues }: SearchWidgetProps) {
     const router = useRouter();
-    const [initial, setInitial] = useState("CSU");
-    const [number, setNumber] = useState("");
-    const [year, setYear] = useState("");
+    const [initial, setInitial] = useState(initialValues?.initial || "CSU");
+    const [number, setNumber] = useState(initialValues?.number || "");
+    const [year, setYear] = useState(initialValues?.year || "");
 
     const handleSearch = (e: React.FormEvent) => {
         e.preventDefault();
         
         const params = new URLSearchParams();
+        params.set("search_type", "by_id");
         if (initial) params.set("initial", initial);
         if (number) params.set("number", number);
         if (year) params.set("year", year);
         
         router.push(`/search?${params.toString()}`);
     };
+
+    function handleNumericFieldChange(setter: (value: string) => void, value: string) {
+        if (value.match(/^[0-9]*$/)) {
+            setter(value);
+        }
+    }
 
     return (
         <div className="w-full max-w-3xl mx-auto px-2 sm:px-0">
@@ -39,38 +54,41 @@ export function SearchWidget() {
                 <TabsContent value="id" className="mt-0">
                     <form 
                         onSubmit={handleSearch}
-                        className="flex items-center bg-card p-1 rounded-full border shadow-lg overflow-hidden divide-x divide-border"
+                        className="flex items-center rounded-full border p-1.5 shadow-lg bg-card overflow-hidden gap-1"
                     >
-                        <div className="flex-1 min-w-0">
-                             <Input
-                                type="text"
-                                placeholder="Inicial"
-                                value={initial}
-                                onChange={(e) => setInitial(e.target.value.toUpperCase())}
-                                className="border-none shadow-none focus-visible:ring-0 h-10 sm:h-12 rounded-none bg-transparent font-bold text-left pl-4 sm:pl-6 text-sm sm:text-base"
-                            />
-                        </div>
-                        
-                        <div className="flex-1 min-w-0">
-                            <Input
-                                type="number"
-                                placeholder="Número"
-                                min={0}
-                                value={number}
-                                onChange={(e) => setNumber(e.target.value)}
-                                className="border-none shadow-none focus-visible:ring-0 h-10 sm:h-12 rounded-none bg-transparent text-sm sm:text-base px-3 sm:px-6 text-left"
-                            />
-                        </div>
 
-                        <div className="flex-1 min-w-0">
-                            <Input
-                                type="number"
-                                placeholder="Año"
-                                min={0}
-                                value={year}
-                                onChange={(e) => setYear(e.target.value)}
-                                className="border-none shadow-none focus-visible:ring-0 h-10 sm:h-12 rounded-none bg-transparent text-sm sm:text-base px-3 sm:px-6 text-left"
-                            />
+                        <div className="flex items-center divide-x divide-border">
+                            <div className="flex-1 min-w-0">
+                                <Input
+                                    type="text"
+                                    placeholder="Inicial"
+                                    value={initial}
+                                    onChange={(e) => setInitial(e.target.value.toUpperCase())}
+                                    className="border-none shadow-none focus-visible:ring-0 h-10 sm:h-12 rounded-l-full bg-transparent font-bold text-left pl-4 sm:pl-6 text-sm sm:text-base"
+                                />
+                            </div>
+
+                            <div className="flex-1 min-w-0">
+                                <Input
+                                    type="number"
+                                    placeholder="Número"
+                                    min={0}
+                                    value={number}
+                                    onChange={e => handleNumericFieldChange(setNumber, e.target.value)}
+                                    className="border-none shadow-none focus-visible:ring-0 h-10 sm:h-12 rounded-none bg-transparent text-sm sm:text-base px-3 sm:px-6 text-left"
+                                />
+                            </div>
+
+                            <div className="flex-1 min-w-0">
+                                <Input
+                                    type="number"
+                                    placeholder="Año"
+                                    min={0}
+                                    value={year}
+                                    onChange={e => handleNumericFieldChange(setYear, e.target.value)}
+                                    className="border-none shadow-none focus-visible:ring-0 h-10 sm:h-12 rounded-r-full bg-transparent text-sm sm:text-base px-3 sm:px-6 text-left"
+                                />
+                            </div>
                         </div>
 
                         <div className="pl-1 shrink-0">
