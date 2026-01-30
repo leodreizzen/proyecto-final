@@ -1,3 +1,4 @@
+export const dynamic = 'force-dynamic';
 import { authCheck, publicRoute } from "@/lib/auth/route-authorization";
 import { Hero } from "@/components/home/hero";
 import { LatestResolutions } from "@/components/home/latest-resolutions";
