@@ -1,4 +1,5 @@
 import {Options, PythonShell} from "python-shell";
+import fs from "fs";
 
 let python_path: string;
 if (process.platform === "win32") {
@@ -12,6 +13,9 @@ export async function runPythonScript(
     args: string[] = [],
     inputBuffer?: Buffer
 ): Promise<string> {
+    if (!fs.existsSync(scriptPath)) {
+        throw new Error(`Python script not found at path: ${scriptPath}`);
+    }
 
     return new Promise((resolve, reject) => {
         const options: Options = {
@@ -35,9 +39,13 @@ export async function runPythonScript(
             reject(err);
         });
 
+        if (inputBuffer && pyshell.childProcess.stdin) {
+            pyshell.childProcess.stdin.on('error', (err) => {
+                console.warn(`[${scriptPath}] Error writing to stdin (process likely closed):`, err.message);
+            });
 
-        if (inputBuffer) {
-            pyshell.childProcess.stdin?.write(inputBuffer);
+            pyshell.childProcess.stdin.write(inputBuffer);
+            pyshell.childProcess.stdin.end();
         }
 
         pyshell.end((_err, exitCode, _exitSignal) => {

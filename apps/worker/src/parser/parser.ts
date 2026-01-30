@@ -59,7 +59,7 @@ export async function _parseTextResolution(fileContent: string, firstAttempt: bo
 export async function parseResolution(buffer: Buffer, progressReporter: ProgressReporter): Promise<ParseResolutionResult> {
     const textExtractionReporter = progressReporter.addSubreporter("textExtraction", 1.75);
     const aiParsingReporter = progressReporter.addSubreporter("aiParsing", 98);
-    const file_markdown = await runPythonScript('src/parser/pdfparse.py', [], buffer); //TODO error handling
+    const file_markdown = await runPythonScript('src/parser/pdfparse.py', [], buffer);
     textExtractionReporter.reportProgress(1);
 
     return parseTextResolution(file_markdown, aiParsingReporter);
