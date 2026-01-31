@@ -9,6 +9,7 @@ import {fetchUploadWithFileToProcess, setUploadStatus} from "@/data/uploads";
 import ProgressReporter from "@/util/progress-reporter";
 import {publishUploadStatus} from "@repo/pubsub/publish/uploads";
 import {publishNewResolution} from "@repo/pubsub/publish/resolutions";
+import {scheduleImpactTask} from "@/job-creation";
 
 export async function processResolutionUpload(job: Job, progressReporter: ProgressReporter) {
     if (!job.id)
@@ -46,6 +47,7 @@ export async function processResolutionUpload(job: Job, progressReporter: Progre
         await prisma.$transaction(async (tx) => {
             res = await saveParsedResolution(tx, parsedResolution, upload, createdFile);
             await setUploadStatus({uploadId, status: "COMPLETED", tx});
+            await scheduleImpactTask(res.id, tx);
         });
         await publishNewResolution(res!.id)
         await publishUploadStatus(uploadId, {status: "COMPLETED"});

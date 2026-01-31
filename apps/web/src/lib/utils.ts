@@ -76,6 +76,34 @@ export function formatChangeType(type: string): string {
     }
 }
 
+export function formatMaintenanceTaskType(type: string): string {
+    switch (type) {
+        case "EVALUATE_IMPACT":
+            return "Evaluar Impacto";
+        case "PROCESS_ADVANCED_CHANGES":
+            return "Procesar Cambios";
+        case "CALCULATE_EMBEDDINGS":
+            return "Calcular Embeddings";
+        default:
+            return type;
+    }
+}
+
+export function formatMaintenanceTaskStatus(status: string): string {
+    switch (status) {
+        case "PENDING":
+            return "PENDIENTE";
+        case "PROCESSING":
+            return "EN CURSO";
+        case "COMPLETED":
+            return "LISTA";
+        case "FAILED":
+            return "FALLIDA";
+        default:
+            return status;
+    }
+}
+
 type ValidPath<T> = T extends object
     ? T extends unknown[]
         ? never

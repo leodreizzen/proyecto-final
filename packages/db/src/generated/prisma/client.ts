@@ -220,6 +220,11 @@ export type Verification = Prisma.VerificationModel
  */
 export type Asset = Prisma.AssetModel
 /**
+ * Model MaintenanceTask
+ * 
+ */
+export type MaintenanceTask = Prisma.MaintenanceTaskModel
+/**
  * Model v_ArticleContext
  * 
  */

@@ -53,6 +53,14 @@ import {uploadHistoryFetcher} from "@/app/api/admin/uploads/history/fetcher";
 import {AdminUploadHistoryReturnType} from "@/app/api/admin/uploads/history/types";
 import {usersFetcher} from "@/app/api/admin/users/fetcher";
 import {AdminUsersReturnType} from "@/app/api/admin/users/types";
+import {AdminMaintenanceTasksReturnType} from "@/app/api/admin/maintenance-tasks/types";
+import {getMaintenanceTasks} from "@/app/api/admin/maintenance-tasks/fetcher";
+import {MaintenanceTaskFilter} from "@/lib/data/maintenance";
+
+export const maintenanceKeys = {
+    all: ['maintenance'] as const,
+    list: (filter: MaintenanceTaskFilter, query?: string | null) => [...maintenanceKeys.all, 'list', { filter, query }] as const,
+};
 
 export const missingResolutionsQuery = (query?: string | null) => infiniteQueryOptions<AdminMissingResolutionsReturnType, Error, InfiniteData<AdminMissingResolutionsReturnType>, readonly ["resolutions", "missing", { readonly query: string | null | undefined; }], string | null>({
     queryKey: ["resolutions", "missing", {query}],
@@ -67,6 +75,16 @@ export const missingResolutionsQuery = (query?: string | null) => infiniteQueryO
             number: last.number,
             year: last.year
         });
+    }
+});
+
+export const maintenanceTasksQuery = (filter: MaintenanceTaskFilter, query?: string | null) => infiniteQueryOptions<AdminMaintenanceTasksReturnType, Error, InfiniteData<AdminMaintenanceTasksReturnType>, ReturnType<typeof maintenanceKeys.list>, string | null>({
+    queryKey: maintenanceKeys.list(filter, query),
+    queryFn: ({pageParam}) => getMaintenanceTasks({pageParam, filter, query}),
+    initialPageParam: null,
+    getNextPageParam: (lastPage) => {
+        if (!lastPage || lastPage.length === 0) return null;
+        return lastPage[lastPage.length - 1]?.id ?? null;
     }
 });
 

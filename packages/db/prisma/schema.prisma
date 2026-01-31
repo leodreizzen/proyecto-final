@@ -49,6 +49,8 @@ model Resolution {
   resolutionUploadId String             @unique @db.Uuid
   vArticleContexts   v_ArticleContext[]
 
+  maintenanceTasks MaintenanceTask[]
+
   // Check: "year" must be between 1000 and 9999 and match the year of "date"
   // Check: "number" > 0
   // Trigger: Automatically links/unlinks references pointing to this resolution on creation or update
@@ -751,4 +753,42 @@ view v_MissingResolution {
   search_id       String
 
   @@unique([initial, number, year])
+}
+
+model MaintenanceTask {
+  id String @id @default(dbgenerated("uuidv7()")) @db.Uuid
+
+  type   MaintenanceTaskType
+  status MaintenanceTaskStatus @default(PENDING)
+
+  resolution   Resolution @relation(fields: [resolutionId], references: [id], onDelete: Cascade)
+  resolutionId String     @db.Uuid
+
+  triggerEventId String
+
+  payload Json?
+
+  errorMsg String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Check: can only have errorMsg if status is FAILED
+  // Composite unique index for deduplication per event
+  @@unique([resolutionId, type, triggerEventId])
+  @@index([status])
+  @@index([triggerEventId])
+}
+
+enum MaintenanceTaskType {
+  EVALUATE_IMPACT
+  PROCESS_ADVANCED_CHANGES
+  CALCULATE_EMBEDDINGS
+}
+
+enum MaintenanceTaskStatus {
+  PENDING
+  PROCESSING
+  COMPLETED
+  FAILED
 }

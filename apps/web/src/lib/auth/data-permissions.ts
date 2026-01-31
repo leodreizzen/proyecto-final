@@ -5,6 +5,7 @@ import {Mutable} from "@/lib/definitions/util";
 export const actionsStatement = {
     resolution: ["create", "read", "update", "delete"],
     upload: ["create", "read", "readFile"],
+    maintenanceTask: ["read", "update"],
     ...defaultStatements
 } as const;
 
@@ -31,6 +32,7 @@ const admin = ac.newRole({
     ...userPermissions,
     resolution: ["create", "update", "delete"],
     upload: ["create", "read", "readFile"],
+    maintenanceTask: ["read", "update"],
 })
 
 const user = ac.newRole({

@@ -420,6 +420,7 @@ export const ModelName = {
   Account: 'Account',
   Verification: 'Verification',
   Asset: 'Asset',
+  MaintenanceTask: 'MaintenanceTask',
   v_ArticleContext: 'v_ArticleContext',
   v_ResolutionSearch: 'v_ResolutionSearch',
   v_MissingResolution: 'v_MissingResolution'
@@ -438,7 +439,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "resolution" | "recital" | "consideration" | "article" | "articleNormative" | "articleModifier" | "articleCreateDocument" | "articleFormality" | "change" | "changeModifyArticle" | "changeReplaceArticle" | "changeAdvanced" | "changeRatifyAdReferendum" | "changeReplaceAnnex" | "changeAddAnnex" | "changeModifyTextAnnex" | "changeAddArticle" | "changeRepeal" | "changeApplyModificationsAnnex" | "annex" | "annexText" | "annexWithArticles" | "annexChapter" | "contentBlock" | "textReference" | "reference" | "referenceResolution" | "referenceArticle" | "referenceAnnex" | "referenceChapter" | "resolutionUpload" | "user" | "session" | "account" | "verification" | "asset" | "v_ArticleContext" | "v_ResolutionSearch" | "v_MissingResolution"
+    modelProps: "resolution" | "recital" | "consideration" | "article" | "articleNormative" | "articleModifier" | "articleCreateDocument" | "articleFormality" | "change" | "changeModifyArticle" | "changeReplaceArticle" | "changeAdvanced" | "changeRatifyAdReferendum" | "changeReplaceAnnex" | "changeAddAnnex" | "changeModifyTextAnnex" | "changeAddArticle" | "changeRepeal" | "changeApplyModificationsAnnex" | "annex" | "annexText" | "annexWithArticles" | "annexChapter" | "contentBlock" | "textReference" | "reference" | "referenceResolution" | "referenceArticle" | "referenceAnnex" | "referenceChapter" | "resolutionUpload" | "user" | "session" | "account" | "verification" | "asset" | "maintenanceTask" | "v_ArticleContext" | "v_ResolutionSearch" | "v_MissingResolution"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -3106,6 +3107,80 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    MaintenanceTask: {
+      payload: Prisma.$MaintenanceTaskPayload<ExtArgs>
+      fields: Prisma.MaintenanceTaskFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.MaintenanceTaskFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MaintenanceTaskPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.MaintenanceTaskFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MaintenanceTaskPayload>
+        }
+        findFirst: {
+          args: Prisma.MaintenanceTaskFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MaintenanceTaskPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.MaintenanceTaskFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MaintenanceTaskPayload>
+        }
+        findMany: {
+          args: Prisma.MaintenanceTaskFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MaintenanceTaskPayload>[]
+        }
+        create: {
+          args: Prisma.MaintenanceTaskCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MaintenanceTaskPayload>
+        }
+        createMany: {
+          args: Prisma.MaintenanceTaskCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.MaintenanceTaskCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MaintenanceTaskPayload>[]
+        }
+        delete: {
+          args: Prisma.MaintenanceTaskDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MaintenanceTaskPayload>
+        }
+        update: {
+          args: Prisma.MaintenanceTaskUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MaintenanceTaskPayload>
+        }
+        deleteMany: {
+          args: Prisma.MaintenanceTaskDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.MaintenanceTaskUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.MaintenanceTaskUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MaintenanceTaskPayload>[]
+        }
+        upsert: {
+          args: Prisma.MaintenanceTaskUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MaintenanceTaskPayload>
+        }
+        aggregate: {
+          args: Prisma.MaintenanceTaskAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateMaintenanceTask>
+        }
+        groupBy: {
+          args: Prisma.MaintenanceTaskGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.MaintenanceTaskGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.MaintenanceTaskCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.MaintenanceTaskCountAggregateOutputType> | number
+        }
+      }
+    }
     v_ArticleContext: {
       payload: Prisma.$v_ArticleContextPayload<ExtArgs>
       fields: Prisma.v_ArticleContextFieldRefs
@@ -3664,6 +3739,21 @@ export const AssetScalarFieldEnum = {
 export type AssetScalarFieldEnum = (typeof AssetScalarFieldEnum)[keyof typeof AssetScalarFieldEnum]
 
 
+export const MaintenanceTaskScalarFieldEnum = {
+  id: 'id',
+  type: 'type',
+  status: 'status',
+  resolutionId: 'resolutionId',
+  triggerEventId: 'triggerEventId',
+  payload: 'payload',
+  errorMsg: 'errorMsg',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type MaintenanceTaskScalarFieldEnum = (typeof MaintenanceTaskScalarFieldEnum)[keyof typeof MaintenanceTaskScalarFieldEnum]
+
+
 export const V_ArticleContextScalarFieldEnum = {
   id: 'id',
   number: 'number',
@@ -3939,6 +4029,34 @@ export type ListEnumUserRoleFieldRefInput<$PrismaModel> = FieldRefInputType<$Pri
 
 
 /**
+ * Reference to a field of type 'MaintenanceTaskType'
+ */
+export type EnumMaintenanceTaskTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'MaintenanceTaskType'>
+    
+
+
+/**
+ * Reference to a field of type 'MaintenanceTaskType[]'
+ */
+export type ListEnumMaintenanceTaskTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'MaintenanceTaskType[]'>
+    
+
+
+/**
+ * Reference to a field of type 'MaintenanceTaskStatus'
+ */
+export type EnumMaintenanceTaskStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'MaintenanceTaskStatus'>
+    
+
+
+/**
+ * Reference to a field of type 'MaintenanceTaskStatus[]'
+ */
+export type ListEnumMaintenanceTaskStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'MaintenanceTaskStatus[]'>
+    
+
+
+/**
  * Reference to a field of type 'Float'
  */
 export type FloatFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Float'>
@@ -4066,6 +4184,7 @@ export type GlobalOmitConfig = {
   account?: Prisma.AccountOmit
   verification?: Prisma.VerificationOmit
   asset?: Prisma.AssetOmit
+  maintenanceTask?: Prisma.MaintenanceTaskOmit
   v_ArticleContext?: Prisma.v_ArticleContextOmit
   v_ResolutionSearch?: Prisma.v_ResolutionSearchOmit
   v_MissingResolution?: Prisma.v_MissingResolutionOmit

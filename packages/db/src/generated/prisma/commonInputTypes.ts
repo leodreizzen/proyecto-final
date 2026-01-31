@@ -460,6 +460,40 @@ export type DateTimeNullableWithAggregatesFilter<$PrismaModel = never> = {
   _max?: Prisma.NestedDateTimeNullableFilter<$PrismaModel>
 }
 
+export type EnumMaintenanceTaskTypeFilter<$PrismaModel = never> = {
+  equals?: $Enums.MaintenanceTaskType | Prisma.EnumMaintenanceTaskTypeFieldRefInput<$PrismaModel>
+  in?: $Enums.MaintenanceTaskType[] | Prisma.ListEnumMaintenanceTaskTypeFieldRefInput<$PrismaModel>
+  notIn?: $Enums.MaintenanceTaskType[] | Prisma.ListEnumMaintenanceTaskTypeFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumMaintenanceTaskTypeFilter<$PrismaModel> | $Enums.MaintenanceTaskType
+}
+
+export type EnumMaintenanceTaskStatusFilter<$PrismaModel = never> = {
+  equals?: $Enums.MaintenanceTaskStatus | Prisma.EnumMaintenanceTaskStatusFieldRefInput<$PrismaModel>
+  in?: $Enums.MaintenanceTaskStatus[] | Prisma.ListEnumMaintenanceTaskStatusFieldRefInput<$PrismaModel>
+  notIn?: $Enums.MaintenanceTaskStatus[] | Prisma.ListEnumMaintenanceTaskStatusFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumMaintenanceTaskStatusFilter<$PrismaModel> | $Enums.MaintenanceTaskStatus
+}
+
+export type EnumMaintenanceTaskTypeWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.MaintenanceTaskType | Prisma.EnumMaintenanceTaskTypeFieldRefInput<$PrismaModel>
+  in?: $Enums.MaintenanceTaskType[] | Prisma.ListEnumMaintenanceTaskTypeFieldRefInput<$PrismaModel>
+  notIn?: $Enums.MaintenanceTaskType[] | Prisma.ListEnumMaintenanceTaskTypeFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumMaintenanceTaskTypeWithAggregatesFilter<$PrismaModel> | $Enums.MaintenanceTaskType
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumMaintenanceTaskTypeFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumMaintenanceTaskTypeFilter<$PrismaModel>
+}
+
+export type EnumMaintenanceTaskStatusWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.MaintenanceTaskStatus | Prisma.EnumMaintenanceTaskStatusFieldRefInput<$PrismaModel>
+  in?: $Enums.MaintenanceTaskStatus[] | Prisma.ListEnumMaintenanceTaskStatusFieldRefInput<$PrismaModel>
+  notIn?: $Enums.MaintenanceTaskStatus[] | Prisma.ListEnumMaintenanceTaskStatusFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumMaintenanceTaskStatusWithAggregatesFilter<$PrismaModel> | $Enums.MaintenanceTaskStatus
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumMaintenanceTaskStatusFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumMaintenanceTaskStatusFilter<$PrismaModel>
+}
+
 export type NestedUuidFilter<$PrismaModel = never> = {
   equals?: string | Prisma.StringFieldRefInput<$PrismaModel>
   in?: string[] | Prisma.ListStringFieldRefInput<$PrismaModel>
@@ -886,6 +920,40 @@ export type NestedDateTimeNullableWithAggregatesFilter<$PrismaModel = never> = {
   _count?: Prisma.NestedIntNullableFilter<$PrismaModel>
   _min?: Prisma.NestedDateTimeNullableFilter<$PrismaModel>
   _max?: Prisma.NestedDateTimeNullableFilter<$PrismaModel>
+}
+
+export type NestedEnumMaintenanceTaskTypeFilter<$PrismaModel = never> = {
+  equals?: $Enums.MaintenanceTaskType | Prisma.EnumMaintenanceTaskTypeFieldRefInput<$PrismaModel>
+  in?: $Enums.MaintenanceTaskType[] | Prisma.ListEnumMaintenanceTaskTypeFieldRefInput<$PrismaModel>
+  notIn?: $Enums.MaintenanceTaskType[] | Prisma.ListEnumMaintenanceTaskTypeFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumMaintenanceTaskTypeFilter<$PrismaModel> | $Enums.MaintenanceTaskType
+}
+
+export type NestedEnumMaintenanceTaskStatusFilter<$PrismaModel = never> = {
+  equals?: $Enums.MaintenanceTaskStatus | Prisma.EnumMaintenanceTaskStatusFieldRefInput<$PrismaModel>
+  in?: $Enums.MaintenanceTaskStatus[] | Prisma.ListEnumMaintenanceTaskStatusFieldRefInput<$PrismaModel>
+  notIn?: $Enums.MaintenanceTaskStatus[] | Prisma.ListEnumMaintenanceTaskStatusFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumMaintenanceTaskStatusFilter<$PrismaModel> | $Enums.MaintenanceTaskStatus
+}
+
+export type NestedEnumMaintenanceTaskTypeWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.MaintenanceTaskType | Prisma.EnumMaintenanceTaskTypeFieldRefInput<$PrismaModel>
+  in?: $Enums.MaintenanceTaskType[] | Prisma.ListEnumMaintenanceTaskTypeFieldRefInput<$PrismaModel>
+  notIn?: $Enums.MaintenanceTaskType[] | Prisma.ListEnumMaintenanceTaskTypeFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumMaintenanceTaskTypeWithAggregatesFilter<$PrismaModel> | $Enums.MaintenanceTaskType
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumMaintenanceTaskTypeFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumMaintenanceTaskTypeFilter<$PrismaModel>
+}
+
+export type NestedEnumMaintenanceTaskStatusWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.MaintenanceTaskStatus | Prisma.EnumMaintenanceTaskStatusFieldRefInput<$PrismaModel>
+  in?: $Enums.MaintenanceTaskStatus[] | Prisma.ListEnumMaintenanceTaskStatusFieldRefInput<$PrismaModel>
+  notIn?: $Enums.MaintenanceTaskStatus[] | Prisma.ListEnumMaintenanceTaskStatusFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumMaintenanceTaskStatusWithAggregatesFilter<$PrismaModel> | $Enums.MaintenanceTaskStatus
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumMaintenanceTaskStatusFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumMaintenanceTaskStatusFilter<$PrismaModel>
 }
 
 

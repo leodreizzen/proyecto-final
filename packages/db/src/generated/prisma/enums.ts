@@ -104,3 +104,22 @@ export const UserRole = {
 } as const
 
 export type UserRole = (typeof UserRole)[keyof typeof UserRole]
+
+
+export const MaintenanceTaskType = {
+  EVALUATE_IMPACT: 'EVALUATE_IMPACT',
+  PROCESS_ADVANCED_CHANGES: 'PROCESS_ADVANCED_CHANGES',
+  CALCULATE_EMBEDDINGS: 'CALCULATE_EMBEDDINGS'
+} as const
+
+export type MaintenanceTaskType = (typeof MaintenanceTaskType)[keyof typeof MaintenanceTaskType]
+
+
+export const MaintenanceTaskStatus = {
+  PENDING: 'PENDING',
+  PROCESSING: 'PROCESSING',
+  COMPLETED: 'COMPLETED',
+  FAILED: 'FAILED'
+} as const
+
+export type MaintenanceTaskStatus = (typeof MaintenanceTaskStatus)[keyof typeof MaintenanceTaskStatus]

@@ -87,6 +87,7 @@ export const ModelName = {
   Account: 'Account',
   Verification: 'Verification',
   Asset: 'Asset',
+  MaintenanceTask: 'MaintenanceTask',
   v_ArticleContext: 'v_ArticleContext',
   v_ResolutionSearch: 'v_ResolutionSearch',
   v_MissingResolution: 'v_MissingResolution'
@@ -507,6 +508,21 @@ export const AssetScalarFieldEnum = {
 } as const
 
 export type AssetScalarFieldEnum = (typeof AssetScalarFieldEnum)[keyof typeof AssetScalarFieldEnum]
+
+
+export const MaintenanceTaskScalarFieldEnum = {
+  id: 'id',
+  type: 'type',
+  status: 'status',
+  resolutionId: 'resolutionId',
+  triggerEventId: 'triggerEventId',
+  payload: 'payload',
+  errorMsg: 'errorMsg',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type MaintenanceTaskScalarFieldEnum = (typeof MaintenanceTaskScalarFieldEnum)[keyof typeof MaintenanceTaskScalarFieldEnum]
 
 
 export const V_ArticleContextScalarFieldEnum = {
