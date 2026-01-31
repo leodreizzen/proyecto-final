@@ -217,3 +217,8 @@ export type v_ResolutionSearch = Prisma.v_ResolutionSearchModel
  * 
  */
 export type v_MissingResolution = Prisma.v_MissingResolutionModel
+/**
+ * Model v_ResolvedReferences
+ * 
+ */
+export type v_ResolvedReferences = Prisma.v_ResolvedReferencesModel

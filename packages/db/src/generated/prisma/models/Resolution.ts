@@ -1915,6 +1915,14 @@ export type ResolutionUncheckedUpdateWithoutMaintenanceTasksInput = {
   vArticleContexts?: Prisma.v_ArticleContextUncheckedUpdateManyWithoutRootResolutionNestedInput
 }
 
+export type ResolutionUpdateOneRequiredWithoutVArticleContextsNestedInput = {
+  create?: Prisma.XOR<Prisma.ResolutionCreateWithoutVArticleContextsInput, Prisma.ResolutionUncheckedCreateWithoutVArticleContextsInput>
+  connectOrCreate?: Prisma.ResolutionCreateOrConnectWithoutVArticleContextsInput
+  upsert?: Prisma.ResolutionUpsertWithoutVArticleContextsInput
+  connect?: Prisma.ResolutionWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.ResolutionUpdateToOneWithWhereWithoutVArticleContextsInput, Prisma.ResolutionUpdateWithoutVArticleContextsInput>, Prisma.ResolutionUncheckedUpdateWithoutVArticleContextsInput>
+}
+
 export type ResolutionCreateManyLastUpdateByInput = {
   id?: string
   initial: string
@@ -1997,14 +2005,6 @@ export type ResolutionUncheckedUpdateManyWithoutLastUpdateByInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   resolutionUploadId?: Prisma.StringFieldUpdateOperationsInput | string
-}
-
-export type ResolutionUpdateOneRequiredWithoutVArticleContextsNestedInput = {
-  create?: Prisma.XOR<Prisma.ResolutionCreateWithoutVArticleContextsInput, Prisma.ResolutionUncheckedCreateWithoutVArticleContextsInput>
-  connectOrCreate?: Prisma.ResolutionCreateOrConnectWithoutVArticleContextsInput
-  upsert?: Prisma.ResolutionUpsertWithoutVArticleContextsInput
-  connect?: Prisma.ResolutionWhereUniqueInput
-  update?: Prisma.XOR<Prisma.XOR<Prisma.ResolutionUpdateToOneWithWhereWithoutVArticleContextsInput, Prisma.ResolutionUpdateWithoutVArticleContextsInput>, Prisma.ResolutionUncheckedUpdateWithoutVArticleContextsInput>
 }
 
 export type ResolutionCreateWithoutVArticleContextsInput = {

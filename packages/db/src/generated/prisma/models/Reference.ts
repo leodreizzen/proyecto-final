@@ -173,6 +173,7 @@ export type ReferenceWhereInput = {
   textReference?: Prisma.XOR<Prisma.TextReferenceNullableScalarRelationFilter, Prisma.TextReferenceWhereInput> | null
   changeAdvanced?: Prisma.XOR<Prisma.ChangeAdvancedNullableScalarRelationFilter, Prisma.ChangeAdvancedWhereInput> | null
   changeRepeal?: Prisma.XOR<Prisma.ChangeRepealNullableScalarRelationFilter, Prisma.ChangeRepealWhereInput> | null
+  resolved?: Prisma.XOR<Prisma.V_ResolvedReferencesNullableScalarRelationFilter, Prisma.v_ResolvedReferencesWhereInput> | null
 }
 
 export type ReferenceOrderByWithRelationInput = {
@@ -186,6 +187,7 @@ export type ReferenceOrderByWithRelationInput = {
   textReference?: Prisma.TextReferenceOrderByWithRelationInput
   changeAdvanced?: Prisma.ChangeAdvancedOrderByWithRelationInput
   changeRepeal?: Prisma.ChangeRepealOrderByWithRelationInput
+  resolved?: Prisma.v_ResolvedReferencesOrderByWithRelationInput
 }
 
 export type ReferenceWhereUniqueInput = Prisma.AtLeast<{
@@ -202,6 +204,7 @@ export type ReferenceWhereUniqueInput = Prisma.AtLeast<{
   textReference?: Prisma.XOR<Prisma.TextReferenceNullableScalarRelationFilter, Prisma.TextReferenceWhereInput> | null
   changeAdvanced?: Prisma.XOR<Prisma.ChangeAdvancedNullableScalarRelationFilter, Prisma.ChangeAdvancedWhereInput> | null
   changeRepeal?: Prisma.XOR<Prisma.ChangeRepealNullableScalarRelationFilter, Prisma.ChangeRepealWhereInput> | null
+  resolved?: Prisma.XOR<Prisma.V_ResolvedReferencesNullableScalarRelationFilter, Prisma.v_ResolvedReferencesWhereInput> | null
 }, "id">
 
 export type ReferenceOrderByWithAggregationInput = {
@@ -233,6 +236,7 @@ export type ReferenceCreateInput = {
   textReference?: Prisma.TextReferenceCreateNestedOneWithoutReferenceInput
   changeAdvanced?: Prisma.ChangeAdvancedCreateNestedOneWithoutTargetInput
   changeRepeal?: Prisma.ChangeRepealCreateNestedOneWithoutTargetInput
+  resolved?: Prisma.v_ResolvedReferencesCreateNestedOneWithoutReferenceInput
 }
 
 export type ReferenceUncheckedCreateInput = {
@@ -246,6 +250,7 @@ export type ReferenceUncheckedCreateInput = {
   textReference?: Prisma.TextReferenceUncheckedCreateNestedOneWithoutReferenceInput
   changeAdvanced?: Prisma.ChangeAdvancedUncheckedCreateNestedOneWithoutTargetInput
   changeRepeal?: Prisma.ChangeRepealUncheckedCreateNestedOneWithoutTargetInput
+  resolved?: Prisma.v_ResolvedReferencesUncheckedCreateNestedOneWithoutReferenceInput
 }
 
 export type ReferenceUpdateInput = {
@@ -259,6 +264,7 @@ export type ReferenceUpdateInput = {
   textReference?: Prisma.TextReferenceUpdateOneWithoutReferenceNestedInput
   changeAdvanced?: Prisma.ChangeAdvancedUpdateOneWithoutTargetNestedInput
   changeRepeal?: Prisma.ChangeRepealUpdateOneWithoutTargetNestedInput
+  resolved?: Prisma.v_ResolvedReferencesUpdateOneWithoutReferenceNestedInput
 }
 
 export type ReferenceUncheckedUpdateInput = {
@@ -272,6 +278,7 @@ export type ReferenceUncheckedUpdateInput = {
   textReference?: Prisma.TextReferenceUncheckedUpdateOneWithoutReferenceNestedInput
   changeAdvanced?: Prisma.ChangeAdvancedUncheckedUpdateOneWithoutTargetNestedInput
   changeRepeal?: Prisma.ChangeRepealUncheckedUpdateOneWithoutTargetNestedInput
+  resolved?: Prisma.v_ResolvedReferencesUncheckedUpdateOneWithoutReferenceNestedInput
 }
 
 export type ReferenceCreateManyInput = {
@@ -431,6 +438,7 @@ export type ReferenceCreateWithoutChangeAdvancedInput = {
   chapter?: Prisma.ReferenceChapterCreateNestedOneWithoutReferenceInput
   textReference?: Prisma.TextReferenceCreateNestedOneWithoutReferenceInput
   changeRepeal?: Prisma.ChangeRepealCreateNestedOneWithoutTargetInput
+  resolved?: Prisma.v_ResolvedReferencesCreateNestedOneWithoutReferenceInput
 }
 
 export type ReferenceUncheckedCreateWithoutChangeAdvancedInput = {
@@ -443,6 +451,7 @@ export type ReferenceUncheckedCreateWithoutChangeAdvancedInput = {
   chapter?: Prisma.ReferenceChapterUncheckedCreateNestedOneWithoutReferenceInput
   textReference?: Prisma.TextReferenceUncheckedCreateNestedOneWithoutReferenceInput
   changeRepeal?: Prisma.ChangeRepealUncheckedCreateNestedOneWithoutTargetInput
+  resolved?: Prisma.v_ResolvedReferencesUncheckedCreateNestedOneWithoutReferenceInput
 }
 
 export type ReferenceCreateOrConnectWithoutChangeAdvancedInput = {
@@ -471,6 +480,7 @@ export type ReferenceUpdateWithoutChangeAdvancedInput = {
   chapter?: Prisma.ReferenceChapterUpdateOneWithoutReferenceNestedInput
   textReference?: Prisma.TextReferenceUpdateOneWithoutReferenceNestedInput
   changeRepeal?: Prisma.ChangeRepealUpdateOneWithoutTargetNestedInput
+  resolved?: Prisma.v_ResolvedReferencesUpdateOneWithoutReferenceNestedInput
 }
 
 export type ReferenceUncheckedUpdateWithoutChangeAdvancedInput = {
@@ -483,6 +493,7 @@ export type ReferenceUncheckedUpdateWithoutChangeAdvancedInput = {
   chapter?: Prisma.ReferenceChapterUncheckedUpdateOneWithoutReferenceNestedInput
   textReference?: Prisma.TextReferenceUncheckedUpdateOneWithoutReferenceNestedInput
   changeRepeal?: Prisma.ChangeRepealUncheckedUpdateOneWithoutTargetNestedInput
+  resolved?: Prisma.v_ResolvedReferencesUncheckedUpdateOneWithoutReferenceNestedInput
 }
 
 export type ReferenceCreateWithoutChangeRepealInput = {
@@ -495,6 +506,7 @@ export type ReferenceCreateWithoutChangeRepealInput = {
   chapter?: Prisma.ReferenceChapterCreateNestedOneWithoutReferenceInput
   textReference?: Prisma.TextReferenceCreateNestedOneWithoutReferenceInput
   changeAdvanced?: Prisma.ChangeAdvancedCreateNestedOneWithoutTargetInput
+  resolved?: Prisma.v_ResolvedReferencesCreateNestedOneWithoutReferenceInput
 }
 
 export type ReferenceUncheckedCreateWithoutChangeRepealInput = {
@@ -507,6 +519,7 @@ export type ReferenceUncheckedCreateWithoutChangeRepealInput = {
   chapter?: Prisma.ReferenceChapterUncheckedCreateNestedOneWithoutReferenceInput
   textReference?: Prisma.TextReferenceUncheckedCreateNestedOneWithoutReferenceInput
   changeAdvanced?: Prisma.ChangeAdvancedUncheckedCreateNestedOneWithoutTargetInput
+  resolved?: Prisma.v_ResolvedReferencesUncheckedCreateNestedOneWithoutReferenceInput
 }
 
 export type ReferenceCreateOrConnectWithoutChangeRepealInput = {
@@ -535,6 +548,7 @@ export type ReferenceUpdateWithoutChangeRepealInput = {
   chapter?: Prisma.ReferenceChapterUpdateOneWithoutReferenceNestedInput
   textReference?: Prisma.TextReferenceUpdateOneWithoutReferenceNestedInput
   changeAdvanced?: Prisma.ChangeAdvancedUpdateOneWithoutTargetNestedInput
+  resolved?: Prisma.v_ResolvedReferencesUpdateOneWithoutReferenceNestedInput
 }
 
 export type ReferenceUncheckedUpdateWithoutChangeRepealInput = {
@@ -547,6 +561,7 @@ export type ReferenceUncheckedUpdateWithoutChangeRepealInput = {
   chapter?: Prisma.ReferenceChapterUncheckedUpdateOneWithoutReferenceNestedInput
   textReference?: Prisma.TextReferenceUncheckedUpdateOneWithoutReferenceNestedInput
   changeAdvanced?: Prisma.ChangeAdvancedUncheckedUpdateOneWithoutTargetNestedInput
+  resolved?: Prisma.v_ResolvedReferencesUncheckedUpdateOneWithoutReferenceNestedInput
 }
 
 export type ReferenceCreateWithoutTextReferenceInput = {
@@ -559,6 +574,7 @@ export type ReferenceCreateWithoutTextReferenceInput = {
   chapter?: Prisma.ReferenceChapterCreateNestedOneWithoutReferenceInput
   changeAdvanced?: Prisma.ChangeAdvancedCreateNestedOneWithoutTargetInput
   changeRepeal?: Prisma.ChangeRepealCreateNestedOneWithoutTargetInput
+  resolved?: Prisma.v_ResolvedReferencesCreateNestedOneWithoutReferenceInput
 }
 
 export type ReferenceUncheckedCreateWithoutTextReferenceInput = {
@@ -571,6 +587,7 @@ export type ReferenceUncheckedCreateWithoutTextReferenceInput = {
   chapter?: Prisma.ReferenceChapterUncheckedCreateNestedOneWithoutReferenceInput
   changeAdvanced?: Prisma.ChangeAdvancedUncheckedCreateNestedOneWithoutTargetInput
   changeRepeal?: Prisma.ChangeRepealUncheckedCreateNestedOneWithoutTargetInput
+  resolved?: Prisma.v_ResolvedReferencesUncheckedCreateNestedOneWithoutReferenceInput
 }
 
 export type ReferenceCreateOrConnectWithoutTextReferenceInput = {
@@ -599,6 +616,7 @@ export type ReferenceUpdateWithoutTextReferenceInput = {
   chapter?: Prisma.ReferenceChapterUpdateOneWithoutReferenceNestedInput
   changeAdvanced?: Prisma.ChangeAdvancedUpdateOneWithoutTargetNestedInput
   changeRepeal?: Prisma.ChangeRepealUpdateOneWithoutTargetNestedInput
+  resolved?: Prisma.v_ResolvedReferencesUpdateOneWithoutReferenceNestedInput
 }
 
 export type ReferenceUncheckedUpdateWithoutTextReferenceInput = {
@@ -611,6 +629,7 @@ export type ReferenceUncheckedUpdateWithoutTextReferenceInput = {
   chapter?: Prisma.ReferenceChapterUncheckedUpdateOneWithoutReferenceNestedInput
   changeAdvanced?: Prisma.ChangeAdvancedUncheckedUpdateOneWithoutTargetNestedInput
   changeRepeal?: Prisma.ChangeRepealUncheckedUpdateOneWithoutTargetNestedInput
+  resolved?: Prisma.v_ResolvedReferencesUncheckedUpdateOneWithoutReferenceNestedInput
 }
 
 export type ReferenceCreateWithoutResolutionInput = {
@@ -623,6 +642,7 @@ export type ReferenceCreateWithoutResolutionInput = {
   textReference?: Prisma.TextReferenceCreateNestedOneWithoutReferenceInput
   changeAdvanced?: Prisma.ChangeAdvancedCreateNestedOneWithoutTargetInput
   changeRepeal?: Prisma.ChangeRepealCreateNestedOneWithoutTargetInput
+  resolved?: Prisma.v_ResolvedReferencesCreateNestedOneWithoutReferenceInput
 }
 
 export type ReferenceUncheckedCreateWithoutResolutionInput = {
@@ -635,6 +655,7 @@ export type ReferenceUncheckedCreateWithoutResolutionInput = {
   textReference?: Prisma.TextReferenceUncheckedCreateNestedOneWithoutReferenceInput
   changeAdvanced?: Prisma.ChangeAdvancedUncheckedCreateNestedOneWithoutTargetInput
   changeRepeal?: Prisma.ChangeRepealUncheckedCreateNestedOneWithoutTargetInput
+  resolved?: Prisma.v_ResolvedReferencesUncheckedCreateNestedOneWithoutReferenceInput
 }
 
 export type ReferenceCreateOrConnectWithoutResolutionInput = {
@@ -663,6 +684,7 @@ export type ReferenceUpdateWithoutResolutionInput = {
   textReference?: Prisma.TextReferenceUpdateOneWithoutReferenceNestedInput
   changeAdvanced?: Prisma.ChangeAdvancedUpdateOneWithoutTargetNestedInput
   changeRepeal?: Prisma.ChangeRepealUpdateOneWithoutTargetNestedInput
+  resolved?: Prisma.v_ResolvedReferencesUpdateOneWithoutReferenceNestedInput
 }
 
 export type ReferenceUncheckedUpdateWithoutResolutionInput = {
@@ -675,6 +697,7 @@ export type ReferenceUncheckedUpdateWithoutResolutionInput = {
   textReference?: Prisma.TextReferenceUncheckedUpdateOneWithoutReferenceNestedInput
   changeAdvanced?: Prisma.ChangeAdvancedUncheckedUpdateOneWithoutTargetNestedInput
   changeRepeal?: Prisma.ChangeRepealUncheckedUpdateOneWithoutTargetNestedInput
+  resolved?: Prisma.v_ResolvedReferencesUncheckedUpdateOneWithoutReferenceNestedInput
 }
 
 export type ReferenceCreateWithoutArticleInput = {
@@ -687,6 +710,7 @@ export type ReferenceCreateWithoutArticleInput = {
   textReference?: Prisma.TextReferenceCreateNestedOneWithoutReferenceInput
   changeAdvanced?: Prisma.ChangeAdvancedCreateNestedOneWithoutTargetInput
   changeRepeal?: Prisma.ChangeRepealCreateNestedOneWithoutTargetInput
+  resolved?: Prisma.v_ResolvedReferencesCreateNestedOneWithoutReferenceInput
 }
 
 export type ReferenceUncheckedCreateWithoutArticleInput = {
@@ -699,6 +723,7 @@ export type ReferenceUncheckedCreateWithoutArticleInput = {
   textReference?: Prisma.TextReferenceUncheckedCreateNestedOneWithoutReferenceInput
   changeAdvanced?: Prisma.ChangeAdvancedUncheckedCreateNestedOneWithoutTargetInput
   changeRepeal?: Prisma.ChangeRepealUncheckedCreateNestedOneWithoutTargetInput
+  resolved?: Prisma.v_ResolvedReferencesUncheckedCreateNestedOneWithoutReferenceInput
 }
 
 export type ReferenceCreateOrConnectWithoutArticleInput = {
@@ -727,6 +752,7 @@ export type ReferenceUpdateWithoutArticleInput = {
   textReference?: Prisma.TextReferenceUpdateOneWithoutReferenceNestedInput
   changeAdvanced?: Prisma.ChangeAdvancedUpdateOneWithoutTargetNestedInput
   changeRepeal?: Prisma.ChangeRepealUpdateOneWithoutTargetNestedInput
+  resolved?: Prisma.v_ResolvedReferencesUpdateOneWithoutReferenceNestedInput
 }
 
 export type ReferenceUncheckedUpdateWithoutArticleInput = {
@@ -739,6 +765,7 @@ export type ReferenceUncheckedUpdateWithoutArticleInput = {
   textReference?: Prisma.TextReferenceUncheckedUpdateOneWithoutReferenceNestedInput
   changeAdvanced?: Prisma.ChangeAdvancedUncheckedUpdateOneWithoutTargetNestedInput
   changeRepeal?: Prisma.ChangeRepealUncheckedUpdateOneWithoutTargetNestedInput
+  resolved?: Prisma.v_ResolvedReferencesUncheckedUpdateOneWithoutReferenceNestedInput
 }
 
 export type ReferenceCreateWithoutAnnexInput = {
@@ -751,6 +778,7 @@ export type ReferenceCreateWithoutAnnexInput = {
   textReference?: Prisma.TextReferenceCreateNestedOneWithoutReferenceInput
   changeAdvanced?: Prisma.ChangeAdvancedCreateNestedOneWithoutTargetInput
   changeRepeal?: Prisma.ChangeRepealCreateNestedOneWithoutTargetInput
+  resolved?: Prisma.v_ResolvedReferencesCreateNestedOneWithoutReferenceInput
 }
 
 export type ReferenceUncheckedCreateWithoutAnnexInput = {
@@ -763,6 +791,7 @@ export type ReferenceUncheckedCreateWithoutAnnexInput = {
   textReference?: Prisma.TextReferenceUncheckedCreateNestedOneWithoutReferenceInput
   changeAdvanced?: Prisma.ChangeAdvancedUncheckedCreateNestedOneWithoutTargetInput
   changeRepeal?: Prisma.ChangeRepealUncheckedCreateNestedOneWithoutTargetInput
+  resolved?: Prisma.v_ResolvedReferencesUncheckedCreateNestedOneWithoutReferenceInput
 }
 
 export type ReferenceCreateOrConnectWithoutAnnexInput = {
@@ -791,6 +820,7 @@ export type ReferenceUpdateWithoutAnnexInput = {
   textReference?: Prisma.TextReferenceUpdateOneWithoutReferenceNestedInput
   changeAdvanced?: Prisma.ChangeAdvancedUpdateOneWithoutTargetNestedInput
   changeRepeal?: Prisma.ChangeRepealUpdateOneWithoutTargetNestedInput
+  resolved?: Prisma.v_ResolvedReferencesUpdateOneWithoutReferenceNestedInput
 }
 
 export type ReferenceUncheckedUpdateWithoutAnnexInput = {
@@ -803,6 +833,7 @@ export type ReferenceUncheckedUpdateWithoutAnnexInput = {
   textReference?: Prisma.TextReferenceUncheckedUpdateOneWithoutReferenceNestedInput
   changeAdvanced?: Prisma.ChangeAdvancedUncheckedUpdateOneWithoutTargetNestedInput
   changeRepeal?: Prisma.ChangeRepealUncheckedUpdateOneWithoutTargetNestedInput
+  resolved?: Prisma.v_ResolvedReferencesUncheckedUpdateOneWithoutReferenceNestedInput
 }
 
 export type ReferenceCreateWithoutChapterInput = {
@@ -815,6 +846,7 @@ export type ReferenceCreateWithoutChapterInput = {
   textReference?: Prisma.TextReferenceCreateNestedOneWithoutReferenceInput
   changeAdvanced?: Prisma.ChangeAdvancedCreateNestedOneWithoutTargetInput
   changeRepeal?: Prisma.ChangeRepealCreateNestedOneWithoutTargetInput
+  resolved?: Prisma.v_ResolvedReferencesCreateNestedOneWithoutReferenceInput
 }
 
 export type ReferenceUncheckedCreateWithoutChapterInput = {
@@ -827,6 +859,7 @@ export type ReferenceUncheckedCreateWithoutChapterInput = {
   textReference?: Prisma.TextReferenceUncheckedCreateNestedOneWithoutReferenceInput
   changeAdvanced?: Prisma.ChangeAdvancedUncheckedCreateNestedOneWithoutTargetInput
   changeRepeal?: Prisma.ChangeRepealUncheckedCreateNestedOneWithoutTargetInput
+  resolved?: Prisma.v_ResolvedReferencesUncheckedCreateNestedOneWithoutReferenceInput
 }
 
 export type ReferenceCreateOrConnectWithoutChapterInput = {
@@ -855,6 +888,7 @@ export type ReferenceUpdateWithoutChapterInput = {
   textReference?: Prisma.TextReferenceUpdateOneWithoutReferenceNestedInput
   changeAdvanced?: Prisma.ChangeAdvancedUpdateOneWithoutTargetNestedInput
   changeRepeal?: Prisma.ChangeRepealUpdateOneWithoutTargetNestedInput
+  resolved?: Prisma.v_ResolvedReferencesUpdateOneWithoutReferenceNestedInput
 }
 
 export type ReferenceUncheckedUpdateWithoutChapterInput = {
@@ -867,6 +901,7 @@ export type ReferenceUncheckedUpdateWithoutChapterInput = {
   textReference?: Prisma.TextReferenceUncheckedUpdateOneWithoutReferenceNestedInput
   changeAdvanced?: Prisma.ChangeAdvancedUncheckedUpdateOneWithoutTargetNestedInput
   changeRepeal?: Prisma.ChangeRepealUncheckedUpdateOneWithoutTargetNestedInput
+  resolved?: Prisma.v_ResolvedReferencesUncheckedUpdateOneWithoutReferenceNestedInput
 }
 
 
@@ -882,6 +917,7 @@ export type ReferenceSelect<ExtArgs extends runtime.Types.Extensions.InternalArg
   textReference?: boolean | Prisma.Reference$textReferenceArgs<ExtArgs>
   changeAdvanced?: boolean | Prisma.Reference$changeAdvancedArgs<ExtArgs>
   changeRepeal?: boolean | Prisma.Reference$changeRepealArgs<ExtArgs>
+  resolved?: boolean | Prisma.Reference$resolvedArgs<ExtArgs>
 }, ExtArgs["result"]["reference"]>
 
 export type ReferenceSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -911,6 +947,7 @@ export type ReferenceInclude<ExtArgs extends runtime.Types.Extensions.InternalAr
   textReference?: boolean | Prisma.Reference$textReferenceArgs<ExtArgs>
   changeAdvanced?: boolean | Prisma.Reference$changeAdvancedArgs<ExtArgs>
   changeRepeal?: boolean | Prisma.Reference$changeRepealArgs<ExtArgs>
+  resolved?: boolean | Prisma.Reference$resolvedArgs<ExtArgs>
 }
 export type ReferenceIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {}
 export type ReferenceIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {}
@@ -925,6 +962,7 @@ export type $ReferencePayload<ExtArgs extends runtime.Types.Extensions.InternalA
     textReference: Prisma.$TextReferencePayload<ExtArgs> | null
     changeAdvanced: Prisma.$ChangeAdvancedPayload<ExtArgs> | null
     changeRepeal: Prisma.$ChangeRepealPayload<ExtArgs> | null
+    resolved: Prisma.$v_ResolvedReferencesPayload<ExtArgs> | null
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -1331,6 +1369,7 @@ export interface Prisma__ReferenceClient<T, Null = never, ExtArgs extends runtim
   textReference<T extends Prisma.Reference$textReferenceArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Reference$textReferenceArgs<ExtArgs>>): Prisma.Prisma__TextReferenceClient<runtime.Types.Result.GetResult<Prisma.$TextReferencePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   changeAdvanced<T extends Prisma.Reference$changeAdvancedArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Reference$changeAdvancedArgs<ExtArgs>>): Prisma.Prisma__ChangeAdvancedClient<runtime.Types.Result.GetResult<Prisma.$ChangeAdvancedPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   changeRepeal<T extends Prisma.Reference$changeRepealArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Reference$changeRepealArgs<ExtArgs>>): Prisma.Prisma__ChangeRepealClient<runtime.Types.Result.GetResult<Prisma.$ChangeRepealPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+  resolved<T extends Prisma.Reference$resolvedArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Reference$resolvedArgs<ExtArgs>>): Prisma.Prisma__v_ResolvedReferencesClient<runtime.Types.Result.GetResult<Prisma.$v_ResolvedReferencesPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1881,6 +1920,25 @@ export type Reference$changeRepealArgs<ExtArgs extends runtime.Types.Extensions.
    */
   include?: Prisma.ChangeRepealInclude<ExtArgs> | null
   where?: Prisma.ChangeRepealWhereInput
+}
+
+/**
+ * Reference.resolved
+ */
+export type Reference$resolvedArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the v_ResolvedReferences
+   */
+  select?: Prisma.v_ResolvedReferencesSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the v_ResolvedReferences
+   */
+  omit?: Prisma.v_ResolvedReferencesOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.v_ResolvedReferencesInclude<ExtArgs> | null
+  where?: Prisma.v_ResolvedReferencesWhereInput
 }
 
 /**

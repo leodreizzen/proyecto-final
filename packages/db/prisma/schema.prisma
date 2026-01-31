@@ -120,7 +120,7 @@ model Article {
 
   // Check: article number must be present if parent is resolution/annex/chapter
 
-  context v_ArticleContext[]
+  context v_ArticleContext?
 
   @@unique([resolutionId, number, suffix])
   @@unique([annexId, number, suffix])
@@ -422,7 +422,6 @@ model ContentBlock {
 
   // Check: Ensures content block belongs to exactly one parent (Recital, Consideration, Article, AnnexText, ChangeModifyArticle (before/after), or ChangeModifyTextAnnex (before/after))
   // Check: Consistency between type and content. If TEXT, text must be present and tableContent null. If TABLE, tableContent must be present and text null.
-
   @@unique([recitalId, order])
   @@unique([considerationId, order])
   @@unique([articleId, order])
@@ -469,6 +468,7 @@ model Reference {
   changeAdvanced ChangeAdvanced?
   changeRepeal   ChangeRepeal?
 
+  resolved v_ResolvedReferences?
   // Trigger when concrete type is created: Checks that the targetType matches the associated model
 }
 
@@ -753,6 +753,20 @@ view v_MissingResolution {
   search_id       String
 
   @@unique([initial, number, year])
+}
+
+view v_ResolvedReferences {
+  reference   Reference           @relation(fields: [ref_id], references: [id])
+  ref_id      String              @unique
+  target_type ReferenceTargetType
+  native_id   String              @db.Uuid
+  res_init    String
+  res_num     Int
+  res_year    Int
+  art_num     Int?
+  art_suff    Int?
+  annex_num   Int?
+  chap_num    Int?
 }
 
 model MaintenanceTask {

@@ -40,11 +40,12 @@ DirtyScope(entity_id, entity_type, res_init, res_num, res_year, annex_num, chap_
         next_victim.res_init, next_victim.res_num, next_victim.res_year,
         next_victim.annex_num, next_victim.chap_num, next_victim.art_num, next_victim.art_suf,
         next_victim.reason,
-        -- Depth Calculation:
-        -- 1. Internal/Direct propagation -> 0 cost.
-        -- 2. Crossing Resolution boundaries -> 1 cost.
+        -- Depth Calculation Logic:
+        -- 1. Initial Toggle (Entry Point) -> Cost 0.
+        -- 2. Propagation within the same Resolution -> Cost 0.
+        -- 3. Propagation across different Resolutions -> Cost 1 (Increment depth).
         scope.depth + CASE
-                          WHEN scope.entity_type = 'CHANGE' THEN 0
+                          WHEN scope.res_num IS NULL THEN 0
                           WHEN coords_match(
                                   next_victim.res_init, next_victim.res_num, next_victim.res_year, NULL, NULL, NULL, NULL,
                                   scope.res_init, scope.res_num, scope.res_year, NULL, NULL, NULL, NULL
@@ -123,6 +124,7 @@ DirtyScope(entity_id, entity_type, res_init, res_num, res_year, annex_num, chap_
 
         -- D. CHANGE EXECUTION (Standard Impacts)
         -- Propagates instability from a Change to its targets (e.g., Repeals).
+        -- Always expands to capture the full impact chain.
         SELECT
             ref.native_id AS entity_id,
             im.target_type AS entity_type,
@@ -143,6 +145,7 @@ DirtyScope(entity_id, entity_type, res_init, res_num, res_year, annex_num, chap_
 
         -- E. CHANGE EXECUTION (Creations)
         -- Propagates instability from a Change to the content it creates.
+        -- Always expands.
         SELECT
             COALESCE(a.id, ax.id) AS entity_id,
             cm.entity_type,
@@ -159,9 +162,8 @@ DirtyScope(entity_id, entity_type, res_init, res_num, res_year, annex_num, chap_
         UNION ALL
 
         -- F. LATE ID RESOLUTION (Virtual Entities)
-        -- Resolves physical IDs for virtual entities by tracing their Creator Change.
-        -- Uses two strategies: Direct creation match and Ancestral (Container) creation match.
-        -- Preserves the 'should_expand' state of the scope.
+        -- Resolves physical IDs for virtual entities (Scope ID is NULL) by tracing their Creator Change.
+        -- Necessary for content inside newly created structures (e.g., Article inside new Annex).
         SELECT
             COALESCE(direct_a.id, direct_ax.id, child_a.id) AS entity_id,
             CASE WHEN direct_cm.entity_type IS NOT NULL THEN direct_cm.entity_type ELSE 'ARTICLE'::text END AS entity_type,
@@ -179,7 +181,7 @@ DirtyScope(entity_id, entity_type, res_init, res_num, res_year, annex_num, chap_
                  LEFT JOIN "Article" direct_a ON direct_a."addedByChangeId" = direct_cm.change_id OR direct_a."newContentFromChangeId" = direct_cm.change_id
                  LEFT JOIN "Annex" direct_ax ON direct_ax."changeReplaceAnnexId" = direct_cm.change_id
 
-            -- Strategy 2: Ancestral Creation Match
+            -- Strategy 2: Ancestral Creation Match (Hierarchy Traversal)
                  LEFT JOIN "v_CreationMap" parent_cm ON
             scope.art_num IS NOT NULL AND scope.annex_num IS NOT NULL AND
             parent_cm.entity_type = 'ANNEX' AND parent_cm.annex_num = scope.annex_num AND
@@ -191,7 +193,6 @@ DirtyScope(entity_id, entity_type, res_init, res_num, res_year, annex_num, chap_
             (
                 (scope.chap_num IS NULL AND child_a."annexId" = parent_ax.id)
                     OR
-                    -- [FIX] Correct Foreign Key for Chapter relation
                 (scope.chap_num IS NOT NULL AND child_a."chapterId" = intermediate_ch.id)
                 )
 
@@ -202,9 +203,8 @@ DirtyScope(entity_id, entity_type, res_init, res_num, res_year, annex_num, chap_
         UNION ALL
 
         -- G. ADVANCED CHANGE IMPACT (Shallow Resolution Reference)
-        -- Resolves the target Resolution coordinates via the ResolvedReferences view,
-        -- as the raw Reference table lacks structured coordinates.
-        -- Sets 'should_expand' to FALSE to prevent cascading recursion.
+        -- Resolves the target Resolution coordinates via the ResolvedReferences view.
+        -- Sets 'should_expand' to FALSE to prevent cascading recursion from this reference.
         SELECT
             res.id AS entity_id,
             'RESOLUTION'::text AS entity_type,
@@ -213,9 +213,7 @@ DirtyScope(entity_id, entity_type, res_init, res_num, res_year, annex_num, chap_
             'ADVANCED_IMPACT'::text AS reason,
             FALSE AS should_expand -- <--- RECURSION HALT
         FROM "ChangeAdvanced" ca
-                 -- Link the Reference ID to the View to get structural coordinates
                  JOIN "v_ResolvedReferences" ref ON ca."targetReferenceId" = ref.native_id
-            -- Link coordinates to the physical Resolution
                  JOIN "Resolution" res ON
             res.number = ref.res_num AND
             res.year = ref.res_year AND

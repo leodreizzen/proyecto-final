@@ -423,7 +423,8 @@ export const ModelName = {
   MaintenanceTask: 'MaintenanceTask',
   v_ArticleContext: 'v_ArticleContext',
   v_ResolutionSearch: 'v_ResolutionSearch',
-  v_MissingResolution: 'v_MissingResolution'
+  v_MissingResolution: 'v_MissingResolution',
+  v_ResolvedReferences: 'v_ResolvedReferences'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -439,7 +440,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "resolution" | "recital" | "consideration" | "article" | "articleNormative" | "articleModifier" | "articleCreateDocument" | "articleFormality" | "change" | "changeModifyArticle" | "changeReplaceArticle" | "changeAdvanced" | "changeRatifyAdReferendum" | "changeReplaceAnnex" | "changeAddAnnex" | "changeModifyTextAnnex" | "changeAddArticle" | "changeRepeal" | "changeApplyModificationsAnnex" | "annex" | "annexText" | "annexWithArticles" | "annexChapter" | "contentBlock" | "textReference" | "reference" | "referenceResolution" | "referenceArticle" | "referenceAnnex" | "referenceChapter" | "resolutionUpload" | "user" | "session" | "account" | "verification" | "asset" | "maintenanceTask" | "v_ArticleContext" | "v_ResolutionSearch" | "v_MissingResolution"
+    modelProps: "resolution" | "recital" | "consideration" | "article" | "articleNormative" | "articleModifier" | "articleCreateDocument" | "articleFormality" | "change" | "changeModifyArticle" | "changeReplaceArticle" | "changeAdvanced" | "changeRatifyAdReferendum" | "changeReplaceAnnex" | "changeAddAnnex" | "changeModifyTextAnnex" | "changeAddArticle" | "changeRepeal" | "changeApplyModificationsAnnex" | "annex" | "annexText" | "annexWithArticles" | "annexChapter" | "contentBlock" | "textReference" | "reference" | "referenceResolution" | "referenceArticle" | "referenceAnnex" | "referenceChapter" | "resolutionUpload" | "user" | "session" | "account" | "verification" | "asset" | "maintenanceTask" | "v_ArticleContext" | "v_ResolutionSearch" | "v_MissingResolution" | "v_ResolvedReferences"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -3295,6 +3296,44 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    v_ResolvedReferences: {
+      payload: Prisma.$v_ResolvedReferencesPayload<ExtArgs>
+      fields: Prisma.v_ResolvedReferencesFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.v_ResolvedReferencesFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$v_ResolvedReferencesPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.v_ResolvedReferencesFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$v_ResolvedReferencesPayload>
+        }
+        findFirst: {
+          args: Prisma.v_ResolvedReferencesFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$v_ResolvedReferencesPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.v_ResolvedReferencesFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$v_ResolvedReferencesPayload>
+        }
+        findMany: {
+          args: Prisma.v_ResolvedReferencesFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$v_ResolvedReferencesPayload>[]
+        }
+        aggregate: {
+          args: Prisma.V_ResolvedReferencesAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateV_ResolvedReferences>
+        }
+        groupBy: {
+          args: Prisma.v_ResolvedReferencesGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.V_ResolvedReferencesGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.v_ResolvedReferencesCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.V_ResolvedReferencesCountAggregateOutputType> | number
+        }
+      }
+    }
   }
 } & {
   other: {
@@ -3792,6 +3831,22 @@ export const V_MissingResolutionScalarFieldEnum = {
 export type V_MissingResolutionScalarFieldEnum = (typeof V_MissingResolutionScalarFieldEnum)[keyof typeof V_MissingResolutionScalarFieldEnum]
 
 
+export const V_ResolvedReferencesScalarFieldEnum = {
+  ref_id: 'ref_id',
+  target_type: 'target_type',
+  native_id: 'native_id',
+  res_init: 'res_init',
+  res_num: 'res_num',
+  res_year: 'res_year',
+  art_num: 'art_num',
+  art_suff: 'art_suff',
+  annex_num: 'annex_num',
+  chap_num: 'chap_num'
+} as const
+
+export type V_ResolvedReferencesScalarFieldEnum = (typeof V_ResolvedReferencesScalarFieldEnum)[keyof typeof V_ResolvedReferencesScalarFieldEnum]
+
+
 export const SortOrder = {
   asc: 'asc',
   desc: 'desc'
@@ -4188,6 +4243,7 @@ export type GlobalOmitConfig = {
   v_ArticleContext?: Prisma.v_ArticleContextOmit
   v_ResolutionSearch?: Prisma.v_ResolutionSearchOmit
   v_MissingResolution?: Prisma.v_MissingResolutionOmit
+  v_ResolvedReferences?: Prisma.v_ResolvedReferencesOmit
 }
 
 /* Types for Logging */

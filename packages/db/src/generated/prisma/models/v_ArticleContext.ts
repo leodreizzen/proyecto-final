@@ -393,6 +393,11 @@ export type v_ArticleContextOrderByRelationAggregateInput = {
   _count?: Prisma.SortOrder
 }
 
+export type V_ArticleContextNullableScalarRelationFilter = {
+  is?: Prisma.v_ArticleContextWhereInput | null
+  isNot?: Prisma.v_ArticleContextWhereInput | null
+}
+
 export type v_ArticleContextCountOrderByAggregateInput = {
   id?: Prisma.SortOrder
   number?: Prisma.SortOrder
@@ -487,32 +492,26 @@ export type v_ArticleContextUncheckedUpdateManyWithoutRootResolutionNestedInput 
   deleteMany?: Prisma.v_ArticleContextScalarWhereInput | Prisma.v_ArticleContextScalarWhereInput[]
 }
 
-export type v_ArticleContextCreateNestedManyWithoutArticleInput = {
-  connect?: Prisma.v_ArticleContextWhereUniqueInput | Prisma.v_ArticleContextWhereUniqueInput[]
+export type v_ArticleContextCreateNestedOneWithoutArticleInput = {
+  connect?: Prisma.v_ArticleContextWhereUniqueInput
 }
 
-export type v_ArticleContextUncheckedCreateNestedManyWithoutArticleInput = {
-  connect?: Prisma.v_ArticleContextWhereUniqueInput | Prisma.v_ArticleContextWhereUniqueInput[]
+export type v_ArticleContextUncheckedCreateNestedOneWithoutArticleInput = {
+  connect?: Prisma.v_ArticleContextWhereUniqueInput
 }
 
-export type v_ArticleContextUpdateManyWithoutArticleNestedInput = {
-  set?: Prisma.v_ArticleContextWhereUniqueInput | Prisma.v_ArticleContextWhereUniqueInput[]
-  disconnect?: Prisma.v_ArticleContextWhereUniqueInput | Prisma.v_ArticleContextWhereUniqueInput[]
-  delete?: Prisma.v_ArticleContextWhereUniqueInput | Prisma.v_ArticleContextWhereUniqueInput[]
-  connect?: Prisma.v_ArticleContextWhereUniqueInput | Prisma.v_ArticleContextWhereUniqueInput[]
-  update?: Prisma.v_ArticleContextUpdateWithWhereUniqueWithoutArticleInput | Prisma.v_ArticleContextUpdateWithWhereUniqueWithoutArticleInput[]
-  updateMany?: Prisma.v_ArticleContextUpdateManyWithWhereWithoutArticleInput | Prisma.v_ArticleContextUpdateManyWithWhereWithoutArticleInput[]
-  deleteMany?: Prisma.v_ArticleContextScalarWhereInput | Prisma.v_ArticleContextScalarWhereInput[]
+export type v_ArticleContextUpdateOneWithoutArticleNestedInput = {
+  disconnect?: Prisma.v_ArticleContextWhereInput | boolean
+  delete?: Prisma.v_ArticleContextWhereInput | boolean
+  connect?: Prisma.v_ArticleContextWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.v_ArticleContextUpdateToOneWithWhereWithoutArticleInput, Prisma.v_ArticleContextUpdateWithoutArticleInput>, Prisma.v_ArticleContextUncheckedUpdateWithoutArticleInput>
 }
 
-export type v_ArticleContextUncheckedUpdateManyWithoutArticleNestedInput = {
-  set?: Prisma.v_ArticleContextWhereUniqueInput | Prisma.v_ArticleContextWhereUniqueInput[]
-  disconnect?: Prisma.v_ArticleContextWhereUniqueInput | Prisma.v_ArticleContextWhereUniqueInput[]
-  delete?: Prisma.v_ArticleContextWhereUniqueInput | Prisma.v_ArticleContextWhereUniqueInput[]
-  connect?: Prisma.v_ArticleContextWhereUniqueInput | Prisma.v_ArticleContextWhereUniqueInput[]
-  update?: Prisma.v_ArticleContextUpdateWithWhereUniqueWithoutArticleInput | Prisma.v_ArticleContextUpdateWithWhereUniqueWithoutArticleInput[]
-  updateMany?: Prisma.v_ArticleContextUpdateManyWithWhereWithoutArticleInput | Prisma.v_ArticleContextUpdateManyWithWhereWithoutArticleInput[]
-  deleteMany?: Prisma.v_ArticleContextScalarWhereInput | Prisma.v_ArticleContextScalarWhereInput[]
+export type v_ArticleContextUncheckedUpdateOneWithoutArticleNestedInput = {
+  disconnect?: Prisma.v_ArticleContextWhereInput | boolean
+  delete?: Prisma.v_ArticleContextWhereInput | boolean
+  connect?: Prisma.v_ArticleContextWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.v_ArticleContextUpdateToOneWithWhereWithoutArticleInput, Prisma.v_ArticleContextUpdateWithoutArticleInput>, Prisma.v_ArticleContextUncheckedUpdateWithoutArticleInput>
 }
 
 export type v_ArticleContextUpdateWithWhereUniqueWithoutRootResolutionInput = {
@@ -544,14 +543,39 @@ export type v_ArticleContextScalarWhereInput = {
   resDate?: Prisma.DateTimeFilter<"v_ArticleContext"> | Date | string
 }
 
-export type v_ArticleContextUpdateWithWhereUniqueWithoutArticleInput = {
-  where: Prisma.v_ArticleContextWhereUniqueInput
+export type v_ArticleContextUpdateToOneWithWhereWithoutArticleInput = {
+  where?: Prisma.v_ArticleContextWhereInput
   data: Prisma.XOR<Prisma.v_ArticleContextUpdateWithoutArticleInput, Prisma.v_ArticleContextUncheckedUpdateWithoutArticleInput>
 }
 
-export type v_ArticleContextUpdateManyWithWhereWithoutArticleInput = {
-  where: Prisma.v_ArticleContextScalarWhereInput
-  data: Prisma.XOR<Prisma.v_ArticleContextUpdateManyMutationInput, Prisma.v_ArticleContextUncheckedUpdateManyWithoutArticleInput>
+export type v_ArticleContextUpdateWithoutArticleInput = {
+  number?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  suffix?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  rootAnnexId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  rootChapterId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  resInitial?: Prisma.StringFieldUpdateOperationsInput | string
+  resNumber?: Prisma.IntFieldUpdateOperationsInput | number
+  resYear?: Prisma.IntFieldUpdateOperationsInput | number
+  annexNumber?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  chapterNumber?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  is_structural?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  resDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  rootResolution?: Prisma.ResolutionUpdateOneRequiredWithoutVArticleContextsNestedInput
+}
+
+export type v_ArticleContextUncheckedUpdateWithoutArticleInput = {
+  number?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  suffix?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  rootResolutionId?: Prisma.StringFieldUpdateOperationsInput | string
+  rootAnnexId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  rootChapterId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  resInitial?: Prisma.StringFieldUpdateOperationsInput | string
+  resNumber?: Prisma.IntFieldUpdateOperationsInput | number
+  resYear?: Prisma.IntFieldUpdateOperationsInput | number
+  annexNumber?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  chapterNumber?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  is_structural?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  resDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
 export type v_ArticleContextUpdateWithoutRootResolutionInput = {
@@ -602,51 +626,6 @@ export type v_ArticleContextUncheckedUpdateManyWithoutRootResolutionInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   number?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   suffix?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
-  rootAnnexId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  rootChapterId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  resInitial?: Prisma.StringFieldUpdateOperationsInput | string
-  resNumber?: Prisma.IntFieldUpdateOperationsInput | number
-  resYear?: Prisma.IntFieldUpdateOperationsInput | number
-  annexNumber?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
-  chapterNumber?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
-  is_structural?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  resDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-}
-
-export type v_ArticleContextUpdateWithoutArticleInput = {
-  number?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
-  suffix?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
-  rootAnnexId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  rootChapterId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  resInitial?: Prisma.StringFieldUpdateOperationsInput | string
-  resNumber?: Prisma.IntFieldUpdateOperationsInput | number
-  resYear?: Prisma.IntFieldUpdateOperationsInput | number
-  annexNumber?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
-  chapterNumber?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
-  is_structural?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  resDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  rootResolution?: Prisma.ResolutionUpdateOneRequiredWithoutVArticleContextsNestedInput
-}
-
-export type v_ArticleContextUncheckedUpdateWithoutArticleInput = {
-  number?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
-  suffix?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
-  rootResolutionId?: Prisma.StringFieldUpdateOperationsInput | string
-  rootAnnexId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  rootChapterId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  resInitial?: Prisma.StringFieldUpdateOperationsInput | string
-  resNumber?: Prisma.IntFieldUpdateOperationsInput | number
-  resYear?: Prisma.IntFieldUpdateOperationsInput | number
-  annexNumber?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
-  chapterNumber?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
-  is_structural?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  resDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-}
-
-export type v_ArticleContextUncheckedUpdateManyWithoutArticleInput = {
-  number?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
-  suffix?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
-  rootResolutionId?: Prisma.StringFieldUpdateOperationsInput | string
   rootAnnexId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   rootChapterId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   resInitial?: Prisma.StringFieldUpdateOperationsInput | string

@@ -263,7 +263,7 @@ export type ArticleWhereInput = {
   articleCreateDocument?: Prisma.XOR<Prisma.ArticleCreateDocumentNullableScalarRelationFilter, Prisma.ArticleCreateDocumentWhereInput> | null
   articleFormality?: Prisma.XOR<Prisma.ArticleFormalityNullableScalarRelationFilter, Prisma.ArticleFormalityWhereInput> | null
   referencedBy?: Prisma.ReferenceArticleListRelationFilter
-  context?: Prisma.V_ArticleContextListRelationFilter
+  context?: Prisma.XOR<Prisma.V_ArticleContextNullableScalarRelationFilter, Prisma.v_ArticleContextWhereInput> | null
 }
 
 export type ArticleOrderByWithRelationInput = {
@@ -287,7 +287,7 @@ export type ArticleOrderByWithRelationInput = {
   articleCreateDocument?: Prisma.ArticleCreateDocumentOrderByWithRelationInput
   articleFormality?: Prisma.ArticleFormalityOrderByWithRelationInput
   referencedBy?: Prisma.ReferenceArticleOrderByRelationAggregateInput
-  context?: Prisma.v_ArticleContextOrderByRelationAggregateInput
+  context?: Prisma.v_ArticleContextOrderByWithRelationInput
 }
 
 export type ArticleWhereUniqueInput = Prisma.AtLeast<{
@@ -317,7 +317,7 @@ export type ArticleWhereUniqueInput = Prisma.AtLeast<{
   articleCreateDocument?: Prisma.XOR<Prisma.ArticleCreateDocumentNullableScalarRelationFilter, Prisma.ArticleCreateDocumentWhereInput> | null
   articleFormality?: Prisma.XOR<Prisma.ArticleFormalityNullableScalarRelationFilter, Prisma.ArticleFormalityWhereInput> | null
   referencedBy?: Prisma.ReferenceArticleListRelationFilter
-  context?: Prisma.V_ArticleContextListRelationFilter
+  context?: Prisma.XOR<Prisma.V_ArticleContextNullableScalarRelationFilter, Prisma.v_ArticleContextWhereInput> | null
 }, "id" | "addedByChangeId" | "newContentFromChangeId" | "resolutionId_number_suffix" | "annexId_number_suffix" | "chapterId_number_suffix">
 
 export type ArticleOrderByWithAggregationInput = {
@@ -368,7 +368,7 @@ export type ArticleCreateInput = {
   articleCreateDocument?: Prisma.ArticleCreateDocumentCreateNestedOneWithoutArticleInput
   articleFormality?: Prisma.ArticleFormalityCreateNestedOneWithoutArticleInput
   referencedBy?: Prisma.ReferenceArticleCreateNestedManyWithoutArticleInput
-  context?: Prisma.v_ArticleContextCreateNestedManyWithoutArticleInput
+  context?: Prisma.v_ArticleContextCreateNestedOneWithoutArticleInput
 }
 
 export type ArticleUncheckedCreateInput = {
@@ -387,7 +387,7 @@ export type ArticleUncheckedCreateInput = {
   articleCreateDocument?: Prisma.ArticleCreateDocumentUncheckedCreateNestedOneWithoutArticleInput
   articleFormality?: Prisma.ArticleFormalityUncheckedCreateNestedOneWithoutArticleInput
   referencedBy?: Prisma.ReferenceArticleUncheckedCreateNestedManyWithoutArticleInput
-  context?: Prisma.v_ArticleContextUncheckedCreateNestedManyWithoutArticleInput
+  context?: Prisma.v_ArticleContextUncheckedCreateNestedOneWithoutArticleInput
 }
 
 export type ArticleUpdateInput = {
@@ -406,7 +406,7 @@ export type ArticleUpdateInput = {
   articleCreateDocument?: Prisma.ArticleCreateDocumentUpdateOneWithoutArticleNestedInput
   articleFormality?: Prisma.ArticleFormalityUpdateOneWithoutArticleNestedInput
   referencedBy?: Prisma.ReferenceArticleUpdateManyWithoutArticleNestedInput
-  context?: Prisma.v_ArticleContextUpdateManyWithoutArticleNestedInput
+  context?: Prisma.v_ArticleContextUpdateOneWithoutArticleNestedInput
 }
 
 export type ArticleUncheckedUpdateInput = {
@@ -425,7 +425,7 @@ export type ArticleUncheckedUpdateInput = {
   articleCreateDocument?: Prisma.ArticleCreateDocumentUncheckedUpdateOneWithoutArticleNestedInput
   articleFormality?: Prisma.ArticleFormalityUncheckedUpdateOneWithoutArticleNestedInput
   referencedBy?: Prisma.ReferenceArticleUncheckedUpdateManyWithoutArticleNestedInput
-  context?: Prisma.v_ArticleContextUncheckedUpdateManyWithoutArticleNestedInput
+  context?: Prisma.v_ArticleContextUncheckedUpdateOneWithoutArticleNestedInput
 }
 
 export type ArticleCreateManyInput = {
@@ -852,7 +852,7 @@ export type ArticleCreateWithoutResolutionInput = {
   articleCreateDocument?: Prisma.ArticleCreateDocumentCreateNestedOneWithoutArticleInput
   articleFormality?: Prisma.ArticleFormalityCreateNestedOneWithoutArticleInput
   referencedBy?: Prisma.ReferenceArticleCreateNestedManyWithoutArticleInput
-  context?: Prisma.v_ArticleContextCreateNestedManyWithoutArticleInput
+  context?: Prisma.v_ArticleContextCreateNestedOneWithoutArticleInput
 }
 
 export type ArticleUncheckedCreateWithoutResolutionInput = {
@@ -870,7 +870,7 @@ export type ArticleUncheckedCreateWithoutResolutionInput = {
   articleCreateDocument?: Prisma.ArticleCreateDocumentUncheckedCreateNestedOneWithoutArticleInput
   articleFormality?: Prisma.ArticleFormalityUncheckedCreateNestedOneWithoutArticleInput
   referencedBy?: Prisma.ReferenceArticleUncheckedCreateNestedManyWithoutArticleInput
-  context?: Prisma.v_ArticleContextUncheckedCreateNestedManyWithoutArticleInput
+  context?: Prisma.v_ArticleContextUncheckedCreateNestedOneWithoutArticleInput
 }
 
 export type ArticleCreateOrConnectWithoutResolutionInput = {
@@ -929,7 +929,7 @@ export type ArticleCreateWithoutArticleNormativeInput = {
   articleCreateDocument?: Prisma.ArticleCreateDocumentCreateNestedOneWithoutArticleInput
   articleFormality?: Prisma.ArticleFormalityCreateNestedOneWithoutArticleInput
   referencedBy?: Prisma.ReferenceArticleCreateNestedManyWithoutArticleInput
-  context?: Prisma.v_ArticleContextCreateNestedManyWithoutArticleInput
+  context?: Prisma.v_ArticleContextCreateNestedOneWithoutArticleInput
 }
 
 export type ArticleUncheckedCreateWithoutArticleNormativeInput = {
@@ -947,7 +947,7 @@ export type ArticleUncheckedCreateWithoutArticleNormativeInput = {
   articleCreateDocument?: Prisma.ArticleCreateDocumentUncheckedCreateNestedOneWithoutArticleInput
   articleFormality?: Prisma.ArticleFormalityUncheckedCreateNestedOneWithoutArticleInput
   referencedBy?: Prisma.ReferenceArticleUncheckedCreateNestedManyWithoutArticleInput
-  context?: Prisma.v_ArticleContextUncheckedCreateNestedManyWithoutArticleInput
+  context?: Prisma.v_ArticleContextUncheckedCreateNestedOneWithoutArticleInput
 }
 
 export type ArticleCreateOrConnectWithoutArticleNormativeInput = {
@@ -981,7 +981,7 @@ export type ArticleUpdateWithoutArticleNormativeInput = {
   articleCreateDocument?: Prisma.ArticleCreateDocumentUpdateOneWithoutArticleNestedInput
   articleFormality?: Prisma.ArticleFormalityUpdateOneWithoutArticleNestedInput
   referencedBy?: Prisma.ReferenceArticleUpdateManyWithoutArticleNestedInput
-  context?: Prisma.v_ArticleContextUpdateManyWithoutArticleNestedInput
+  context?: Prisma.v_ArticleContextUpdateOneWithoutArticleNestedInput
 }
 
 export type ArticleUncheckedUpdateWithoutArticleNormativeInput = {
@@ -999,7 +999,7 @@ export type ArticleUncheckedUpdateWithoutArticleNormativeInput = {
   articleCreateDocument?: Prisma.ArticleCreateDocumentUncheckedUpdateOneWithoutArticleNestedInput
   articleFormality?: Prisma.ArticleFormalityUncheckedUpdateOneWithoutArticleNestedInput
   referencedBy?: Prisma.ReferenceArticleUncheckedUpdateManyWithoutArticleNestedInput
-  context?: Prisma.v_ArticleContextUncheckedUpdateManyWithoutArticleNestedInput
+  context?: Prisma.v_ArticleContextUncheckedUpdateOneWithoutArticleNestedInput
 }
 
 export type ArticleCreateWithoutArticleModifierInput = {
@@ -1017,7 +1017,7 @@ export type ArticleCreateWithoutArticleModifierInput = {
   articleCreateDocument?: Prisma.ArticleCreateDocumentCreateNestedOneWithoutArticleInput
   articleFormality?: Prisma.ArticleFormalityCreateNestedOneWithoutArticleInput
   referencedBy?: Prisma.ReferenceArticleCreateNestedManyWithoutArticleInput
-  context?: Prisma.v_ArticleContextCreateNestedManyWithoutArticleInput
+  context?: Prisma.v_ArticleContextCreateNestedOneWithoutArticleInput
 }
 
 export type ArticleUncheckedCreateWithoutArticleModifierInput = {
@@ -1035,7 +1035,7 @@ export type ArticleUncheckedCreateWithoutArticleModifierInput = {
   articleCreateDocument?: Prisma.ArticleCreateDocumentUncheckedCreateNestedOneWithoutArticleInput
   articleFormality?: Prisma.ArticleFormalityUncheckedCreateNestedOneWithoutArticleInput
   referencedBy?: Prisma.ReferenceArticleUncheckedCreateNestedManyWithoutArticleInput
-  context?: Prisma.v_ArticleContextUncheckedCreateNestedManyWithoutArticleInput
+  context?: Prisma.v_ArticleContextUncheckedCreateNestedOneWithoutArticleInput
 }
 
 export type ArticleCreateOrConnectWithoutArticleModifierInput = {
@@ -1069,7 +1069,7 @@ export type ArticleUpdateWithoutArticleModifierInput = {
   articleCreateDocument?: Prisma.ArticleCreateDocumentUpdateOneWithoutArticleNestedInput
   articleFormality?: Prisma.ArticleFormalityUpdateOneWithoutArticleNestedInput
   referencedBy?: Prisma.ReferenceArticleUpdateManyWithoutArticleNestedInput
-  context?: Prisma.v_ArticleContextUpdateManyWithoutArticleNestedInput
+  context?: Prisma.v_ArticleContextUpdateOneWithoutArticleNestedInput
 }
 
 export type ArticleUncheckedUpdateWithoutArticleModifierInput = {
@@ -1087,7 +1087,7 @@ export type ArticleUncheckedUpdateWithoutArticleModifierInput = {
   articleCreateDocument?: Prisma.ArticleCreateDocumentUncheckedUpdateOneWithoutArticleNestedInput
   articleFormality?: Prisma.ArticleFormalityUncheckedUpdateOneWithoutArticleNestedInput
   referencedBy?: Prisma.ReferenceArticleUncheckedUpdateManyWithoutArticleNestedInput
-  context?: Prisma.v_ArticleContextUncheckedUpdateManyWithoutArticleNestedInput
+  context?: Prisma.v_ArticleContextUncheckedUpdateOneWithoutArticleNestedInput
 }
 
 export type ArticleCreateWithoutArticleCreateDocumentInput = {
@@ -1105,7 +1105,7 @@ export type ArticleCreateWithoutArticleCreateDocumentInput = {
   articleModifier?: Prisma.ArticleModifierCreateNestedOneWithoutArticleInput
   articleFormality?: Prisma.ArticleFormalityCreateNestedOneWithoutArticleInput
   referencedBy?: Prisma.ReferenceArticleCreateNestedManyWithoutArticleInput
-  context?: Prisma.v_ArticleContextCreateNestedManyWithoutArticleInput
+  context?: Prisma.v_ArticleContextCreateNestedOneWithoutArticleInput
 }
 
 export type ArticleUncheckedCreateWithoutArticleCreateDocumentInput = {
@@ -1123,7 +1123,7 @@ export type ArticleUncheckedCreateWithoutArticleCreateDocumentInput = {
   articleModifier?: Prisma.ArticleModifierUncheckedCreateNestedOneWithoutArticleInput
   articleFormality?: Prisma.ArticleFormalityUncheckedCreateNestedOneWithoutArticleInput
   referencedBy?: Prisma.ReferenceArticleUncheckedCreateNestedManyWithoutArticleInput
-  context?: Prisma.v_ArticleContextUncheckedCreateNestedManyWithoutArticleInput
+  context?: Prisma.v_ArticleContextUncheckedCreateNestedOneWithoutArticleInput
 }
 
 export type ArticleCreateOrConnectWithoutArticleCreateDocumentInput = {
@@ -1157,7 +1157,7 @@ export type ArticleUpdateWithoutArticleCreateDocumentInput = {
   articleModifier?: Prisma.ArticleModifierUpdateOneWithoutArticleNestedInput
   articleFormality?: Prisma.ArticleFormalityUpdateOneWithoutArticleNestedInput
   referencedBy?: Prisma.ReferenceArticleUpdateManyWithoutArticleNestedInput
-  context?: Prisma.v_ArticleContextUpdateManyWithoutArticleNestedInput
+  context?: Prisma.v_ArticleContextUpdateOneWithoutArticleNestedInput
 }
 
 export type ArticleUncheckedUpdateWithoutArticleCreateDocumentInput = {
@@ -1175,7 +1175,7 @@ export type ArticleUncheckedUpdateWithoutArticleCreateDocumentInput = {
   articleModifier?: Prisma.ArticleModifierUncheckedUpdateOneWithoutArticleNestedInput
   articleFormality?: Prisma.ArticleFormalityUncheckedUpdateOneWithoutArticleNestedInput
   referencedBy?: Prisma.ReferenceArticleUncheckedUpdateManyWithoutArticleNestedInput
-  context?: Prisma.v_ArticleContextUncheckedUpdateManyWithoutArticleNestedInput
+  context?: Prisma.v_ArticleContextUncheckedUpdateOneWithoutArticleNestedInput
 }
 
 export type ArticleCreateWithoutArticleFormalityInput = {
@@ -1193,7 +1193,7 @@ export type ArticleCreateWithoutArticleFormalityInput = {
   articleModifier?: Prisma.ArticleModifierCreateNestedOneWithoutArticleInput
   articleCreateDocument?: Prisma.ArticleCreateDocumentCreateNestedOneWithoutArticleInput
   referencedBy?: Prisma.ReferenceArticleCreateNestedManyWithoutArticleInput
-  context?: Prisma.v_ArticleContextCreateNestedManyWithoutArticleInput
+  context?: Prisma.v_ArticleContextCreateNestedOneWithoutArticleInput
 }
 
 export type ArticleUncheckedCreateWithoutArticleFormalityInput = {
@@ -1211,7 +1211,7 @@ export type ArticleUncheckedCreateWithoutArticleFormalityInput = {
   articleModifier?: Prisma.ArticleModifierUncheckedCreateNestedOneWithoutArticleInput
   articleCreateDocument?: Prisma.ArticleCreateDocumentUncheckedCreateNestedOneWithoutArticleInput
   referencedBy?: Prisma.ReferenceArticleUncheckedCreateNestedManyWithoutArticleInput
-  context?: Prisma.v_ArticleContextUncheckedCreateNestedManyWithoutArticleInput
+  context?: Prisma.v_ArticleContextUncheckedCreateNestedOneWithoutArticleInput
 }
 
 export type ArticleCreateOrConnectWithoutArticleFormalityInput = {
@@ -1245,7 +1245,7 @@ export type ArticleUpdateWithoutArticleFormalityInput = {
   articleModifier?: Prisma.ArticleModifierUpdateOneWithoutArticleNestedInput
   articleCreateDocument?: Prisma.ArticleCreateDocumentUpdateOneWithoutArticleNestedInput
   referencedBy?: Prisma.ReferenceArticleUpdateManyWithoutArticleNestedInput
-  context?: Prisma.v_ArticleContextUpdateManyWithoutArticleNestedInput
+  context?: Prisma.v_ArticleContextUpdateOneWithoutArticleNestedInput
 }
 
 export type ArticleUncheckedUpdateWithoutArticleFormalityInput = {
@@ -1263,7 +1263,7 @@ export type ArticleUncheckedUpdateWithoutArticleFormalityInput = {
   articleModifier?: Prisma.ArticleModifierUncheckedUpdateOneWithoutArticleNestedInput
   articleCreateDocument?: Prisma.ArticleCreateDocumentUncheckedUpdateOneWithoutArticleNestedInput
   referencedBy?: Prisma.ReferenceArticleUncheckedUpdateManyWithoutArticleNestedInput
-  context?: Prisma.v_ArticleContextUncheckedUpdateManyWithoutArticleNestedInput
+  context?: Prisma.v_ArticleContextUncheckedUpdateOneWithoutArticleNestedInput
 }
 
 export type ArticleCreateWithoutNewContentFromInput = {
@@ -1281,7 +1281,7 @@ export type ArticleCreateWithoutNewContentFromInput = {
   articleCreateDocument?: Prisma.ArticleCreateDocumentCreateNestedOneWithoutArticleInput
   articleFormality?: Prisma.ArticleFormalityCreateNestedOneWithoutArticleInput
   referencedBy?: Prisma.ReferenceArticleCreateNestedManyWithoutArticleInput
-  context?: Prisma.v_ArticleContextCreateNestedManyWithoutArticleInput
+  context?: Prisma.v_ArticleContextCreateNestedOneWithoutArticleInput
 }
 
 export type ArticleUncheckedCreateWithoutNewContentFromInput = {
@@ -1299,7 +1299,7 @@ export type ArticleUncheckedCreateWithoutNewContentFromInput = {
   articleCreateDocument?: Prisma.ArticleCreateDocumentUncheckedCreateNestedOneWithoutArticleInput
   articleFormality?: Prisma.ArticleFormalityUncheckedCreateNestedOneWithoutArticleInput
   referencedBy?: Prisma.ReferenceArticleUncheckedCreateNestedManyWithoutArticleInput
-  context?: Prisma.v_ArticleContextUncheckedCreateNestedManyWithoutArticleInput
+  context?: Prisma.v_ArticleContextUncheckedCreateNestedOneWithoutArticleInput
 }
 
 export type ArticleCreateOrConnectWithoutNewContentFromInput = {
@@ -1333,7 +1333,7 @@ export type ArticleUpdateWithoutNewContentFromInput = {
   articleCreateDocument?: Prisma.ArticleCreateDocumentUpdateOneWithoutArticleNestedInput
   articleFormality?: Prisma.ArticleFormalityUpdateOneWithoutArticleNestedInput
   referencedBy?: Prisma.ReferenceArticleUpdateManyWithoutArticleNestedInput
-  context?: Prisma.v_ArticleContextUpdateManyWithoutArticleNestedInput
+  context?: Prisma.v_ArticleContextUpdateOneWithoutArticleNestedInput
 }
 
 export type ArticleUncheckedUpdateWithoutNewContentFromInput = {
@@ -1351,7 +1351,7 @@ export type ArticleUncheckedUpdateWithoutNewContentFromInput = {
   articleCreateDocument?: Prisma.ArticleCreateDocumentUncheckedUpdateOneWithoutArticleNestedInput
   articleFormality?: Prisma.ArticleFormalityUncheckedUpdateOneWithoutArticleNestedInput
   referencedBy?: Prisma.ReferenceArticleUncheckedUpdateManyWithoutArticleNestedInput
-  context?: Prisma.v_ArticleContextUncheckedUpdateManyWithoutArticleNestedInput
+  context?: Prisma.v_ArticleContextUncheckedUpdateOneWithoutArticleNestedInput
 }
 
 export type ArticleCreateWithoutAddedByChangeInput = {
@@ -1369,7 +1369,7 @@ export type ArticleCreateWithoutAddedByChangeInput = {
   articleCreateDocument?: Prisma.ArticleCreateDocumentCreateNestedOneWithoutArticleInput
   articleFormality?: Prisma.ArticleFormalityCreateNestedOneWithoutArticleInput
   referencedBy?: Prisma.ReferenceArticleCreateNestedManyWithoutArticleInput
-  context?: Prisma.v_ArticleContextCreateNestedManyWithoutArticleInput
+  context?: Prisma.v_ArticleContextCreateNestedOneWithoutArticleInput
 }
 
 export type ArticleUncheckedCreateWithoutAddedByChangeInput = {
@@ -1387,7 +1387,7 @@ export type ArticleUncheckedCreateWithoutAddedByChangeInput = {
   articleCreateDocument?: Prisma.ArticleCreateDocumentUncheckedCreateNestedOneWithoutArticleInput
   articleFormality?: Prisma.ArticleFormalityUncheckedCreateNestedOneWithoutArticleInput
   referencedBy?: Prisma.ReferenceArticleUncheckedCreateNestedManyWithoutArticleInput
-  context?: Prisma.v_ArticleContextUncheckedCreateNestedManyWithoutArticleInput
+  context?: Prisma.v_ArticleContextUncheckedCreateNestedOneWithoutArticleInput
 }
 
 export type ArticleCreateOrConnectWithoutAddedByChangeInput = {
@@ -1421,7 +1421,7 @@ export type ArticleUpdateWithoutAddedByChangeInput = {
   articleCreateDocument?: Prisma.ArticleCreateDocumentUpdateOneWithoutArticleNestedInput
   articleFormality?: Prisma.ArticleFormalityUpdateOneWithoutArticleNestedInput
   referencedBy?: Prisma.ReferenceArticleUpdateManyWithoutArticleNestedInput
-  context?: Prisma.v_ArticleContextUpdateManyWithoutArticleNestedInput
+  context?: Prisma.v_ArticleContextUpdateOneWithoutArticleNestedInput
 }
 
 export type ArticleUncheckedUpdateWithoutAddedByChangeInput = {
@@ -1439,7 +1439,7 @@ export type ArticleUncheckedUpdateWithoutAddedByChangeInput = {
   articleCreateDocument?: Prisma.ArticleCreateDocumentUncheckedUpdateOneWithoutArticleNestedInput
   articleFormality?: Prisma.ArticleFormalityUncheckedUpdateOneWithoutArticleNestedInput
   referencedBy?: Prisma.ReferenceArticleUncheckedUpdateManyWithoutArticleNestedInput
-  context?: Prisma.v_ArticleContextUncheckedUpdateManyWithoutArticleNestedInput
+  context?: Prisma.v_ArticleContextUncheckedUpdateOneWithoutArticleNestedInput
 }
 
 export type ArticleCreateWithoutAnnexInput = {
@@ -1457,7 +1457,7 @@ export type ArticleCreateWithoutAnnexInput = {
   articleCreateDocument?: Prisma.ArticleCreateDocumentCreateNestedOneWithoutArticleInput
   articleFormality?: Prisma.ArticleFormalityCreateNestedOneWithoutArticleInput
   referencedBy?: Prisma.ReferenceArticleCreateNestedManyWithoutArticleInput
-  context?: Prisma.v_ArticleContextCreateNestedManyWithoutArticleInput
+  context?: Prisma.v_ArticleContextCreateNestedOneWithoutArticleInput
 }
 
 export type ArticleUncheckedCreateWithoutAnnexInput = {
@@ -1475,7 +1475,7 @@ export type ArticleUncheckedCreateWithoutAnnexInput = {
   articleCreateDocument?: Prisma.ArticleCreateDocumentUncheckedCreateNestedOneWithoutArticleInput
   articleFormality?: Prisma.ArticleFormalityUncheckedCreateNestedOneWithoutArticleInput
   referencedBy?: Prisma.ReferenceArticleUncheckedCreateNestedManyWithoutArticleInput
-  context?: Prisma.v_ArticleContextUncheckedCreateNestedManyWithoutArticleInput
+  context?: Prisma.v_ArticleContextUncheckedCreateNestedOneWithoutArticleInput
 }
 
 export type ArticleCreateOrConnectWithoutAnnexInput = {
@@ -1519,7 +1519,7 @@ export type ArticleCreateWithoutChapterInput = {
   articleCreateDocument?: Prisma.ArticleCreateDocumentCreateNestedOneWithoutArticleInput
   articleFormality?: Prisma.ArticleFormalityCreateNestedOneWithoutArticleInput
   referencedBy?: Prisma.ReferenceArticleCreateNestedManyWithoutArticleInput
-  context?: Prisma.v_ArticleContextCreateNestedManyWithoutArticleInput
+  context?: Prisma.v_ArticleContextCreateNestedOneWithoutArticleInput
 }
 
 export type ArticleUncheckedCreateWithoutChapterInput = {
@@ -1537,7 +1537,7 @@ export type ArticleUncheckedCreateWithoutChapterInput = {
   articleCreateDocument?: Prisma.ArticleCreateDocumentUncheckedCreateNestedOneWithoutArticleInput
   articleFormality?: Prisma.ArticleFormalityUncheckedCreateNestedOneWithoutArticleInput
   referencedBy?: Prisma.ReferenceArticleUncheckedCreateNestedManyWithoutArticleInput
-  context?: Prisma.v_ArticleContextUncheckedCreateNestedManyWithoutArticleInput
+  context?: Prisma.v_ArticleContextUncheckedCreateNestedOneWithoutArticleInput
 }
 
 export type ArticleCreateOrConnectWithoutChapterInput = {
@@ -1581,7 +1581,7 @@ export type ArticleCreateWithoutContentInput = {
   articleCreateDocument?: Prisma.ArticleCreateDocumentCreateNestedOneWithoutArticleInput
   articleFormality?: Prisma.ArticleFormalityCreateNestedOneWithoutArticleInput
   referencedBy?: Prisma.ReferenceArticleCreateNestedManyWithoutArticleInput
-  context?: Prisma.v_ArticleContextCreateNestedManyWithoutArticleInput
+  context?: Prisma.v_ArticleContextCreateNestedOneWithoutArticleInput
 }
 
 export type ArticleUncheckedCreateWithoutContentInput = {
@@ -1599,7 +1599,7 @@ export type ArticleUncheckedCreateWithoutContentInput = {
   articleCreateDocument?: Prisma.ArticleCreateDocumentUncheckedCreateNestedOneWithoutArticleInput
   articleFormality?: Prisma.ArticleFormalityUncheckedCreateNestedOneWithoutArticleInput
   referencedBy?: Prisma.ReferenceArticleUncheckedCreateNestedManyWithoutArticleInput
-  context?: Prisma.v_ArticleContextUncheckedCreateNestedManyWithoutArticleInput
+  context?: Prisma.v_ArticleContextUncheckedCreateNestedOneWithoutArticleInput
 }
 
 export type ArticleCreateOrConnectWithoutContentInput = {
@@ -1633,7 +1633,7 @@ export type ArticleUpdateWithoutContentInput = {
   articleCreateDocument?: Prisma.ArticleCreateDocumentUpdateOneWithoutArticleNestedInput
   articleFormality?: Prisma.ArticleFormalityUpdateOneWithoutArticleNestedInput
   referencedBy?: Prisma.ReferenceArticleUpdateManyWithoutArticleNestedInput
-  context?: Prisma.v_ArticleContextUpdateManyWithoutArticleNestedInput
+  context?: Prisma.v_ArticleContextUpdateOneWithoutArticleNestedInput
 }
 
 export type ArticleUncheckedUpdateWithoutContentInput = {
@@ -1651,7 +1651,7 @@ export type ArticleUncheckedUpdateWithoutContentInput = {
   articleCreateDocument?: Prisma.ArticleCreateDocumentUncheckedUpdateOneWithoutArticleNestedInput
   articleFormality?: Prisma.ArticleFormalityUncheckedUpdateOneWithoutArticleNestedInput
   referencedBy?: Prisma.ReferenceArticleUncheckedUpdateManyWithoutArticleNestedInput
-  context?: Prisma.v_ArticleContextUncheckedUpdateManyWithoutArticleNestedInput
+  context?: Prisma.v_ArticleContextUncheckedUpdateOneWithoutArticleNestedInput
 }
 
 export type ArticleCreateWithoutReferencedByInput = {
@@ -1669,7 +1669,7 @@ export type ArticleCreateWithoutReferencedByInput = {
   articleModifier?: Prisma.ArticleModifierCreateNestedOneWithoutArticleInput
   articleCreateDocument?: Prisma.ArticleCreateDocumentCreateNestedOneWithoutArticleInput
   articleFormality?: Prisma.ArticleFormalityCreateNestedOneWithoutArticleInput
-  context?: Prisma.v_ArticleContextCreateNestedManyWithoutArticleInput
+  context?: Prisma.v_ArticleContextCreateNestedOneWithoutArticleInput
 }
 
 export type ArticleUncheckedCreateWithoutReferencedByInput = {
@@ -1687,7 +1687,7 @@ export type ArticleUncheckedCreateWithoutReferencedByInput = {
   articleModifier?: Prisma.ArticleModifierUncheckedCreateNestedOneWithoutArticleInput
   articleCreateDocument?: Prisma.ArticleCreateDocumentUncheckedCreateNestedOneWithoutArticleInput
   articleFormality?: Prisma.ArticleFormalityUncheckedCreateNestedOneWithoutArticleInput
-  context?: Prisma.v_ArticleContextUncheckedCreateNestedManyWithoutArticleInput
+  context?: Prisma.v_ArticleContextUncheckedCreateNestedOneWithoutArticleInput
 }
 
 export type ArticleCreateOrConnectWithoutReferencedByInput = {
@@ -1721,7 +1721,7 @@ export type ArticleUpdateWithoutReferencedByInput = {
   articleModifier?: Prisma.ArticleModifierUpdateOneWithoutArticleNestedInput
   articleCreateDocument?: Prisma.ArticleCreateDocumentUpdateOneWithoutArticleNestedInput
   articleFormality?: Prisma.ArticleFormalityUpdateOneWithoutArticleNestedInput
-  context?: Prisma.v_ArticleContextUpdateManyWithoutArticleNestedInput
+  context?: Prisma.v_ArticleContextUpdateOneWithoutArticleNestedInput
 }
 
 export type ArticleUncheckedUpdateWithoutReferencedByInput = {
@@ -1739,7 +1739,7 @@ export type ArticleUncheckedUpdateWithoutReferencedByInput = {
   articleModifier?: Prisma.ArticleModifierUncheckedUpdateOneWithoutArticleNestedInput
   articleCreateDocument?: Prisma.ArticleCreateDocumentUncheckedUpdateOneWithoutArticleNestedInput
   articleFormality?: Prisma.ArticleFormalityUncheckedUpdateOneWithoutArticleNestedInput
-  context?: Prisma.v_ArticleContextUncheckedUpdateManyWithoutArticleNestedInput
+  context?: Prisma.v_ArticleContextUncheckedUpdateOneWithoutArticleNestedInput
 }
 
 export type ArticleCreateManyResolutionInput = {
@@ -1768,7 +1768,7 @@ export type ArticleUpdateWithoutResolutionInput = {
   articleCreateDocument?: Prisma.ArticleCreateDocumentUpdateOneWithoutArticleNestedInput
   articleFormality?: Prisma.ArticleFormalityUpdateOneWithoutArticleNestedInput
   referencedBy?: Prisma.ReferenceArticleUpdateManyWithoutArticleNestedInput
-  context?: Prisma.v_ArticleContextUpdateManyWithoutArticleNestedInput
+  context?: Prisma.v_ArticleContextUpdateOneWithoutArticleNestedInput
 }
 
 export type ArticleUncheckedUpdateWithoutResolutionInput = {
@@ -1786,7 +1786,7 @@ export type ArticleUncheckedUpdateWithoutResolutionInput = {
   articleCreateDocument?: Prisma.ArticleCreateDocumentUncheckedUpdateOneWithoutArticleNestedInput
   articleFormality?: Prisma.ArticleFormalityUncheckedUpdateOneWithoutArticleNestedInput
   referencedBy?: Prisma.ReferenceArticleUncheckedUpdateManyWithoutArticleNestedInput
-  context?: Prisma.v_ArticleContextUncheckedUpdateManyWithoutArticleNestedInput
+  context?: Prisma.v_ArticleContextUncheckedUpdateOneWithoutArticleNestedInput
 }
 
 export type ArticleUncheckedUpdateManyWithoutResolutionInput = {
@@ -1826,7 +1826,7 @@ export type ArticleUpdateWithoutAnnexInput = {
   articleCreateDocument?: Prisma.ArticleCreateDocumentUpdateOneWithoutArticleNestedInput
   articleFormality?: Prisma.ArticleFormalityUpdateOneWithoutArticleNestedInput
   referencedBy?: Prisma.ReferenceArticleUpdateManyWithoutArticleNestedInput
-  context?: Prisma.v_ArticleContextUpdateManyWithoutArticleNestedInput
+  context?: Prisma.v_ArticleContextUpdateOneWithoutArticleNestedInput
 }
 
 export type ArticleUncheckedUpdateWithoutAnnexInput = {
@@ -1844,7 +1844,7 @@ export type ArticleUncheckedUpdateWithoutAnnexInput = {
   articleCreateDocument?: Prisma.ArticleCreateDocumentUncheckedUpdateOneWithoutArticleNestedInput
   articleFormality?: Prisma.ArticleFormalityUncheckedUpdateOneWithoutArticleNestedInput
   referencedBy?: Prisma.ReferenceArticleUncheckedUpdateManyWithoutArticleNestedInput
-  context?: Prisma.v_ArticleContextUncheckedUpdateManyWithoutArticleNestedInput
+  context?: Prisma.v_ArticleContextUncheckedUpdateOneWithoutArticleNestedInput
 }
 
 export type ArticleUncheckedUpdateManyWithoutAnnexInput = {
@@ -1884,7 +1884,7 @@ export type ArticleUpdateWithoutChapterInput = {
   articleCreateDocument?: Prisma.ArticleCreateDocumentUpdateOneWithoutArticleNestedInput
   articleFormality?: Prisma.ArticleFormalityUpdateOneWithoutArticleNestedInput
   referencedBy?: Prisma.ReferenceArticleUpdateManyWithoutArticleNestedInput
-  context?: Prisma.v_ArticleContextUpdateManyWithoutArticleNestedInput
+  context?: Prisma.v_ArticleContextUpdateOneWithoutArticleNestedInput
 }
 
 export type ArticleUncheckedUpdateWithoutChapterInput = {
@@ -1902,7 +1902,7 @@ export type ArticleUncheckedUpdateWithoutChapterInput = {
   articleCreateDocument?: Prisma.ArticleCreateDocumentUncheckedUpdateOneWithoutArticleNestedInput
   articleFormality?: Prisma.ArticleFormalityUncheckedUpdateOneWithoutArticleNestedInput
   referencedBy?: Prisma.ReferenceArticleUncheckedUpdateManyWithoutArticleNestedInput
-  context?: Prisma.v_ArticleContextUncheckedUpdateManyWithoutArticleNestedInput
+  context?: Prisma.v_ArticleContextUncheckedUpdateOneWithoutArticleNestedInput
 }
 
 export type ArticleUncheckedUpdateManyWithoutChapterInput = {
@@ -2020,13 +2020,11 @@ export type ArticleUncheckedUpdateWithoutContextInput = {
 export type ArticleCountOutputType = {
   content: number
   referencedBy: number
-  context: number
 }
 
 export type ArticleCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   content?: boolean | ArticleCountOutputTypeCountContentArgs
   referencedBy?: boolean | ArticleCountOutputTypeCountReferencedByArgs
-  context?: boolean | ArticleCountOutputTypeCountContextArgs
 }
 
 /**
@@ -2051,13 +2049,6 @@ export type ArticleCountOutputTypeCountContentArgs<ExtArgs extends runtime.Types
  */
 export type ArticleCountOutputTypeCountReferencedByArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   where?: Prisma.ReferenceArticleWhereInput
-}
-
-/**
- * ArticleCountOutputType without action
- */
-export type ArticleCountOutputTypeCountContextArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  where?: Prisma.v_ArticleContextWhereInput
 }
 
 
@@ -2177,7 +2168,7 @@ export type $ArticlePayload<ExtArgs extends runtime.Types.Extensions.InternalArg
     articleCreateDocument: Prisma.$ArticleCreateDocumentPayload<ExtArgs> | null
     articleFormality: Prisma.$ArticleFormalityPayload<ExtArgs> | null
     referencedBy: Prisma.$ReferenceArticlePayload<ExtArgs>[]
-    context: Prisma.$v_ArticleContextPayload<ExtArgs>[]
+    context: Prisma.$v_ArticleContextPayload<ExtArgs> | null
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -2594,7 +2585,7 @@ export interface Prisma__ArticleClient<T, Null = never, ExtArgs extends runtime.
   articleCreateDocument<T extends Prisma.Article$articleCreateDocumentArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Article$articleCreateDocumentArgs<ExtArgs>>): Prisma.Prisma__ArticleCreateDocumentClient<runtime.Types.Result.GetResult<Prisma.$ArticleCreateDocumentPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   articleFormality<T extends Prisma.Article$articleFormalityArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Article$articleFormalityArgs<ExtArgs>>): Prisma.Prisma__ArticleFormalityClient<runtime.Types.Result.GetResult<Prisma.$ArticleFormalityPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   referencedBy<T extends Prisma.Article$referencedByArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Article$referencedByArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ReferenceArticlePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
-  context<T extends Prisma.Article$contextArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Article$contextArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$v_ArticleContextPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  context<T extends Prisma.Article$contextArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Article$contextArgs<ExtArgs>>): Prisma.Prisma__v_ArticleContextClient<runtime.Types.Result.GetResult<Prisma.$v_ArticleContextPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -3264,11 +3255,6 @@ export type Article$contextArgs<ExtArgs extends runtime.Types.Extensions.Interna
    */
   include?: Prisma.v_ArticleContextInclude<ExtArgs> | null
   where?: Prisma.v_ArticleContextWhereInput
-  orderBy?: Prisma.v_ArticleContextOrderByWithRelationInput | Prisma.v_ArticleContextOrderByWithRelationInput[]
-  cursor?: Prisma.v_ArticleContextWhereUniqueInput
-  take?: number
-  skip?: number
-  distinct?: Prisma.V_ArticleContextScalarFieldEnum | Prisma.V_ArticleContextScalarFieldEnum[]
 }
 
 /**

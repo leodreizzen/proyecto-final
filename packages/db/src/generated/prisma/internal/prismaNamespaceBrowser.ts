@@ -90,7 +90,8 @@ export const ModelName = {
   MaintenanceTask: 'MaintenanceTask',
   v_ArticleContext: 'v_ArticleContext',
   v_ResolutionSearch: 'v_ResolutionSearch',
-  v_MissingResolution: 'v_MissingResolution'
+  v_MissingResolution: 'v_MissingResolution',
+  v_ResolvedReferences: 'v_ResolvedReferences'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -561,6 +562,22 @@ export const V_MissingResolutionScalarFieldEnum = {
 } as const
 
 export type V_MissingResolutionScalarFieldEnum = (typeof V_MissingResolutionScalarFieldEnum)[keyof typeof V_MissingResolutionScalarFieldEnum]
+
+
+export const V_ResolvedReferencesScalarFieldEnum = {
+  ref_id: 'ref_id',
+  target_type: 'target_type',
+  native_id: 'native_id',
+  res_init: 'res_init',
+  res_num: 'res_num',
+  res_year: 'res_year',
+  art_num: 'art_num',
+  art_suff: 'art_suff',
+  annex_num: 'annex_num',
+  chap_num: 'chap_num'
+} as const
+
+export type V_ResolvedReferencesScalarFieldEnum = (typeof V_ResolvedReferencesScalarFieldEnum)[keyof typeof V_ResolvedReferencesScalarFieldEnum]
 
 
 export const SortOrder = {
