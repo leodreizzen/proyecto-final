@@ -17,7 +17,7 @@ function createPrismaClient() {
             transactionOptions: {
                 maxWait: 12000,
                 timeout: 10000
-            },
+            }
         }
     ).$extends({
         query: {

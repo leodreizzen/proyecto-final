@@ -5,4 +5,6 @@
 // @ts-nocheck 
 export { type $DbEnums } from "./sql/$DbEnums.ts"
 
+export * from "./sql/getAffectedResolutions.ts"
+
 export * from "./sql/getRelevantChanges.ts"
