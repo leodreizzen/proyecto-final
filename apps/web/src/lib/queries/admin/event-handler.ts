@@ -1,6 +1,7 @@
 import {AdminDashboardEvent} from "@/app/api/events/admin/dashboard/route";
 import {queryClient} from "@/lib/actions/queryClient";
 import {
+    maintenanceKeys,
     pendingUploadsQuery,
     recentFinishedUploadsQuery,
     resolutionKeys,
@@ -51,11 +52,17 @@ async function handleAdminEvent(event: MessageEvent) {
     } else if (eventData.scope === "RESOLUTIONS_SPECIFIC") {
         if (eventData.data.type === "UPDATE") {
             // Invalidate all resolution lists as we don't know which filter contains the updated resolution
-            await queryClient.invalidateQueries({ queryKey: ['resolutions', 'list'] });
-            await queryClient.invalidateQueries({ queryKey: ['resolutions', 'missing'] });
-            
+            await queryClient.invalidateQueries({queryKey: ['resolutions', 'list']});
+            await queryClient.invalidateQueries({queryKey: ['resolutions', 'missing']});
+
             await queryClient.invalidateQueries({queryKey: resolutionKeys.counts()});
             await queryClient.invalidateQueries({queryKey: resolutionKeys.details(eventData.params.id)});
+        }
+    } else if (eventData.scope === "MAINTENANCE_TASKS_GLOBAL") {
+        await queryClient.invalidateQueries({queryKey: maintenanceKeys.all});
+    } else if (eventData.scope === "MAINTENANCE_TASKS_SPECIFIC") {
+        if (eventData.data.type === "UPDATE") {
+            await queryClient.invalidateQueries({queryKey: maintenanceKeys.all});
         }
     }
 }

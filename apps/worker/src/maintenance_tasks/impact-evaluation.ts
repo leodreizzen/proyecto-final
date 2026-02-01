@@ -7,8 +7,10 @@ import {
 import prisma, {TransactionPrismaClient} from "@repo/db/prisma";
 import {getAffectedResolutions} from "@repo/db/prisma/sql/getAffectedResolutions";
 import {scheduleAdvancedChangesTask, scheduleEmbeddingsTask} from "@/job-creation";
+import {publishMaintenanceTaskUpdate, publishNewMaintenanceTask} from "@repo/pubsub/publish/maintenance_tasks";
 
 export async function processEvaluateImpactJob(jobId: string) {
+    console.log(`Starting impact evaluation for maintenance task ${jobId}`);
     const task = await fetchMaintenanceTask(jobId);
     if (!task) {
         throw new Error(`Maintenance task with ID ${jobId} not found`);
@@ -16,6 +18,7 @@ export async function processEvaluateImpactJob(jobId: string) {
     let jobsToCreate: Awaited<ReturnType<typeof createTasksForImpactedResolutions>> | null = null;
     try {
         await setMaintenanceTaskStatus({taskId: jobId, status: "PROCESSING"});
+        await publishMaintenanceTaskUpdate(jobId, ["status"]);
         jobsToCreate = await prisma.$transaction(async (tx) => {
             const impacted = await getImpactedResolutions(task.resolutionId, tx);
             const createRes = await createTasksForImpactedResolutions(task.resolutionId, task.triggerEventId, impacted);
@@ -32,15 +35,17 @@ export async function processEvaluateImpactJob(jobId: string) {
         jobsToCreate = null;
     }
 
-
     if (jobsToCreate !== null) {
         for (const task of jobsToCreate.advancedChangesTasks) {
             await scheduleAdvancedChangesTask(task.id, task.resolutionId, task.depth);
+            await publishNewMaintenanceTask(task.id);
         }
         for (const task of jobsToCreate.embeddingTasks) {
             await scheduleEmbeddingsTask(task.id, task.resolutionId, task.depth);
+            await publishNewMaintenanceTask(task.id);
         }
     }
+    await publishMaintenanceTaskUpdate(jobId, ["status"]); // either COMPLETED or FAILED
 }
 
 async function getImpactedResolutions(resolutionId: string, tx: TransactionPrismaClient = prisma) {

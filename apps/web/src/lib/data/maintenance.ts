@@ -1,5 +1,5 @@
 import "server-only";
-import { checkResourcePermission } from "@/lib/auth/data-authorization";
+import {checkResourcePermission} from "@/lib/auth/data-authorization";
 import prisma from "@/lib/prisma";
 import {
     MaintenanceTaskFindManyArgs,
@@ -30,18 +30,18 @@ export async function fetchMaintenanceTasks(
 
     const cursorParams = cursor
         ? ({
-              skip: 1,
-              cursor: {
-                  id: cursor,
-              },
-          } satisfies Partial<MaintenanceTaskFindManyArgs>)
+            skip: 1,
+            cursor: {
+                id: cursor,
+            },
+        } satisfies Partial<MaintenanceTaskFindManyArgs>)
         : {};
 
     let statusCondition: MaintenanceTaskWhereInput["status"] | undefined;
 
     switch (filter) {
         case "ACTIVE":
-            statusCondition = { in: ["PENDING", "PROCESSING"] };
+            statusCondition = {in: ["PENDING", "PROCESSING"]};
             break;
         case "COMPLETED":
             statusCondition = "COMPLETED";
@@ -64,28 +64,33 @@ export async function fetchMaintenanceTasks(
         }
     } : {};
 
-    console.log(searchCondition);
-
     const tasks = await prisma.maintenanceTask.findMany({
-        ...cursorParams,
-        where: {
-            status: statusCondition,
-            ...searchCondition
-        },
-        include: {
-            resolution: {
-                select: {
-                    initial: true,
-                    number: true,
-                    year: true,
+            ...cursorParams,
+            where: {
+                status: statusCondition,
+                ...searchCondition
+            },
+            include: {
+                resolution: {
+                    select: {
+                        initial: true,
+                        number: true,
+                        year: true,
+                    },
                 },
             },
-        },
-        orderBy: {
-            createdAt: "desc",
-        },
-        take: 20,
-    });
+            orderBy: [
+                {
+                    order: "asc"
+                },
+                {
+                    createdAt: "asc"
+                }
+            ]
+            ,
+            take: 20,
+        })
+    ;
 
     return tasks;
 }

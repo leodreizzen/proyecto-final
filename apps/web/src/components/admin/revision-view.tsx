@@ -124,7 +124,7 @@ export function RevisionView({
                             >
                                 {filter === "ALL" ? "Todas" :
                                  filter === "ACTIVE" ? "En Curso" : 
-                                 filter === "COMPLETED" ? "Listas" : "Fallidas"}
+                                 filter === "COMPLETED" ? "Terminadas" : "Fallidas"}
                             </button>
                         ))}
                     </div>

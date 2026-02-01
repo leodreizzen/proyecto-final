@@ -11,6 +11,7 @@ import {publishUploadStatus} from "@repo/pubsub/publish/uploads";
 import {publishNewResolution} from "@repo/pubsub/publish/resolutions";
 import {scheduleImpactTask} from "@/job-creation";
 import {upsertImpactEvaluationTaskInDb} from "@/data/maintenance";
+import {publishNewMaintenanceTask} from "@repo/pubsub/publish/maintenance_tasks";
 
 export async function processResolutionUpload(job: Job, progressReporter: ProgressReporter) {
     if (!job.id)
@@ -87,5 +88,6 @@ async function createImpactTask(resolutionId: string, tx: TransactionPrismaClien
     const dbTask = await upsertImpactEvaluationTaskInDb(resolutionId, eventId, tx);
     if (dbTask.created) {
         await scheduleImpactTask(dbTask.id, resolutionId, tx);
+        await publishNewMaintenanceTask(dbTask.id);
     }
 }

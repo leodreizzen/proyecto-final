@@ -11,11 +11,11 @@ type Event<S> = S extends ChannelKey ? {
     params: ParamsTypes[S],
 } : never
 
-const resoutionEventKeys = ["RESOLUTIONS_GLOBAL", "RESOLUTIONS_SPECIFIC", "UPLOADS_GLOBAL", "UPLOADS_SPECIFIC"] as const;
+const resolutionEventKeys = ["RESOLUTIONS_GLOBAL", "RESOLUTIONS_SPECIFIC", "UPLOADS_GLOBAL", "UPLOADS_SPECIFIC", "MAINTENANCE_TASKS_GLOBAL", "MAINTENANCE_TASKS_SPECIFIC"] as const;
 
-export type ResolutionEvent = Event<typeof resoutionEventKeys[number]>;
+export type ResolutionEvent = Event<typeof resolutionEventKeys[number]>;
 
-subscribe(resoutionEventKeys, ({channel, params, data}) => {
+subscribe(resolutionEventKeys, ({channel, params, data}) => {
     eventBus.emit("broadcast", {scope: channel, params, data} as ResolutionEvent);
 })
 

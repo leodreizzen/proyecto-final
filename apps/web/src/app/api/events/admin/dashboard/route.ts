@@ -1,7 +1,7 @@
 import {authCheck} from "@/lib/auth/route-authorization";
 import {eventBus, ResolutionEvent} from "@/lib/events";
 
-const scopesToSend = ["UPLOADS_GLOBAL", "UPLOADS_SPECIFIC", "RESOLUTIONS_GLOBAL", "RESOLUTIONS_SPECIFIC"] as const;
+const scopesToSend = ["UPLOADS_GLOBAL", "UPLOADS_SPECIFIC", "RESOLUTIONS_GLOBAL", "RESOLUTIONS_SPECIFIC", "MAINTENANCE_TASKS_GLOBAL", "MAINTENANCE_TASKS_SPECIFIC"] as const;
 export type AdminDashboardEvent = ResolutionEvent & {scope: typeof scopesToSend[number]};
 
 export async function GET() {

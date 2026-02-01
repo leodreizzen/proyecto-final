@@ -96,7 +96,7 @@ export function formatMaintenanceTaskStatus(status: string): string {
         case "PROCESSING":
             return "EN CURSO";
         case "COMPLETED":
-            return "LISTA";
+            return "TERMINADA";
         case "FAILED":
             return "FALLIDA";
         default:
