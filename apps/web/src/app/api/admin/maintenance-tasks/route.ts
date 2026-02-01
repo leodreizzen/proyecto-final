@@ -30,7 +30,7 @@ export async function GET(
     const { cursor, filter, q } = parseResult.data;
 
     try {
-        const tasks = await fetchMaintenanceTasks(cursor, filter, q);
+        const tasks = await fetchMaintenanceTasks({cursor, filter, query: q});
         return NextResponse.json(tasks);
     } catch (error) {
         console.error("Error fetching maintenance tasks:", error);

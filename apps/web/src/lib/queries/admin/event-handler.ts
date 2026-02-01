@@ -59,10 +59,13 @@ async function handleAdminEvent(event: MessageEvent) {
             await queryClient.invalidateQueries({queryKey: resolutionKeys.details(eventData.params.id)});
         }
     } else if (eventData.scope === "MAINTENANCE_TASKS_GLOBAL") {
-        await queryClient.invalidateQueries({queryKey: maintenanceKeys.all});
+        if (eventData.data.type === "NEW")
+            await queryClient.invalidateQueries({queryKey: maintenanceKeys.all});
+        else if (eventData.data.type === "DELETE")
+            await queryClient.invalidateQueries({queryKey: maintenanceKeys.all}); // todo optimize to remove only deleted task
     } else if (eventData.scope === "MAINTENANCE_TASKS_SPECIFIC") {
         if (eventData.data.type === "UPDATE") {
-            await queryClient.invalidateQueries({queryKey: maintenanceKeys.all});
+            await queryClient.invalidateQueries({queryKey: maintenanceKeys.all}); // todo optimize to update only specific task
         }
     }
 }

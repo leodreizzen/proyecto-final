@@ -13,6 +13,6 @@ export default async function RevisionPage() {
     await authCheck(["ADMIN"])
 
     const initialMissingResolutions = await fetchMissingResolutions(null, null);
-    const initialMaintenanceTasks = await fetchMaintenanceTasks(null, "ALL", null);
+    const initialMaintenanceTasks = await fetchMaintenanceTasks({cursor: null, filter: "ALL", query: null});
     return <RevisionView initialMissingResolutions={initialMissingResolutions} initialMaintenanceTasks={initialMaintenanceTasks}/>
 }

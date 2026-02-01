@@ -9,6 +9,7 @@ import {
 } from "@/lib/definitions/resolutions";
 import {createDeleteAssetJob} from "@/lib/jobs/assets";
 import {ResolutionFindManyArgs, v_MissingResolutionFindManyArgs} from "@repo/db/prisma/models";
+import {TransactionPrismaClient} from "@repo/db/prisma";
 
 export async function fetchResolutionsWithStatus(cursor: string | null, query?: string | null): Promise<ResolutionWithStatus[]> {
     await checkResourcePermission("resolution", "read");
@@ -90,10 +91,11 @@ export async function countResolutions(): Promise<ResolutionCounts> {
     }
 }
 
-export async function deleteResolutionById(resolutionId: string) {
+export async function deleteResolutionById(resolutionId: string, tx?: TransactionPrismaClient) {
     await checkResourcePermission("resolution", "delete");
     let assetId: string | undefined;
-    await prisma.$transaction(async (tx) => {
+
+    const transactionFn = async (tx: TransactionPrismaClient) => {
         const res = await tx.resolution.delete({
             where: {id: resolutionId}
         })
@@ -107,7 +109,14 @@ export async function deleteResolutionById(resolutionId: string) {
                 deleted: true
             }
         })
-    })
+    };
+
+    if (tx) {
+        await transactionFn(tx);
+    } else {
+        await prisma.$transaction(transactionFn);
+    }
+
     await createDeleteAssetJob(assetId!)
 }
 

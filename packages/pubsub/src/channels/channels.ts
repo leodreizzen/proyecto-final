@@ -1,7 +1,7 @@
 import {UPLOADS_CHANNELS, UploadsMessages, UploadsParams} from "./uploads";
 import {ResolutionMessages, ResolutionParams, RESOLUTIONS_CHANNELS} from "./resolutions";
 import {USER_CHANNELS, UserMessages, UserParams} from "./users";
-import {MAINTENANCE_TASKS_CHANNELS, MaintenanceTaskMessages, MaintenanceTaskParams} from "./maintenance_tasks.ts";
+import {MAINTENANCE_TASKS_CHANNELS, MaintenanceTaskMessages, MaintenanceTaskParams} from "./maintenance_tasks";
 
 export type ChannelKey = keyof typeof CHANNELS;
 export type MessageTypes = UploadsMessages & ResolutionMessages & UserMessages & MaintenanceTaskMessages;
