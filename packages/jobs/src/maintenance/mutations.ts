@@ -1,6 +1,6 @@
 import prisma, {TransactionPrismaClient} from "@repo/db/prisma";
-import { MaintenanceTask } from "@repo/db/prisma/client";
-import { MaintenanceTaskStatus } from "@repo/db/prisma/enums";
+import {MaintenanceTask} from "@repo/db/prisma/client";
+import {MaintenanceTaskStatus} from "@repo/db/prisma/enums";
 
 export async function deleteMaintenanceTasks(id: string[]): Promise<void> {
     await prisma.maintenanceTask.deleteMany({
@@ -131,3 +131,4 @@ export async function upsertAdvancedChangesTask(resolutionId: string, eventId: s
         }
     }
 }
+

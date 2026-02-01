@@ -8,7 +8,7 @@ import {VoidActionResult} from "@/lib/definitions/actions";
 import {publishDeleteResolution} from "@repo/pubsub/publish/resolutions";
 import prisma from "@repo/db/prisma";
 import {deleteMaintenanceTasksById, fetchMaintenanceTasks} from "@/lib/data/maintenance";
-import {publishDeletedMaintenanceTask} from "@repo/pubsub/publish/maintenance_tasks";
+import {publishDeletedMaintenanceTasks} from "@repo/pubsub/publish/maintenance_tasks";
 import {cancelMaintenanceTaskJob} from "@repo/jobs/maintenance/queue";
 
 const DeleteSchema = z.object({
@@ -39,7 +39,7 @@ export async function deleteResolution(params: z.infer<typeof DeleteSchema>): Pr
             }
         }));
 
-        await Promise.all(taskIds.map(async taskId => await publishDeletedMaintenanceTask(taskId)));
+        await publishDeletedMaintenanceTasks(taskIds);
     } catch (e) {
         console.error(e)
         return {

@@ -9,16 +9,16 @@ export async function publishMaintenanceTaskUpdate(maintenanceTaskId: string, fi
     }, {id: maintenanceTaskId});
 }
 
-export async function publishNewMaintenanceTask(maintenanceTaskId: string ) {
+export async function publishNewMaintenanceTasks(maintenanceTaskIds: string[] ) {
     await publish("MAINTENANCE_TASKS_GLOBAL", {
         type: "NEW",
-        maintenanceTaskId: maintenanceTaskId
+        maintenanceTaskIds: maintenanceTaskIds
     })
 }
 
-export async function publishDeletedMaintenanceTask(maintenanceTaskId: string ) {
+export async function publishDeletedMaintenanceTasks(maintenanceTaskIds: string[] ) {
     await publish("MAINTENANCE_TASKS_GLOBAL", {
         type: "DELETE",
-        maintenanceTaskId: maintenanceTaskId
+        maintenanceTaskIds: maintenanceTaskIds
     })
 }

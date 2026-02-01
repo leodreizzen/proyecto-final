@@ -3,10 +3,10 @@ import {MaintenanceTask} from "@repo/db/prisma/client";
 
 export type GlobalMaintenanceTaskMessage = {
     type: "NEW",
-    maintenanceTaskId: string
+    maintenanceTaskIds: string[]
 } | {
     type: "DELETE",
-    maintenanceTaskId: string
+    maintenanceTaskIds: string[]
 }
 
 export type MaintenanceTaskMessage = {

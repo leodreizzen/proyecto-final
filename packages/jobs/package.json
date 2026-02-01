@@ -10,25 +10,15 @@
   },
   "type": "module",
   "exports": {
-    "./maintenance/mutations": {
-      "require": "./src/maintenance/mutations.ts",
-      "import": "./src/maintenance/mutations.ts",
-      "types": "./src/maintenance/mutations.ts"
+    "./maintenance/*": {
+      "require": "./src/maintenance/*.ts",
+      "import": "./src/maintenance/*.ts",
+      "types": "./src/maintenance/*.ts"
     },
-    "./maintenance/queue": {
-      "require": "./src/maintenance/queue.ts",
-      "import": "./src/maintenance/queue.ts",
-      "types": "./src/maintenance/queue.ts"
-    },
-    "./resolutions/mutations": {
-      "require": "./src/resolutions/mutations.ts",
-      "import": "./src/resolutions/mutations.ts",
-      "types": "./src/resolutions/mutations.ts"
-    },
-    "./resolutions/queue": {
-      "require": "./src/resolutions/queue.ts",
-      "import": "./src/resolutions/queue.ts",
-      "types": "./src/resolutions/queue.ts"
+    "./resolutions/*": {
+      "require": "./src/resolutions/*.ts",
+      "import": "./src/resolutions/*.ts",
+      "types": "./src/resolutions/*.ts"
     },
     "./assets/queue": {
       "require": "./src/assets/queue.ts",

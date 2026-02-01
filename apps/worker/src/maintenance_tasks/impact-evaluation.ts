@@ -7,7 +7,7 @@ import {
 import prisma, {TransactionPrismaClient} from "@repo/db/prisma";
 import {getAffectedResolutions} from "@repo/db/prisma/sql/getAffectedResolutions";
 import {scheduleAdvancedChangesTask, scheduleEmbeddingsTask} from "@repo/jobs/maintenance/queue";
-import {publishMaintenanceTaskUpdate, publishNewMaintenanceTask} from "@repo/pubsub/publish/maintenance_tasks";
+import {publishMaintenanceTaskUpdate, publishNewMaintenanceTasks} from "@repo/pubsub/publish/maintenance_tasks";
 
 export async function processEvaluateImpactJob(jobId: string) {
     console.log(`Starting impact evaluation for maintenance task ${jobId}`);
@@ -38,12 +38,15 @@ export async function processEvaluateImpactJob(jobId: string) {
     if (jobsToCreate !== null) {
         for (const task of jobsToCreate.advancedChangesTasks) {
             await scheduleAdvancedChangesTask(task.id, task.resolutionId, task.depth);
-            await publishNewMaintenanceTask(task.id);
         }
         for (const task of jobsToCreate.embeddingTasks) {
             await scheduleEmbeddingsTask(task.id, task.resolutionId, task.depth);
-            await publishNewMaintenanceTask(task.id);
         }
+        const allNewTaskIds = [
+            ...jobsToCreate.advancedChangesTasks.map(t => t.id),
+            ...jobsToCreate.embeddingTasks.map(t => t.id)
+        ];
+        await publishNewMaintenanceTasks(allNewTaskIds);
     }
     await publishMaintenanceTaskUpdate(jobId, ["status"]); // either COMPLETED or FAILED
 }

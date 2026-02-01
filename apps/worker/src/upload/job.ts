@@ -1,5 +1,5 @@
 import {Job} from "bullmq";
-import prisma, {TransactionPrismaClient} from "@repo/db/prisma";
+import prisma from "@repo/db/prisma";
 import {parseResolution, ParseResolutionResult} from "@/parser/parser";
 import {deleteAsset, fetchAsset, makeResolutionFilePublic} from "@/util/assets";
 import {saveParsedResolution} from "@/data/save-resolution/save-resolution";
@@ -10,9 +10,8 @@ import {updateUploadStatus} from "@repo/jobs/resolutions/mutations";
 import ProgressReporter from "@/util/progress-reporter";
 import {publishUploadStatus} from "@repo/pubsub/publish/uploads";
 import {publishNewResolution} from "@repo/pubsub/publish/resolutions";
-import {scheduleImpactTask} from "@repo/jobs/maintenance/queue";
-import {upsertImpactEvaluationTask} from "@repo/jobs/maintenance/mutations";
-import {publishNewMaintenanceTask} from "@repo/pubsub/publish/maintenance_tasks";
+import {createImpactTask} from "@repo/jobs/maintenance/full";
+import {publishNewMaintenanceTasks} from "@repo/pubsub/publish/maintenance_tasks";
 
 export async function processResolutionUpload(job: Job, progressReporter: ProgressReporter) {
     if (!job.id)
@@ -46,13 +45,20 @@ export async function processResolutionUpload(job: Job, progressReporter: Progre
         const createdFile = await makeResolutionFilePublic(upload.file, parsedResolution.id);
         publicFile = createdFile;
 
-        let res;
-        await prisma.$transaction(async (tx) => {
-            res = await saveParsedResolution(tx, parsedResolution, upload, createdFile);
+
+        const {savedResolution, task} = await prisma.$transaction(async (tx) => {
+            const savedResolution = await saveParsedResolution(tx, parsedResolution, upload, createdFile);
             await updateUploadStatus({uploadId, status: "COMPLETED", tx});
-            await createImpactTask(res.id, tx);
+            const task = await createImpactTask(savedResolution.id, tx);
+            return {
+                savedResolution,
+                task
+            }
         });
-        await publishNewResolution(res!.id)
+        await publishNewResolution(savedResolution.id)
+        if (task.created) {
+            await publishNewMaintenanceTasks([task.id]);
+        }
         await publishUploadStatus(uploadId, {status: "COMPLETED"});
         saveDataReporter.reportProgress(1);
     } catch (e) {
@@ -84,11 +90,3 @@ async function tryDeleteOriginalFile(file: Asset) {
 }
 
 
-async function createImpactTask(resolutionId: string, tx: TransactionPrismaClient) {
-    const eventId = `upload_res_${resolutionId}_${Date.now()}`;
-    const dbTask = await upsertImpactEvaluationTask(resolutionId, eventId, tx);
-    if (dbTask.created) {
-        await scheduleImpactTask(dbTask.id, resolutionId);
-        await publishNewMaintenanceTask(dbTask.id);
-    }
-}
