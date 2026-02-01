@@ -12,7 +12,7 @@ const redisUrl = process.env.REDIS_URL;
 export const redisConnection = new IORedis(redisUrl, {maxRetriesPerRequest: 5, lazyConnect: true});
 
 export const assetsQueue = new Queue('assets', {connection: redisConnection});
-const maintenanceQueue = new Queue('maintenance', {connection: redisConnection});
+export const maintenanceQueue = new Queue('maintenance', {connection: redisConnection});
 
 export async function createDeleteJob(file: Asset) {
     await assetsQueue.add('deleteAsset', {fileId: file.id}, {
@@ -22,18 +22,28 @@ export async function createDeleteJob(file: Asset) {
     });
 }
 
-export async function scheduleImpactTask(resolutionId: string, tx: TransactionPrismaClient = prisma) {
-    const task = await tx.maintenanceTask.create({
-        data: {
-            type: 'EVALUATE_IMPACT',
-            resolutionId: resolutionId,
-            status: 'PENDING',
-            triggerEventId: v7(),
-        }
-    });
+export async function scheduleImpactTask(taskId:string, resolutionId: string, tx: TransactionPrismaClient = prisma) {
     await maintenanceQueue.add('evaluateImpact', {resolutionId}, {
-        jobId: task.id,
+        jobId: taskId,
         removeOnComplete: true,
         removeOnFail: 100
+    });
+}
+
+export async function scheduleEmbeddingsTask(taskId: string, resolutionId: string, depth: number) {
+    await maintenanceQueue.add('generateEmbeddings', {resolutionId}, {
+        jobId: taskId,
+        removeOnComplete: true,
+        removeOnFail: 100,
+        priority: depth + 1
+    });
+}
+
+export async function scheduleAdvancedChangesTask(taskId: string, resolutionId: string, depth: number) {
+    await maintenanceQueue.add('processAdvancedChanges', {resolutionId}, {
+        jobId: taskId,
+        removeOnComplete: true,
+        removeOnFail: 100,
+        priority: depth + 1
     });
 }

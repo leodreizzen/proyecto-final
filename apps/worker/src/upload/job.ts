@@ -1,5 +1,5 @@
 import {Job} from "bullmq";
-import prisma from "@repo/db/prisma";
+import prisma, {TransactionPrismaClient} from "@repo/db/prisma";
 import {parseResolution, ParseResolutionResult} from "@/parser/parser";
 import {deleteAsset, fetchAsset, makeResolutionFilePublic} from "@/util/assets";
 import {saveParsedResolution} from "@/data/save-resolution/save-resolution";
@@ -10,6 +10,7 @@ import ProgressReporter from "@/util/progress-reporter";
 import {publishUploadStatus} from "@repo/pubsub/publish/uploads";
 import {publishNewResolution} from "@repo/pubsub/publish/resolutions";
 import {scheduleImpactTask} from "@/job-creation";
+import {upsertImpactEvaluationTaskInDb} from "@/data/maintenance";
 
 export async function processResolutionUpload(job: Job, progressReporter: ProgressReporter) {
     if (!job.id)
@@ -47,7 +48,7 @@ export async function processResolutionUpload(job: Job, progressReporter: Progre
         await prisma.$transaction(async (tx) => {
             res = await saveParsedResolution(tx, parsedResolution, upload, createdFile);
             await setUploadStatus({uploadId, status: "COMPLETED", tx});
-            await scheduleImpactTask(res.id, tx);
+            await createImpactTask(res.id, tx);
         });
         await publishNewResolution(res!.id)
         await publishUploadStatus(uploadId, {status: "COMPLETED"});
@@ -77,5 +78,14 @@ async function tryDeleteOriginalFile(file: Asset) {
     } catch (e) {
         console.error("Failed to delete original upload file:", e);
         // don`t fail the job if deletion fails
+    }
+}
+
+
+async function createImpactTask(resolutionId: string, tx: TransactionPrismaClient) {
+    const eventId = `upload_res_${resolutionId}_${Date.now()}`;
+    const dbTask = await upsertImpactEvaluationTaskInDb(resolutionId, eventId, tx);
+    if (dbTask.created) {
+        await scheduleImpactTask(dbTask.id, resolutionId, tx);
     }
 }

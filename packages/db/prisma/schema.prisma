@@ -784,10 +784,13 @@ model MaintenanceTask {
 
   errorMsg String?
 
+  order Int @default(0) // Determines priority in processing
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
   // Check: can only have errorMsg if status is FAILED
+  @@index([order, id])
   // Composite unique index for deduplication per event
   @@unique([resolutionId, type, triggerEventId])
   @@index([status])

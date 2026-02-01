@@ -20,8 +20,18 @@ export type MaintenanceTaskModel = runtime.Types.Result.DefaultSelection<Prisma.
 
 export type AggregateMaintenanceTask = {
   _count: MaintenanceTaskCountAggregateOutputType | null
+  _avg: MaintenanceTaskAvgAggregateOutputType | null
+  _sum: MaintenanceTaskSumAggregateOutputType | null
   _min: MaintenanceTaskMinAggregateOutputType | null
   _max: MaintenanceTaskMaxAggregateOutputType | null
+}
+
+export type MaintenanceTaskAvgAggregateOutputType = {
+  order: number | null
+}
+
+export type MaintenanceTaskSumAggregateOutputType = {
+  order: number | null
 }
 
 export type MaintenanceTaskMinAggregateOutputType = {
@@ -31,6 +41,7 @@ export type MaintenanceTaskMinAggregateOutputType = {
   resolutionId: string | null
   triggerEventId: string | null
   errorMsg: string | null
+  order: number | null
   createdAt: Date | null
   updatedAt: Date | null
 }
@@ -42,6 +53,7 @@ export type MaintenanceTaskMaxAggregateOutputType = {
   resolutionId: string | null
   triggerEventId: string | null
   errorMsg: string | null
+  order: number | null
   createdAt: Date | null
   updatedAt: Date | null
 }
@@ -54,11 +66,20 @@ export type MaintenanceTaskCountAggregateOutputType = {
   triggerEventId: number
   payload: number
   errorMsg: number
+  order: number
   createdAt: number
   updatedAt: number
   _all: number
 }
 
+
+export type MaintenanceTaskAvgAggregateInputType = {
+  order?: true
+}
+
+export type MaintenanceTaskSumAggregateInputType = {
+  order?: true
+}
 
 export type MaintenanceTaskMinAggregateInputType = {
   id?: true
@@ -67,6 +88,7 @@ export type MaintenanceTaskMinAggregateInputType = {
   resolutionId?: true
   triggerEventId?: true
   errorMsg?: true
+  order?: true
   createdAt?: true
   updatedAt?: true
 }
@@ -78,6 +100,7 @@ export type MaintenanceTaskMaxAggregateInputType = {
   resolutionId?: true
   triggerEventId?: true
   errorMsg?: true
+  order?: true
   createdAt?: true
   updatedAt?: true
 }
@@ -90,6 +113,7 @@ export type MaintenanceTaskCountAggregateInputType = {
   triggerEventId?: true
   payload?: true
   errorMsg?: true
+  order?: true
   createdAt?: true
   updatedAt?: true
   _all?: true
@@ -133,6 +157,18 @@ export type MaintenanceTaskAggregateArgs<ExtArgs extends runtime.Types.Extension
   /**
    * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
    * 
+   * Select which fields to average
+  **/
+  _avg?: MaintenanceTaskAvgAggregateInputType
+  /**
+   * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+   * 
+   * Select which fields to sum
+  **/
+  _sum?: MaintenanceTaskSumAggregateInputType
+  /**
+   * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+   * 
    * Select which fields to find the minimum value
   **/
   _min?: MaintenanceTaskMinAggregateInputType
@@ -163,6 +199,8 @@ export type MaintenanceTaskGroupByArgs<ExtArgs extends runtime.Types.Extensions.
   take?: number
   skip?: number
   _count?: MaintenanceTaskCountAggregateInputType | true
+  _avg?: MaintenanceTaskAvgAggregateInputType
+  _sum?: MaintenanceTaskSumAggregateInputType
   _min?: MaintenanceTaskMinAggregateInputType
   _max?: MaintenanceTaskMaxAggregateInputType
 }
@@ -175,9 +213,12 @@ export type MaintenanceTaskGroupByOutputType = {
   triggerEventId: string
   payload: runtime.JsonValue | null
   errorMsg: string | null
+  order: number
   createdAt: Date
   updatedAt: Date
   _count: MaintenanceTaskCountAggregateOutputType | null
+  _avg: MaintenanceTaskAvgAggregateOutputType | null
+  _sum: MaintenanceTaskSumAggregateOutputType | null
   _min: MaintenanceTaskMinAggregateOutputType | null
   _max: MaintenanceTaskMaxAggregateOutputType | null
 }
@@ -208,6 +249,7 @@ export type MaintenanceTaskWhereInput = {
   triggerEventId?: Prisma.StringFilter<"MaintenanceTask"> | string
   payload?: Prisma.JsonNullableFilter<"MaintenanceTask">
   errorMsg?: Prisma.StringNullableFilter<"MaintenanceTask"> | string | null
+  order?: Prisma.IntFilter<"MaintenanceTask"> | number
   createdAt?: Prisma.DateTimeFilter<"MaintenanceTask"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"MaintenanceTask"> | Date | string
   resolution?: Prisma.XOR<Prisma.ResolutionScalarRelationFilter, Prisma.ResolutionWhereInput>
@@ -221,6 +263,7 @@ export type MaintenanceTaskOrderByWithRelationInput = {
   triggerEventId?: Prisma.SortOrder
   payload?: Prisma.SortOrderInput | Prisma.SortOrder
   errorMsg?: Prisma.SortOrderInput | Prisma.SortOrder
+  order?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   resolution?: Prisma.ResolutionOrderByWithRelationInput
@@ -238,6 +281,7 @@ export type MaintenanceTaskWhereUniqueInput = Prisma.AtLeast<{
   triggerEventId?: Prisma.StringFilter<"MaintenanceTask"> | string
   payload?: Prisma.JsonNullableFilter<"MaintenanceTask">
   errorMsg?: Prisma.StringNullableFilter<"MaintenanceTask"> | string | null
+  order?: Prisma.IntFilter<"MaintenanceTask"> | number
   createdAt?: Prisma.DateTimeFilter<"MaintenanceTask"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"MaintenanceTask"> | Date | string
   resolution?: Prisma.XOR<Prisma.ResolutionScalarRelationFilter, Prisma.ResolutionWhereInput>
@@ -251,11 +295,14 @@ export type MaintenanceTaskOrderByWithAggregationInput = {
   triggerEventId?: Prisma.SortOrder
   payload?: Prisma.SortOrderInput | Prisma.SortOrder
   errorMsg?: Prisma.SortOrderInput | Prisma.SortOrder
+  order?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   _count?: Prisma.MaintenanceTaskCountOrderByAggregateInput
+  _avg?: Prisma.MaintenanceTaskAvgOrderByAggregateInput
   _max?: Prisma.MaintenanceTaskMaxOrderByAggregateInput
   _min?: Prisma.MaintenanceTaskMinOrderByAggregateInput
+  _sum?: Prisma.MaintenanceTaskSumOrderByAggregateInput
 }
 
 export type MaintenanceTaskScalarWhereWithAggregatesInput = {
@@ -269,6 +316,7 @@ export type MaintenanceTaskScalarWhereWithAggregatesInput = {
   triggerEventId?: Prisma.StringWithAggregatesFilter<"MaintenanceTask"> | string
   payload?: Prisma.JsonNullableWithAggregatesFilter<"MaintenanceTask">
   errorMsg?: Prisma.StringNullableWithAggregatesFilter<"MaintenanceTask"> | string | null
+  order?: Prisma.IntWithAggregatesFilter<"MaintenanceTask"> | number
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"MaintenanceTask"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"MaintenanceTask"> | Date | string
 }
@@ -280,6 +328,7 @@ export type MaintenanceTaskCreateInput = {
   triggerEventId: string
   payload?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   errorMsg?: string | null
+  order?: number
   createdAt?: Date | string
   updatedAt?: Date | string
   resolution: Prisma.ResolutionCreateNestedOneWithoutMaintenanceTasksInput
@@ -293,6 +342,7 @@ export type MaintenanceTaskUncheckedCreateInput = {
   triggerEventId: string
   payload?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   errorMsg?: string | null
+  order?: number
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -304,6 +354,7 @@ export type MaintenanceTaskUpdateInput = {
   triggerEventId?: Prisma.StringFieldUpdateOperationsInput | string
   payload?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   errorMsg?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  order?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   resolution?: Prisma.ResolutionUpdateOneRequiredWithoutMaintenanceTasksNestedInput
@@ -317,6 +368,7 @@ export type MaintenanceTaskUncheckedUpdateInput = {
   triggerEventId?: Prisma.StringFieldUpdateOperationsInput | string
   payload?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   errorMsg?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  order?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -329,6 +381,7 @@ export type MaintenanceTaskCreateManyInput = {
   triggerEventId: string
   payload?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   errorMsg?: string | null
+  order?: number
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -340,6 +393,7 @@ export type MaintenanceTaskUpdateManyMutationInput = {
   triggerEventId?: Prisma.StringFieldUpdateOperationsInput | string
   payload?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   errorMsg?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  order?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -352,6 +406,7 @@ export type MaintenanceTaskUncheckedUpdateManyInput = {
   triggerEventId?: Prisma.StringFieldUpdateOperationsInput | string
   payload?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   errorMsg?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  order?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -380,8 +435,13 @@ export type MaintenanceTaskCountOrderByAggregateInput = {
   triggerEventId?: Prisma.SortOrder
   payload?: Prisma.SortOrder
   errorMsg?: Prisma.SortOrder
+  order?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+}
+
+export type MaintenanceTaskAvgOrderByAggregateInput = {
+  order?: Prisma.SortOrder
 }
 
 export type MaintenanceTaskMaxOrderByAggregateInput = {
@@ -391,6 +451,7 @@ export type MaintenanceTaskMaxOrderByAggregateInput = {
   resolutionId?: Prisma.SortOrder
   triggerEventId?: Prisma.SortOrder
   errorMsg?: Prisma.SortOrder
+  order?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -402,8 +463,13 @@ export type MaintenanceTaskMinOrderByAggregateInput = {
   resolutionId?: Prisma.SortOrder
   triggerEventId?: Prisma.SortOrder
   errorMsg?: Prisma.SortOrder
+  order?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+}
+
+export type MaintenanceTaskSumOrderByAggregateInput = {
+  order?: Prisma.SortOrder
 }
 
 export type MaintenanceTaskCreateNestedManyWithoutResolutionInput = {
@@ -463,6 +529,7 @@ export type MaintenanceTaskCreateWithoutResolutionInput = {
   triggerEventId: string
   payload?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   errorMsg?: string | null
+  order?: number
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -474,6 +541,7 @@ export type MaintenanceTaskUncheckedCreateWithoutResolutionInput = {
   triggerEventId: string
   payload?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   errorMsg?: string | null
+  order?: number
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -515,6 +583,7 @@ export type MaintenanceTaskScalarWhereInput = {
   triggerEventId?: Prisma.StringFilter<"MaintenanceTask"> | string
   payload?: Prisma.JsonNullableFilter<"MaintenanceTask">
   errorMsg?: Prisma.StringNullableFilter<"MaintenanceTask"> | string | null
+  order?: Prisma.IntFilter<"MaintenanceTask"> | number
   createdAt?: Prisma.DateTimeFilter<"MaintenanceTask"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"MaintenanceTask"> | Date | string
 }
@@ -526,6 +595,7 @@ export type MaintenanceTaskCreateManyResolutionInput = {
   triggerEventId: string
   payload?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   errorMsg?: string | null
+  order?: number
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -537,6 +607,7 @@ export type MaintenanceTaskUpdateWithoutResolutionInput = {
   triggerEventId?: Prisma.StringFieldUpdateOperationsInput | string
   payload?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   errorMsg?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  order?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -548,6 +619,7 @@ export type MaintenanceTaskUncheckedUpdateWithoutResolutionInput = {
   triggerEventId?: Prisma.StringFieldUpdateOperationsInput | string
   payload?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   errorMsg?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  order?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -559,6 +631,7 @@ export type MaintenanceTaskUncheckedUpdateManyWithoutResolutionInput = {
   triggerEventId?: Prisma.StringFieldUpdateOperationsInput | string
   payload?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   errorMsg?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  order?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -573,6 +646,7 @@ export type MaintenanceTaskSelect<ExtArgs extends runtime.Types.Extensions.Inter
   triggerEventId?: boolean
   payload?: boolean
   errorMsg?: boolean
+  order?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   resolution?: boolean | Prisma.ResolutionDefaultArgs<ExtArgs>
@@ -586,6 +660,7 @@ export type MaintenanceTaskSelectCreateManyAndReturn<ExtArgs extends runtime.Typ
   triggerEventId?: boolean
   payload?: boolean
   errorMsg?: boolean
+  order?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   resolution?: boolean | Prisma.ResolutionDefaultArgs<ExtArgs>
@@ -599,6 +674,7 @@ export type MaintenanceTaskSelectUpdateManyAndReturn<ExtArgs extends runtime.Typ
   triggerEventId?: boolean
   payload?: boolean
   errorMsg?: boolean
+  order?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   resolution?: boolean | Prisma.ResolutionDefaultArgs<ExtArgs>
@@ -612,11 +688,12 @@ export type MaintenanceTaskSelectScalar = {
   triggerEventId?: boolean
   payload?: boolean
   errorMsg?: boolean
+  order?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }
 
-export type MaintenanceTaskOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "type" | "status" | "resolutionId" | "triggerEventId" | "payload" | "errorMsg" | "createdAt" | "updatedAt", ExtArgs["result"]["maintenanceTask"]>
+export type MaintenanceTaskOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "type" | "status" | "resolutionId" | "triggerEventId" | "payload" | "errorMsg" | "order" | "createdAt" | "updatedAt", ExtArgs["result"]["maintenanceTask"]>
 export type MaintenanceTaskInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   resolution?: boolean | Prisma.ResolutionDefaultArgs<ExtArgs>
 }
@@ -640,6 +717,7 @@ export type $MaintenanceTaskPayload<ExtArgs extends runtime.Types.Extensions.Int
     triggerEventId: string
     payload: runtime.JsonValue | null
     errorMsg: string | null
+    order: number
     createdAt: Date
     updatedAt: Date
   }, ExtArgs["result"]["maintenanceTask"]>
@@ -1073,6 +1151,7 @@ export interface MaintenanceTaskFieldRefs {
   readonly triggerEventId: Prisma.FieldRef<"MaintenanceTask", 'String'>
   readonly payload: Prisma.FieldRef<"MaintenanceTask", 'Json'>
   readonly errorMsg: Prisma.FieldRef<"MaintenanceTask", 'String'>
+  readonly order: Prisma.FieldRef<"MaintenanceTask", 'Int'>
   readonly createdAt: Prisma.FieldRef<"MaintenanceTask", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"MaintenanceTask", 'DateTime'>
 }

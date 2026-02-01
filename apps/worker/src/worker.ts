@@ -1,11 +1,13 @@
-import {Queue, Worker} from 'bullmq';
+import {DelayedError, Queue, Worker} from 'bullmq';
 import IORedis from 'ioredis';
 import {processResolutionUpload} from "@/upload/job";
 import ProgressReporter from "@/util/progress-reporter";
 import {fetchOldUnfinishedUploads, setUploadStatus} from "@/data/uploads";
 import {formatErrorMessage} from "@/upload/errors";
-import {assetsQueue} from "@/job-creation";
+import {assetsQueue, maintenanceQueue} from "@/job-creation";
 import {publishUploadProgress, publishUploadStatus} from "@repo/pubsub/publish/uploads";
+import {processEvaluateImpactJob} from "@/maintenance_tasks/impact-evaluation";
+import {fetchOldUnfinishedMaintenanceTasks, setMaintenanceTaskStatus} from "@/data/maintenance";
 
 if (!process.env.REDIS_URL) {
     throw new Error("REDIS_URL is not defined");
@@ -52,12 +54,44 @@ worker.on("progress", async (job) => {
     }
 })
 
+
+const maintenanceWorker = new Worker("maintenance",
+    async (job) => {
+        if (!job.id)
+            throw new Error("Missing ID");
+        if (job.name === "evaluateImpact") {
+            return processEvaluateImpactJob(job.id);
+        } else {
+            console.error("Job name not implemented:", job.name);
+            await job.moveToDelayed(Date.now() + 5 * 60 * 1000, job.token);
+            throw new DelayedError();
+        }
+    },
+    {connection: redisConnection}
+)
+
+maintenanceWorker.on("completed", (job) => {
+    console.log(`Maintenance job ${job.id} of type ${job.name} completed`);
+})
+
+maintenanceWorker.on("failed", async (job, err) => {
+    console.error(`Maintenance job ${job?.id} of type ${job?.name} failed with error ${err.message}`);
+    if (job?.id) {
+        const errorMessage = "Error interno";
+        await setMaintenanceTaskStatus({taskId: job.id, status: "FAILED", errorMessage})
+    }
+})
+
+
 const _scheduledWorker = new Worker(
     'scheduled',
     async (job) => {
         console.log(`Processing scheduled job ${job.id} of type ${job.name}`);
         if (job.name === "cleanupUploads") {
             await cleanupUploads();
+        } else if (job.name === "cleanupMaintenanceTasks") {
+            await cleanupMaintenanceTasks();
+
         }
     },
     {connection: redisConnection}
@@ -77,6 +111,18 @@ await scheduledQueue.upsertJobScheduler(
     },
 );
 
+await scheduledQueue.upsertJobScheduler(
+    "cleanupMaintenanceTasks",
+    { pattern: '*/10 * * * *' },
+    {
+        name: 'cleanupMaintenanceTasks',
+        opts: {
+            removeOnComplete: true,
+            removeOnFail: 5,
+        },
+    },
+);
+
 export async function cleanupUploads(){
     console.log("Running cleanupUploads job");
     const uploadsToCheck = await fetchOldUnfinishedUploads();
@@ -89,3 +135,18 @@ export async function cleanupUploads(){
         }
     }
 }
+
+export async function cleanupMaintenanceTasks(){
+    console.log("Running cleanupMaintenanceTasks job");
+    const tasksToCheck = await fetchOldUnfinishedMaintenanceTasks();
+    for (const task of tasksToCheck) {
+        const job = await maintenanceQueue.getJob(task.id);
+        const jobStatus = await job?.getState();
+        if (!jobStatus || jobStatus in ["completed", "failed"]) {
+            console.log(`Marking maintenance task ${task.id} as FAILED due to inactivity`);
+            await setMaintenanceTaskStatus({taskId: task.id, status: "FAILED", errorMessage: "Error interno", ifStatus: ["PENDING", "PROCESSING"]});
+        }
+    }
+}
+
+

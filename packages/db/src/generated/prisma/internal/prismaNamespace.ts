@@ -3786,6 +3786,7 @@ export const MaintenanceTaskScalarFieldEnum = {
   triggerEventId: 'triggerEventId',
   payload: 'payload',
   errorMsg: 'errorMsg',
+  order: 'order',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const
