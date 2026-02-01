@@ -1,4 +1,4 @@
-import {ReferenceMarker} from "@/lib/processing/reference-processor";
+import {ReferenceMarker} from "@/lib/definitions/references";
 import {pathForResolution} from "@/lib/paths";
 import {
     Popover,

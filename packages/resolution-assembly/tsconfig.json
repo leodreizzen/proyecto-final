@@ -1,0 +1,19 @@
+{
+  "extends": "@repo/typescript-config/base.json",
+  "compilerOptions": {
+    "moduleResolution": "Bundler",
+    "lib": ["es2022", "es2023", "dom"],
+    "allowImportingTsExtensions": true,
+    "noEmit": true,
+    "module": "ESNext",
+    "declaration": false,
+    "declarationMap": false,
+    "types": ["node"]
+  },
+  "include": [
+    "**/*.ts"
+  ],
+  "exclude": [
+    "node_modules"
+  ]
+}

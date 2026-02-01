@@ -1,4 +1,4 @@
-import {ReferenceMarker} from "@/lib/processing/reference-processor";
+import {ReferenceMarker} from "@/lib/definitions/references";
 import {TextWithReferences} from "@/components/resolution/text-with-references";
 import {ReactNode} from "react";
 

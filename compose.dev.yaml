@@ -17,6 +17,7 @@ services:
       - pubsub-modules:/app/packages/pubsub/node_modules
       - text-utils-modules:/app/packages/text-utils/node_modules
       - jobs-modules:/app/packages/jobs/node_modules
+      - resolution-assembly-modules:/app/packages/resolution-assembly/node_modules
       - /app/apps/web/.next
       - pnpm-store:/app/.pnpm-store
     command: ["turbo", "dev", "--filter", "web"]
@@ -64,6 +65,7 @@ services:
       - pubsub-modules:/app/packages/pubsub/node_modules
       - text-utils-modules:/app/packages/text-utils/node_modules
       - jobs-modules:/app/packages/jobs/node_modules
+      - resolution-assembly-modules:/app/packages/resolution-assembly/node_modules
       - eslint-config-modules:/app/packages/eslint-config/node_modules
       - typescript-config-modules:/app/packages/typescript-config/node_modules
       - pnpm-store:/app/.pnpm-store
@@ -213,6 +215,7 @@ services:
       - typescript-config-modules:/app/packages/typescript-config/node_modules
       - text-utils-modules:/app/packages/text-utils/node_modules
       - jobs-modules:/app/packages/jobs/node_modules
+      - resolution-assembly-modules:/app/packages/resolution-assembly/node_modules
       - pnpm-store:/app/.pnpm-store
     environment:
       DATABASE_URL: ${DATABASE_URL}

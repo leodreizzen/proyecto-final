@@ -1,0 +1,1 @@
+export {getAssembledResolution} from "./main_logic";

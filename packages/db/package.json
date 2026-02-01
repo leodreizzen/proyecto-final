@@ -55,6 +55,11 @@
       "types": "./src/generated/prisma/sql/*.ts",
       "import": "./src/generated/prisma/sql/*.ts",
       "default": "./src/generated/prisma/sql/*.ts"
+    },
+    "./utils/polymorphism/*": {
+      "types": "./src/utils/polymorphism/*.ts",
+      "import": "./src/utils/polymorphism/*.ts",
+      "default": "./src/utils/polymorphism/*.ts"
     }
   }
 }

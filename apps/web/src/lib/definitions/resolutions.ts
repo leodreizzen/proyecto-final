@@ -1,9 +1,20 @@
 import {Resolution} from "@repo/db/prisma/client";
-import {TableContent} from "@repo/db/content-blocks";
 
-import {ReferenceMarker} from "@/lib/processing/reference-processor";
-
-export type {TableContent};
+export type {
+    ResolutionNaturalID,
+    TextBlock,
+    TableBlock,
+    ErrorBlock,
+    ContentBlock,
+    ArticleIndex,
+    AnnexIndex,
+    ResolutionToShow,
+    ArticleToShow,
+    AnnexToShow,
+    ChapterToShow,
+    ResolutionVersion,
+    TableContent
+} from "@repo/resolution-assembly/definitions/resolutions";
 
 export type resolutionStatus = "ok" | "missingRef" | "inconsistent"
 
@@ -22,105 +33,4 @@ export type MissingResolution = {
     number: number;
     year: number;
     referencesCount: number;
-}
-
-export type ResolutionNaturalID = {
-    initial: string;
-    number: number;
-    year: number;
-}
-
-export type Repealable = {
-    repealedBy: ResolutionNaturalID | null
-}
-
-export type TextBlock = {
-    type: "TEXT";
-    text: string;
-    referenceMarkers: ReferenceMarker[];
-};
-
-export type TableBlock = {
-    type: "TABLE";
-    tableContent: TableContent;
-};
-
-export type ErrorBlock = {
-    type: "ERROR";
-    message: string;
-};
-
-export type ContentBlock = TextBlock | TableBlock | ErrorBlock;
-
-
-export type ArticleIndex =
-    | { type: "defined"; number: number; suffix: number }
-    | { type: "generated"; value: number };
-
-export type AnnexIndex =
-    | { type: "defined"; number: number }
-    | { type: "generated"; value: number };
-
-export type ArticleToShow = {
-    index: ArticleIndex;
-    content: ContentBlock[];
-    modifiedBy: ResolutionNaturalID[];
-    addedBy: ResolutionNaturalID | null;
-} & Repealable;
-
-export type ChapterToShow = {
-    title: string;
-    number: number;
-    articles: ArticleToShow[];
-    addedBy: ResolutionNaturalID | null;
-} & Repealable
-
-export type AnnexToShow = ({
-    type: "WITH_ARTICLES",
-    standaloneArticles: ArticleToShow[],
-    chapters: ChapterToShow[]
-    initialText: string | null;
-    finalText: string | null;
-} | {
-    type: "TEXT";
-    content: ContentBlock[];
-    modifiedBy?: ResolutionNaturalID[];
-}) & Repealable & {
-    index: AnnexIndex;
-    addedBy: ResolutionNaturalID | null;
-}
-
-export type RecitalToShow = {
-    content: ContentBlock[];
-    number: number
-}
-
-export type ConsiderationToShow = {
-    content: ContentBlock[];
-    number: number;
-}
-
-
-export type ResolutionToShow = {
-    id: ResolutionNaturalID;
-
-    decisionBy: string;
-    date: Date;
-
-    caseFiles: string[];
-    recitals: RecitalToShow[];
-    considerations: ConsiderationToShow[]
-
-    articles: ArticleToShow[];
-
-    annexes: AnnexToShow[];
-
-    originalFileUrl: string
-} & Repealable & {
-    ratifiedBy: ResolutionNaturalID | null
-}
-
-export type ResolutionVersion = {
-    date: Date,
-    causedBy: ResolutionNaturalID
 }
