@@ -1,6 +1,6 @@
 import {Asset, ResolutionUpload} from "@repo/db/prisma/client";
 
-export type UploadWithFile = ResolutionUpload & {
+export type UploadWithFileAndUploader = ResolutionUpload & {
     file: Asset | null,
     uploader?: {
         name: string;
@@ -13,6 +13,6 @@ export type UploadWithFile = ResolutionUpload & {
     } | null
 }
 
-export type UploadWithProgressAndFile = UploadWithFile & {
+export type UploadWithProgressAndFile = UploadWithFileAndUploader & {
     progress: number;
 }

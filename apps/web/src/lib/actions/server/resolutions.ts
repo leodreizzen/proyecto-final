@@ -9,7 +9,7 @@ import {publishDeleteResolution} from "@repo/pubsub/publish/resolutions";
 import prisma from "@repo/db/prisma";
 import {deleteMaintenanceTasksById, fetchMaintenanceTasks} from "@/lib/data/maintenance";
 import {publishDeletedMaintenanceTask} from "@repo/pubsub/publish/maintenance_tasks";
-import {cancelMaintenanceTaskJob} from "@/lib/jobs/maintenance_tasks";
+import {cancelMaintenanceTaskJob} from "@repo/jobs/maintenance/queue";
 
 const DeleteSchema = z.object({
     id: z.uuidv7()

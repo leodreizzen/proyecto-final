@@ -1,7 +1,7 @@
 "use client"
 import {Check, X, ChevronRight} from "lucide-react"
 import {cn, formatDateTime} from "@/lib/utils"
-import {UploadWithFile, UploadWithProgressAndFile} from "@/lib/definitions/uploads";
+import {UploadWithFileAndUploader, UploadWithProgressAndFile} from "@/lib/definitions/uploads";
 import {UploadStatus} from "@repo/db/prisma/enums";
 import {ProcessingQueue} from "@/components/admin/processing-queue";
 import Link from "next/link";
@@ -10,7 +10,7 @@ import {UploadErrorDialog} from "@/components/admin/upload-error-dialog";
 
 interface StatusPanelProps {
     unfinished: UploadWithProgressAndFile[]
-    recent: UploadWithFile[]
+    recent: UploadWithFileAndUploader[]
 }
 
 export function StatusPanel({unfinished, recent}: StatusPanelProps) {
@@ -41,7 +41,7 @@ export function StatusPanel({unfinished, recent}: StatusPanelProps) {
     )
 }
 
-function RecentItemRow({item}: { item: UploadWithFile & { resolution?: { initial: string; number: number; year: number } | null } }) {
+function RecentItemRow({item}: { item: UploadWithFileAndUploader & { resolution?: { initial: string; number: number; year: number } | null } }) {
     const isError = item.status === UploadStatus.FAILED
 
     const content = (

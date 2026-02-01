@@ -5,12 +5,13 @@ import {deleteAsset, fetchAsset, makeResolutionFilePublic} from "@/util/assets";
 import {saveParsedResolution} from "@/data/save-resolution/save-resolution";
 import {Asset} from "@repo/db/prisma/client";
 import {formatErrorMessage, ResolutionRejectError} from "@/upload/errors";
-import {fetchUploadWithFileToProcess, setUploadStatus} from "@/data/uploads";
+import {findUploadWithFileToProcess} from "@/data/queries";
+import {updateUploadStatus} from "@repo/jobs/resolutions/mutations";
 import ProgressReporter from "@/util/progress-reporter";
 import {publishUploadStatus} from "@repo/pubsub/publish/uploads";
 import {publishNewResolution} from "@repo/pubsub/publish/resolutions";
-import {scheduleImpactTask} from "@/job-creation";
-import {upsertImpactEvaluationTaskInDb} from "@/data/maintenance";
+import {scheduleImpactTask} from "@repo/jobs/maintenance/queue";
+import {upsertImpactEvaluationTask} from "@repo/jobs/maintenance/mutations";
 import {publishNewMaintenanceTask} from "@repo/pubsub/publish/maintenance_tasks";
 
 export async function processResolutionUpload(job: Job, progressReporter: ProgressReporter) {
@@ -21,7 +22,7 @@ export async function processResolutionUpload(job: Job, progressReporter: Progre
     const parseResolutionReporter = progressReporter.addSubreporter("parseResolution", 140);
     const saveDataReporter = progressReporter.addSubreporter("saveData", 0.5);
 
-    const upload = await fetchUploadWithFileToProcess(job.id);
+    const upload = await findUploadWithFileToProcess(job.id);
     if (!upload) {
         throw new Error(`Upload with ID ${job.data.uploadId} not found`);
     }
@@ -29,7 +30,7 @@ export async function processResolutionUpload(job: Job, progressReporter: Progre
     let publicFile: Asset | null = null;
     const uploadId = upload.id;
     try {
-        await setUploadStatus({uploadId, status: "PROCESSING"});
+        await updateUploadStatus({uploadId, status: "PROCESSING"});
         await publishUploadStatus(uploadId, {status: "PROCESSING"});
 
         if (!upload.file) {
@@ -48,7 +49,7 @@ export async function processResolutionUpload(job: Job, progressReporter: Progre
         let res;
         await prisma.$transaction(async (tx) => {
             res = await saveParsedResolution(tx, parsedResolution, upload, createdFile);
-            await setUploadStatus({uploadId, status: "COMPLETED", tx});
+            await updateUploadStatus({uploadId, status: "COMPLETED", tx});
             await createImpactTask(res.id, tx);
         });
         await publishNewResolution(res!.id)
@@ -56,7 +57,7 @@ export async function processResolutionUpload(job: Job, progressReporter: Progre
         saveDataReporter.reportProgress(1);
     } catch (e) {
         console.error("Error processing resolution upload:", e);
-        await setUploadStatus({uploadId, status: "FAILED", errorMessage: formatErrorMessage(e)});
+        await updateUploadStatus({uploadId, status: "FAILED", errorMessage: formatErrorMessage(e)});
         if (publicFile) {
             await deleteAsset(publicFile);
         }
@@ -85,9 +86,9 @@ async function tryDeleteOriginalFile(file: Asset) {
 
 async function createImpactTask(resolutionId: string, tx: TransactionPrismaClient) {
     const eventId = `upload_res_${resolutionId}_${Date.now()}`;
-    const dbTask = await upsertImpactEvaluationTaskInDb(resolutionId, eventId, tx);
+    const dbTask = await upsertImpactEvaluationTask(resolutionId, eventId, tx);
     if (dbTask.created) {
-        await scheduleImpactTask(dbTask.id, resolutionId, tx);
+        await scheduleImpactTask(dbTask.id, resolutionId);
         await publishNewMaintenanceTask(dbTask.id);
     }
 }

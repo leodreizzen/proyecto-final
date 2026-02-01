@@ -1,35 +1,16 @@
 import prisma, {TransactionPrismaClient} from "@repo/db/prisma";
-import {MaintenanceTask} from "@repo/db/prisma/client";
-import {MaintenanceTaskStatus} from "@repo/db/prisma/enums";
+import { MaintenanceTask } from "@repo/db/prisma/client";
+import { MaintenanceTaskStatus } from "@repo/db/prisma/enums";
 
-export async function fetchMaintenanceTask(id: string) {
-    return prisma.maintenanceTask.findUnique({
+export async function deleteMaintenanceTasks(id: string[]): Promise<void> {
+    await prisma.maintenanceTask.deleteMany({
         where: {
-            id, status: {
-                in: ["PENDING", "PROCESSING"]
-            }
-        },
-    })
-}
-
-export async function fetchOldUnfinishedMaintenanceTasks() {
-    const oldDate = new Date();
-    oldDate.setMinutes(oldDate.getMinutes() - 10);
-
-    return prisma.maintenanceTask.findMany({
-        where: {
-            createdAt: {
-                lt: oldDate,
-            },
-            status: {
-                notIn: ["COMPLETED", "FAILED"]
-            },
+            id: {in: id},
         },
     });
-
 }
 
-export async function setMaintenanceTaskStatus({taskId, status, tx = prisma, errorMessage, ifStatus}: {
+export async function updateMaintenanceTaskStatus({taskId, status, tx = prisma, errorMessage, ifStatus}: {
     taskId: MaintenanceTask["id"],
     status: MaintenanceTaskStatus,
     tx?: TransactionPrismaClient,
@@ -53,7 +34,7 @@ export async function setMaintenanceTaskStatus({taskId, status, tx = prisma, err
     });
 }
 
-export async function upsertImpactEvaluationTaskInDb(resolutionId: string, eventId: string, tx: TransactionPrismaClient = prisma) {
+export async function upsertImpactEvaluationTask(resolutionId: string, eventId: string, tx: TransactionPrismaClient = prisma) {
     const existing = await tx.maintenanceTask.findUnique({
         where: {
             resolutionId_type_triggerEventId: {
@@ -86,7 +67,7 @@ export async function upsertImpactEvaluationTaskInDb(resolutionId: string, event
     }
 }
 
-export async function upsertEmbeddingsTasksInDb(resolutionId: string, eventId: string, depth: number, tx: TransactionPrismaClient = prisma) {
+export async function upsertEmbeddingsTask(resolutionId: string, eventId: string, depth: number, tx: TransactionPrismaClient = prisma) {
 
     const existing = await tx.maintenanceTask.findUnique({
         where: {
@@ -119,7 +100,7 @@ export async function upsertEmbeddingsTasksInDb(resolutionId: string, eventId: s
     }
 }
 
-export async function upsertAdvancedChangesTaskInDb(resolutionId: string, eventId: string, depth: number, tx: TransactionPrismaClient = prisma) {
+export async function upsertAdvancedChangesTask(resolutionId: string, eventId: string, depth: number, tx: TransactionPrismaClient = prisma) {
     const existing = await tx.maintenanceTask.findUnique({
         where: {
             resolutionId_type_triggerEventId: {

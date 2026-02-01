@@ -1,23 +1,18 @@
 import {DelayedError, Queue, Worker} from 'bullmq';
-import IORedis from 'ioredis';
 import {processResolutionUpload} from "@/upload/job";
 import ProgressReporter from "@/util/progress-reporter";
-import {fetchOldUnfinishedUploads, setUploadStatus} from "@/data/uploads";
+import {findOldUnfinishedUploads, findOldUnfinishedMaintenanceTasks} from "@/data/queries";
+import {updateUploadStatus} from "@repo/jobs/resolutions/mutations";
 import {formatErrorMessage} from "@/upload/errors";
-import {assetsQueue, maintenanceQueue} from "@/job-creation";
+import {resolutionsQueue} from "@repo/jobs/resolutions/queue";
+import {maintenanceQueue} from "@repo/jobs/maintenance/queue";
+import {redisConnection, workerConnection} from "@repo/jobs/redis";
 import {publishUploadProgress, publishUploadStatus} from "@repo/pubsub/publish/uploads";
 import {processEvaluateImpactJob} from "@/maintenance_tasks/impact-evaluation";
-import {fetchOldUnfinishedMaintenanceTasks, setMaintenanceTaskStatus} from "@/data/maintenance";
-
-if (!process.env.REDIS_URL) {
-    throw new Error("REDIS_URL is not defined");
-}
-const redisUrl = process.env.REDIS_URL;
-
-export const redisConnection = new IORedis(redisUrl, {maxRetriesPerRequest: null});
+import {updateMaintenanceTaskStatus} from "@repo/jobs/maintenance/mutations";
 
 const worker = new Worker(
-    'resolutions',
+    resolutionsQueue.name,
     async (job) => {
         console.log(`Processing job ${job.id} of type ${job.name}`);
         const progressReporter = new ProgressReporter({
@@ -32,7 +27,7 @@ const worker = new Worker(
             throw new Error(`Unknown job name: ${job.name}`);
         }
     },
-    {connection: redisConnection},
+    {connection: workerConnection},
 );
 
 worker.on('completed', (job) => {
@@ -43,7 +38,7 @@ worker.on('failed', async (job, err) => {
     console.error(`Job ${job?.id} has failed with error: ${err.message}`);
     if (job?.name == "resolutionUpload" && job.id) {
         const errorMessage = formatErrorMessage(err);
-        await setUploadStatus({uploadId: job.id, status: "FAILED", errorMessage})
+        await updateUploadStatus({uploadId: job.id, status: "FAILED", errorMessage})
         await publishUploadStatus(job.id, {status: "FAILED", errorMessage});
     }
 });
@@ -55,7 +50,7 @@ worker.on("progress", async (job) => {
 })
 
 
-const maintenanceWorker = new Worker("maintenance",
+const maintenanceWorker = new Worker(maintenanceQueue.name,
     async (job) => {
         if (!job.id)
             throw new Error("Missing ID");
@@ -67,7 +62,7 @@ const maintenanceWorker = new Worker("maintenance",
             throw new DelayedError();
         }
     },
-    {connection: redisConnection}
+    {connection: workerConnection}
 )
 
 maintenanceWorker.on("completed", (job) => {
@@ -78,7 +73,7 @@ maintenanceWorker.on("failed", async (job, err) => {
     console.error(`Maintenance job ${job?.id} of type ${job?.name} failed with error ${err.message}`);
     if (job?.id) {
         const errorMessage = "Error interno";
-        await setMaintenanceTaskStatus({taskId: job.id, status: "FAILED", errorMessage})
+        await updateMaintenanceTaskStatus({taskId: job.id, status: "FAILED", errorMessage})
     }
 })
 
@@ -94,7 +89,7 @@ const _scheduledWorker = new Worker(
 
         }
     },
-    {connection: redisConnection}
+    {connection: workerConnection}
 )
 
 const scheduledQueue = new Queue('scheduled', {connection: redisConnection});
@@ -125,28 +120,26 @@ await scheduledQueue.upsertJobScheduler(
 
 export async function cleanupUploads(){
     console.log("Running cleanupUploads job");
-    const uploadsToCheck = await fetchOldUnfinishedUploads();
+    const uploadsToCheck = await findOldUnfinishedUploads();
     for (const upload of uploadsToCheck) {
-        const job = await assetsQueue.getJob(upload.id);
+        const job = await resolutionsQueue.getJob(upload.id);
         const jobStatus = await job?.getState();
         if (!jobStatus || jobStatus in ["completed", "failed"]) {
             console.log(`Marking upload ${upload.id} as FAILED due to inactivity`);
-            await setUploadStatus({uploadId: upload.id, status: "FAILED", errorMessage: "Error interno", ifStatus: ["PENDING", "PROCESSING"]});
+            await updateUploadStatus({uploadId: upload.id, status: "FAILED", errorMessage: "Error interno", ifStatus: ["PENDING", "PROCESSING"]});
         }
     }
 }
 
 export async function cleanupMaintenanceTasks(){
     console.log("Running cleanupMaintenanceTasks job");
-    const tasksToCheck = await fetchOldUnfinishedMaintenanceTasks();
+    const tasksToCheck = await findOldUnfinishedMaintenanceTasks();
     for (const task of tasksToCheck) {
         const job = await maintenanceQueue.getJob(task.id);
         const jobStatus = await job?.getState();
         if (!jobStatus || jobStatus in ["completed", "failed"]) {
             console.log(`Marking maintenance task ${task.id} as FAILED due to inactivity`);
-            await setMaintenanceTaskStatus({taskId: task.id, status: "FAILED", errorMessage: "Error interno", ifStatus: ["PENDING", "PROCESSING"]});
+            await updateMaintenanceTaskStatus({taskId: task.id, status: "FAILED", errorMessage: "Error interno", ifStatus: ["PENDING", "PROCESSING"]});
         }
     }
 }
-
-

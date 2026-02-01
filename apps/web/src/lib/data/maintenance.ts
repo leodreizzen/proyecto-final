@@ -1,13 +1,14 @@
 import "server-only";
 import {checkResourcePermission} from "@/lib/auth/data-authorization";
-import prisma from "@/lib/prisma";
 import {
-    MaintenanceTaskFindManyArgs,
-    MaintenanceTaskGetPayload,
-    MaintenanceTaskWhereInput
-} from "@repo/db/prisma/models";
+    deleteMaintenanceTasks as deleteMaintenanceTasksMutation
+} from "@repo/jobs/maintenance/mutations";
+import {
+    Prisma
+} from "@repo/db/prisma/client";
+import prisma from "@/lib/prisma";
 
-export type MaintenanceTaskWithResolution = MaintenanceTaskGetPayload<{
+export type MaintenanceTaskWithResolution = Prisma.MaintenanceTaskGetPayload<{
     include: {
         resolution: {
             select: {
@@ -21,11 +22,20 @@ export type MaintenanceTaskWithResolution = MaintenanceTaskGetPayload<{
 
 export type MaintenanceTaskFilter = "ALL" | "ACTIVE" | "COMPLETED" | "FAILED";
 
-export async function fetchMaintenanceTasks(
+
+export async function fetchMaintenanceTasks({
+    cursor,
+    filter,
+    query,
+    limit = 20,
+    resolutionId
+}: {
     cursor: string | null,
     filter: MaintenanceTaskFilter,
-    query?: string | null
-): Promise<MaintenanceTaskWithResolution[]> {
+    query?: string | null,
+    limit?: number | null,
+    resolutionId?: string
+}): Promise<MaintenanceTaskWithResolution[]> {
     await checkResourcePermission("maintenanceTask", "read");
 
     const cursorParams = cursor
@@ -34,10 +44,10 @@ export async function fetchMaintenanceTasks(
             cursor: {
                 id: cursor,
             },
-        } satisfies Partial<MaintenanceTaskFindManyArgs>)
+        } satisfies Partial<Prisma.MaintenanceTaskFindManyArgs>)
         : {};
 
-    let statusCondition: MaintenanceTaskWhereInput["status"] | undefined;
+    let statusCondition: Prisma.MaintenanceTaskWhereInput["status"] | undefined;
 
     switch (filter) {
         case "ACTIVE":
@@ -54,7 +64,7 @@ export async function fetchMaintenanceTasks(
             break;
     }
 
-    const searchCondition: MaintenanceTaskWhereInput = query ? {
+    const searchCondition: Prisma.MaintenanceTaskWhereInput = query ? {
         resolution: {
             search: {
                 search_id: {
@@ -64,35 +74,32 @@ export async function fetchMaintenanceTasks(
         }
     } : {};
 
-    const tasks = await prisma.maintenanceTask.findMany({
-            ...cursorParams,
-            where: {
-                status: statusCondition,
-                ...searchCondition
-            },
-            include: {
-                resolution: {
-                    select: {
-                        initial: true,
-                        number: true,
-                        year: true,
-                    },
+    return prisma.maintenanceTask.findMany({
+        ...cursorParams,
+        where: {
+            status: statusCondition,
+            resolutionId: resolutionId ?? undefined,
+            ...searchCondition
+        },
+        include: {
+            resolution: {
+                select: {
+                    initial: true,
+                    number: true,
+                    year: true,
                 },
             },
-            orderBy: [
-                {
-                    order: "asc"
-                },
-                {
-                    createdAt: "asc"
-                }
-            ]
-            ,
-            take: 20,
-        })
-    ;
-
-    return tasks;
+        },
+        orderBy: [
+            {
+                order: "asc"
+            },
+            {
+                createdAt: "asc"
+            }
+        ],
+        take: limit ?? undefined,
+    });
 }
 
 export async function countFailedTasks(): Promise<number> {
@@ -102,4 +109,10 @@ export async function countFailedTasks(): Promise<number> {
             status: "FAILED",
         },
     });
+}
+
+
+export async function deleteMaintenanceTasksById(id: string[]): Promise<void> {
+    await checkResourcePermission("maintenanceTask", "delete");
+    return deleteMaintenanceTasksMutation(id);
 }

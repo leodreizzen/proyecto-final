@@ -9,7 +9,7 @@ import {ActionResult} from "@/lib/definitions/actions";
 import {RESOLUTION_UPLOAD_BUCKET} from "@/lib/file-storage/assignments";
 import {createResolutionUpload, deleteFailedUpload} from "@/lib/data/uploads";
 import {revalidatePath} from "next/cache";
-import {createUploadJob} from "@/lib/jobs/resolutions";
+import {createUploadJob} from "@repo/jobs/resolutions/queue";
 import {publishNewUpload} from "@repo/pubsub/publish/uploads";
 
 const GetResolutionUploadUrlSchema = z.object({

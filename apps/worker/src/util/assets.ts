@@ -1,7 +1,7 @@
 import {Asset} from "@repo/db/prisma/client";
 import {copyFileInStorage, getFileFromStorage} from "@/util/file-storage";
 import prisma, {TransactionPrismaClient} from "@repo/db/prisma";
-import {createDeleteJob} from "@/job-creation";
+import {createDeleteAssetJob} from "@repo/jobs/assets/queue";
 import {AssetInclude} from "@repo/db/prisma/models";
 import crypto from "crypto";
 
@@ -28,7 +28,7 @@ export async function deleteAsset(file: Asset) {
         })
     })
 
-    await createDeleteJob(file)
+    await createDeleteAssetJob(file.id)
 }
 
 

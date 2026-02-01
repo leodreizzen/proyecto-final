@@ -130,6 +130,9 @@ importers:
       '@repo/db':
         specifier: workspace:*
         version: link:../../packages/db
+      '@repo/jobs':
+        specifier: workspace:*
+        version: link:../../packages/jobs
       '@repo/pubsub':
         specifier: workspace:*
         version: link:../../packages/pubsub
@@ -275,6 +278,9 @@ importers:
       '@repo/db':
         specifier: workspace:*
         version: link:../../packages/db
+      '@repo/jobs':
+        specifier: workspace:*
+        version: link:../../packages/jobs
       '@repo/pubsub':
         specifier: workspace:*
         version: link:../../packages/pubsub
@@ -439,6 +445,31 @@ importers:
       typescript-eslint:
         specifier: ^8.40.0
         version: 8.46.0(eslint@9.37.0(jiti@2.6.1))(typescript@5.9.2)
+
+  packages/jobs:
+    dependencies:
+      '@repo/db':
+        specifier: workspace:*
+        version: link:../db
+      '@repo/text-utils':
+        specifier: workspace:*
+        version: link:../text-utils
+      '@repo/typescript-config':
+        specifier: workspace:*
+        version: link:../typescript-config
+      bullmq:
+        specifier: ^5.41.1
+        version: 5.66.1
+      ioredis:
+        specifier: ^5.5.0
+        version: 5.8.2
+      zod:
+        specifier: ^3.22.4
+        version: 3.25.76
+    devDependencies:
+      typescript:
+        specifier: ^5.7.3
+        version: 5.9.3
 
   packages/pubsub:
     dependencies:
@@ -8657,7 +8688,7 @@ snapshots:
       jose: 6.1.3
       kysely: 0.28.8
       nanostores: 1.1.0
-      zod: 4.1.13
+      zod: 4.2.1
 
   '@better-auth/telemetry@1.4.5(@better-auth/core@1.4.5(@better-auth/utils@0.3.0)(@better-fetch/fetch@1.1.18)(better-call@1.1.4(zod@4.1.13))(jose@6.1.3)(kysely@0.28.8)(nanostores@1.1.0))':
     dependencies:

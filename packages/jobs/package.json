@@ -1,0 +1,55 @@
+{
+  "name": "@repo/jobs",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Job queue management and related database operations",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "check-types": "tsc --noEmit"
+  },
+  "type": "module",
+  "exports": {
+    "./maintenance/mutations": {
+      "require": "./src/maintenance/mutations.ts",
+      "import": "./src/maintenance/mutations.ts",
+      "types": "./src/maintenance/mutations.ts"
+    },
+    "./maintenance/queue": {
+      "require": "./src/maintenance/queue.ts",
+      "import": "./src/maintenance/queue.ts",
+      "types": "./src/maintenance/queue.ts"
+    },
+    "./resolutions/mutations": {
+      "require": "./src/resolutions/mutations.ts",
+      "import": "./src/resolutions/mutations.ts",
+      "types": "./src/resolutions/mutations.ts"
+    },
+    "./resolutions/queue": {
+      "require": "./src/resolutions/queue.ts",
+      "import": "./src/resolutions/queue.ts",
+      "types": "./src/resolutions/queue.ts"
+    },
+    "./assets/queue": {
+      "require": "./src/assets/queue.ts",
+      "import": "./src/assets/queue.ts",
+      "types": "./src/assets/queue.ts"
+    },
+     "./redis": {
+      "require": "./src/redis.ts",
+      "import": "./src/redis.ts",
+      "types": "./src/redis.ts"
+    }
+  },
+  "dependencies": {
+    "@repo/db": "workspace:*",
+    "@repo/typescript-config": "workspace:*",
+    "@repo/text-utils": "workspace:*",
+    "bullmq": "^5.41.1",
+    "ioredis": "^5.5.0",
+    "zod": "^3.22.4"
+  },
+  "devDependencies": {
+    "typescript": "^5.7.3"
+  }
+}

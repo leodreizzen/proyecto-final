@@ -1,28 +1,28 @@
+import {findMaintenanceTask} from "@/data/queries";
 import {
-    fetchMaintenanceTask,
-    setMaintenanceTaskStatus,
-    upsertAdvancedChangesTaskInDb,
-    upsertEmbeddingsTasksInDb
-} from "@/data/maintenance";
+    updateMaintenanceTaskStatus,
+    upsertAdvancedChangesTask,
+    upsertEmbeddingsTask
+} from "@repo/jobs/maintenance/mutations";
 import prisma, {TransactionPrismaClient} from "@repo/db/prisma";
 import {getAffectedResolutions} from "@repo/db/prisma/sql/getAffectedResolutions";
-import {scheduleAdvancedChangesTask, scheduleEmbeddingsTask} from "@/job-creation";
+import {scheduleAdvancedChangesTask, scheduleEmbeddingsTask} from "@repo/jobs/maintenance/queue";
 import {publishMaintenanceTaskUpdate, publishNewMaintenanceTask} from "@repo/pubsub/publish/maintenance_tasks";
 
 export async function processEvaluateImpactJob(jobId: string) {
     console.log(`Starting impact evaluation for maintenance task ${jobId}`);
-    const task = await fetchMaintenanceTask(jobId);
+    const task = await findMaintenanceTask(jobId);
     if (!task) {
         throw new Error(`Maintenance task with ID ${jobId} not found`);
     }
     let jobsToCreate: Awaited<ReturnType<typeof createTasksForImpactedResolutions>> | null = null;
     try {
-        await setMaintenanceTaskStatus({taskId: jobId, status: "PROCESSING"});
+        await updateMaintenanceTaskStatus({taskId: jobId, status: "PROCESSING"});
         await publishMaintenanceTaskUpdate(jobId, ["status"]);
         jobsToCreate = await prisma.$transaction(async (tx) => {
             const impacted = await getImpactedResolutions(task.resolutionId, tx);
             const createRes = await createTasksForImpactedResolutions(task.resolutionId, task.triggerEventId, impacted);
-            await setMaintenanceTaskStatus({
+            await updateMaintenanceTaskStatus({
                 taskId: jobId,
                 status: "COMPLETED",
                 tx,
@@ -31,7 +31,7 @@ export async function processEvaluateImpactJob(jobId: string) {
             return createRes;
         });
     } catch {
-        await setMaintenanceTaskStatus({taskId: jobId, status: "FAILED", errorMessage: "Error interno"});
+        await updateMaintenanceTaskStatus({taskId: jobId, status: "FAILED", errorMessage: "Error interno"});
         jobsToCreate = null;
     }
 
@@ -88,13 +88,13 @@ async function createTasksForImpactedResolutions(resolutionId: string, eventId: 
     const advancedChangesTasks = [];
     const filtered = await filterResolutionsImpactedByAdvancedChanges(impactedResolutionIds, [...impactedResolutionIds, resolutionId], tx);
     for (const {id: impactedId, depth} of impactedWithDepth) {
-        const embeddingTask = await upsertEmbeddingsTasksInDb(impactedId, eventId, depth, tx);
+        const embeddingTask = await upsertEmbeddingsTask(impactedId, eventId, depth, tx);
         if (embeddingTask.created) {
             embeddingTasks.push({id: embeddingTask.id, resolutionId: impactedId, depth});
         }
 
         if (filtered.has(impactedId)) {
-            const advancedChangesTask = await upsertAdvancedChangesTaskInDb(impactedId, eventId, depth, tx);
+            const advancedChangesTask = await upsertAdvancedChangesTask(impactedId, eventId, depth, tx);
             if (advancedChangesTask.created)
                 advancedChangesTasks.push({id: advancedChangesTask.id, resolutionId: impactedId, depth});
         }

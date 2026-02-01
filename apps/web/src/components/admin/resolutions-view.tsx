@@ -3,7 +3,7 @@ import {KpiHeader} from "./kpi-header"
 import {Toolbar} from "./toolbar"
 import {ResolutionsTable, ResolutionsTableHandle} from "./resolutions-table"
 import {StatusPanel} from "./status-panel"
-import {UploadWithFile, UploadWithProgressAndFile} from "@/lib/definitions/uploads";
+import {UploadWithFileAndUploader, UploadWithProgressAndFile} from "@/lib/definitions/uploads";
 import {ResolutionCounts, ResolutionWithStatus} from "@/lib/definitions/resolutions";
 import {useEffect, useMemo, useRef, useState} from "react";
 import {useInfiniteQuery, useQuery, keepPreviousData} from "@tanstack/react-query";
@@ -25,7 +25,7 @@ export function ResolutionsView({
                                 }: {
     resolutions: ResolutionWithStatus[],
     pendingUploads: UploadWithProgressAndFile[],
-    recentFinishedUploads: UploadWithFile[],
+    recentFinishedUploads: UploadWithFileAndUploader[],
     resCounts: ResolutionCounts,
     initialSearch?: string
 }) {

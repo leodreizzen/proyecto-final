@@ -1,3 +1,3 @@
-import {UploadWithFile} from "@/lib/definitions/uploads";
+import {UploadWithFileAndUploader} from "@/lib/definitions/uploads";
 
-export type AdminRecentlyFinishedUploadsReturnType = UploadWithFile[];
+export type AdminRecentlyFinishedUploadsReturnType = UploadWithFileAndUploader[];

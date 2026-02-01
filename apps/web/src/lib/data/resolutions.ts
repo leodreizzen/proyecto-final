@@ -7,7 +7,7 @@ import {
     ResolutionNaturalID,
     ResolutionWithStatus
 } from "@/lib/definitions/resolutions";
-import {createDeleteAssetJob} from "@/lib/jobs/assets";
+import {createDeleteAssetJob} from "@repo/jobs/assets/queue";
 import {ResolutionFindManyArgs, v_MissingResolutionFindManyArgs} from "@repo/db/prisma/models";
 import {TransactionPrismaClient} from "@repo/db/prisma";
 

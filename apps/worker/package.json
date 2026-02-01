@@ -15,6 +15,7 @@
     "@aws-sdk/client-s3": "^3.953.0",
     "@prisma/client": "^7.2.0",
     "@repo/db": "workspace:*",
+    "@repo/jobs": "workspace:*",
     "@repo/pubsub": "workspace:*",
     "@repo/text-utils": "workspace:*",
     "@repo/typescript-config": "workspace:*",
