@@ -35,11 +35,15 @@ worker.on('completed', (job) => {
 });
 
 worker.on('failed', async (job, err) => {
-    console.error(`Job ${job?.id} has failed with error: ${err.message}`);
-    if (job?.name == "resolutionUpload" && job.id) {
-        const errorMessage = formatErrorMessage(err);
-        await updateUploadStatus({uploadId: job.id, status: "FAILED", errorMessage})
-        await publishUploadStatus(job.id, {status: "FAILED", errorMessage});
+    try {
+        console.error(`Job ${job?.id} has failed with error: ${err.message}`);
+        if (job?.name == "resolutionUpload" && job.id) {
+            const errorMessage = formatErrorMessage(err);
+            await updateUploadStatus({uploadId: job.id, status: "FAILED", errorMessage})
+            await publishUploadStatus(job.id, {status: "FAILED", errorMessage});
+        }
+    } catch (e) {
+        console.error(`Failed to handle failure for job ${job?.id}:`, e);
     }
 });
 
@@ -71,9 +75,13 @@ maintenanceWorker.on("completed", (job) => {
 
 maintenanceWorker.on("failed", async (job, err) => {
     console.error(`Maintenance job ${job?.id} of type ${job?.name} failed with error ${err.message}`);
-    if (job?.id) {
-        const errorMessage = "Error interno";
-        await updateMaintenanceTaskStatus({taskId: job.id, status: "FAILED", errorMessage})
+    try {
+        if (job?.id) {
+            const errorMessage = "Error interno";
+            await updateMaintenanceTaskStatus({taskId: job.id, status: "FAILED", errorMessage})
+        }
+    } catch (e) {
+        console.error(`Failed to update maintenance task status for job ${job?.id}:`, e);
     }
 })
 

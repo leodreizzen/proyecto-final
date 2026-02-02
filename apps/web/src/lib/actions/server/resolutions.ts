@@ -6,10 +6,12 @@ import {deleteResolutionById} from "@/lib/data/resolutions";
 import {revalidatePath} from "next/cache";
 import {VoidActionResult} from "@/lib/definitions/actions";
 import {publishDeleteResolution} from "@repo/pubsub/publish/resolutions";
-import prisma from "@repo/db/prisma";
+import prisma, {TransactionPrismaClient} from "@repo/db/prisma";
 import {deleteMaintenanceTasksById, fetchMaintenanceTasks} from "@/lib/data/maintenance";
-import {publishDeletedMaintenanceTasks} from "@repo/pubsub/publish/maintenance_tasks";
-import {cancelMaintenanceTaskJob} from "@repo/jobs/maintenance/queue";
+import {publishDeletedMaintenanceTasks, publishNewMaintenanceTasks} from "@repo/pubsub/publish/maintenance_tasks";
+import {cancelMaintenanceTaskJob, scheduleImpactTask} from "@repo/jobs/maintenance/queue";
+import {getDirectlyAffectedResolutionIds} from "@repo/resolution-assembly";
+import {upsertImpactEvaluationTask} from "@repo/jobs/maintenance/mutations";
 
 const DeleteSchema = z.object({
     id: z.uuidv7()
@@ -19,18 +21,19 @@ export async function deleteResolution(params: z.infer<typeof DeleteSchema>): Pr
     await authCheck(["ADMIN"]);
     const {id} = DeleteSchema.parse(params);
     try {
-        const {taskIds} = await prisma.$transaction(async (tx) => {
+        const {deletedTaskIds, createdTasks} = await prisma.$transaction(async (tx) => {
             const maintenanceTasks = await fetchMaintenanceTasks({cursor: null, filter: "ALL", resolutionId: id, limit: null});
-            const taskIds = maintenanceTasks.map(task => task.id);
+            const deletedTaskIds = maintenanceTasks.map(task => task.id);
 
-            await deleteMaintenanceTasksById(taskIds)
+            await deleteMaintenanceTasksById(deletedTaskIds)
 
-            // TODO create impact evaluation tasks before deleting resoluition
-            await deleteResolutionById(id);
-            return {taskIds};
+            const createdTasks = await createImpactTasksBeforeDeletion(id, tx);
+
+            await deleteResolutionById(id, tx);
+            return {deletedTaskIds, createdTasks};
         });
 
-        await Promise.all(taskIds.map(async taskId => {
+        await Promise.all(deletedTaskIds.map(async taskId => {
             try{
                 await cancelMaintenanceTaskJob(taskId)
             } catch (e) {
@@ -39,7 +42,12 @@ export async function deleteResolution(params: z.infer<typeof DeleteSchema>): Pr
             }
         }));
 
-        await publishDeletedMaintenanceTasks(taskIds);
+        for (const task of createdTasks) {
+            await scheduleImpactTask(task.taskId, task.resolutionId);
+        }
+        const createdTaskIds = createdTasks.map(t => t.taskId);
+        await publishDeletedMaintenanceTasks(deletedTaskIds);
+        await publishNewMaintenanceTasks(createdTaskIds);
     } catch (e) {
         console.error(e)
         return {
@@ -52,4 +60,17 @@ export async function deleteResolution(params: z.infer<typeof DeleteSchema>): Pr
     return {
         success: true
     }
+}
+
+async function createImpactTasksBeforeDeletion(resolutionId: string, tx: TransactionPrismaClient) {
+    const eventId = `delete_res_${resolutionId}_${Date.now()}`;
+    const impacted = await getDirectlyAffectedResolutionIds(resolutionId, tx);
+    const tasks = [];
+    for (const impactedResolutionId of impacted) {
+        const task = await upsertImpactEvaluationTask(impactedResolutionId, eventId, tx);
+        if (task.created) {
+            tasks.push({taskId: task.id, resolutionId: impactedResolutionId});
+        }
+    }
+    return tasks;
 }

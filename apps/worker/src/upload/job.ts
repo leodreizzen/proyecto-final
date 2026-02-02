@@ -10,8 +10,9 @@ import {updateUploadStatus} from "@repo/jobs/resolutions/mutations";
 import ProgressReporter from "@/util/progress-reporter";
 import {publishUploadStatus} from "@repo/pubsub/publish/uploads";
 import {publishNewResolution} from "@repo/pubsub/publish/resolutions";
-import {createImpactTask} from "@repo/jobs/maintenance/full";
 import {publishNewMaintenanceTasks} from "@repo/pubsub/publish/maintenance_tasks";
+import {upsertImpactEvaluationTask} from "@repo/jobs/maintenance/mutations";
+import {scheduleImpactTask} from "@repo/jobs/maintenance/queue";
 
 export async function processResolutionUpload(job: Job, progressReporter: ProgressReporter) {
     if (!job.id)
@@ -49,7 +50,8 @@ export async function processResolutionUpload(job: Job, progressReporter: Progre
         const {savedResolution, task} = await prisma.$transaction(async (tx) => {
             const savedResolution = await saveParsedResolution(tx, parsedResolution, upload, createdFile);
             await updateUploadStatus({uploadId, status: "COMPLETED", tx});
-            const task = await createImpactTask(savedResolution.id, tx);
+            const eventId = `upload_res_${savedResolution.id}_${Date.now()}`;
+            const task = await upsertImpactEvaluationTask(savedResolution.id, eventId, tx);
             return {
                 savedResolution,
                 task
@@ -57,6 +59,7 @@ export async function processResolutionUpload(job: Job, progressReporter: Progre
         });
         await publishNewResolution(savedResolution.id)
         if (task.created) {
+            await scheduleImpactTask(task.id, savedResolution.id)
             await publishNewMaintenanceTasks([task.id]);
         }
         await publishUploadStatus(uploadId, {status: "COMPLETED"});

@@ -91,7 +91,7 @@ export async function countResolutions(): Promise<ResolutionCounts> {
     }
 }
 
-export async function deleteResolutionById(resolutionId: string, tx?: TransactionPrismaClient) {
+export async function deleteResolutionById(resolutionId: string, tx: TransactionPrismaClient = prisma) {
     await checkResourcePermission("resolution", "delete");
     let assetId: string | undefined;
 
@@ -100,7 +100,6 @@ export async function deleteResolutionById(resolutionId: string, tx?: Transactio
             where: {id: resolutionId}
         })
         assetId = res.originalFileId;
-        //TODO unify with worker version
         await tx.asset.update({
             where: {
                 id: assetId
