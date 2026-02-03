@@ -17,12 +17,12 @@ function checkText(text: string, validNumbers: Set<number>, context: string, err
 function validateArticleAnalysis(analysis: ArticleAnalysis, validNumbers: Set<number>, context: string, errors: string[]) {
     if (analysis.type === "Modifier") {
         analysis.changes.forEach((change, i) => {
-            validateChange(change, validNumbers, `${context} -> Change ${i + 1}`, errors);
+            validateChangeTables(change, validNumbers, `${context} -> Change ${i + 1}`, errors);
         });
     }
 }
 
-function validateChange(change: ChangeAnalysis, validNumbers: Set<number>, context: string, errors: string[]) {
+export function validateChangeTables(change: ChangeAnalysis, validNumbers: Set<number>, context: string, errors: string[]) {
     if (change.type === "ModifyArticle") {
         checkText(change.before, validNumbers, `${context} (before)`, errors);
         checkText(change.after, validNumbers, `${context} (after)`, errors);
@@ -90,7 +90,7 @@ export function validateAnalysisChangesTableReferences(structure: ResolutionStru
     analysis.articles.forEach((art, artIdx) => {
         if (art.type === "Modifier") {
             art.changes.forEach((change, i) => {
-                validateChange(change, validNumbers, `Modifier Article #${artIdx + 1} -> Change ${i + 1}`, errors);
+                validateChangeTables(change, validNumbers, `Modifier Article #${artIdx + 1} -> Change ${i + 1}`, errors);
             });
         }
     });

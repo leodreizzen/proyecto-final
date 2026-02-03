@@ -138,7 +138,7 @@ export const ChangeApplyModificationsAnnexSchema = z.object({
     annexToApply: AnnexReferenceSchema.describe("Anexo de modificaciones a aplicar"),
 }).meta({title: "CambioAplicarAnexoModificaciones"});
 
-export const ChangeSchema = z.discriminatedUnion("type", [
+export const changeOptions = [
     ChangeModifyArticleSchema,
     ChangeReplaceArticleSchema,
     ChangeAdvancedSchema,
@@ -151,7 +151,9 @@ export const ChangeSchema = z.discriminatedUnion("type", [
     ChangeAddArticleToResolutionSchema,
     ChangeAddArticleToAnnexSchema,
     ChangeApplyModificationsAnnexSchema
-]).meta({schemaDescription: "Cualquier tipo de cambio posible en una resolución"})
+] as const;
+
+export const ChangeSchema = z.discriminatedUnion("type", changeOptions).meta({schemaDescription: "Cualquier tipo de cambio posible en una resolución"})
     .refine((change) => {
         if (change.type === "AddArticleToResolution" || change.type === "AddArticleToAnnex") {
             if (change.newArticleSuffix && !change.newArticleNumber) return false;

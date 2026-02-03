@@ -57,7 +57,7 @@ export async function fetchMaintenanceTasks({
             statusCondition = "COMPLETED";
             break;
         case "FAILED":
-            statusCondition = "FAILED";
+            statusCondition = {in: ["FAILED", "PARTIAL_FAILURE"]};
             break;
         case "ALL":
             statusCondition = undefined;

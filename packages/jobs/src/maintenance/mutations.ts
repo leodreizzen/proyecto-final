@@ -34,6 +34,27 @@ export async function updateMaintenanceTaskStatus({taskId, status, tx = prisma, 
     });
 }
 
+export async function updateMaintenanceTaskMetadata({taskId, metadata, tx = prisma, ifStatus}: {
+    taskId: MaintenanceTask["id"],
+    metadata: object, // TODO define type
+    tx?: TransactionPrismaClient,
+    ifStatus?: MaintenanceTaskStatus[],
+}) {
+
+    const whereClause = {
+        id: taskId,
+        ...(ifStatus !== undefined ? {status: {in: ifStatus}} : {})
+    };
+
+    await tx.maintenanceTask.update({
+        where: whereClause,
+        data: {
+            payload: metadata
+        }
+    });
+}
+
+
 export async function upsertImpactEvaluationTask(resolutionId: string, eventId: string, tx: TransactionPrismaClient = prisma) {
     const existing = await tx.maintenanceTask.findUnique({
         where: {

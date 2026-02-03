@@ -4,6 +4,7 @@ import {formatInTimeZone} from 'date-fns-tz';
 import _stringify from "json-stable-stringify";
 import {ResolutionNaturalID} from "@/lib/definitions/resolutions";
 import {ChangeContext} from "@/lib/definitions/changes";
+import {MaintenanceTaskStatus} from "@repo/db/prisma/enums";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
@@ -81,7 +82,7 @@ export function formatMaintenanceTaskType(type: string): string {
         case "EVALUATE_IMPACT":
             return "Evaluar Impacto";
         case "PROCESS_ADVANCED_CHANGES":
-            return "Procesar Cambios";
+            return "Procesar Cambios Avanzados";
         case "CALCULATE_EMBEDDINGS":
             return "Calcular Embeddings";
         default:
@@ -89,7 +90,7 @@ export function formatMaintenanceTaskType(type: string): string {
     }
 }
 
-export function formatMaintenanceTaskStatus(status: string): string {
+export function formatMaintenanceTaskStatus(status: MaintenanceTaskStatus): string {
     switch (status) {
         case "PENDING":
             return "PENDIENTE";
@@ -99,8 +100,12 @@ export function formatMaintenanceTaskStatus(status: string): string {
             return "TERMINADA";
         case "FAILED":
             return "FALLIDA";
-        default:
+        case "PARTIAL_FAILURE":
+            return "FALLA PARCIAL"
+        default: {
+            const _exhaustiveCheck: never = status;
             return status;
+        }
     }
 }
 
@@ -124,6 +129,7 @@ type SetDeep<T, P extends readonly unknown[], V> =
             }
             : never
         : V;
+
 export function assign<T, P extends readonly string[], V>(
     obj: T,
     path: P extends ValidPath<T> ? P : ValidPath<T>,
@@ -139,7 +145,7 @@ export function assign<T, P extends readonly string[], V>(
         throw new Error(`Can't access '${String(head)}' property of ${typeof obj}`);
     }
 
-    if(Array.isArray(obj)){
+    if (Array.isArray(obj)) {
         throw new Error(`Arrays cannot be traversed.`);
     }
 

@@ -27,18 +27,21 @@ export type AggregateChange = {
 export type ChangeMinAggregateOutputType = {
   id: string | null
   articleModifierId: string | null
+  resolvedForChangeAdvancedId: string | null
   type: $Enums.ChangeType | null
 }
 
 export type ChangeMaxAggregateOutputType = {
   id: string | null
   articleModifierId: string | null
+  resolvedForChangeAdvancedId: string | null
   type: $Enums.ChangeType | null
 }
 
 export type ChangeCountAggregateOutputType = {
   id: number
   articleModifierId: number
+  resolvedForChangeAdvancedId: number
   type: number
   _all: number
 }
@@ -47,18 +50,21 @@ export type ChangeCountAggregateOutputType = {
 export type ChangeMinAggregateInputType = {
   id?: true
   articleModifierId?: true
+  resolvedForChangeAdvancedId?: true
   type?: true
 }
 
 export type ChangeMaxAggregateInputType = {
   id?: true
   articleModifierId?: true
+  resolvedForChangeAdvancedId?: true
   type?: true
 }
 
 export type ChangeCountAggregateInputType = {
   id?: true
   articleModifierId?: true
+  resolvedForChangeAdvancedId?: true
   type?: true
   _all?: true
 }
@@ -138,6 +144,7 @@ export type ChangeGroupByArgs<ExtArgs extends runtime.Types.Extensions.InternalA
 export type ChangeGroupByOutputType = {
   id: string
   articleModifierId: string
+  resolvedForChangeAdvancedId: string | null
   type: $Enums.ChangeType
   _count: ChangeCountAggregateOutputType | null
   _min: ChangeMinAggregateOutputType | null
@@ -165,8 +172,10 @@ export type ChangeWhereInput = {
   NOT?: Prisma.ChangeWhereInput | Prisma.ChangeWhereInput[]
   id?: Prisma.UuidFilter<"Change"> | string
   articleModifierId?: Prisma.UuidFilter<"Change"> | string
+  resolvedForChangeAdvancedId?: Prisma.UuidNullableFilter<"Change"> | string | null
   type?: Prisma.EnumChangeTypeFilter<"Change"> | $Enums.ChangeType
   articleModifier?: Prisma.XOR<Prisma.ArticleModifierScalarRelationFilter, Prisma.ArticleModifierWhereInput>
+  resolvedForChangeAdvanced?: Prisma.XOR<Prisma.ChangeAdvancedNullableScalarRelationFilter, Prisma.ChangeAdvancedWhereInput> | null
   changeModifyArticle?: Prisma.XOR<Prisma.ChangeModifyArticleNullableScalarRelationFilter, Prisma.ChangeModifyArticleWhereInput> | null
   changeReplaceArticle?: Prisma.XOR<Prisma.ChangeReplaceArticleNullableScalarRelationFilter, Prisma.ChangeReplaceArticleWhereInput> | null
   changeAdvanced?: Prisma.XOR<Prisma.ChangeAdvancedNullableScalarRelationFilter, Prisma.ChangeAdvancedWhereInput> | null
@@ -182,8 +191,10 @@ export type ChangeWhereInput = {
 export type ChangeOrderByWithRelationInput = {
   id?: Prisma.SortOrder
   articleModifierId?: Prisma.SortOrder
+  resolvedForChangeAdvancedId?: Prisma.SortOrderInput | Prisma.SortOrder
   type?: Prisma.SortOrder
   articleModifier?: Prisma.ArticleModifierOrderByWithRelationInput
+  resolvedForChangeAdvanced?: Prisma.ChangeAdvancedOrderByWithRelationInput
   changeModifyArticle?: Prisma.ChangeModifyArticleOrderByWithRelationInput
   changeReplaceArticle?: Prisma.ChangeReplaceArticleOrderByWithRelationInput
   changeAdvanced?: Prisma.ChangeAdvancedOrderByWithRelationInput
@@ -202,8 +213,10 @@ export type ChangeWhereUniqueInput = Prisma.AtLeast<{
   OR?: Prisma.ChangeWhereInput[]
   NOT?: Prisma.ChangeWhereInput | Prisma.ChangeWhereInput[]
   articleModifierId?: Prisma.UuidFilter<"Change"> | string
+  resolvedForChangeAdvancedId?: Prisma.UuidNullableFilter<"Change"> | string | null
   type?: Prisma.EnumChangeTypeFilter<"Change"> | $Enums.ChangeType
   articleModifier?: Prisma.XOR<Prisma.ArticleModifierScalarRelationFilter, Prisma.ArticleModifierWhereInput>
+  resolvedForChangeAdvanced?: Prisma.XOR<Prisma.ChangeAdvancedNullableScalarRelationFilter, Prisma.ChangeAdvancedWhereInput> | null
   changeModifyArticle?: Prisma.XOR<Prisma.ChangeModifyArticleNullableScalarRelationFilter, Prisma.ChangeModifyArticleWhereInput> | null
   changeReplaceArticle?: Prisma.XOR<Prisma.ChangeReplaceArticleNullableScalarRelationFilter, Prisma.ChangeReplaceArticleWhereInput> | null
   changeAdvanced?: Prisma.XOR<Prisma.ChangeAdvancedNullableScalarRelationFilter, Prisma.ChangeAdvancedWhereInput> | null
@@ -219,6 +232,7 @@ export type ChangeWhereUniqueInput = Prisma.AtLeast<{
 export type ChangeOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
   articleModifierId?: Prisma.SortOrder
+  resolvedForChangeAdvancedId?: Prisma.SortOrderInput | Prisma.SortOrder
   type?: Prisma.SortOrder
   _count?: Prisma.ChangeCountOrderByAggregateInput
   _max?: Prisma.ChangeMaxOrderByAggregateInput
@@ -231,6 +245,7 @@ export type ChangeScalarWhereWithAggregatesInput = {
   NOT?: Prisma.ChangeScalarWhereWithAggregatesInput | Prisma.ChangeScalarWhereWithAggregatesInput[]
   id?: Prisma.UuidWithAggregatesFilter<"Change"> | string
   articleModifierId?: Prisma.UuidWithAggregatesFilter<"Change"> | string
+  resolvedForChangeAdvancedId?: Prisma.UuidNullableWithAggregatesFilter<"Change"> | string | null
   type?: Prisma.EnumChangeTypeWithAggregatesFilter<"Change"> | $Enums.ChangeType
 }
 
@@ -238,6 +253,7 @@ export type ChangeCreateInput = {
   id?: string
   type: $Enums.ChangeType
   articleModifier: Prisma.ArticleModifierCreateNestedOneWithoutChangesInput
+  resolvedForChangeAdvanced?: Prisma.ChangeAdvancedCreateNestedOneWithoutResolvedChangesInput
   changeModifyArticle?: Prisma.ChangeModifyArticleCreateNestedOneWithoutChangeInput
   changeReplaceArticle?: Prisma.ChangeReplaceArticleCreateNestedOneWithoutChangeInput
   changeAdvanced?: Prisma.ChangeAdvancedCreateNestedOneWithoutChangeInput
@@ -253,6 +269,7 @@ export type ChangeCreateInput = {
 export type ChangeUncheckedCreateInput = {
   id?: string
   articleModifierId: string
+  resolvedForChangeAdvancedId?: string | null
   type: $Enums.ChangeType
   changeModifyArticle?: Prisma.ChangeModifyArticleUncheckedCreateNestedOneWithoutChangeInput
   changeReplaceArticle?: Prisma.ChangeReplaceArticleUncheckedCreateNestedOneWithoutChangeInput
@@ -270,6 +287,7 @@ export type ChangeUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   type?: Prisma.EnumChangeTypeFieldUpdateOperationsInput | $Enums.ChangeType
   articleModifier?: Prisma.ArticleModifierUpdateOneRequiredWithoutChangesNestedInput
+  resolvedForChangeAdvanced?: Prisma.ChangeAdvancedUpdateOneWithoutResolvedChangesNestedInput
   changeModifyArticle?: Prisma.ChangeModifyArticleUpdateOneWithoutChangeNestedInput
   changeReplaceArticle?: Prisma.ChangeReplaceArticleUpdateOneWithoutChangeNestedInput
   changeAdvanced?: Prisma.ChangeAdvancedUpdateOneWithoutChangeNestedInput
@@ -285,6 +303,7 @@ export type ChangeUpdateInput = {
 export type ChangeUncheckedUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   articleModifierId?: Prisma.StringFieldUpdateOperationsInput | string
+  resolvedForChangeAdvancedId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   type?: Prisma.EnumChangeTypeFieldUpdateOperationsInput | $Enums.ChangeType
   changeModifyArticle?: Prisma.ChangeModifyArticleUncheckedUpdateOneWithoutChangeNestedInput
   changeReplaceArticle?: Prisma.ChangeReplaceArticleUncheckedUpdateOneWithoutChangeNestedInput
@@ -301,6 +320,7 @@ export type ChangeUncheckedUpdateInput = {
 export type ChangeCreateManyInput = {
   id?: string
   articleModifierId: string
+  resolvedForChangeAdvancedId?: string | null
   type: $Enums.ChangeType
 }
 
@@ -312,6 +332,7 @@ export type ChangeUpdateManyMutationInput = {
 export type ChangeUncheckedUpdateManyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   articleModifierId?: Prisma.StringFieldUpdateOperationsInput | string
+  resolvedForChangeAdvancedId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   type?: Prisma.EnumChangeTypeFieldUpdateOperationsInput | $Enums.ChangeType
 }
 
@@ -328,18 +349,21 @@ export type ChangeOrderByRelationAggregateInput = {
 export type ChangeCountOrderByAggregateInput = {
   id?: Prisma.SortOrder
   articleModifierId?: Prisma.SortOrder
+  resolvedForChangeAdvancedId?: Prisma.SortOrder
   type?: Prisma.SortOrder
 }
 
 export type ChangeMaxOrderByAggregateInput = {
   id?: Prisma.SortOrder
   articleModifierId?: Prisma.SortOrder
+  resolvedForChangeAdvancedId?: Prisma.SortOrder
   type?: Prisma.SortOrder
 }
 
 export type ChangeMinOrderByAggregateInput = {
   id?: Prisma.SortOrder
   articleModifierId?: Prisma.SortOrder
+  resolvedForChangeAdvancedId?: Prisma.SortOrder
   type?: Prisma.SortOrder
 }
 
@@ -428,12 +452,54 @@ export type ChangeCreateNestedOneWithoutChangeAdvancedInput = {
   connect?: Prisma.ChangeWhereUniqueInput
 }
 
+export type ChangeCreateNestedManyWithoutResolvedForChangeAdvancedInput = {
+  create?: Prisma.XOR<Prisma.ChangeCreateWithoutResolvedForChangeAdvancedInput, Prisma.ChangeUncheckedCreateWithoutResolvedForChangeAdvancedInput> | Prisma.ChangeCreateWithoutResolvedForChangeAdvancedInput[] | Prisma.ChangeUncheckedCreateWithoutResolvedForChangeAdvancedInput[]
+  connectOrCreate?: Prisma.ChangeCreateOrConnectWithoutResolvedForChangeAdvancedInput | Prisma.ChangeCreateOrConnectWithoutResolvedForChangeAdvancedInput[]
+  createMany?: Prisma.ChangeCreateManyResolvedForChangeAdvancedInputEnvelope
+  connect?: Prisma.ChangeWhereUniqueInput | Prisma.ChangeWhereUniqueInput[]
+}
+
+export type ChangeUncheckedCreateNestedManyWithoutResolvedForChangeAdvancedInput = {
+  create?: Prisma.XOR<Prisma.ChangeCreateWithoutResolvedForChangeAdvancedInput, Prisma.ChangeUncheckedCreateWithoutResolvedForChangeAdvancedInput> | Prisma.ChangeCreateWithoutResolvedForChangeAdvancedInput[] | Prisma.ChangeUncheckedCreateWithoutResolvedForChangeAdvancedInput[]
+  connectOrCreate?: Prisma.ChangeCreateOrConnectWithoutResolvedForChangeAdvancedInput | Prisma.ChangeCreateOrConnectWithoutResolvedForChangeAdvancedInput[]
+  createMany?: Prisma.ChangeCreateManyResolvedForChangeAdvancedInputEnvelope
+  connect?: Prisma.ChangeWhereUniqueInput | Prisma.ChangeWhereUniqueInput[]
+}
+
 export type ChangeUpdateOneRequiredWithoutChangeAdvancedNestedInput = {
   create?: Prisma.XOR<Prisma.ChangeCreateWithoutChangeAdvancedInput, Prisma.ChangeUncheckedCreateWithoutChangeAdvancedInput>
   connectOrCreate?: Prisma.ChangeCreateOrConnectWithoutChangeAdvancedInput
   upsert?: Prisma.ChangeUpsertWithoutChangeAdvancedInput
   connect?: Prisma.ChangeWhereUniqueInput
   update?: Prisma.XOR<Prisma.XOR<Prisma.ChangeUpdateToOneWithWhereWithoutChangeAdvancedInput, Prisma.ChangeUpdateWithoutChangeAdvancedInput>, Prisma.ChangeUncheckedUpdateWithoutChangeAdvancedInput>
+}
+
+export type ChangeUpdateManyWithoutResolvedForChangeAdvancedNestedInput = {
+  create?: Prisma.XOR<Prisma.ChangeCreateWithoutResolvedForChangeAdvancedInput, Prisma.ChangeUncheckedCreateWithoutResolvedForChangeAdvancedInput> | Prisma.ChangeCreateWithoutResolvedForChangeAdvancedInput[] | Prisma.ChangeUncheckedCreateWithoutResolvedForChangeAdvancedInput[]
+  connectOrCreate?: Prisma.ChangeCreateOrConnectWithoutResolvedForChangeAdvancedInput | Prisma.ChangeCreateOrConnectWithoutResolvedForChangeAdvancedInput[]
+  upsert?: Prisma.ChangeUpsertWithWhereUniqueWithoutResolvedForChangeAdvancedInput | Prisma.ChangeUpsertWithWhereUniqueWithoutResolvedForChangeAdvancedInput[]
+  createMany?: Prisma.ChangeCreateManyResolvedForChangeAdvancedInputEnvelope
+  set?: Prisma.ChangeWhereUniqueInput | Prisma.ChangeWhereUniqueInput[]
+  disconnect?: Prisma.ChangeWhereUniqueInput | Prisma.ChangeWhereUniqueInput[]
+  delete?: Prisma.ChangeWhereUniqueInput | Prisma.ChangeWhereUniqueInput[]
+  connect?: Prisma.ChangeWhereUniqueInput | Prisma.ChangeWhereUniqueInput[]
+  update?: Prisma.ChangeUpdateWithWhereUniqueWithoutResolvedForChangeAdvancedInput | Prisma.ChangeUpdateWithWhereUniqueWithoutResolvedForChangeAdvancedInput[]
+  updateMany?: Prisma.ChangeUpdateManyWithWhereWithoutResolvedForChangeAdvancedInput | Prisma.ChangeUpdateManyWithWhereWithoutResolvedForChangeAdvancedInput[]
+  deleteMany?: Prisma.ChangeScalarWhereInput | Prisma.ChangeScalarWhereInput[]
+}
+
+export type ChangeUncheckedUpdateManyWithoutResolvedForChangeAdvancedNestedInput = {
+  create?: Prisma.XOR<Prisma.ChangeCreateWithoutResolvedForChangeAdvancedInput, Prisma.ChangeUncheckedCreateWithoutResolvedForChangeAdvancedInput> | Prisma.ChangeCreateWithoutResolvedForChangeAdvancedInput[] | Prisma.ChangeUncheckedCreateWithoutResolvedForChangeAdvancedInput[]
+  connectOrCreate?: Prisma.ChangeCreateOrConnectWithoutResolvedForChangeAdvancedInput | Prisma.ChangeCreateOrConnectWithoutResolvedForChangeAdvancedInput[]
+  upsert?: Prisma.ChangeUpsertWithWhereUniqueWithoutResolvedForChangeAdvancedInput | Prisma.ChangeUpsertWithWhereUniqueWithoutResolvedForChangeAdvancedInput[]
+  createMany?: Prisma.ChangeCreateManyResolvedForChangeAdvancedInputEnvelope
+  set?: Prisma.ChangeWhereUniqueInput | Prisma.ChangeWhereUniqueInput[]
+  disconnect?: Prisma.ChangeWhereUniqueInput | Prisma.ChangeWhereUniqueInput[]
+  delete?: Prisma.ChangeWhereUniqueInput | Prisma.ChangeWhereUniqueInput[]
+  connect?: Prisma.ChangeWhereUniqueInput | Prisma.ChangeWhereUniqueInput[]
+  update?: Prisma.ChangeUpdateWithWhereUniqueWithoutResolvedForChangeAdvancedInput | Prisma.ChangeUpdateWithWhereUniqueWithoutResolvedForChangeAdvancedInput[]
+  updateMany?: Prisma.ChangeUpdateManyWithWhereWithoutResolvedForChangeAdvancedInput | Prisma.ChangeUpdateManyWithWhereWithoutResolvedForChangeAdvancedInput[]
+  deleteMany?: Prisma.ChangeScalarWhereInput | Prisma.ChangeScalarWhereInput[]
 }
 
 export type ChangeCreateNestedOneWithoutChangeRatifyAdReferendumInput = {
@@ -537,6 +603,7 @@ export type ChangeUpdateOneRequiredWithoutChangeApplyModificationsAnnexNestedInp
 export type ChangeCreateWithoutArticleModifierInput = {
   id?: string
   type: $Enums.ChangeType
+  resolvedForChangeAdvanced?: Prisma.ChangeAdvancedCreateNestedOneWithoutResolvedChangesInput
   changeModifyArticle?: Prisma.ChangeModifyArticleCreateNestedOneWithoutChangeInput
   changeReplaceArticle?: Prisma.ChangeReplaceArticleCreateNestedOneWithoutChangeInput
   changeAdvanced?: Prisma.ChangeAdvancedCreateNestedOneWithoutChangeInput
@@ -551,6 +618,7 @@ export type ChangeCreateWithoutArticleModifierInput = {
 
 export type ChangeUncheckedCreateWithoutArticleModifierInput = {
   id?: string
+  resolvedForChangeAdvancedId?: string | null
   type: $Enums.ChangeType
   changeModifyArticle?: Prisma.ChangeModifyArticleUncheckedCreateNestedOneWithoutChangeInput
   changeReplaceArticle?: Prisma.ChangeReplaceArticleUncheckedCreateNestedOneWithoutChangeInput
@@ -596,6 +664,7 @@ export type ChangeScalarWhereInput = {
   NOT?: Prisma.ChangeScalarWhereInput | Prisma.ChangeScalarWhereInput[]
   id?: Prisma.UuidFilter<"Change"> | string
   articleModifierId?: Prisma.UuidFilter<"Change"> | string
+  resolvedForChangeAdvancedId?: Prisma.UuidNullableFilter<"Change"> | string | null
   type?: Prisma.EnumChangeTypeFilter<"Change"> | $Enums.ChangeType
 }
 
@@ -603,6 +672,7 @@ export type ChangeCreateWithoutChangeModifyArticleInput = {
   id?: string
   type: $Enums.ChangeType
   articleModifier: Prisma.ArticleModifierCreateNestedOneWithoutChangesInput
+  resolvedForChangeAdvanced?: Prisma.ChangeAdvancedCreateNestedOneWithoutResolvedChangesInput
   changeReplaceArticle?: Prisma.ChangeReplaceArticleCreateNestedOneWithoutChangeInput
   changeAdvanced?: Prisma.ChangeAdvancedCreateNestedOneWithoutChangeInput
   changeRepeal?: Prisma.ChangeRepealCreateNestedOneWithoutChangeInput
@@ -617,6 +687,7 @@ export type ChangeCreateWithoutChangeModifyArticleInput = {
 export type ChangeUncheckedCreateWithoutChangeModifyArticleInput = {
   id?: string
   articleModifierId: string
+  resolvedForChangeAdvancedId?: string | null
   type: $Enums.ChangeType
   changeReplaceArticle?: Prisma.ChangeReplaceArticleUncheckedCreateNestedOneWithoutChangeInput
   changeAdvanced?: Prisma.ChangeAdvancedUncheckedCreateNestedOneWithoutChangeInput
@@ -649,6 +720,7 @@ export type ChangeUpdateWithoutChangeModifyArticleInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   type?: Prisma.EnumChangeTypeFieldUpdateOperationsInput | $Enums.ChangeType
   articleModifier?: Prisma.ArticleModifierUpdateOneRequiredWithoutChangesNestedInput
+  resolvedForChangeAdvanced?: Prisma.ChangeAdvancedUpdateOneWithoutResolvedChangesNestedInput
   changeReplaceArticle?: Prisma.ChangeReplaceArticleUpdateOneWithoutChangeNestedInput
   changeAdvanced?: Prisma.ChangeAdvancedUpdateOneWithoutChangeNestedInput
   changeRepeal?: Prisma.ChangeRepealUpdateOneWithoutChangeNestedInput
@@ -663,6 +735,7 @@ export type ChangeUpdateWithoutChangeModifyArticleInput = {
 export type ChangeUncheckedUpdateWithoutChangeModifyArticleInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   articleModifierId?: Prisma.StringFieldUpdateOperationsInput | string
+  resolvedForChangeAdvancedId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   type?: Prisma.EnumChangeTypeFieldUpdateOperationsInput | $Enums.ChangeType
   changeReplaceArticle?: Prisma.ChangeReplaceArticleUncheckedUpdateOneWithoutChangeNestedInput
   changeAdvanced?: Prisma.ChangeAdvancedUncheckedUpdateOneWithoutChangeNestedInput
@@ -679,6 +752,7 @@ export type ChangeCreateWithoutChangeReplaceArticleInput = {
   id?: string
   type: $Enums.ChangeType
   articleModifier: Prisma.ArticleModifierCreateNestedOneWithoutChangesInput
+  resolvedForChangeAdvanced?: Prisma.ChangeAdvancedCreateNestedOneWithoutResolvedChangesInput
   changeModifyArticle?: Prisma.ChangeModifyArticleCreateNestedOneWithoutChangeInput
   changeAdvanced?: Prisma.ChangeAdvancedCreateNestedOneWithoutChangeInput
   changeRepeal?: Prisma.ChangeRepealCreateNestedOneWithoutChangeInput
@@ -693,6 +767,7 @@ export type ChangeCreateWithoutChangeReplaceArticleInput = {
 export type ChangeUncheckedCreateWithoutChangeReplaceArticleInput = {
   id?: string
   articleModifierId: string
+  resolvedForChangeAdvancedId?: string | null
   type: $Enums.ChangeType
   changeModifyArticle?: Prisma.ChangeModifyArticleUncheckedCreateNestedOneWithoutChangeInput
   changeAdvanced?: Prisma.ChangeAdvancedUncheckedCreateNestedOneWithoutChangeInput
@@ -725,6 +800,7 @@ export type ChangeUpdateWithoutChangeReplaceArticleInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   type?: Prisma.EnumChangeTypeFieldUpdateOperationsInput | $Enums.ChangeType
   articleModifier?: Prisma.ArticleModifierUpdateOneRequiredWithoutChangesNestedInput
+  resolvedForChangeAdvanced?: Prisma.ChangeAdvancedUpdateOneWithoutResolvedChangesNestedInput
   changeModifyArticle?: Prisma.ChangeModifyArticleUpdateOneWithoutChangeNestedInput
   changeAdvanced?: Prisma.ChangeAdvancedUpdateOneWithoutChangeNestedInput
   changeRepeal?: Prisma.ChangeRepealUpdateOneWithoutChangeNestedInput
@@ -739,6 +815,7 @@ export type ChangeUpdateWithoutChangeReplaceArticleInput = {
 export type ChangeUncheckedUpdateWithoutChangeReplaceArticleInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   articleModifierId?: Prisma.StringFieldUpdateOperationsInput | string
+  resolvedForChangeAdvancedId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   type?: Prisma.EnumChangeTypeFieldUpdateOperationsInput | $Enums.ChangeType
   changeModifyArticle?: Prisma.ChangeModifyArticleUncheckedUpdateOneWithoutChangeNestedInput
   changeAdvanced?: Prisma.ChangeAdvancedUncheckedUpdateOneWithoutChangeNestedInput
@@ -755,6 +832,7 @@ export type ChangeCreateWithoutChangeAdvancedInput = {
   id?: string
   type: $Enums.ChangeType
   articleModifier: Prisma.ArticleModifierCreateNestedOneWithoutChangesInput
+  resolvedForChangeAdvanced?: Prisma.ChangeAdvancedCreateNestedOneWithoutResolvedChangesInput
   changeModifyArticle?: Prisma.ChangeModifyArticleCreateNestedOneWithoutChangeInput
   changeReplaceArticle?: Prisma.ChangeReplaceArticleCreateNestedOneWithoutChangeInput
   changeRepeal?: Prisma.ChangeRepealCreateNestedOneWithoutChangeInput
@@ -769,6 +847,7 @@ export type ChangeCreateWithoutChangeAdvancedInput = {
 export type ChangeUncheckedCreateWithoutChangeAdvancedInput = {
   id?: string
   articleModifierId: string
+  resolvedForChangeAdvancedId?: string | null
   type: $Enums.ChangeType
   changeModifyArticle?: Prisma.ChangeModifyArticleUncheckedCreateNestedOneWithoutChangeInput
   changeReplaceArticle?: Prisma.ChangeReplaceArticleUncheckedCreateNestedOneWithoutChangeInput
@@ -786,6 +865,48 @@ export type ChangeCreateOrConnectWithoutChangeAdvancedInput = {
   create: Prisma.XOR<Prisma.ChangeCreateWithoutChangeAdvancedInput, Prisma.ChangeUncheckedCreateWithoutChangeAdvancedInput>
 }
 
+export type ChangeCreateWithoutResolvedForChangeAdvancedInput = {
+  id?: string
+  type: $Enums.ChangeType
+  articleModifier: Prisma.ArticleModifierCreateNestedOneWithoutChangesInput
+  changeModifyArticle?: Prisma.ChangeModifyArticleCreateNestedOneWithoutChangeInput
+  changeReplaceArticle?: Prisma.ChangeReplaceArticleCreateNestedOneWithoutChangeInput
+  changeAdvanced?: Prisma.ChangeAdvancedCreateNestedOneWithoutChangeInput
+  changeRepeal?: Prisma.ChangeRepealCreateNestedOneWithoutChangeInput
+  changeRatifyAdReferendum?: Prisma.ChangeRatifyAdReferendumCreateNestedOneWithoutChangeInput
+  changeReplaceAnnex?: Prisma.ChangeReplaceAnnexCreateNestedOneWithoutChangeInput
+  changeAddAnnex?: Prisma.ChangeAddAnnexCreateNestedOneWithoutChangeInput
+  changeModifyTextAnnex?: Prisma.ChangeModifyTextAnnexCreateNestedOneWithoutChangeInput
+  changeAddArticle?: Prisma.ChangeAddArticleCreateNestedOneWithoutChangeInput
+  changeApplyModificationsAnnex?: Prisma.ChangeApplyModificationsAnnexCreateNestedOneWithoutChangeInput
+}
+
+export type ChangeUncheckedCreateWithoutResolvedForChangeAdvancedInput = {
+  id?: string
+  articleModifierId: string
+  type: $Enums.ChangeType
+  changeModifyArticle?: Prisma.ChangeModifyArticleUncheckedCreateNestedOneWithoutChangeInput
+  changeReplaceArticle?: Prisma.ChangeReplaceArticleUncheckedCreateNestedOneWithoutChangeInput
+  changeAdvanced?: Prisma.ChangeAdvancedUncheckedCreateNestedOneWithoutChangeInput
+  changeRepeal?: Prisma.ChangeRepealUncheckedCreateNestedOneWithoutChangeInput
+  changeRatifyAdReferendum?: Prisma.ChangeRatifyAdReferendumUncheckedCreateNestedOneWithoutChangeInput
+  changeReplaceAnnex?: Prisma.ChangeReplaceAnnexUncheckedCreateNestedOneWithoutChangeInput
+  changeAddAnnex?: Prisma.ChangeAddAnnexUncheckedCreateNestedOneWithoutChangeInput
+  changeModifyTextAnnex?: Prisma.ChangeModifyTextAnnexUncheckedCreateNestedOneWithoutChangeInput
+  changeAddArticle?: Prisma.ChangeAddArticleUncheckedCreateNestedOneWithoutChangeInput
+  changeApplyModificationsAnnex?: Prisma.ChangeApplyModificationsAnnexUncheckedCreateNestedOneWithoutChangeInput
+}
+
+export type ChangeCreateOrConnectWithoutResolvedForChangeAdvancedInput = {
+  where: Prisma.ChangeWhereUniqueInput
+  create: Prisma.XOR<Prisma.ChangeCreateWithoutResolvedForChangeAdvancedInput, Prisma.ChangeUncheckedCreateWithoutResolvedForChangeAdvancedInput>
+}
+
+export type ChangeCreateManyResolvedForChangeAdvancedInputEnvelope = {
+  data: Prisma.ChangeCreateManyResolvedForChangeAdvancedInput | Prisma.ChangeCreateManyResolvedForChangeAdvancedInput[]
+  skipDuplicates?: boolean
+}
+
 export type ChangeUpsertWithoutChangeAdvancedInput = {
   update: Prisma.XOR<Prisma.ChangeUpdateWithoutChangeAdvancedInput, Prisma.ChangeUncheckedUpdateWithoutChangeAdvancedInput>
   create: Prisma.XOR<Prisma.ChangeCreateWithoutChangeAdvancedInput, Prisma.ChangeUncheckedCreateWithoutChangeAdvancedInput>
@@ -801,6 +922,7 @@ export type ChangeUpdateWithoutChangeAdvancedInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   type?: Prisma.EnumChangeTypeFieldUpdateOperationsInput | $Enums.ChangeType
   articleModifier?: Prisma.ArticleModifierUpdateOneRequiredWithoutChangesNestedInput
+  resolvedForChangeAdvanced?: Prisma.ChangeAdvancedUpdateOneWithoutResolvedChangesNestedInput
   changeModifyArticle?: Prisma.ChangeModifyArticleUpdateOneWithoutChangeNestedInput
   changeReplaceArticle?: Prisma.ChangeReplaceArticleUpdateOneWithoutChangeNestedInput
   changeRepeal?: Prisma.ChangeRepealUpdateOneWithoutChangeNestedInput
@@ -815,6 +937,7 @@ export type ChangeUpdateWithoutChangeAdvancedInput = {
 export type ChangeUncheckedUpdateWithoutChangeAdvancedInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   articleModifierId?: Prisma.StringFieldUpdateOperationsInput | string
+  resolvedForChangeAdvancedId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   type?: Prisma.EnumChangeTypeFieldUpdateOperationsInput | $Enums.ChangeType
   changeModifyArticle?: Prisma.ChangeModifyArticleUncheckedUpdateOneWithoutChangeNestedInput
   changeReplaceArticle?: Prisma.ChangeReplaceArticleUncheckedUpdateOneWithoutChangeNestedInput
@@ -827,10 +950,27 @@ export type ChangeUncheckedUpdateWithoutChangeAdvancedInput = {
   changeApplyModificationsAnnex?: Prisma.ChangeApplyModificationsAnnexUncheckedUpdateOneWithoutChangeNestedInput
 }
 
+export type ChangeUpsertWithWhereUniqueWithoutResolvedForChangeAdvancedInput = {
+  where: Prisma.ChangeWhereUniqueInput
+  update: Prisma.XOR<Prisma.ChangeUpdateWithoutResolvedForChangeAdvancedInput, Prisma.ChangeUncheckedUpdateWithoutResolvedForChangeAdvancedInput>
+  create: Prisma.XOR<Prisma.ChangeCreateWithoutResolvedForChangeAdvancedInput, Prisma.ChangeUncheckedCreateWithoutResolvedForChangeAdvancedInput>
+}
+
+export type ChangeUpdateWithWhereUniqueWithoutResolvedForChangeAdvancedInput = {
+  where: Prisma.ChangeWhereUniqueInput
+  data: Prisma.XOR<Prisma.ChangeUpdateWithoutResolvedForChangeAdvancedInput, Prisma.ChangeUncheckedUpdateWithoutResolvedForChangeAdvancedInput>
+}
+
+export type ChangeUpdateManyWithWhereWithoutResolvedForChangeAdvancedInput = {
+  where: Prisma.ChangeScalarWhereInput
+  data: Prisma.XOR<Prisma.ChangeUpdateManyMutationInput, Prisma.ChangeUncheckedUpdateManyWithoutResolvedForChangeAdvancedInput>
+}
+
 export type ChangeCreateWithoutChangeRatifyAdReferendumInput = {
   id?: string
   type: $Enums.ChangeType
   articleModifier: Prisma.ArticleModifierCreateNestedOneWithoutChangesInput
+  resolvedForChangeAdvanced?: Prisma.ChangeAdvancedCreateNestedOneWithoutResolvedChangesInput
   changeModifyArticle?: Prisma.ChangeModifyArticleCreateNestedOneWithoutChangeInput
   changeReplaceArticle?: Prisma.ChangeReplaceArticleCreateNestedOneWithoutChangeInput
   changeAdvanced?: Prisma.ChangeAdvancedCreateNestedOneWithoutChangeInput
@@ -845,6 +985,7 @@ export type ChangeCreateWithoutChangeRatifyAdReferendumInput = {
 export type ChangeUncheckedCreateWithoutChangeRatifyAdReferendumInput = {
   id?: string
   articleModifierId: string
+  resolvedForChangeAdvancedId?: string | null
   type: $Enums.ChangeType
   changeModifyArticle?: Prisma.ChangeModifyArticleUncheckedCreateNestedOneWithoutChangeInput
   changeReplaceArticle?: Prisma.ChangeReplaceArticleUncheckedCreateNestedOneWithoutChangeInput
@@ -877,6 +1018,7 @@ export type ChangeUpdateWithoutChangeRatifyAdReferendumInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   type?: Prisma.EnumChangeTypeFieldUpdateOperationsInput | $Enums.ChangeType
   articleModifier?: Prisma.ArticleModifierUpdateOneRequiredWithoutChangesNestedInput
+  resolvedForChangeAdvanced?: Prisma.ChangeAdvancedUpdateOneWithoutResolvedChangesNestedInput
   changeModifyArticle?: Prisma.ChangeModifyArticleUpdateOneWithoutChangeNestedInput
   changeReplaceArticle?: Prisma.ChangeReplaceArticleUpdateOneWithoutChangeNestedInput
   changeAdvanced?: Prisma.ChangeAdvancedUpdateOneWithoutChangeNestedInput
@@ -891,6 +1033,7 @@ export type ChangeUpdateWithoutChangeRatifyAdReferendumInput = {
 export type ChangeUncheckedUpdateWithoutChangeRatifyAdReferendumInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   articleModifierId?: Prisma.StringFieldUpdateOperationsInput | string
+  resolvedForChangeAdvancedId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   type?: Prisma.EnumChangeTypeFieldUpdateOperationsInput | $Enums.ChangeType
   changeModifyArticle?: Prisma.ChangeModifyArticleUncheckedUpdateOneWithoutChangeNestedInput
   changeReplaceArticle?: Prisma.ChangeReplaceArticleUncheckedUpdateOneWithoutChangeNestedInput
@@ -907,6 +1050,7 @@ export type ChangeCreateWithoutChangeReplaceAnnexInput = {
   id?: string
   type: $Enums.ChangeType
   articleModifier: Prisma.ArticleModifierCreateNestedOneWithoutChangesInput
+  resolvedForChangeAdvanced?: Prisma.ChangeAdvancedCreateNestedOneWithoutResolvedChangesInput
   changeModifyArticle?: Prisma.ChangeModifyArticleCreateNestedOneWithoutChangeInput
   changeReplaceArticle?: Prisma.ChangeReplaceArticleCreateNestedOneWithoutChangeInput
   changeAdvanced?: Prisma.ChangeAdvancedCreateNestedOneWithoutChangeInput
@@ -921,6 +1065,7 @@ export type ChangeCreateWithoutChangeReplaceAnnexInput = {
 export type ChangeUncheckedCreateWithoutChangeReplaceAnnexInput = {
   id?: string
   articleModifierId: string
+  resolvedForChangeAdvancedId?: string | null
   type: $Enums.ChangeType
   changeModifyArticle?: Prisma.ChangeModifyArticleUncheckedCreateNestedOneWithoutChangeInput
   changeReplaceArticle?: Prisma.ChangeReplaceArticleUncheckedCreateNestedOneWithoutChangeInput
@@ -953,6 +1098,7 @@ export type ChangeUpdateWithoutChangeReplaceAnnexInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   type?: Prisma.EnumChangeTypeFieldUpdateOperationsInput | $Enums.ChangeType
   articleModifier?: Prisma.ArticleModifierUpdateOneRequiredWithoutChangesNestedInput
+  resolvedForChangeAdvanced?: Prisma.ChangeAdvancedUpdateOneWithoutResolvedChangesNestedInput
   changeModifyArticle?: Prisma.ChangeModifyArticleUpdateOneWithoutChangeNestedInput
   changeReplaceArticle?: Prisma.ChangeReplaceArticleUpdateOneWithoutChangeNestedInput
   changeAdvanced?: Prisma.ChangeAdvancedUpdateOneWithoutChangeNestedInput
@@ -967,6 +1113,7 @@ export type ChangeUpdateWithoutChangeReplaceAnnexInput = {
 export type ChangeUncheckedUpdateWithoutChangeReplaceAnnexInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   articleModifierId?: Prisma.StringFieldUpdateOperationsInput | string
+  resolvedForChangeAdvancedId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   type?: Prisma.EnumChangeTypeFieldUpdateOperationsInput | $Enums.ChangeType
   changeModifyArticle?: Prisma.ChangeModifyArticleUncheckedUpdateOneWithoutChangeNestedInput
   changeReplaceArticle?: Prisma.ChangeReplaceArticleUncheckedUpdateOneWithoutChangeNestedInput
@@ -983,6 +1130,7 @@ export type ChangeCreateWithoutChangeAddAnnexInput = {
   id?: string
   type: $Enums.ChangeType
   articleModifier: Prisma.ArticleModifierCreateNestedOneWithoutChangesInput
+  resolvedForChangeAdvanced?: Prisma.ChangeAdvancedCreateNestedOneWithoutResolvedChangesInput
   changeModifyArticle?: Prisma.ChangeModifyArticleCreateNestedOneWithoutChangeInput
   changeReplaceArticle?: Prisma.ChangeReplaceArticleCreateNestedOneWithoutChangeInput
   changeAdvanced?: Prisma.ChangeAdvancedCreateNestedOneWithoutChangeInput
@@ -997,6 +1145,7 @@ export type ChangeCreateWithoutChangeAddAnnexInput = {
 export type ChangeUncheckedCreateWithoutChangeAddAnnexInput = {
   id?: string
   articleModifierId: string
+  resolvedForChangeAdvancedId?: string | null
   type: $Enums.ChangeType
   changeModifyArticle?: Prisma.ChangeModifyArticleUncheckedCreateNestedOneWithoutChangeInput
   changeReplaceArticle?: Prisma.ChangeReplaceArticleUncheckedCreateNestedOneWithoutChangeInput
@@ -1029,6 +1178,7 @@ export type ChangeUpdateWithoutChangeAddAnnexInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   type?: Prisma.EnumChangeTypeFieldUpdateOperationsInput | $Enums.ChangeType
   articleModifier?: Prisma.ArticleModifierUpdateOneRequiredWithoutChangesNestedInput
+  resolvedForChangeAdvanced?: Prisma.ChangeAdvancedUpdateOneWithoutResolvedChangesNestedInput
   changeModifyArticle?: Prisma.ChangeModifyArticleUpdateOneWithoutChangeNestedInput
   changeReplaceArticle?: Prisma.ChangeReplaceArticleUpdateOneWithoutChangeNestedInput
   changeAdvanced?: Prisma.ChangeAdvancedUpdateOneWithoutChangeNestedInput
@@ -1043,6 +1193,7 @@ export type ChangeUpdateWithoutChangeAddAnnexInput = {
 export type ChangeUncheckedUpdateWithoutChangeAddAnnexInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   articleModifierId?: Prisma.StringFieldUpdateOperationsInput | string
+  resolvedForChangeAdvancedId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   type?: Prisma.EnumChangeTypeFieldUpdateOperationsInput | $Enums.ChangeType
   changeModifyArticle?: Prisma.ChangeModifyArticleUncheckedUpdateOneWithoutChangeNestedInput
   changeReplaceArticle?: Prisma.ChangeReplaceArticleUncheckedUpdateOneWithoutChangeNestedInput
@@ -1059,6 +1210,7 @@ export type ChangeCreateWithoutChangeModifyTextAnnexInput = {
   id?: string
   type: $Enums.ChangeType
   articleModifier: Prisma.ArticleModifierCreateNestedOneWithoutChangesInput
+  resolvedForChangeAdvanced?: Prisma.ChangeAdvancedCreateNestedOneWithoutResolvedChangesInput
   changeModifyArticle?: Prisma.ChangeModifyArticleCreateNestedOneWithoutChangeInput
   changeReplaceArticle?: Prisma.ChangeReplaceArticleCreateNestedOneWithoutChangeInput
   changeAdvanced?: Prisma.ChangeAdvancedCreateNestedOneWithoutChangeInput
@@ -1073,6 +1225,7 @@ export type ChangeCreateWithoutChangeModifyTextAnnexInput = {
 export type ChangeUncheckedCreateWithoutChangeModifyTextAnnexInput = {
   id?: string
   articleModifierId: string
+  resolvedForChangeAdvancedId?: string | null
   type: $Enums.ChangeType
   changeModifyArticle?: Prisma.ChangeModifyArticleUncheckedCreateNestedOneWithoutChangeInput
   changeReplaceArticle?: Prisma.ChangeReplaceArticleUncheckedCreateNestedOneWithoutChangeInput
@@ -1105,6 +1258,7 @@ export type ChangeUpdateWithoutChangeModifyTextAnnexInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   type?: Prisma.EnumChangeTypeFieldUpdateOperationsInput | $Enums.ChangeType
   articleModifier?: Prisma.ArticleModifierUpdateOneRequiredWithoutChangesNestedInput
+  resolvedForChangeAdvanced?: Prisma.ChangeAdvancedUpdateOneWithoutResolvedChangesNestedInput
   changeModifyArticle?: Prisma.ChangeModifyArticleUpdateOneWithoutChangeNestedInput
   changeReplaceArticle?: Prisma.ChangeReplaceArticleUpdateOneWithoutChangeNestedInput
   changeAdvanced?: Prisma.ChangeAdvancedUpdateOneWithoutChangeNestedInput
@@ -1119,6 +1273,7 @@ export type ChangeUpdateWithoutChangeModifyTextAnnexInput = {
 export type ChangeUncheckedUpdateWithoutChangeModifyTextAnnexInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   articleModifierId?: Prisma.StringFieldUpdateOperationsInput | string
+  resolvedForChangeAdvancedId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   type?: Prisma.EnumChangeTypeFieldUpdateOperationsInput | $Enums.ChangeType
   changeModifyArticle?: Prisma.ChangeModifyArticleUncheckedUpdateOneWithoutChangeNestedInput
   changeReplaceArticle?: Prisma.ChangeReplaceArticleUncheckedUpdateOneWithoutChangeNestedInput
@@ -1135,6 +1290,7 @@ export type ChangeCreateWithoutChangeAddArticleInput = {
   id?: string
   type: $Enums.ChangeType
   articleModifier: Prisma.ArticleModifierCreateNestedOneWithoutChangesInput
+  resolvedForChangeAdvanced?: Prisma.ChangeAdvancedCreateNestedOneWithoutResolvedChangesInput
   changeModifyArticle?: Prisma.ChangeModifyArticleCreateNestedOneWithoutChangeInput
   changeReplaceArticle?: Prisma.ChangeReplaceArticleCreateNestedOneWithoutChangeInput
   changeAdvanced?: Prisma.ChangeAdvancedCreateNestedOneWithoutChangeInput
@@ -1149,6 +1305,7 @@ export type ChangeCreateWithoutChangeAddArticleInput = {
 export type ChangeUncheckedCreateWithoutChangeAddArticleInput = {
   id?: string
   articleModifierId: string
+  resolvedForChangeAdvancedId?: string | null
   type: $Enums.ChangeType
   changeModifyArticle?: Prisma.ChangeModifyArticleUncheckedCreateNestedOneWithoutChangeInput
   changeReplaceArticle?: Prisma.ChangeReplaceArticleUncheckedCreateNestedOneWithoutChangeInput
@@ -1181,6 +1338,7 @@ export type ChangeUpdateWithoutChangeAddArticleInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   type?: Prisma.EnumChangeTypeFieldUpdateOperationsInput | $Enums.ChangeType
   articleModifier?: Prisma.ArticleModifierUpdateOneRequiredWithoutChangesNestedInput
+  resolvedForChangeAdvanced?: Prisma.ChangeAdvancedUpdateOneWithoutResolvedChangesNestedInput
   changeModifyArticle?: Prisma.ChangeModifyArticleUpdateOneWithoutChangeNestedInput
   changeReplaceArticle?: Prisma.ChangeReplaceArticleUpdateOneWithoutChangeNestedInput
   changeAdvanced?: Prisma.ChangeAdvancedUpdateOneWithoutChangeNestedInput
@@ -1195,6 +1353,7 @@ export type ChangeUpdateWithoutChangeAddArticleInput = {
 export type ChangeUncheckedUpdateWithoutChangeAddArticleInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   articleModifierId?: Prisma.StringFieldUpdateOperationsInput | string
+  resolvedForChangeAdvancedId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   type?: Prisma.EnumChangeTypeFieldUpdateOperationsInput | $Enums.ChangeType
   changeModifyArticle?: Prisma.ChangeModifyArticleUncheckedUpdateOneWithoutChangeNestedInput
   changeReplaceArticle?: Prisma.ChangeReplaceArticleUncheckedUpdateOneWithoutChangeNestedInput
@@ -1211,6 +1370,7 @@ export type ChangeCreateWithoutChangeRepealInput = {
   id?: string
   type: $Enums.ChangeType
   articleModifier: Prisma.ArticleModifierCreateNestedOneWithoutChangesInput
+  resolvedForChangeAdvanced?: Prisma.ChangeAdvancedCreateNestedOneWithoutResolvedChangesInput
   changeModifyArticle?: Prisma.ChangeModifyArticleCreateNestedOneWithoutChangeInput
   changeReplaceArticle?: Prisma.ChangeReplaceArticleCreateNestedOneWithoutChangeInput
   changeAdvanced?: Prisma.ChangeAdvancedCreateNestedOneWithoutChangeInput
@@ -1225,6 +1385,7 @@ export type ChangeCreateWithoutChangeRepealInput = {
 export type ChangeUncheckedCreateWithoutChangeRepealInput = {
   id?: string
   articleModifierId: string
+  resolvedForChangeAdvancedId?: string | null
   type: $Enums.ChangeType
   changeModifyArticle?: Prisma.ChangeModifyArticleUncheckedCreateNestedOneWithoutChangeInput
   changeReplaceArticle?: Prisma.ChangeReplaceArticleUncheckedCreateNestedOneWithoutChangeInput
@@ -1257,6 +1418,7 @@ export type ChangeUpdateWithoutChangeRepealInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   type?: Prisma.EnumChangeTypeFieldUpdateOperationsInput | $Enums.ChangeType
   articleModifier?: Prisma.ArticleModifierUpdateOneRequiredWithoutChangesNestedInput
+  resolvedForChangeAdvanced?: Prisma.ChangeAdvancedUpdateOneWithoutResolvedChangesNestedInput
   changeModifyArticle?: Prisma.ChangeModifyArticleUpdateOneWithoutChangeNestedInput
   changeReplaceArticle?: Prisma.ChangeReplaceArticleUpdateOneWithoutChangeNestedInput
   changeAdvanced?: Prisma.ChangeAdvancedUpdateOneWithoutChangeNestedInput
@@ -1271,6 +1433,7 @@ export type ChangeUpdateWithoutChangeRepealInput = {
 export type ChangeUncheckedUpdateWithoutChangeRepealInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   articleModifierId?: Prisma.StringFieldUpdateOperationsInput | string
+  resolvedForChangeAdvancedId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   type?: Prisma.EnumChangeTypeFieldUpdateOperationsInput | $Enums.ChangeType
   changeModifyArticle?: Prisma.ChangeModifyArticleUncheckedUpdateOneWithoutChangeNestedInput
   changeReplaceArticle?: Prisma.ChangeReplaceArticleUncheckedUpdateOneWithoutChangeNestedInput
@@ -1287,6 +1450,7 @@ export type ChangeCreateWithoutChangeApplyModificationsAnnexInput = {
   id?: string
   type: $Enums.ChangeType
   articleModifier: Prisma.ArticleModifierCreateNestedOneWithoutChangesInput
+  resolvedForChangeAdvanced?: Prisma.ChangeAdvancedCreateNestedOneWithoutResolvedChangesInput
   changeModifyArticle?: Prisma.ChangeModifyArticleCreateNestedOneWithoutChangeInput
   changeReplaceArticle?: Prisma.ChangeReplaceArticleCreateNestedOneWithoutChangeInput
   changeAdvanced?: Prisma.ChangeAdvancedCreateNestedOneWithoutChangeInput
@@ -1301,6 +1465,7 @@ export type ChangeCreateWithoutChangeApplyModificationsAnnexInput = {
 export type ChangeUncheckedCreateWithoutChangeApplyModificationsAnnexInput = {
   id?: string
   articleModifierId: string
+  resolvedForChangeAdvancedId?: string | null
   type: $Enums.ChangeType
   changeModifyArticle?: Prisma.ChangeModifyArticleUncheckedCreateNestedOneWithoutChangeInput
   changeReplaceArticle?: Prisma.ChangeReplaceArticleUncheckedCreateNestedOneWithoutChangeInput
@@ -1333,6 +1498,7 @@ export type ChangeUpdateWithoutChangeApplyModificationsAnnexInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   type?: Prisma.EnumChangeTypeFieldUpdateOperationsInput | $Enums.ChangeType
   articleModifier?: Prisma.ArticleModifierUpdateOneRequiredWithoutChangesNestedInput
+  resolvedForChangeAdvanced?: Prisma.ChangeAdvancedUpdateOneWithoutResolvedChangesNestedInput
   changeModifyArticle?: Prisma.ChangeModifyArticleUpdateOneWithoutChangeNestedInput
   changeReplaceArticle?: Prisma.ChangeReplaceArticleUpdateOneWithoutChangeNestedInput
   changeAdvanced?: Prisma.ChangeAdvancedUpdateOneWithoutChangeNestedInput
@@ -1347,6 +1513,7 @@ export type ChangeUpdateWithoutChangeApplyModificationsAnnexInput = {
 export type ChangeUncheckedUpdateWithoutChangeApplyModificationsAnnexInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   articleModifierId?: Prisma.StringFieldUpdateOperationsInput | string
+  resolvedForChangeAdvancedId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   type?: Prisma.EnumChangeTypeFieldUpdateOperationsInput | $Enums.ChangeType
   changeModifyArticle?: Prisma.ChangeModifyArticleUncheckedUpdateOneWithoutChangeNestedInput
   changeReplaceArticle?: Prisma.ChangeReplaceArticleUncheckedUpdateOneWithoutChangeNestedInput
@@ -1361,12 +1528,14 @@ export type ChangeUncheckedUpdateWithoutChangeApplyModificationsAnnexInput = {
 
 export type ChangeCreateManyArticleModifierInput = {
   id?: string
+  resolvedForChangeAdvancedId?: string | null
   type: $Enums.ChangeType
 }
 
 export type ChangeUpdateWithoutArticleModifierInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   type?: Prisma.EnumChangeTypeFieldUpdateOperationsInput | $Enums.ChangeType
+  resolvedForChangeAdvanced?: Prisma.ChangeAdvancedUpdateOneWithoutResolvedChangesNestedInput
   changeModifyArticle?: Prisma.ChangeModifyArticleUpdateOneWithoutChangeNestedInput
   changeReplaceArticle?: Prisma.ChangeReplaceArticleUpdateOneWithoutChangeNestedInput
   changeAdvanced?: Prisma.ChangeAdvancedUpdateOneWithoutChangeNestedInput
@@ -1381,6 +1550,7 @@ export type ChangeUpdateWithoutArticleModifierInput = {
 
 export type ChangeUncheckedUpdateWithoutArticleModifierInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  resolvedForChangeAdvancedId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   type?: Prisma.EnumChangeTypeFieldUpdateOperationsInput | $Enums.ChangeType
   changeModifyArticle?: Prisma.ChangeModifyArticleUncheckedUpdateOneWithoutChangeNestedInput
   changeReplaceArticle?: Prisma.ChangeReplaceArticleUncheckedUpdateOneWithoutChangeNestedInput
@@ -1396,6 +1566,51 @@ export type ChangeUncheckedUpdateWithoutArticleModifierInput = {
 
 export type ChangeUncheckedUpdateManyWithoutArticleModifierInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  resolvedForChangeAdvancedId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  type?: Prisma.EnumChangeTypeFieldUpdateOperationsInput | $Enums.ChangeType
+}
+
+export type ChangeCreateManyResolvedForChangeAdvancedInput = {
+  id?: string
+  articleModifierId: string
+  type: $Enums.ChangeType
+}
+
+export type ChangeUpdateWithoutResolvedForChangeAdvancedInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  type?: Prisma.EnumChangeTypeFieldUpdateOperationsInput | $Enums.ChangeType
+  articleModifier?: Prisma.ArticleModifierUpdateOneRequiredWithoutChangesNestedInput
+  changeModifyArticle?: Prisma.ChangeModifyArticleUpdateOneWithoutChangeNestedInput
+  changeReplaceArticle?: Prisma.ChangeReplaceArticleUpdateOneWithoutChangeNestedInput
+  changeAdvanced?: Prisma.ChangeAdvancedUpdateOneWithoutChangeNestedInput
+  changeRepeal?: Prisma.ChangeRepealUpdateOneWithoutChangeNestedInput
+  changeRatifyAdReferendum?: Prisma.ChangeRatifyAdReferendumUpdateOneWithoutChangeNestedInput
+  changeReplaceAnnex?: Prisma.ChangeReplaceAnnexUpdateOneWithoutChangeNestedInput
+  changeAddAnnex?: Prisma.ChangeAddAnnexUpdateOneWithoutChangeNestedInput
+  changeModifyTextAnnex?: Prisma.ChangeModifyTextAnnexUpdateOneWithoutChangeNestedInput
+  changeAddArticle?: Prisma.ChangeAddArticleUpdateOneWithoutChangeNestedInput
+  changeApplyModificationsAnnex?: Prisma.ChangeApplyModificationsAnnexUpdateOneWithoutChangeNestedInput
+}
+
+export type ChangeUncheckedUpdateWithoutResolvedForChangeAdvancedInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  articleModifierId?: Prisma.StringFieldUpdateOperationsInput | string
+  type?: Prisma.EnumChangeTypeFieldUpdateOperationsInput | $Enums.ChangeType
+  changeModifyArticle?: Prisma.ChangeModifyArticleUncheckedUpdateOneWithoutChangeNestedInput
+  changeReplaceArticle?: Prisma.ChangeReplaceArticleUncheckedUpdateOneWithoutChangeNestedInput
+  changeAdvanced?: Prisma.ChangeAdvancedUncheckedUpdateOneWithoutChangeNestedInput
+  changeRepeal?: Prisma.ChangeRepealUncheckedUpdateOneWithoutChangeNestedInput
+  changeRatifyAdReferendum?: Prisma.ChangeRatifyAdReferendumUncheckedUpdateOneWithoutChangeNestedInput
+  changeReplaceAnnex?: Prisma.ChangeReplaceAnnexUncheckedUpdateOneWithoutChangeNestedInput
+  changeAddAnnex?: Prisma.ChangeAddAnnexUncheckedUpdateOneWithoutChangeNestedInput
+  changeModifyTextAnnex?: Prisma.ChangeModifyTextAnnexUncheckedUpdateOneWithoutChangeNestedInput
+  changeAddArticle?: Prisma.ChangeAddArticleUncheckedUpdateOneWithoutChangeNestedInput
+  changeApplyModificationsAnnex?: Prisma.ChangeApplyModificationsAnnexUncheckedUpdateOneWithoutChangeNestedInput
+}
+
+export type ChangeUncheckedUpdateManyWithoutResolvedForChangeAdvancedInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  articleModifierId?: Prisma.StringFieldUpdateOperationsInput | string
   type?: Prisma.EnumChangeTypeFieldUpdateOperationsInput | $Enums.ChangeType
 }
 
@@ -1404,8 +1619,10 @@ export type ChangeUncheckedUpdateManyWithoutArticleModifierInput = {
 export type ChangeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   articleModifierId?: boolean
+  resolvedForChangeAdvancedId?: boolean
   type?: boolean
   articleModifier?: boolean | Prisma.ArticleModifierDefaultArgs<ExtArgs>
+  resolvedForChangeAdvanced?: boolean | Prisma.Change$resolvedForChangeAdvancedArgs<ExtArgs>
   changeModifyArticle?: boolean | Prisma.Change$changeModifyArticleArgs<ExtArgs>
   changeReplaceArticle?: boolean | Prisma.Change$changeReplaceArticleArgs<ExtArgs>
   changeAdvanced?: boolean | Prisma.Change$changeAdvancedArgs<ExtArgs>
@@ -1421,26 +1638,32 @@ export type ChangeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs =
 export type ChangeSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   articleModifierId?: boolean
+  resolvedForChangeAdvancedId?: boolean
   type?: boolean
   articleModifier?: boolean | Prisma.ArticleModifierDefaultArgs<ExtArgs>
+  resolvedForChangeAdvanced?: boolean | Prisma.Change$resolvedForChangeAdvancedArgs<ExtArgs>
 }, ExtArgs["result"]["change"]>
 
 export type ChangeSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   articleModifierId?: boolean
+  resolvedForChangeAdvancedId?: boolean
   type?: boolean
   articleModifier?: boolean | Prisma.ArticleModifierDefaultArgs<ExtArgs>
+  resolvedForChangeAdvanced?: boolean | Prisma.Change$resolvedForChangeAdvancedArgs<ExtArgs>
 }, ExtArgs["result"]["change"]>
 
 export type ChangeSelectScalar = {
   id?: boolean
   articleModifierId?: boolean
+  resolvedForChangeAdvancedId?: boolean
   type?: boolean
 }
 
-export type ChangeOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "articleModifierId" | "type", ExtArgs["result"]["change"]>
+export type ChangeOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "articleModifierId" | "resolvedForChangeAdvancedId" | "type", ExtArgs["result"]["change"]>
 export type ChangeInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   articleModifier?: boolean | Prisma.ArticleModifierDefaultArgs<ExtArgs>
+  resolvedForChangeAdvanced?: boolean | Prisma.Change$resolvedForChangeAdvancedArgs<ExtArgs>
   changeModifyArticle?: boolean | Prisma.Change$changeModifyArticleArgs<ExtArgs>
   changeReplaceArticle?: boolean | Prisma.Change$changeReplaceArticleArgs<ExtArgs>
   changeAdvanced?: boolean | Prisma.Change$changeAdvancedArgs<ExtArgs>
@@ -1454,15 +1677,18 @@ export type ChangeInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs 
 }
 export type ChangeIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   articleModifier?: boolean | Prisma.ArticleModifierDefaultArgs<ExtArgs>
+  resolvedForChangeAdvanced?: boolean | Prisma.Change$resolvedForChangeAdvancedArgs<ExtArgs>
 }
 export type ChangeIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   articleModifier?: boolean | Prisma.ArticleModifierDefaultArgs<ExtArgs>
+  resolvedForChangeAdvanced?: boolean | Prisma.Change$resolvedForChangeAdvancedArgs<ExtArgs>
 }
 
 export type $ChangePayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "Change"
   objects: {
     articleModifier: Prisma.$ArticleModifierPayload<ExtArgs>
+    resolvedForChangeAdvanced: Prisma.$ChangeAdvancedPayload<ExtArgs> | null
     changeModifyArticle: Prisma.$ChangeModifyArticlePayload<ExtArgs> | null
     changeReplaceArticle: Prisma.$ChangeReplaceArticlePayload<ExtArgs> | null
     changeAdvanced: Prisma.$ChangeAdvancedPayload<ExtArgs> | null
@@ -1477,6 +1703,7 @@ export type $ChangePayload<ExtArgs extends runtime.Types.Extensions.InternalArgs
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
     articleModifierId: string
+    resolvedForChangeAdvancedId: string | null
     type: $Enums.ChangeType
   }, ExtArgs["result"]["change"]>
   composites: {}
@@ -1873,6 +2100,7 @@ readonly fields: ChangeFieldRefs;
 export interface Prisma__ChangeClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
   articleModifier<T extends Prisma.ArticleModifierDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.ArticleModifierDefaultArgs<ExtArgs>>): Prisma.Prisma__ArticleModifierClient<runtime.Types.Result.GetResult<Prisma.$ArticleModifierPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+  resolvedForChangeAdvanced<T extends Prisma.Change$resolvedForChangeAdvancedArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Change$resolvedForChangeAdvancedArgs<ExtArgs>>): Prisma.Prisma__ChangeAdvancedClient<runtime.Types.Result.GetResult<Prisma.$ChangeAdvancedPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   changeModifyArticle<T extends Prisma.Change$changeModifyArticleArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Change$changeModifyArticleArgs<ExtArgs>>): Prisma.Prisma__ChangeModifyArticleClient<runtime.Types.Result.GetResult<Prisma.$ChangeModifyArticlePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   changeReplaceArticle<T extends Prisma.Change$changeReplaceArticleArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Change$changeReplaceArticleArgs<ExtArgs>>): Prisma.Prisma__ChangeReplaceArticleClient<runtime.Types.Result.GetResult<Prisma.$ChangeReplaceArticlePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   changeAdvanced<T extends Prisma.Change$changeAdvancedArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Change$changeAdvancedArgs<ExtArgs>>): Prisma.Prisma__ChangeAdvancedClient<runtime.Types.Result.GetResult<Prisma.$ChangeAdvancedPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
@@ -1914,6 +2142,7 @@ export interface Prisma__ChangeClient<T, Null = never, ExtArgs extends runtime.T
 export interface ChangeFieldRefs {
   readonly id: Prisma.FieldRef<"Change", 'String'>
   readonly articleModifierId: Prisma.FieldRef<"Change", 'String'>
+  readonly resolvedForChangeAdvancedId: Prisma.FieldRef<"Change", 'String'>
   readonly type: Prisma.FieldRef<"Change", 'ChangeType'>
 }
     
@@ -2308,6 +2537,25 @@ export type ChangeDeleteManyArgs<ExtArgs extends runtime.Types.Extensions.Intern
    * Limit how many Changes to delete.
    */
   limit?: number
+}
+
+/**
+ * Change.resolvedForChangeAdvanced
+ */
+export type Change$resolvedForChangeAdvancedArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the ChangeAdvanced
+   */
+  select?: Prisma.ChangeAdvancedSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the ChangeAdvanced
+   */
+  omit?: Prisma.ChangeAdvancedOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ChangeAdvancedInclude<ExtArgs> | null
+  where?: Prisma.ChangeAdvancedWhereInput
 }
 
 /**

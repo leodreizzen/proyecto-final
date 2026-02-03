@@ -3463,6 +3463,7 @@ export type ArticleFormalityScalarFieldEnum = (typeof ArticleFormalityScalarFiel
 export const ChangeScalarFieldEnum = {
   id: 'id',
   articleModifierId: 'articleModifierId',
+  resolvedForChangeAdvancedId: 'resolvedForChangeAdvancedId',
   type: 'type'
 } as const
 
@@ -3487,7 +3488,9 @@ export type ChangeReplaceArticleScalarFieldEnum = (typeof ChangeReplaceArticleSc
 
 export const ChangeAdvancedScalarFieldEnum = {
   id: 'id',
-  targetReferenceId: 'targetReferenceId'
+  targetReferenceId: 'targetReferenceId',
+  resolvedAt: 'resolvedAt',
+  resolveResult: 'resolveResult'
 } as const
 
 export type ChangeAdvancedScalarFieldEnum = (typeof ChangeAdvancedScalarFieldEnum)[keyof typeof ChangeAdvancedScalarFieldEnum]
@@ -3840,7 +3843,7 @@ export const V_ResolvedReferencesScalarFieldEnum = {
   res_num: 'res_num',
   res_year: 'res_year',
   art_num: 'art_num',
-  art_suff: 'art_suff',
+  art_suf: 'art_suf',
   annex_num: 'annex_num',
   chap_num: 'chap_num'
 } as const
@@ -3962,6 +3965,20 @@ export type EnumChangeTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$Prism
  * Reference to a field of type 'ChangeType[]'
  */
 export type ListEnumChangeTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ChangeType[]'>
+    
+
+
+/**
+ * Reference to a field of type 'ChangeAdvancedResolveResult'
+ */
+export type EnumChangeAdvancedResolveResultFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ChangeAdvancedResolveResult'>
+    
+
+
+/**
+ * Reference to a field of type 'ChangeAdvancedResolveResult[]'
+ */
+export type ListEnumChangeAdvancedResolveResultFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ChangeAdvancedResolveResult[]'>
     
 
 

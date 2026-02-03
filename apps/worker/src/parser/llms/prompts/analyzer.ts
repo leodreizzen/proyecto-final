@@ -1,4 +1,4 @@
-const commonAnalyzerRules = `
+export const commonAnalyzerRules = `
 - No incluyas cosas como el texto completo de un artículo ni cualquier otra que no se te pida dada la tarea y descrición de tipos.
 - Si no tienes nada que poner sobre un artículo y te piden un objeto, ponelo igual siguiendo el formato y dejando vacíos los campos que no correspondan.
     ## Sobre el uso de valores fijos y 'Literales' en JSON

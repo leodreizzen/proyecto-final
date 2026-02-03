@@ -19,6 +19,7 @@
     "@repo/pubsub": "workspace:*",
     "@repo/text-utils": "workspace:*",
     "@repo/typescript-config": "workspace:*",
+    "@repo/resolution-assembly": "workspace:*",
     "bullmq": "^5.66.1",
     "cockatiel": "^3.2.1",
     "dotenv": "^17.2.3",

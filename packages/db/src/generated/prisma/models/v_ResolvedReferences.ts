@@ -30,7 +30,7 @@ export type V_ResolvedReferencesAvgAggregateOutputType = {
   res_num: number | null
   res_year: number | null
   art_num: number | null
-  art_suff: number | null
+  art_suf: number | null
   annex_num: number | null
   chap_num: number | null
 }
@@ -39,7 +39,7 @@ export type V_ResolvedReferencesSumAggregateOutputType = {
   res_num: number | null
   res_year: number | null
   art_num: number | null
-  art_suff: number | null
+  art_suf: number | null
   annex_num: number | null
   chap_num: number | null
 }
@@ -52,7 +52,7 @@ export type V_ResolvedReferencesMinAggregateOutputType = {
   res_num: number | null
   res_year: number | null
   art_num: number | null
-  art_suff: number | null
+  art_suf: number | null
   annex_num: number | null
   chap_num: number | null
 }
@@ -65,7 +65,7 @@ export type V_ResolvedReferencesMaxAggregateOutputType = {
   res_num: number | null
   res_year: number | null
   art_num: number | null
-  art_suff: number | null
+  art_suf: number | null
   annex_num: number | null
   chap_num: number | null
 }
@@ -78,7 +78,7 @@ export type V_ResolvedReferencesCountAggregateOutputType = {
   res_num: number
   res_year: number
   art_num: number
-  art_suff: number
+  art_suf: number
   annex_num: number
   chap_num: number
   _all: number
@@ -89,7 +89,7 @@ export type V_ResolvedReferencesAvgAggregateInputType = {
   res_num?: true
   res_year?: true
   art_num?: true
-  art_suff?: true
+  art_suf?: true
   annex_num?: true
   chap_num?: true
 }
@@ -98,7 +98,7 @@ export type V_ResolvedReferencesSumAggregateInputType = {
   res_num?: true
   res_year?: true
   art_num?: true
-  art_suff?: true
+  art_suf?: true
   annex_num?: true
   chap_num?: true
 }
@@ -111,7 +111,7 @@ export type V_ResolvedReferencesMinAggregateInputType = {
   res_num?: true
   res_year?: true
   art_num?: true
-  art_suff?: true
+  art_suf?: true
   annex_num?: true
   chap_num?: true
 }
@@ -124,7 +124,7 @@ export type V_ResolvedReferencesMaxAggregateInputType = {
   res_num?: true
   res_year?: true
   art_num?: true
-  art_suff?: true
+  art_suf?: true
   annex_num?: true
   chap_num?: true
 }
@@ -137,7 +137,7 @@ export type V_ResolvedReferencesCountAggregateInputType = {
   res_num?: true
   res_year?: true
   art_num?: true
-  art_suff?: true
+  art_suf?: true
   annex_num?: true
   chap_num?: true
   _all?: true
@@ -237,7 +237,7 @@ export type V_ResolvedReferencesGroupByOutputType = {
   res_num: number
   res_year: number
   art_num: number | null
-  art_suff: number | null
+  art_suf: number | null
   annex_num: number | null
   chap_num: number | null
   _count: V_ResolvedReferencesCountAggregateOutputType | null
@@ -273,7 +273,7 @@ export type v_ResolvedReferencesWhereInput = {
   res_num?: Prisma.IntFilter<"v_ResolvedReferences"> | number
   res_year?: Prisma.IntFilter<"v_ResolvedReferences"> | number
   art_num?: Prisma.IntNullableFilter<"v_ResolvedReferences"> | number | null
-  art_suff?: Prisma.IntNullableFilter<"v_ResolvedReferences"> | number | null
+  art_suf?: Prisma.IntNullableFilter<"v_ResolvedReferences"> | number | null
   annex_num?: Prisma.IntNullableFilter<"v_ResolvedReferences"> | number | null
   chap_num?: Prisma.IntNullableFilter<"v_ResolvedReferences"> | number | null
   reference?: Prisma.XOR<Prisma.ReferenceScalarRelationFilter, Prisma.ReferenceWhereInput>
@@ -287,7 +287,7 @@ export type v_ResolvedReferencesOrderByWithRelationInput = {
   res_num?: Prisma.SortOrder
   res_year?: Prisma.SortOrder
   art_num?: Prisma.SortOrderInput | Prisma.SortOrder
-  art_suff?: Prisma.SortOrderInput | Prisma.SortOrder
+  art_suf?: Prisma.SortOrderInput | Prisma.SortOrder
   annex_num?: Prisma.SortOrderInput | Prisma.SortOrder
   chap_num?: Prisma.SortOrderInput | Prisma.SortOrder
   reference?: Prisma.ReferenceOrderByWithRelationInput
@@ -304,7 +304,7 @@ export type v_ResolvedReferencesWhereUniqueInput = Prisma.AtLeast<{
   res_num?: Prisma.IntFilter<"v_ResolvedReferences"> | number
   res_year?: Prisma.IntFilter<"v_ResolvedReferences"> | number
   art_num?: Prisma.IntNullableFilter<"v_ResolvedReferences"> | number | null
-  art_suff?: Prisma.IntNullableFilter<"v_ResolvedReferences"> | number | null
+  art_suf?: Prisma.IntNullableFilter<"v_ResolvedReferences"> | number | null
   annex_num?: Prisma.IntNullableFilter<"v_ResolvedReferences"> | number | null
   chap_num?: Prisma.IntNullableFilter<"v_ResolvedReferences"> | number | null
   reference?: Prisma.XOR<Prisma.ReferenceScalarRelationFilter, Prisma.ReferenceWhereInput>
@@ -318,7 +318,7 @@ export type v_ResolvedReferencesOrderByWithAggregationInput = {
   res_num?: Prisma.SortOrder
   res_year?: Prisma.SortOrder
   art_num?: Prisma.SortOrderInput | Prisma.SortOrder
-  art_suff?: Prisma.SortOrderInput | Prisma.SortOrder
+  art_suf?: Prisma.SortOrderInput | Prisma.SortOrder
   annex_num?: Prisma.SortOrderInput | Prisma.SortOrder
   chap_num?: Prisma.SortOrderInput | Prisma.SortOrder
   _count?: Prisma.v_ResolvedReferencesCountOrderByAggregateInput
@@ -339,7 +339,7 @@ export type v_ResolvedReferencesScalarWhereWithAggregatesInput = {
   res_num?: Prisma.IntWithAggregatesFilter<"v_ResolvedReferences"> | number
   res_year?: Prisma.IntWithAggregatesFilter<"v_ResolvedReferences"> | number
   art_num?: Prisma.IntNullableWithAggregatesFilter<"v_ResolvedReferences"> | number | null
-  art_suff?: Prisma.IntNullableWithAggregatesFilter<"v_ResolvedReferences"> | number | null
+  art_suf?: Prisma.IntNullableWithAggregatesFilter<"v_ResolvedReferences"> | number | null
   annex_num?: Prisma.IntNullableWithAggregatesFilter<"v_ResolvedReferences"> | number | null
   chap_num?: Prisma.IntNullableWithAggregatesFilter<"v_ResolvedReferences"> | number | null
 }
@@ -357,7 +357,7 @@ export type v_ResolvedReferencesCountOrderByAggregateInput = {
   res_num?: Prisma.SortOrder
   res_year?: Prisma.SortOrder
   art_num?: Prisma.SortOrder
-  art_suff?: Prisma.SortOrder
+  art_suf?: Prisma.SortOrder
   annex_num?: Prisma.SortOrder
   chap_num?: Prisma.SortOrder
 }
@@ -366,7 +366,7 @@ export type v_ResolvedReferencesAvgOrderByAggregateInput = {
   res_num?: Prisma.SortOrder
   res_year?: Prisma.SortOrder
   art_num?: Prisma.SortOrder
-  art_suff?: Prisma.SortOrder
+  art_suf?: Prisma.SortOrder
   annex_num?: Prisma.SortOrder
   chap_num?: Prisma.SortOrder
 }
@@ -379,7 +379,7 @@ export type v_ResolvedReferencesMaxOrderByAggregateInput = {
   res_num?: Prisma.SortOrder
   res_year?: Prisma.SortOrder
   art_num?: Prisma.SortOrder
-  art_suff?: Prisma.SortOrder
+  art_suf?: Prisma.SortOrder
   annex_num?: Prisma.SortOrder
   chap_num?: Prisma.SortOrder
 }
@@ -392,7 +392,7 @@ export type v_ResolvedReferencesMinOrderByAggregateInput = {
   res_num?: Prisma.SortOrder
   res_year?: Prisma.SortOrder
   art_num?: Prisma.SortOrder
-  art_suff?: Prisma.SortOrder
+  art_suf?: Prisma.SortOrder
   annex_num?: Prisma.SortOrder
   chap_num?: Prisma.SortOrder
 }
@@ -401,7 +401,7 @@ export type v_ResolvedReferencesSumOrderByAggregateInput = {
   res_num?: Prisma.SortOrder
   res_year?: Prisma.SortOrder
   art_num?: Prisma.SortOrder
-  art_suff?: Prisma.SortOrder
+  art_suf?: Prisma.SortOrder
   annex_num?: Prisma.SortOrder
   chap_num?: Prisma.SortOrder
 }
@@ -440,7 +440,7 @@ export type v_ResolvedReferencesUpdateWithoutReferenceInput = {
   res_num?: Prisma.IntFieldUpdateOperationsInput | number
   res_year?: Prisma.IntFieldUpdateOperationsInput | number
   art_num?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
-  art_suff?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  art_suf?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   annex_num?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   chap_num?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
 }
@@ -452,7 +452,7 @@ export type v_ResolvedReferencesUncheckedUpdateWithoutReferenceInput = {
   res_num?: Prisma.IntFieldUpdateOperationsInput | number
   res_year?: Prisma.IntFieldUpdateOperationsInput | number
   art_num?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
-  art_suff?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  art_suf?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   annex_num?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   chap_num?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
 }
@@ -467,7 +467,7 @@ export type v_ResolvedReferencesSelect<ExtArgs extends runtime.Types.Extensions.
   res_num?: boolean
   res_year?: boolean
   art_num?: boolean
-  art_suff?: boolean
+  art_suf?: boolean
   annex_num?: boolean
   chap_num?: boolean
   reference?: boolean | Prisma.ReferenceDefaultArgs<ExtArgs>
@@ -483,12 +483,12 @@ export type v_ResolvedReferencesSelectScalar = {
   res_num?: boolean
   res_year?: boolean
   art_num?: boolean
-  art_suff?: boolean
+  art_suf?: boolean
   annex_num?: boolean
   chap_num?: boolean
 }
 
-export type v_ResolvedReferencesOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"ref_id" | "target_type" | "native_id" | "res_init" | "res_num" | "res_year" | "art_num" | "art_suff" | "annex_num" | "chap_num", ExtArgs["result"]["v_ResolvedReferences"]>
+export type v_ResolvedReferencesOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"ref_id" | "target_type" | "native_id" | "res_init" | "res_num" | "res_year" | "art_num" | "art_suf" | "annex_num" | "chap_num", ExtArgs["result"]["v_ResolvedReferences"]>
 export type v_ResolvedReferencesInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   reference?: boolean | Prisma.ReferenceDefaultArgs<ExtArgs>
 }
@@ -506,7 +506,7 @@ export type $v_ResolvedReferencesPayload<ExtArgs extends runtime.Types.Extension
     res_num: number
     res_year: number
     art_num: number | null
-    art_suff: number | null
+    art_suf: number | null
     annex_num: number | null
     chap_num: number | null
   }, ExtArgs["result"]["v_ResolvedReferences"]>
@@ -775,7 +775,7 @@ export interface v_ResolvedReferencesFieldRefs {
   readonly res_num: Prisma.FieldRef<"v_ResolvedReferences", 'Int'>
   readonly res_year: Prisma.FieldRef<"v_ResolvedReferences", 'Int'>
   readonly art_num: Prisma.FieldRef<"v_ResolvedReferences", 'Int'>
-  readonly art_suff: Prisma.FieldRef<"v_ResolvedReferences", 'Int'>
+  readonly art_suf: Prisma.FieldRef<"v_ResolvedReferences", 'Int'>
   readonly annex_num: Prisma.FieldRef<"v_ResolvedReferences", 'Int'>
   readonly chap_num: Prisma.FieldRef<"v_ResolvedReferences", 'Int'>
 }

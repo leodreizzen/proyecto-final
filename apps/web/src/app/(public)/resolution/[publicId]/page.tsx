@@ -84,7 +84,7 @@ export default async function ResolutionPage({params, searchParams: searchParams
     return <ResolutionViewer resolution={resolutionData} versions={versions} currentVersion={currentVersion} inapplicableChanges={inapplicableChanges}/>;
 }
 
-function changeDateServer(resoutionId: ResolutionNaturalID, searchParams: { [key: string]: string | string[] | undefined }, date: Date | null) {
+function changeDateServer(resolutionId: ResolutionNaturalID, searchParams: { [key: string]: string | string[] | undefined }, date: Date | null) {
     const newSearchParams = new URLSearchParams();
 
     for (const [key, value] of Object.entries(searchParams)) {
@@ -94,6 +94,6 @@ function changeDateServer(resoutionId: ResolutionNaturalID, searchParams: { [key
         }
     }
 
-    redirect(changeDateInResolutionParams(resoutionId, newSearchParams, date));
+    redirect(changeDateInResolutionParams(resolutionId, newSearchParams, date));
 }
 

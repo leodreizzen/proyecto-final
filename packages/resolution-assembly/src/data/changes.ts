@@ -148,7 +148,18 @@ export async function fetchChangesDataForAssembly(changeIds: string[]) {
                 }
             },
             changeApplyModificationsAnnex: {},
-            changeAdvanced: {}
+            changeAdvanced: {
+                include: {
+                    target: {
+                        include: {
+                            resolution: true,
+                            annex: true,
+                            chapter: true,
+                            article: true
+                        }
+                    }
+                }
+            }
         }
     });
     return changes.map(checkConcreteChange);

@@ -140,7 +140,9 @@ DirtyScope(entity_id, entity_type, res_init, res_num, res_year, annex_num, chap_
         WHERE
             scope.entity_id IS NOT NULL
           AND im.change_id = scope.entity_id
-
+          -- EXCLUSION: Advanced Changes are excluded here to avoid processing them
+          -- as standard impacts with recursion enabled. They are handled in Section G.
+          AND NOT EXISTS (SELECT 1 FROM "ChangeAdvanced" ca WHERE ca.id = scope.entity_id)
         UNION ALL
 
         -- E. CHANGE EXECUTION (Creations)

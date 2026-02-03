@@ -8,6 +8,7 @@ import prisma, {TransactionPrismaClient} from "@repo/db/prisma";
 import {getAffectedResolutions} from "@repo/db/prisma/sql/getAffectedResolutions";
 import {scheduleAdvancedChangesTask, scheduleEmbeddingsTask} from "@repo/jobs/maintenance/queue";
 import {publishMaintenanceTaskUpdate, publishNewMaintenanceTasks} from "@repo/pubsub/publish/maintenance_tasks";
+import {filterResolutionsImpactedByAdvancedChanges} from "@/data/advanced_changes/filter";
 
 export async function processEvaluateImpactJob(jobId: string) {
     console.log(`Starting impact evaluation for maintenance task ${jobId}`);
@@ -30,7 +31,8 @@ export async function processEvaluateImpactJob(jobId: string) {
             });
             return createRes;
         });
-    } catch {
+    } catch (error) {
+        console.log(`Impact evaluation for maintenance task ${jobId} failed:`, error);
         await updateMaintenanceTaskStatus({taskId: jobId, status: "FAILED", errorMessage: "Error interno"});
         jobsToCreate = null;
     }
@@ -106,67 +108,3 @@ async function createTasksForImpactedResolutions(resolutionId: string, eventId: 
 }
 
 
-async function filterResolutionsImpactedByAdvancedChanges(resolutions: string[], by_res: string[], tx: TransactionPrismaClient = prisma): Promise<Map<string, string[]>> {
-    const resIds = await tx.resolution.findMany({
-        where: {
-            id: {in: resolutions},
-        },
-        select: {
-            initial: true,
-            number: true,
-            year: true
-        }
-    });
-    const filtered = await tx.changeAdvanced.findMany({
-        where: {
-            target: {
-                resolved: {
-                    OR: resIds.map(r => ({
-                        res_init: r.initial,
-                        res_num: r.number,
-                        res_year: r.year
-                    }))
-                }
-            },
-            change: {
-                articleModifier: {
-                    article: {
-                        context: {
-                            rootResolutionId: {in: by_res}
-                        }
-                    }
-                }
-            }
-        },
-        select: {
-            id: true,
-            change: {
-                select: {
-                    articleModifier: {
-                        select: {
-                            article: {
-                                select: {
-                                    context: {
-                                        select: {
-                                            rootResolutionId: true
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        }
-    });
-    const changesMap = new Map<string, string[]>();
-    for (const change of filtered) {
-        const rootResId = change.change.articleModifier.article.context?.rootResolutionId;
-        if (!rootResId) continue;
-        if (!changesMap.has(rootResId)) {
-            changesMap.set(rootResId, []);
-        }
-        changesMap.get(rootResId)!.push(change.id);
-    }
-    return changesMap;
-}

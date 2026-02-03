@@ -10,6 +10,7 @@ import {redisConnection, workerConnection} from "@repo/jobs/redis";
 import {publishUploadProgress, publishUploadStatus} from "@repo/pubsub/publish/uploads";
 import {processEvaluateImpactJob} from "@/maintenance_tasks/impact-evaluation";
 import {updateMaintenanceTaskStatus} from "@repo/jobs/maintenance/mutations";
+import {processAdvancedChangesJob} from "@/maintenance_tasks/advanced_changes/jobs";
 
 const worker = new Worker(
     resolutionsQueue.name,
@@ -60,7 +61,11 @@ const maintenanceWorker = new Worker(maintenanceQueue.name,
             throw new Error("Missing ID");
         if (job.name === "evaluateImpact") {
             return processEvaluateImpactJob(job.id);
-        } else {
+        }
+        else if (job.name == "processAdvancedChanges") {
+            return processAdvancedChangesJob(job.id);
+        }
+        else{
             console.error("Job name not implemented:", job.name);
             await job.moveToDelayed(Date.now() + 5 * 60 * 1000, job.token);
             throw new DelayedError();

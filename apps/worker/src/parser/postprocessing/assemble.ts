@@ -180,7 +180,7 @@ function mapArticle(article: ArticleWithoutTables, currentResolutionId: Resoluti
 }
 
 
-function mapAnalysis(change: Change, currentResolutionId: ResolutionID, allTables: TableStructure[], references: TextReference[], usedTableNumbers: Set<number>): ChangeMapped {
+export function mapAnalysis(change: Change, currentResolutionId: ResolutionID, allTables: TableStructure[], references: TextReference[], usedTableNumbers: Set<number>): ChangeMapped {
     if (change.type === "AddArticleToResolution" || change.type === "AddArticleToAnnex") {
         const articleToAdd = change.articleToAdd;
 

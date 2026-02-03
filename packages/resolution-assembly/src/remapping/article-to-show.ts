@@ -16,7 +16,7 @@ export function articleInitialDataToShow(
     };
 
     return {
-        ...article,
+        uuid: article.id,
         content: mapContentBlocks(article.content, validationContext),
         repealedBy: null,
         modifiedBy: [],

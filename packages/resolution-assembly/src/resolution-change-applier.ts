@@ -286,8 +286,7 @@ export class ResolutionChangeApplier {
                 this.applyModifyTextAnnexChange(change);
                 break;
             case "ADVANCED":
-                console.error(`Failed to apply change ${change.id}: Advanced change type not supported yet`);
-                this.inapplicableChanges.push(change);
+                this.applyAdvancedChange(change);
                 break;
             case "APPLY_MODIFICATIONS_ANNEX":
                 // ignore the change
@@ -640,6 +639,18 @@ export class ResolutionChangeApplier {
         if (!success) {
             console.error(`Failed to apply change ${change.id}: Content modification failed`);
             this.inapplicableChanges.push(change);
+        }
+    }
+
+    private applyAdvancedChange(change: ChangeWithContextForAssembly & { type: "ADVANCED" }) {
+        const targetRef = checkReference(change.changeAdvanced.target);
+        const slot = this.getSlotFromRef(targetRef);
+        if (!slot?.relevant) {
+            return;
+        }
+        if (!change.changeAdvanced.resolveResult || change.changeAdvanced.resolveResult === "INAPPLICABLE") {
+            console.log(`Advanced change ${change.id} is inapplicable`);
+            this.inapplicableChanges.push(change)
         }
     }
 

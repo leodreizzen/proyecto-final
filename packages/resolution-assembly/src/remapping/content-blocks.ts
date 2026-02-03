@@ -13,9 +13,15 @@ export function mapContentBlocks(contentBlocks: ResolutionDBDataToShow["articles
        if (result.type === "TEXT") {
            const markers = processBlockReferences(result.text, cb.references, validationContext)
            return {
-               ...result,
+               type: result.type,
+               text: result.text,
                referenceMarkers: markers
            };
+       } else if(result.type === "TABLE") {
+           return {
+                type: result.type,
+                tableContent: result.tableContent
+           }
        }
        
        return result;

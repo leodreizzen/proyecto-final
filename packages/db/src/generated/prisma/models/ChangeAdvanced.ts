@@ -27,16 +27,22 @@ export type AggregateChangeAdvanced = {
 export type ChangeAdvancedMinAggregateOutputType = {
   id: string | null
   targetReferenceId: string | null
+  resolvedAt: Date | null
+  resolveResult: $Enums.ChangeAdvancedResolveResult | null
 }
 
 export type ChangeAdvancedMaxAggregateOutputType = {
   id: string | null
   targetReferenceId: string | null
+  resolvedAt: Date | null
+  resolveResult: $Enums.ChangeAdvancedResolveResult | null
 }
 
 export type ChangeAdvancedCountAggregateOutputType = {
   id: number
   targetReferenceId: number
+  resolvedAt: number
+  resolveResult: number
   _all: number
 }
 
@@ -44,16 +50,22 @@ export type ChangeAdvancedCountAggregateOutputType = {
 export type ChangeAdvancedMinAggregateInputType = {
   id?: true
   targetReferenceId?: true
+  resolvedAt?: true
+  resolveResult?: true
 }
 
 export type ChangeAdvancedMaxAggregateInputType = {
   id?: true
   targetReferenceId?: true
+  resolvedAt?: true
+  resolveResult?: true
 }
 
 export type ChangeAdvancedCountAggregateInputType = {
   id?: true
   targetReferenceId?: true
+  resolvedAt?: true
+  resolveResult?: true
   _all?: true
 }
 
@@ -132,6 +144,8 @@ export type ChangeAdvancedGroupByArgs<ExtArgs extends runtime.Types.Extensions.I
 export type ChangeAdvancedGroupByOutputType = {
   id: string
   targetReferenceId: string
+  resolvedAt: Date | null
+  resolveResult: $Enums.ChangeAdvancedResolveResult | null
   _count: ChangeAdvancedCountAggregateOutputType | null
   _min: ChangeAdvancedMinAggregateOutputType | null
   _max: ChangeAdvancedMaxAggregateOutputType | null
@@ -158,15 +172,21 @@ export type ChangeAdvancedWhereInput = {
   NOT?: Prisma.ChangeAdvancedWhereInput | Prisma.ChangeAdvancedWhereInput[]
   id?: Prisma.UuidFilter<"ChangeAdvanced"> | string
   targetReferenceId?: Prisma.UuidFilter<"ChangeAdvanced"> | string
+  resolvedAt?: Prisma.DateTimeNullableFilter<"ChangeAdvanced"> | Date | string | null
+  resolveResult?: Prisma.EnumChangeAdvancedResolveResultNullableFilter<"ChangeAdvanced"> | $Enums.ChangeAdvancedResolveResult | null
   change?: Prisma.XOR<Prisma.ChangeScalarRelationFilter, Prisma.ChangeWhereInput>
   target?: Prisma.XOR<Prisma.ReferenceScalarRelationFilter, Prisma.ReferenceWhereInput>
+  resolvedChanges?: Prisma.ChangeListRelationFilter
 }
 
 export type ChangeAdvancedOrderByWithRelationInput = {
   id?: Prisma.SortOrder
   targetReferenceId?: Prisma.SortOrder
+  resolvedAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  resolveResult?: Prisma.SortOrderInput | Prisma.SortOrder
   change?: Prisma.ChangeOrderByWithRelationInput
   target?: Prisma.ReferenceOrderByWithRelationInput
+  resolvedChanges?: Prisma.ChangeOrderByRelationAggregateInput
 }
 
 export type ChangeAdvancedWhereUniqueInput = Prisma.AtLeast<{
@@ -175,13 +195,18 @@ export type ChangeAdvancedWhereUniqueInput = Prisma.AtLeast<{
   AND?: Prisma.ChangeAdvancedWhereInput | Prisma.ChangeAdvancedWhereInput[]
   OR?: Prisma.ChangeAdvancedWhereInput[]
   NOT?: Prisma.ChangeAdvancedWhereInput | Prisma.ChangeAdvancedWhereInput[]
+  resolvedAt?: Prisma.DateTimeNullableFilter<"ChangeAdvanced"> | Date | string | null
+  resolveResult?: Prisma.EnumChangeAdvancedResolveResultNullableFilter<"ChangeAdvanced"> | $Enums.ChangeAdvancedResolveResult | null
   change?: Prisma.XOR<Prisma.ChangeScalarRelationFilter, Prisma.ChangeWhereInput>
   target?: Prisma.XOR<Prisma.ReferenceScalarRelationFilter, Prisma.ReferenceWhereInput>
+  resolvedChanges?: Prisma.ChangeListRelationFilter
 }, "id" | "targetReferenceId">
 
 export type ChangeAdvancedOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
   targetReferenceId?: Prisma.SortOrder
+  resolvedAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  resolveResult?: Prisma.SortOrderInput | Prisma.SortOrder
   _count?: Prisma.ChangeAdvancedCountOrderByAggregateInput
   _max?: Prisma.ChangeAdvancedMaxOrderByAggregateInput
   _min?: Prisma.ChangeAdvancedMinOrderByAggregateInput
@@ -193,40 +218,59 @@ export type ChangeAdvancedScalarWhereWithAggregatesInput = {
   NOT?: Prisma.ChangeAdvancedScalarWhereWithAggregatesInput | Prisma.ChangeAdvancedScalarWhereWithAggregatesInput[]
   id?: Prisma.UuidWithAggregatesFilter<"ChangeAdvanced"> | string
   targetReferenceId?: Prisma.UuidWithAggregatesFilter<"ChangeAdvanced"> | string
+  resolvedAt?: Prisma.DateTimeNullableWithAggregatesFilter<"ChangeAdvanced"> | Date | string | null
+  resolveResult?: Prisma.EnumChangeAdvancedResolveResultNullableWithAggregatesFilter<"ChangeAdvanced"> | $Enums.ChangeAdvancedResolveResult | null
 }
 
 export type ChangeAdvancedCreateInput = {
+  resolvedAt?: Date | string | null
+  resolveResult?: $Enums.ChangeAdvancedResolveResult | null
   change: Prisma.ChangeCreateNestedOneWithoutChangeAdvancedInput
   target: Prisma.ReferenceCreateNestedOneWithoutChangeAdvancedInput
+  resolvedChanges?: Prisma.ChangeCreateNestedManyWithoutResolvedForChangeAdvancedInput
 }
 
 export type ChangeAdvancedUncheckedCreateInput = {
   id: string
   targetReferenceId: string
+  resolvedAt?: Date | string | null
+  resolveResult?: $Enums.ChangeAdvancedResolveResult | null
+  resolvedChanges?: Prisma.ChangeUncheckedCreateNestedManyWithoutResolvedForChangeAdvancedInput
 }
 
 export type ChangeAdvancedUpdateInput = {
+  resolvedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  resolveResult?: Prisma.NullableEnumChangeAdvancedResolveResultFieldUpdateOperationsInput | $Enums.ChangeAdvancedResolveResult | null
   change?: Prisma.ChangeUpdateOneRequiredWithoutChangeAdvancedNestedInput
   target?: Prisma.ReferenceUpdateOneRequiredWithoutChangeAdvancedNestedInput
+  resolvedChanges?: Prisma.ChangeUpdateManyWithoutResolvedForChangeAdvancedNestedInput
 }
 
 export type ChangeAdvancedUncheckedUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   targetReferenceId?: Prisma.StringFieldUpdateOperationsInput | string
+  resolvedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  resolveResult?: Prisma.NullableEnumChangeAdvancedResolveResultFieldUpdateOperationsInput | $Enums.ChangeAdvancedResolveResult | null
+  resolvedChanges?: Prisma.ChangeUncheckedUpdateManyWithoutResolvedForChangeAdvancedNestedInput
 }
 
 export type ChangeAdvancedCreateManyInput = {
   id: string
   targetReferenceId: string
+  resolvedAt?: Date | string | null
+  resolveResult?: $Enums.ChangeAdvancedResolveResult | null
 }
 
 export type ChangeAdvancedUpdateManyMutationInput = {
-
+  resolvedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  resolveResult?: Prisma.NullableEnumChangeAdvancedResolveResultFieldUpdateOperationsInput | $Enums.ChangeAdvancedResolveResult | null
 }
 
 export type ChangeAdvancedUncheckedUpdateManyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   targetReferenceId?: Prisma.StringFieldUpdateOperationsInput | string
+  resolvedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  resolveResult?: Prisma.NullableEnumChangeAdvancedResolveResultFieldUpdateOperationsInput | $Enums.ChangeAdvancedResolveResult | null
 }
 
 export type ChangeAdvancedNullableScalarRelationFilter = {
@@ -237,16 +281,28 @@ export type ChangeAdvancedNullableScalarRelationFilter = {
 export type ChangeAdvancedCountOrderByAggregateInput = {
   id?: Prisma.SortOrder
   targetReferenceId?: Prisma.SortOrder
+  resolvedAt?: Prisma.SortOrder
+  resolveResult?: Prisma.SortOrder
 }
 
 export type ChangeAdvancedMaxOrderByAggregateInput = {
   id?: Prisma.SortOrder
   targetReferenceId?: Prisma.SortOrder
+  resolvedAt?: Prisma.SortOrder
+  resolveResult?: Prisma.SortOrder
 }
 
 export type ChangeAdvancedMinOrderByAggregateInput = {
   id?: Prisma.SortOrder
   targetReferenceId?: Prisma.SortOrder
+  resolvedAt?: Prisma.SortOrder
+  resolveResult?: Prisma.SortOrder
+}
+
+export type ChangeAdvancedCreateNestedOneWithoutResolvedChangesInput = {
+  create?: Prisma.XOR<Prisma.ChangeAdvancedCreateWithoutResolvedChangesInput, Prisma.ChangeAdvancedUncheckedCreateWithoutResolvedChangesInput>
+  connectOrCreate?: Prisma.ChangeAdvancedCreateOrConnectWithoutResolvedChangesInput
+  connect?: Prisma.ChangeAdvancedWhereUniqueInput
 }
 
 export type ChangeAdvancedCreateNestedOneWithoutChangeInput = {
@@ -259,6 +315,16 @@ export type ChangeAdvancedUncheckedCreateNestedOneWithoutChangeInput = {
   create?: Prisma.XOR<Prisma.ChangeAdvancedCreateWithoutChangeInput, Prisma.ChangeAdvancedUncheckedCreateWithoutChangeInput>
   connectOrCreate?: Prisma.ChangeAdvancedCreateOrConnectWithoutChangeInput
   connect?: Prisma.ChangeAdvancedWhereUniqueInput
+}
+
+export type ChangeAdvancedUpdateOneWithoutResolvedChangesNestedInput = {
+  create?: Prisma.XOR<Prisma.ChangeAdvancedCreateWithoutResolvedChangesInput, Prisma.ChangeAdvancedUncheckedCreateWithoutResolvedChangesInput>
+  connectOrCreate?: Prisma.ChangeAdvancedCreateOrConnectWithoutResolvedChangesInput
+  upsert?: Prisma.ChangeAdvancedUpsertWithoutResolvedChangesInput
+  disconnect?: Prisma.ChangeAdvancedWhereInput | boolean
+  delete?: Prisma.ChangeAdvancedWhereInput | boolean
+  connect?: Prisma.ChangeAdvancedWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.ChangeAdvancedUpdateToOneWithWhereWithoutResolvedChangesInput, Prisma.ChangeAdvancedUpdateWithoutResolvedChangesInput>, Prisma.ChangeAdvancedUncheckedUpdateWithoutResolvedChangesInput>
 }
 
 export type ChangeAdvancedUpdateOneWithoutChangeNestedInput = {
@@ -279,6 +345,14 @@ export type ChangeAdvancedUncheckedUpdateOneWithoutChangeNestedInput = {
   delete?: Prisma.ChangeAdvancedWhereInput | boolean
   connect?: Prisma.ChangeAdvancedWhereUniqueInput
   update?: Prisma.XOR<Prisma.XOR<Prisma.ChangeAdvancedUpdateToOneWithWhereWithoutChangeInput, Prisma.ChangeAdvancedUpdateWithoutChangeInput>, Prisma.ChangeAdvancedUncheckedUpdateWithoutChangeInput>
+}
+
+export type NullableDateTimeFieldUpdateOperationsInput = {
+  set?: Date | string | null
+}
+
+export type NullableEnumChangeAdvancedResolveResultFieldUpdateOperationsInput = {
+  set?: $Enums.ChangeAdvancedResolveResult | null
 }
 
 export type ChangeAdvancedCreateNestedOneWithoutTargetInput = {
@@ -313,17 +387,67 @@ export type ChangeAdvancedUncheckedUpdateOneWithoutTargetNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.ChangeAdvancedUpdateToOneWithWhereWithoutTargetInput, Prisma.ChangeAdvancedUpdateWithoutTargetInput>, Prisma.ChangeAdvancedUncheckedUpdateWithoutTargetInput>
 }
 
-export type ChangeAdvancedCreateWithoutChangeInput = {
+export type ChangeAdvancedCreateWithoutResolvedChangesInput = {
+  resolvedAt?: Date | string | null
+  resolveResult?: $Enums.ChangeAdvancedResolveResult | null
+  change: Prisma.ChangeCreateNestedOneWithoutChangeAdvancedInput
   target: Prisma.ReferenceCreateNestedOneWithoutChangeAdvancedInput
+}
+
+export type ChangeAdvancedUncheckedCreateWithoutResolvedChangesInput = {
+  id: string
+  targetReferenceId: string
+  resolvedAt?: Date | string | null
+  resolveResult?: $Enums.ChangeAdvancedResolveResult | null
+}
+
+export type ChangeAdvancedCreateOrConnectWithoutResolvedChangesInput = {
+  where: Prisma.ChangeAdvancedWhereUniqueInput
+  create: Prisma.XOR<Prisma.ChangeAdvancedCreateWithoutResolvedChangesInput, Prisma.ChangeAdvancedUncheckedCreateWithoutResolvedChangesInput>
+}
+
+export type ChangeAdvancedCreateWithoutChangeInput = {
+  resolvedAt?: Date | string | null
+  resolveResult?: $Enums.ChangeAdvancedResolveResult | null
+  target: Prisma.ReferenceCreateNestedOneWithoutChangeAdvancedInput
+  resolvedChanges?: Prisma.ChangeCreateNestedManyWithoutResolvedForChangeAdvancedInput
 }
 
 export type ChangeAdvancedUncheckedCreateWithoutChangeInput = {
   targetReferenceId: string
+  resolvedAt?: Date | string | null
+  resolveResult?: $Enums.ChangeAdvancedResolveResult | null
+  resolvedChanges?: Prisma.ChangeUncheckedCreateNestedManyWithoutResolvedForChangeAdvancedInput
 }
 
 export type ChangeAdvancedCreateOrConnectWithoutChangeInput = {
   where: Prisma.ChangeAdvancedWhereUniqueInput
   create: Prisma.XOR<Prisma.ChangeAdvancedCreateWithoutChangeInput, Prisma.ChangeAdvancedUncheckedCreateWithoutChangeInput>
+}
+
+export type ChangeAdvancedUpsertWithoutResolvedChangesInput = {
+  update: Prisma.XOR<Prisma.ChangeAdvancedUpdateWithoutResolvedChangesInput, Prisma.ChangeAdvancedUncheckedUpdateWithoutResolvedChangesInput>
+  create: Prisma.XOR<Prisma.ChangeAdvancedCreateWithoutResolvedChangesInput, Prisma.ChangeAdvancedUncheckedCreateWithoutResolvedChangesInput>
+  where?: Prisma.ChangeAdvancedWhereInput
+}
+
+export type ChangeAdvancedUpdateToOneWithWhereWithoutResolvedChangesInput = {
+  where?: Prisma.ChangeAdvancedWhereInput
+  data: Prisma.XOR<Prisma.ChangeAdvancedUpdateWithoutResolvedChangesInput, Prisma.ChangeAdvancedUncheckedUpdateWithoutResolvedChangesInput>
+}
+
+export type ChangeAdvancedUpdateWithoutResolvedChangesInput = {
+  resolvedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  resolveResult?: Prisma.NullableEnumChangeAdvancedResolveResultFieldUpdateOperationsInput | $Enums.ChangeAdvancedResolveResult | null
+  change?: Prisma.ChangeUpdateOneRequiredWithoutChangeAdvancedNestedInput
+  target?: Prisma.ReferenceUpdateOneRequiredWithoutChangeAdvancedNestedInput
+}
+
+export type ChangeAdvancedUncheckedUpdateWithoutResolvedChangesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  targetReferenceId?: Prisma.StringFieldUpdateOperationsInput | string
+  resolvedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  resolveResult?: Prisma.NullableEnumChangeAdvancedResolveResultFieldUpdateOperationsInput | $Enums.ChangeAdvancedResolveResult | null
 }
 
 export type ChangeAdvancedUpsertWithoutChangeInput = {
@@ -338,19 +462,31 @@ export type ChangeAdvancedUpdateToOneWithWhereWithoutChangeInput = {
 }
 
 export type ChangeAdvancedUpdateWithoutChangeInput = {
+  resolvedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  resolveResult?: Prisma.NullableEnumChangeAdvancedResolveResultFieldUpdateOperationsInput | $Enums.ChangeAdvancedResolveResult | null
   target?: Prisma.ReferenceUpdateOneRequiredWithoutChangeAdvancedNestedInput
+  resolvedChanges?: Prisma.ChangeUpdateManyWithoutResolvedForChangeAdvancedNestedInput
 }
 
 export type ChangeAdvancedUncheckedUpdateWithoutChangeInput = {
   targetReferenceId?: Prisma.StringFieldUpdateOperationsInput | string
+  resolvedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  resolveResult?: Prisma.NullableEnumChangeAdvancedResolveResultFieldUpdateOperationsInput | $Enums.ChangeAdvancedResolveResult | null
+  resolvedChanges?: Prisma.ChangeUncheckedUpdateManyWithoutResolvedForChangeAdvancedNestedInput
 }
 
 export type ChangeAdvancedCreateWithoutTargetInput = {
+  resolvedAt?: Date | string | null
+  resolveResult?: $Enums.ChangeAdvancedResolveResult | null
   change: Prisma.ChangeCreateNestedOneWithoutChangeAdvancedInput
+  resolvedChanges?: Prisma.ChangeCreateNestedManyWithoutResolvedForChangeAdvancedInput
 }
 
 export type ChangeAdvancedUncheckedCreateWithoutTargetInput = {
   id: string
+  resolvedAt?: Date | string | null
+  resolveResult?: $Enums.ChangeAdvancedResolveResult | null
+  resolvedChanges?: Prisma.ChangeUncheckedCreateNestedManyWithoutResolvedForChangeAdvancedInput
 }
 
 export type ChangeAdvancedCreateOrConnectWithoutTargetInput = {
@@ -370,25 +506,66 @@ export type ChangeAdvancedUpdateToOneWithWhereWithoutTargetInput = {
 }
 
 export type ChangeAdvancedUpdateWithoutTargetInput = {
+  resolvedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  resolveResult?: Prisma.NullableEnumChangeAdvancedResolveResultFieldUpdateOperationsInput | $Enums.ChangeAdvancedResolveResult | null
   change?: Prisma.ChangeUpdateOneRequiredWithoutChangeAdvancedNestedInput
+  resolvedChanges?: Prisma.ChangeUpdateManyWithoutResolvedForChangeAdvancedNestedInput
 }
 
 export type ChangeAdvancedUncheckedUpdateWithoutTargetInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  resolvedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  resolveResult?: Prisma.NullableEnumChangeAdvancedResolveResultFieldUpdateOperationsInput | $Enums.ChangeAdvancedResolveResult | null
+  resolvedChanges?: Prisma.ChangeUncheckedUpdateManyWithoutResolvedForChangeAdvancedNestedInput
 }
 
+
+/**
+ * Count Type ChangeAdvancedCountOutputType
+ */
+
+export type ChangeAdvancedCountOutputType = {
+  resolvedChanges: number
+}
+
+export type ChangeAdvancedCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  resolvedChanges?: boolean | ChangeAdvancedCountOutputTypeCountResolvedChangesArgs
+}
+
+/**
+ * ChangeAdvancedCountOutputType without action
+ */
+export type ChangeAdvancedCountOutputTypeDefaultArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the ChangeAdvancedCountOutputType
+   */
+  select?: Prisma.ChangeAdvancedCountOutputTypeSelect<ExtArgs> | null
+}
+
+/**
+ * ChangeAdvancedCountOutputType without action
+ */
+export type ChangeAdvancedCountOutputTypeCountResolvedChangesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.ChangeWhereInput
+}
 
 
 export type ChangeAdvancedSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   targetReferenceId?: boolean
+  resolvedAt?: boolean
+  resolveResult?: boolean
   change?: boolean | Prisma.ChangeDefaultArgs<ExtArgs>
   target?: boolean | Prisma.ReferenceDefaultArgs<ExtArgs>
+  resolvedChanges?: boolean | Prisma.ChangeAdvanced$resolvedChangesArgs<ExtArgs>
+  _count?: boolean | Prisma.ChangeAdvancedCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["changeAdvanced"]>
 
 export type ChangeAdvancedSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   targetReferenceId?: boolean
+  resolvedAt?: boolean
+  resolveResult?: boolean
   change?: boolean | Prisma.ChangeDefaultArgs<ExtArgs>
   target?: boolean | Prisma.ReferenceDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["changeAdvanced"]>
@@ -396,6 +573,8 @@ export type ChangeAdvancedSelectCreateManyAndReturn<ExtArgs extends runtime.Type
 export type ChangeAdvancedSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   targetReferenceId?: boolean
+  resolvedAt?: boolean
+  resolveResult?: boolean
   change?: boolean | Prisma.ChangeDefaultArgs<ExtArgs>
   target?: boolean | Prisma.ReferenceDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["changeAdvanced"]>
@@ -403,12 +582,16 @@ export type ChangeAdvancedSelectUpdateManyAndReturn<ExtArgs extends runtime.Type
 export type ChangeAdvancedSelectScalar = {
   id?: boolean
   targetReferenceId?: boolean
+  resolvedAt?: boolean
+  resolveResult?: boolean
 }
 
-export type ChangeAdvancedOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "targetReferenceId", ExtArgs["result"]["changeAdvanced"]>
+export type ChangeAdvancedOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "targetReferenceId" | "resolvedAt" | "resolveResult", ExtArgs["result"]["changeAdvanced"]>
 export type ChangeAdvancedInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   change?: boolean | Prisma.ChangeDefaultArgs<ExtArgs>
   target?: boolean | Prisma.ReferenceDefaultArgs<ExtArgs>
+  resolvedChanges?: boolean | Prisma.ChangeAdvanced$resolvedChangesArgs<ExtArgs>
+  _count?: boolean | Prisma.ChangeAdvancedCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type ChangeAdvancedIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   change?: boolean | Prisma.ChangeDefaultArgs<ExtArgs>
@@ -424,10 +607,13 @@ export type $ChangeAdvancedPayload<ExtArgs extends runtime.Types.Extensions.Inte
   objects: {
     change: Prisma.$ChangePayload<ExtArgs>
     target: Prisma.$ReferencePayload<ExtArgs>
+    resolvedChanges: Prisma.$ChangePayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
     targetReferenceId: string
+    resolvedAt: Date | null
+    resolveResult: $Enums.ChangeAdvancedResolveResult | null
   }, ExtArgs["result"]["changeAdvanced"]>
   composites: {}
 }
@@ -824,6 +1010,7 @@ export interface Prisma__ChangeAdvancedClient<T, Null = never, ExtArgs extends r
   readonly [Symbol.toStringTag]: "PrismaPromise"
   change<T extends Prisma.ChangeDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.ChangeDefaultArgs<ExtArgs>>): Prisma.Prisma__ChangeClient<runtime.Types.Result.GetResult<Prisma.$ChangePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   target<T extends Prisma.ReferenceDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.ReferenceDefaultArgs<ExtArgs>>): Prisma.Prisma__ReferenceClient<runtime.Types.Result.GetResult<Prisma.$ReferencePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+  resolvedChanges<T extends Prisma.ChangeAdvanced$resolvedChangesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.ChangeAdvanced$resolvedChangesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ChangePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -855,6 +1042,8 @@ export interface Prisma__ChangeAdvancedClient<T, Null = never, ExtArgs extends r
 export interface ChangeAdvancedFieldRefs {
   readonly id: Prisma.FieldRef<"ChangeAdvanced", 'String'>
   readonly targetReferenceId: Prisma.FieldRef<"ChangeAdvanced", 'String'>
+  readonly resolvedAt: Prisma.FieldRef<"ChangeAdvanced", 'DateTime'>
+  readonly resolveResult: Prisma.FieldRef<"ChangeAdvanced", 'ChangeAdvancedResolveResult'>
 }
     
 
@@ -1248,6 +1437,30 @@ export type ChangeAdvancedDeleteManyArgs<ExtArgs extends runtime.Types.Extension
    * Limit how many ChangeAdvanceds to delete.
    */
   limit?: number
+}
+
+/**
+ * ChangeAdvanced.resolvedChanges
+ */
+export type ChangeAdvanced$resolvedChangesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the Change
+   */
+  select?: Prisma.ChangeSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the Change
+   */
+  omit?: Prisma.ChangeOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ChangeInclude<ExtArgs> | null
+  where?: Prisma.ChangeWhereInput
+  orderBy?: Prisma.ChangeOrderByWithRelationInput | Prisma.ChangeOrderByWithRelationInput[]
+  cursor?: Prisma.ChangeWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.ChangeScalarFieldEnum | Prisma.ChangeScalarFieldEnum[]
 }
 
 /**

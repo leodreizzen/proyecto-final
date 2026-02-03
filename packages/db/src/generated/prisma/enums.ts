@@ -17,6 +17,15 @@ export const ContentBlockType = {
 export type ContentBlockType = (typeof ContentBlockType)[keyof typeof ContentBlockType]
 
 
+export const ChangeAdvancedResolveResult = {
+  CORRECT: 'CORRECT',
+  INAPPLICABLE: 'INAPPLICABLE',
+  ALREADY_APPLIED: 'ALREADY_APPLIED'
+} as const
+
+export type ChangeAdvancedResolveResult = (typeof ChangeAdvancedResolveResult)[keyof typeof ChangeAdvancedResolveResult]
+
+
 export const ArticleType = {
   NORMATIVE: 'NORMATIVE',
   MODIFIER: 'MODIFIER',
@@ -119,7 +128,8 @@ export const MaintenanceTaskStatus = {
   PENDING: 'PENDING',
   PROCESSING: 'PROCESSING',
   COMPLETED: 'COMPLETED',
-  FAILED: 'FAILED'
+  FAILED: 'FAILED',
+  PARTIAL_FAILURE: 'PARTIAL_FAILURE'
 } as const
 
 export type MaintenanceTaskStatus = (typeof MaintenanceTaskStatus)[keyof typeof MaintenanceTaskStatus]

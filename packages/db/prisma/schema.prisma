@@ -159,8 +159,12 @@ model ArticleFormality {
 model Change {
   id String @id @default(dbgenerated("uuidv7()")) @db.Uuid
 
-  articleModifier               ArticleModifier                @relation(fields: [articleModifierId], references: [id], onDelete: Cascade)
-  articleModifierId             String                         @db.Uuid
+  articleModifier   ArticleModifier @relation(fields: [articleModifierId], references: [id], onDelete: Cascade)
+  articleModifierId String          @db.Uuid
+
+  resolvedForChangeAdvanced   ChangeAdvanced? @relation(name: "resolved_for_change_advanced", fields: [resolvedForChangeAdvancedId], references: [id], onDelete: Cascade)
+  resolvedForChangeAdvancedId String?         @db.Uuid
+
   type                          ChangeType
   changeModifyArticle           ChangeModifyArticle?
   changeReplaceArticle          ChangeReplaceArticle?
@@ -208,8 +212,19 @@ model ChangeAdvanced {
   target            Reference @relation(fields: [targetReferenceId], references: [id])
   targetReferenceId String    @unique @db.Uuid
 
+  resolvedAt      DateTime?
+  resolveResult   ChangeAdvancedResolveResult?
+  resolvedChanges Change[]                     @relation(name: "resolved_for_change_advanced")
+
+  // TODO check: resolvedAt and resolveResult must be both present or both null
   // Trigger: Cleanup references when deleted
   @@index([targetReferenceId])
+}
+
+enum ChangeAdvancedResolveResult {
+  CORRECT
+  INAPPLICABLE
+  ALREADY_APPLIED
 }
 
 model ChangeRatifyAdReferendum {
@@ -764,7 +779,7 @@ view v_ResolvedReferences {
   res_num     Int
   res_year    Int
   art_num     Int?
-  art_suff    Int?
+  art_suf     Int?
   annex_num   Int?
   chap_num    Int?
 }
@@ -789,10 +804,10 @@ model MaintenanceTask {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  // Check: can only have errorMsg if status is FAILED
-  @@index([order, id])
   // Composite unique index for deduplication per event
   @@unique([resolutionId, type, triggerEventId])
+  // Check: can only have errorMsg if status is FAILED
+  @@index([order, id])
   @@index([status])
   @@index([triggerEventId])
 }
@@ -808,4 +823,5 @@ enum MaintenanceTaskStatus {
   PROCESSING
   COMPLETED
   FAILED
+  PARTIAL_FAILURE
 }

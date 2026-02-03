@@ -5,6 +5,7 @@
 // @ts-nocheck 
 export interface $DbEnums {
   ContentBlockType: "TEXT" | "TABLE"
+  ChangeAdvancedResolveResult: "CORRECT" | "INAPPLICABLE" | "ALREADY_APPLIED"
   ArticleType: "NORMATIVE" | "MODIFIER" | "CREATE_DOCUMENT" | "FORMALITY"
   ChangeType: "MODIFY_ARTICLE" | "REPLACE_ARTICLE" | "ADVANCED" | "REPEAL" | "RATIFY_AD_REFERENDUM" | "REPLACE_ANNEX" | "MODIFY_TEXT_ANNEX" | "ADD_ARTICLE" | "ADD_ANNEX" | "APPLY_MODIFICATIONS_ANNEX"
   AnnexType: "TEXT" | "WITH_ARTICLES"
@@ -14,5 +15,5 @@ export interface $DbEnums {
   UploadStatus: "PENDING" | "PROCESSING" | "COMPLETED" | "FAILED"
   UserRole: "USER" | "ADMIN"
   MaintenanceTaskType: "EVALUATE_IMPACT" | "PROCESS_ADVANCED_CHANGES" | "CALCULATE_EMBEDDINGS"
-  MaintenanceTaskStatus: "PENDING" | "PROCESSING" | "COMPLETED" | "FAILED"
+  MaintenanceTaskStatus: "PENDING" | "PROCESSING" | "COMPLETED" | "FAILED" | "PARTIAL_FAILURE"
 }

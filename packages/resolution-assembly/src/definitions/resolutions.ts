@@ -62,6 +62,7 @@ export type AnnexIndex =
     | { type: "generated"; value: number };
 
 export type ArticleToShow = {
+    uuid: string
     index: ArticleIndex;
     content: ContentBlock[];
     modifiedBy: ResolutionNaturalID[];

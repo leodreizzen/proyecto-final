@@ -287,6 +287,9 @@ importers:
       '@repo/pubsub':
         specifier: workspace:*
         version: link:../../packages/pubsub
+      '@repo/resolution-assembly':
+        specifier: workspace:*
+        version: link:../../packages/resolution-assembly
       '@repo/text-utils':
         specifier: workspace:*
         version: link:../../packages/text-utils
