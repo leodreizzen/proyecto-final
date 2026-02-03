@@ -1,9 +1,13 @@
-import {ChangeWithIDAndContext} from "./definitions/changes";
+import { ChangeWithIDAndContext } from "./definitions/changes";
 
 export function sortChangeWithContext(c1: ChangeWithIDAndContext, c2: ChangeWithIDAndContext): number {
     const dateDiff = c1.context.date.getTime() - c2.context.date.getTime();
     if (dateDiff !== 0) {
         return dateDiff;
+    }
+    const resYearDiff = c1.context.rootResolution.year - c2.context.rootResolution.year;
+    if (resYearDiff !== 0) {
+        return resYearDiff;
     }
     const resNumberDiff = c1.context.rootResolution.number - c2.context.rootResolution.number;
     if (resNumberDiff !== 0) {

@@ -125,3 +125,9 @@ export type ResolutionVersion = {
     date: Date,
     causedBy: ResolutionNaturalID
 }
+
+export type VersionSpec = {
+    date: Date | null;
+    causedBy?: ResolutionNaturalID;
+    exclusive?: boolean;
+}

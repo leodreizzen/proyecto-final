@@ -47,14 +47,20 @@ export async function processAdvancedChange(changeId: string, targetResolutionId
         throw new Error(`Change with ID ${changeId} not found.`);
     }
 
-    const assembledModifierResolution = await getAssembledResolution(changeData.rootResolutionId, changeData.date);
+    const assembledModifierResolution = await getAssembledResolution(changeData.rootResolutionId, {
+        date: changeData.date,
+        causedBy: changeData.rootResolutionCoords,
+        exclusive: false
+    });
     if (!assembledModifierResolution) {
         throw new Error(`Assembled modifier resolution for ID ${changeData.rootResolutionId} not found.`);
     }
 
-    // TODO FIX: this includes the change itself, because of the date.
-
-    const assembledTargetResolution = await getAssembledResolution(targetResolutionId, changeData.date);
+    const assembledTargetResolution = await getAssembledResolution(targetResolutionId, {
+        date: changeData.date,
+        causedBy: changeData.rootResolutionCoords,
+        exclusive: true
+    });
     if (!assembledTargetResolution) {
         throw new Error(`Assembled target resolution for ID ${targetResolutionId} not found.`);
     }

@@ -3,7 +3,7 @@ import { ResolutionToShow } from "@/lib/definitions/resolutions";
 import { AlertTriangle, XCircle } from "lucide-react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import {changeDateInResolutionParams, pathForResolution} from "@/lib/paths";
+import {changeVersionInResolutionParams, pathForResolution} from "@/lib/paths";
 import {formatDateUTC, formatResolutionId} from "@/lib/utils";
 import {useSearchParams} from "next/navigation";
 
@@ -32,7 +32,7 @@ export function VersionStatus({ resolution, isCurrentVersion }: VersionStatusPro
                         </div>
                     </div>
                     <Button variant="outline" size="sm" className="bg-white/50 dark:bg-black/20 hover:bg-white/80 dark:hover:bg-black/40 border-amber-300 dark:border-amber-800 text-amber-900 dark:text-amber-100" asChild>
-                        <Link href={changeDateInResolutionParams(resolution.id, searchParams, null)}>
+                        <Link href={changeVersionInResolutionParams(resolution.id, searchParams, null, null)}>
                             Ir a la versión actual
                         </Link>
                     </Button>

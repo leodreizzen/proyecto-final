@@ -52,13 +52,18 @@ export function pathForResolution(resId: { initial: string; number: number; year
 }
 
 
-export function changeDateInResolutionParams(resolutionId: ResolutionNaturalID, searchParams: URLSearchParams, date: Date | null) {
+export function changeVersionInResolutionParams(resolutionId: ResolutionNaturalID, searchParams: URLSearchParams, date: Date | null, modifier: string | null) {
     const newSearchParams = new URLSearchParams(searchParams);
 
     if (date)
         newSearchParams.set("date", date.toISOString());
     else
         newSearchParams.delete("date");
+
+    if (modifier)
+        newSearchParams.set("modifier", modifier);
+    else
+        newSearchParams.delete("modifier");
 
     const slug = resIDToSlug(resolutionId);
 

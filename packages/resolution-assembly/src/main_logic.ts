@@ -1,4 +1,4 @@
-import {findResolutionInitialData, ResolutionDBDataToShow} from "./data/resolutions";
+import { findResolutionInitialData, ResolutionDBDataToShow } from "./data/resolutions";
 import {
     AnnexToShow,
     ArticleToShow,
@@ -6,29 +6,30 @@ import {
     RecitalToShow,
     ResolutionNaturalID,
     ResolutionToShow,
+    VersionSpec,
 } from "./definitions/resolutions";
-import {getValidChangesAndVersionsForAssembly} from "./validity/valid-changes";
-import {articleInitialDataToShow} from "./remapping/article-to-show";
-import {annexInitialDataToShow} from "./remapping/annex-to-show";
-import {ResolutionChangeApplier} from "./resolution-change-applier";
-import {ChangeWithContextForAssembly, InapplicableChange} from "./definitions/changes";
-import {sortResolution} from "./sorter";
-import {getDownloadUrl} from "./utils/assets";
-import {mapContentBlocks} from "./remapping/content-blocks";
-import {validateReferences, ValidationContext} from "./processing/reference-processor";
+import { getValidChangesAndVersionsForAssembly } from "./validity/valid-changes";
+import { articleInitialDataToShow } from "./remapping/article-to-show";
+import { annexInitialDataToShow } from "./remapping/annex-to-show";
+import { ResolutionChangeApplier } from "./resolution-change-applier";
+import { ChangeWithContextForAssembly, InapplicableChange } from "./definitions/changes";
+import { sortResolution } from "./sorter";
+import { getDownloadUrl } from "./utils/assets";
+import { mapContentBlocks } from "./remapping/content-blocks";
+import { validateReferences, ValidationContext } from "./processing/reference-processor";
 import {
     collectReferencesFromChanges,
     collectReferencesFromResolution
 } from "./collect-references";
 
-export async function getAssembledResolution(resolutionId: string, versionDate: Date | null) {
+export async function getAssembledResolution(resolutionId: string, versionSpec: VersionSpec) {
     const resolution = await findResolutionInitialData(resolutionId);
     if (!resolution) {
         return null;
     }
 
-    const id: ResolutionNaturalID = {initial: resolution.initial, number: resolution.number, year: resolution.year};
-    const {changes, versions} = await getValidChangesAndVersionsForAssembly(resolutionId, id, versionDate);
+    const id: ResolutionNaturalID = { initial: resolution.initial, number: resolution.number, year: resolution.year };
+    const { changes, versions } = await getValidChangesAndVersionsForAssembly(resolutionId, id, versionSpec);
 
     const resolutionReferences = collectReferencesFromResolution(resolution);
     const changesReferences = collectReferencesFromChanges(changes);
@@ -47,11 +48,11 @@ export async function getAssembledResolution(resolutionId: string, versionDate: 
         causedBy: finalResolution.id
     })
 
-    return {resolutionData: finalResolution, versions, inapplicableChanges};
+    return { resolutionData: finalResolution, versions, inapplicableChanges };
 }
 
 function getInitialDataToShow(resolution: ResolutionDBDataToShow, validationContext: ValidationContext): ResolutionToShow {
-    const id: ResolutionNaturalID = {initial: resolution.initial, number: resolution.number, year: resolution.year};
+    const id: ResolutionNaturalID = { initial: resolution.initial, number: resolution.number, year: resolution.year };
     const recitals: RecitalToShow[] = resolution.recitals.map(recital => ({
         number: recital.number,
         content: mapContentBlocks(recital.content, validationContext)
