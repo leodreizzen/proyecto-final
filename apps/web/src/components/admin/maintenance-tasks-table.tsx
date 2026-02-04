@@ -1,6 +1,11 @@
 "use client";
 
-import { CheckCircle2, Clock, Loader2, XCircle } from "lucide-react";
+import { AlertCircle, CheckCircle2, Clock, HelpCircle, Loader2, XCircle } from "lucide-react";
+import {
+    Popover,
+    PopoverContent,
+    PopoverTrigger,
+} from "@/components/ui/popover";
 import { formatMaintenanceTaskStatus, formatMaintenanceTaskType, formatResolutionId } from "@/lib/utils";
 import { MaintenanceTaskStatus } from "@repo/db/prisma/enums";
 import { TableVirtuoso, TableVirtuosoHandle, Virtuoso, VirtuosoHandle } from "react-virtuoso";
@@ -10,6 +15,12 @@ import { cn } from "@/lib/utils";
 
 export type MaintenanceTasksTableHandle = {
     scrollToTop: () => void;
+};
+
+const TASK_DESCRIPTIONS: Partial<Record<string, string>> = {
+    EVALUATE_IMPACT: "Evaluar el impacto de un agregado de resolución. Se desencadena cuando se agrega o elimina una resolución, o se procesan cambios avanzados",
+    PROCESS_ADVANCED_CHANGES: "Procesar cambios avanzados que afectan a esta resolución",
+    CALCULATE_EMBEDDINGS: "Calcular embeddings para el chatbot. Se desencadena cuando se modifica una resolución",
 };
 
 interface MaintenanceTasksTableProps {
@@ -26,6 +37,8 @@ const StatusIcon = ({ status }: { status: MaintenanceTaskStatus }) => {
             return <Loader2 className="h-5 w-5 text-blue-500 animate-spin" />;
         case "COMPLETED":
             return <CheckCircle2 className="h-5 w-5 text-green-500" />;
+        case "PARTIAL_FAILURE":
+            return <AlertCircle className="h-5 w-5 text-orange-500" />;
         case "FAILED":
             return <XCircle className="h-5 w-5 text-destructive" />;
     }
@@ -85,11 +98,22 @@ export function MaintenanceTasksTable({ tasks, fetchNextPage, ref }: Maintenance
                                 </td>
                                 <td className="px-4 py-3">
                                     <div className="flex flex-col">
-                                        <span className="text-sm font-medium text-foreground">
+                                        <span className="text-sm font-medium text-foreground flex items-center gap-1.5">
                                             {formatMaintenanceTaskType(task.type)}
+                                            {TASK_DESCRIPTIONS[task.type] && (
+                                                <Popover>
+                                                    <PopoverTrigger asChild>
+                                                        <HelpCircle className="w-3.5 h-3.5 text-muted-foreground/70 cursor-pointer hover:text-foreground transition-colors" />
+                                                    </PopoverTrigger>
+                                                    <PopoverContent className="max-w-[300px] text-sm p-3 bg-secondary/80 backdrop-blur-sm shadow-md">
+                                                        <p>{TASK_DESCRIPTIONS[task.type]}</p>
+                                                    </PopoverContent>
+                                                </Popover>
+                                            )}
                                         </span>
                                         {task.status === "FAILED" && task.errorMsg && (
-                                            <span className="text-xs text-destructive mt-0.5 truncate max-w-[200px]" title={task.errorMsg}>
+                                            <span className="text-xs text-destructive mt-0.5 truncate max-w-[200px]"
+                                                title={task.errorMsg}>
                                                 {task.errorMsg}
                                             </span>
                                         )}
@@ -104,16 +128,17 @@ export function MaintenanceTasksTable({ tasks, fetchNextPage, ref }: Maintenance
                                     <span className={cn(
                                         "inline-flex items-center px-2 py-0.5 rounded text-xs font-medium border",
                                         task.status === "FAILED" ? "bg-destructive/10 text-destructive border-destructive/20" :
-                                        task.status === "COMPLETED" ? "bg-green-500/10 text-green-600 border-green-500/20" :
-                                        task.status === "PROCESSING" ? "bg-blue-500/10 text-blue-600 border-blue-500/20" :
-                                        "bg-muted text-muted-foreground border-transparent"
+                                            task.status === "PARTIAL_FAILURE" ? "bg-orange-500/10 text-orange-600 border-orange-500/20" :
+                                                task.status === "COMPLETED" ? "bg-green-500/10 text-green-600 border-green-500/20" :
+                                                    task.status === "PROCESSING" ? "bg-blue-500/10 text-blue-600 border-blue-500/20" :
+                                                        "bg-muted text-muted-foreground border-transparent"
                                     )}>
                                         {formatMaintenanceTaskStatus(task.status)}
                                     </span>
                                 </td>
                                 <td className="px-4 py-3">
-                                    {task.status === "FAILED" && (
-                                        <button 
+                                    {task.status === "FAILED" || task.status === "PARTIAL_FAILURE" && (
+                                        <button
                                             onClick={() => console.log("Retry task", task.id)}
                                             className="text-xs font-medium text-primary hover:underline"
                                         >
@@ -146,20 +171,30 @@ export function MaintenanceTasksTable({ tasks, fetchNextPage, ref }: Maintenance
                                 </div>
                                 <div className="flex-1 min-w-0">
                                     <div className="flex justify-between items-start">
-                                        <span className="font-medium text-sm text-foreground block">
+                                        <span className="font-medium text-sm text-foreground flex items-center gap-1.5">
                                             {formatMaintenanceTaskType(task.type)}
+                                            {TASK_DESCRIPTIONS[task.type] && (
+                                                <Popover>
+                                                    <PopoverTrigger asChild>
+                                                        <HelpCircle className="w-3.5 h-3.5 text-muted-foreground/70 cursor-pointer hover:text-foreground transition-colors" />
+                                                    </PopoverTrigger>
+                                                    <PopoverContent className="max-w-[300px] text-sm p-3 bg-secondary/80 backdrop-blur-sm shadow-md">
+                                                        <p>{TASK_DESCRIPTIONS[task.type]}</p>
+                                                    </PopoverContent>
+                                                </Popover>
+                                            )}
                                         </span>
                                         <span className="font-mono text-xs text-muted-foreground ml-2">
                                             {formatResolutionId(task.resolution)}
                                         </span>
                                     </div>
-                                    
+
                                     {task.status === "FAILED" && task.errorMsg && (
                                         <p className="text-xs text-destructive mt-1 break-words">
                                             {task.errorMsg}
                                         </p>
                                     )}
-                                    
+
                                     <p className="text-xs text-muted-foreground mt-1">
                                         {task.createdAt.toLocaleString()}
                                     </p>
@@ -169,7 +204,7 @@ export function MaintenanceTasksTable({ tasks, fetchNextPage, ref }: Maintenance
                     }}
                 />
             </div>
-            
+
             {tasks.length === 0 && (
                 <div className="p-8 text-center text-muted-foreground">No se encontraron tareas</div>
             )}
