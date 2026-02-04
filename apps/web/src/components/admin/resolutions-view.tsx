@@ -48,7 +48,11 @@ export function ResolutionsView({
         initialData: _pendingUploads
     })
 
-    const {data: resolutionsData, fetchNextPage: fetchNextResolutionsPage, isPlaceholderData: resolutionsIsPlaceholder} = useInfiniteQuery({
+    const {
+        data: resolutionsData,
+        fetchNextPage: fetchNextResolutionsPage,
+        isPlaceholderData: resolutionsIsPlaceholder
+    } = useInfiniteQuery({
         ...resolutionsQuery(search),
         initialData: () => (search === initialSearch) ? {pages: [_resolutions], pageParams: [null]} : undefined,
         placeholderData: keepPreviousData,
@@ -71,7 +75,7 @@ export function ResolutionsView({
 
     // scroll to top on new search, but only after data arrives
     useEffect(() => {
-        if (!resolutionsIsPlaceholder && lastScrolledSearch.current !== search){
+        if (!resolutionsIsPlaceholder && lastScrolledSearch.current !== search) {
             resolutionsTableRef.current?.scrollToTop();
             lastScrolledSearch.current = search;
         }
@@ -85,7 +89,7 @@ export function ResolutionsView({
         total: resCounts.total,
         inQueue: pendingUploads.length,
         missing: resCounts.missingRef,
-        inconsistent: resCounts.inconsistent,
+        failedTasks: resCounts.failedTasks,
     }
 
     function handleResolutionsRefetch() {
@@ -98,7 +102,8 @@ export function ResolutionsView({
             <div className="flex-1 flex flex-col min-w-0 p-4 lg:p-6 overflow-auto">
                 <KpiHeader stats={stats}/>
                 <Toolbar initialSearchQuery={initialSearch} onSearch={handleSearch}/>
-                <ResolutionsTable resolutions={resolutions} fetchNextPage={handleResolutionsRefetch} ref={resolutionsTableRef}/>
+                <ResolutionsTable resolutions={resolutions} fetchNextPage={handleResolutionsRefetch}
+                                  ref={resolutionsTableRef}/>
             </div>
 
             {/* Status panel - Right column */}

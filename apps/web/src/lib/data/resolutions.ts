@@ -1,15 +1,15 @@
 import "server-only"
 import prisma from "@/lib/prisma";
-import {checkResourcePermission} from "@/lib/auth/data-authorization";
+import { checkResourcePermission } from "@/lib/auth/data-authorization";
 import {
     MissingResolution,
     ResolutionCounts,
     ResolutionNaturalID,
     ResolutionWithStatus
 } from "@/lib/definitions/resolutions";
-import {createDeleteAssetJob} from "@repo/jobs/assets/queue";
-import {ResolutionFindManyArgs, v_MissingResolutionFindManyArgs} from "@repo/db/prisma/models";
-import {TransactionPrismaClient} from "@repo/db/prisma";
+import { createDeleteAssetJob } from "@repo/jobs/assets/queue";
+import { ResolutionFindManyArgs, v_MissingResolutionFindManyArgs } from "@repo/db/prisma/models";
+import { TransactionPrismaClient } from "@repo/db/prisma";
 
 export async function fetchResolutionsWithStatus(cursor: string | null, query?: string | null): Promise<ResolutionWithStatus[]> {
     await checkResourcePermission("resolution", "read");
@@ -29,11 +29,11 @@ export async function fetchResolutionsWithStatus(cursor: string | null, query?: 
         }
     } : {}) satisfies ResolutionFindManyArgs["where"];
 
-    const resolutions = await prisma.resolution.findMany({
+    const resolutionsWithTasks = await prisma.resolution.findMany({
         ...cursorParams,
         where,
         take: 15,
-        orderBy:[ {
+        orderBy: [{
             date: "desc"
         }, {
             year: "desc"
@@ -41,12 +41,29 @@ export async function fetchResolutionsWithStatus(cursor: string | null, query?: 
             number: "desc"
         }, {
             initial: "asc"
-        }]
+        }],
+        include: {
+            maintenanceTasks: {
+                where: {
+                    status: {
+                        in: ["FAILED", "PARTIAL_FAILURE"]
+                    }
+                },
+                select: {
+                    id: true
+                },
+                take: 1
+            }
+        }
     });
-    return resolutions.map(resolution => ({
-        ...resolution,
-        status: "ok" //TODO
-    }));
+
+    return resolutionsWithTasks.map(resolution => {
+        const { maintenanceTasks, ...res } = resolution;
+        return {
+            ...res,
+            status: maintenanceTasks.length > 0 ? "failedTask" : "ok"
+        }
+    });
 }
 
 export async function fetchMissingResolutions(cursor: { initial: string, number: number, year: number } | null, query?: string | null): Promise<MissingResolution[]> {
@@ -83,11 +100,17 @@ export async function countResolutions(): Promise<ResolutionCounts> {
     await checkResourcePermission("resolution", "read");
     const totalCount = await prisma.resolution.count();
     const missingCount = await prisma.v_MissingResolution.count();
-    const inconsistentCount = 0; //TODO
+    const failedTasksCount = await prisma.maintenanceTask.count({
+        where: {
+            status: {
+                in: ["FAILED", "PARTIAL_FAILURE"]
+            }
+        }
+    });
     return {
         total: totalCount,
         missingRef: missingCount,
-        inconsistent: inconsistentCount
+        failedTasks: failedTasksCount
     }
 }
 
@@ -97,7 +120,7 @@ export async function deleteResolutionById(resolutionId: string, tx: Transaction
 
     const transactionFn = async (tx: TransactionPrismaClient) => {
         const res = await tx.resolution.delete({
-            where: {id: resolutionId}
+            where: { id: resolutionId }
         })
         assetId = res.originalFileId;
         await tx.asset.update({
@@ -119,7 +142,7 @@ export async function deleteResolutionById(resolutionId: string, tx: Transaction
     await createDeleteAssetJob(assetId!)
 }
 
-export async function getResolutionIdByNaturalKey(key: {initial: string, number: number, year: number}): Promise<string | null> {
+export async function getResolutionIdByNaturalKey(key: { initial: string, number: number, year: number }): Promise<string | null> {
     await checkResourcePermission("resolution", "read");
     const res = await prisma.resolution.findFirst({
         where: {
@@ -192,16 +215,16 @@ export async function fetchResolutionInitialData(resolutionId: string) {
     return res;
 }
 
-export async function checkResolutionsExistance(resIds: ResolutionNaturalID[]){
+export async function checkResolutionsExistance(resIds: ResolutionNaturalID[]) {
     await checkResourcePermission("resolution", "read");
-    return  prisma.resolution.findMany({
+    return prisma.resolution.findMany({
         where: { OR: resIds },
         select: { initial: true, number: true, year: true }
     });
 }
 
 
-export async function fetchLatestResolutions(limit: number){
+export async function fetchLatestResolutions(limit: number) {
     await checkResourcePermission("resolution", "read");
     return await prisma.resolution.findMany({
         orderBy: [

@@ -1,4 +1,4 @@
-import {Resolution} from "@repo/db/prisma/client";
+import { Resolution } from "@repo/db/prisma/client";
 
 export type {
     ResolutionNaturalID,
@@ -16,7 +16,7 @@ export type {
     TableContent
 } from "@repo/resolution-assembly/definitions/resolutions";
 
-export type resolutionStatus = "ok" | "missingRef" | "inconsistent"
+export type resolutionStatus = "ok" | "failedTask"
 
 export interface ResolutionWithStatus extends Resolution {
     status: resolutionStatus;
@@ -25,7 +25,7 @@ export interface ResolutionWithStatus extends Resolution {
 export type ResolutionCounts = {
     total: number;
     missingRef: number;
-    inconsistent: number;
+    failedTasks: number;
 }
 
 export type MissingResolution = {
