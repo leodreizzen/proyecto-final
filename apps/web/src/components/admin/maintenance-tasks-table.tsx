@@ -1,17 +1,23 @@
 "use client";
 
-import {AlertCircle, CheckCircle2, Clock, HelpCircle, Loader2, Loader2Icon, XCircle} from "lucide-react";
+import {AlertCircle, CheckCircle2, Clock, HelpCircle, Loader2, Loader2Icon, RefreshCw, XCircle} from "lucide-react";
 import {
     Popover,
     PopoverContent,
     PopoverTrigger,
 } from "@/components/ui/popover";
-import { formatMaintenanceTaskStatus, formatMaintenanceTaskType, formatResolutionId } from "@/lib/utils";
-import { MaintenanceTaskStatus } from "@repo/db/prisma/enums";
-import { TableVirtuoso, TableVirtuosoHandle, Virtuoso, VirtuosoHandle } from "react-virtuoso";
-import React, { useImperativeHandle, useRef } from "react";
-import { MaintenanceTaskWithResolution } from "@/lib/data/maintenance";
-import { cn } from "@/lib/utils";
+import {
+    Tooltip,
+    TooltipContent,
+    TooltipTrigger,
+} from "@/components/ui/tooltip";
+import {Button} from "@/components/ui/button";
+import {formatMaintenanceTaskStatus, formatMaintenanceTaskType, formatResolutionId} from "@/lib/utils";
+import {MaintenanceTaskStatus} from "@repo/db/prisma/enums";
+import {TableVirtuoso, TableVirtuosoHandle, Virtuoso, VirtuosoHandle} from "react-virtuoso";
+import React, {useImperativeHandle, useRef} from "react";
+import {MaintenanceTaskWithResolution} from "@/lib/data/maintenance";
+import {cn} from "@/lib/utils";
 import {useMutation} from "@tanstack/react-query";
 import {toast} from "sonner";
 import {retryMaintenanceTaskAction} from "@/lib/actions/server/maintenance-tasks";
@@ -32,22 +38,22 @@ interface MaintenanceTasksTableProps {
     ref?: React.Ref<MaintenanceTasksTableHandle>;
 }
 
-const StatusIcon = ({ status }: { status: MaintenanceTaskStatus }) => {
+const StatusIcon = ({status}: { status: MaintenanceTaskStatus }) => {
     switch (status) {
         case "PENDING":
-            return <Clock className="h-5 w-5 text-muted-foreground" />;
+            return <Clock className="h-5 w-5 text-muted-foreground"/>;
         case "PROCESSING":
-            return <Loader2 className="h-5 w-5 text-blue-500 animate-spin" />;
+            return <Loader2 className="h-5 w-5 text-blue-500 animate-spin"/>;
         case "COMPLETED":
-            return <CheckCircle2 className="h-5 w-5 text-green-500" />;
+            return <CheckCircle2 className="h-5 w-5 text-green-500"/>;
         case "PARTIAL_FAILURE":
-            return <AlertCircle className="h-5 w-5 text-orange-500" />;
+            return <AlertCircle className="h-5 w-5 text-orange-500"/>;
         case "FAILED":
-            return <XCircle className="h-5 w-5 text-destructive" />;
+            return <XCircle className="h-5 w-5 text-destructive"/>;
     }
 };
 
-export function MaintenanceTasksTable({ tasks, fetchNextPage, ref }: MaintenanceTasksTableProps) {
+export function MaintenanceTasksTable({tasks, fetchNextPage, ref}: MaintenanceTasksTableProps) {
     const desktopRef = useRef<TableVirtuosoHandle | null>(null);
     const mobileRef = useRef<VirtuosoHandle>(null);
 
@@ -72,8 +78,8 @@ export function MaintenanceTasksTable({ tasks, fetchNextPage, ref }: Maintenance
 
     useImperativeHandle(ref, () => ({
         scrollToTop: () => {
-            desktopRef.current?.scrollToIndex({ index: 0, align: "start" });
-            mobileRef.current?.scrollToIndex({ index: 0, align: "start" });
+            desktopRef.current?.scrollToIndex({index: 0, align: "start"});
+            mobileRef.current?.scrollToIndex({index: 0, align: "start"});
         },
     }));
 
@@ -105,9 +111,9 @@ export function MaintenanceTasksTable({ tasks, fetchNextPage, ref }: Maintenance
                     data={tasks}
                     endReached={fetchNextPage}
                     components={{
-                        Table: (props) => <table {...props} className="w-full" />,
-                        TableRow: (props) => <tr {...props} className="hover:bg-muted/20 transition-colors" />,
-                        TableBody: (props) => <tbody {...props} className="divide-y divide-border" />,
+                        Table: (props) => <table {...props} className="w-full"/>,
+                        TableRow: (props) => <tr {...props} className="hover:bg-muted/20 transition-colors"/>,
+                        TableBody: (props) => <tbody {...props} className="divide-y divide-border"/>,
                     }}
                     computeItemKey={(_, item) => item.id}
                     itemContent={(index, task) => {
@@ -115,7 +121,7 @@ export function MaintenanceTasksTable({ tasks, fetchNextPage, ref }: Maintenance
                             <>
                                 <td className="px-4 py-3">
                                     <div className="flex items-center justify-center">
-                                        <StatusIcon status={task.status} />
+                                        <StatusIcon status={task.status}/>
                                     </div>
                                 </td>
                                 <td className="px-4 py-3">
@@ -125,9 +131,11 @@ export function MaintenanceTasksTable({ tasks, fetchNextPage, ref }: Maintenance
                                             {TASK_DESCRIPTIONS[task.type] && (
                                                 <Popover>
                                                     <PopoverTrigger asChild>
-                                                        <HelpCircle className="w-3.5 h-3.5 text-muted-foreground/70 cursor-pointer hover:text-foreground transition-colors" />
+                                                        <HelpCircle
+                                                            className="w-3.5 h-3.5 text-muted-foreground/70 cursor-pointer hover:text-foreground transition-colors"/>
                                                     </PopoverTrigger>
-                                                    <PopoverContent className="max-w-[300px] text-sm p-3 bg-secondary/80 backdrop-blur-sm shadow-md">
+                                                    <PopoverContent
+                                                        className="max-w-[300px] text-sm p-3 bg-secondary/80 backdrop-blur-sm shadow-md">
                                                         <p>{TASK_DESCRIPTIONS[task.type]}</p>
                                                     </PopoverContent>
                                                 </Popover>
@@ -135,7 +143,7 @@ export function MaintenanceTasksTable({ tasks, fetchNextPage, ref }: Maintenance
                                         </span>
                                         {task.status === "FAILED" && task.errorMsg && (
                                             <span className="text-xs text-destructive mt-0.5 truncate max-w-[200px]"
-                                                title={task.errorMsg}>
+                                                  title={task.errorMsg}>
                                                 {task.errorMsg}
                                             </span>
                                         )}
@@ -160,13 +168,26 @@ export function MaintenanceTasksTable({ tasks, fetchNextPage, ref }: Maintenance
                                 </td>
                                 <td className="px-4 py-3">
                                     {(task.status === "FAILED" || task.status === "PARTIAL_FAILURE") && (
-                                        <button
-                                            onClick={() => retryTask({id: task.id})}
-                                            disabled={processing}
-                                            className="text-xs font-medium text-primary hover:underline"
-                                        >
-                                            {processing? <Loader2Icon className="size-4 animate-spin" /> :"Reintentar"}
-                                        </button>
+                                        <Tooltip>
+                                            <TooltipTrigger asChild>
+                                                <Button
+                                                    variant="ghost"
+                                                    size="icon"
+                                                    className="h-8 w-8 text-muted-foreground hover:text-foreground"
+                                                    onClick={() => retryTask({id: task.id})}
+                                                    disabled={processing}
+                                                >
+                                                    {(processing && retryVariables.id === task.id) ? (
+                                                        <Loader2Icon className="h-4 w-4 animate-spin"/>
+                                                    ) : (
+                                                        <RefreshCw className="h-4 w-4"/>
+                                                    )}
+                                                </Button>
+                                            </TooltipTrigger>
+                                            <TooltipContent>
+                                                <p>Reintentar tarea</p>
+                                            </TooltipContent>
+                                        </Tooltip>
                                     )}
                                 </td>
                             </>
@@ -184,13 +205,13 @@ export function MaintenanceTasksTable({ tasks, fetchNextPage, ref }: Maintenance
                     computeItemKey={(_, item) => item.id}
                     overscan={200}
                     components={{
-                        List: (props) => <div {...props} className="divide-y divide-border" />,
+                        List: (props) => <div {...props} className="divide-y divide-border"/>,
                     }}
                     itemContent={(_, task) => {
                         return (
                             <div className="p-3 flex items-start gap-3">
                                 <div className="mt-1">
-                                    <StatusIcon status={task.status} />
+                                    <StatusIcon status={task.status}/>
                                 </div>
                                 <div className="flex-1 min-w-0">
                                     <div className="flex justify-between items-start">
@@ -199,9 +220,11 @@ export function MaintenanceTasksTable({ tasks, fetchNextPage, ref }: Maintenance
                                             {TASK_DESCRIPTIONS[task.type] && (
                                                 <Popover>
                                                     <PopoverTrigger asChild>
-                                                        <HelpCircle className="w-3.5 h-3.5 text-muted-foreground/70 cursor-pointer hover:text-foreground transition-colors" />
+                                                        <HelpCircle
+                                                            className="w-3.5 h-3.5 text-muted-foreground/70 cursor-pointer hover:text-foreground transition-colors"/>
                                                     </PopoverTrigger>
-                                                    <PopoverContent className="max-w-[300px] text-sm p-3 bg-secondary/80 backdrop-blur-sm shadow-md">
+                                                    <PopoverContent
+                                                        className="max-w-[300px] text-sm p-3 bg-secondary/80 backdrop-blur-sm shadow-md">
                                                         <p>{TASK_DESCRIPTIONS[task.type]}</p>
                                                     </PopoverContent>
                                                 </Popover>
