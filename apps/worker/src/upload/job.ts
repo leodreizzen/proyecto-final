@@ -51,7 +51,7 @@ export async function processResolutionUpload(job: Job, progressReporter: Progre
             const savedResolution = await saveParsedResolution(tx, parsedResolution, upload, createdFile);
             await updateUploadStatus({uploadId, status: "COMPLETED", tx});
             const eventId = `upload_res_${savedResolution.id}_${Date.now()}`;
-            const task = await upsertImpactEvaluationTask(savedResolution.id, eventId, tx);
+            const task = await upsertImpactEvaluationTask(savedResolution.id, eventId, {}, tx);
             return {
                 savedResolution,
                 task

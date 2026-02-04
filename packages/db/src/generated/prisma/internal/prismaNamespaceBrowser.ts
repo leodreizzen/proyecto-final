@@ -223,7 +223,9 @@ export const ChangeAdvancedScalarFieldEnum = {
   id: 'id',
   targetReferenceId: 'targetReferenceId',
   resolvedAt: 'resolvedAt',
-  resolveResult: 'resolveResult'
+  resolveResult: 'resolveResult',
+  resolvedHash: 'resolvedHash',
+  modelVersion: 'modelVersion'
 } as const
 
 export type ChangeAdvancedScalarFieldEnum = (typeof ChangeAdvancedScalarFieldEnum)[keyof typeof ChangeAdvancedScalarFieldEnum]

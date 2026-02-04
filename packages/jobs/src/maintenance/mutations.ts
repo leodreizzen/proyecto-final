@@ -1,6 +1,7 @@
 import prisma, {TransactionPrismaClient} from "@repo/db/prisma";
 import {MaintenanceTask} from "@repo/db/prisma/client";
 import {MaintenanceTaskStatus} from "@repo/db/prisma/enums";
+import { EvaluateImpactPayload } from "./schemas";
 
 export async function deleteMaintenanceTasks(id: string[]): Promise<void> {
     await prisma.maintenanceTask.deleteMany({
@@ -55,7 +56,8 @@ export async function updateMaintenanceTaskMetadata({taskId, metadata, tx = pris
 }
 
 
-export async function upsertImpactEvaluationTask(resolutionId: string, eventId: string, tx: TransactionPrismaClient = prisma) {
+
+export async function upsertImpactEvaluationTask(resolutionId: string, eventId: string, payload: EvaluateImpactPayload, tx: TransactionPrismaClient = prisma) {
     const existing = await tx.maintenanceTask.findUnique({
         where: {
             resolutionId_type_triggerEventId: {
@@ -79,6 +81,7 @@ export async function upsertImpactEvaluationTask(resolutionId: string, eventId: 
                 resolutionId: resolutionId,
                 status: 'PENDING',
                 triggerEventId: eventId,
+                payload: payload
             }
         });
         return {

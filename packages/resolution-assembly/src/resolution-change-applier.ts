@@ -8,7 +8,7 @@ import {
     ArticleIndex,
     AnnexIndex
 } from "./definitions/resolutions";
-import {sortChangeWithContext} from "./utils";
+import {compareChangeWithContext} from "./utils";
 import {ChangeWithContextForAssembly, InapplicableChange} from "./definitions/changes";
 import {checkReference} from "@repo/db/utils/polymorphism/reference";
 import {ReferenceWithConcreteWithoutPayload} from "./definitions/references";
@@ -249,7 +249,7 @@ export class ResolutionChangeApplier {
     }
 
     applyChanges(changes: ChangeWithContextForAssembly[]) {
-        const sortedChanges = changes.toSorted(sortChangeWithContext);
+        const sortedChanges = changes.toSorted(compareChangeWithContext);
         sortedChanges.forEach((c) => this.applyChange(c))
     }
 

@@ -4,8 +4,15 @@ import {filterResolutionsImpactedByAdvancedChanges} from "@/data/advanced_change
 import {processAdvancedChange} from "@/maintenance_tasks/advanced_changes/processing";
 import prisma from "@repo/db/prisma";
 import {saveAdvancedChangeResult} from "@/data/advanced_changes/save-result";
-import {updateMaintenanceTaskMetadata, updateMaintenanceTaskStatus} from "@repo/jobs/maintenance/mutations";
+import {
+    updateMaintenanceTaskMetadata,
+    updateMaintenanceTaskStatus,
+    upsertImpactEvaluationTask
+} from "@repo/jobs/maintenance/mutations";
 import {MaintenanceTaskStatus} from "@repo/db/prisma/enums";
+import {fetchAdvancedChangeForTask} from "@/data/advanced_changes/changes";
+import {EvaluateImpactPayload, EvaluateImpactPayloadSchema} from "@repo/jobs/maintenance/schemas";
+import {scheduleImpactTask} from "@repo/jobs/maintenance/queue";
 
 export async function processAdvancedChangesJob(jobId: string) {
     console.log(`Starting advanced changes analysis for maintenance task ${jobId}`);
@@ -37,7 +44,7 @@ export async function processAdvancedChangesJob(jobId: string) {
                 metadata = metadataParseRes.data;
             }
 
-            const changesMap = await filterResolutionsImpactedByAdvancedChanges([task.resolutionId], null, tx);
+            const changesMap = await filterResolutionsImpactedByAdvancedChanges([task.resolutionId], null, undefined, task.resolutionId, tx);
             const changesToProcess = changesMap.get(task.resolutionId);
 
             let done = false;
@@ -45,8 +52,7 @@ export async function processAdvancedChangesJob(jobId: string) {
             if (!changesToProcess || changesToProcess.length === 0) {
                 done = true;
                 console.log("No advanced changes to process.");
-            }
-            else {
+            } else {
                 changesPending = changesToProcess.filter(c =>
                     !metadata.completedChanges.includes(c) && !metadata.failedChanges.includes(c)
                 );
@@ -82,21 +88,46 @@ export async function processAdvancedChangesJob(jobId: string) {
         }
         const {changesPending, task, metadata} = initRes;
 
+        let latestProcessedChangeId: string | null = null;
+
         for (const changeId of changesPending) {
             try {
                 const res = await processAdvancedChange(changeId, task.resolutionId);
                 await prisma.$transaction(async (tx) => {
                     await saveAdvancedChangeResult(changeId, res, tx);
-                    // TODO create impact task. But we need to fix the date problem first
                     metadata.completedChanges.push(changeId);
                 })
 
                 console.log(`Processing advanced change ${changeId} for maintenance task ${jobId}`);
+                latestProcessedChangeId = changeId;
             } catch (e) {
                 console.error(`Error processing advanced change ${changeId} for maintenance task ${jobId}:`, e);
                 metadata.failedChanges.push(changeId);
             }
             await updateMaintenanceTaskMetadata({taskId: jobId, metadata})
+        }
+
+        // After processing batch, schedule impact evaluation if we processed anything
+        if (latestProcessedChangeId) {
+            const changeData = await fetchAdvancedChangeForTask(latestProcessedChangeId);
+            if (changeData) {
+                const cutoffPayload: EvaluateImpactPayload = {
+                    cutoff: {
+                        date: changeData.date,
+                        resolutionId: changeData.rootResolutionId
+                    }
+                };
+
+                // safety check
+                EvaluateImpactPayloadSchema.parse(cutoffPayload);
+
+                const eventId = `advanced_change_task-${jobId}-${Date.now()}`;
+                const upsertRes = await upsertImpactEvaluationTask(task.resolutionId, eventId, cutoffPayload);
+                if (upsertRes.created) {
+                    await scheduleImpactTask(upsertRes.id, task.resolutionId);
+                }
+
+            }
         }
     }
 

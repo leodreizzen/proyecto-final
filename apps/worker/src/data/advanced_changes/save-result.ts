@@ -1,7 +1,7 @@
-import {TransactionPrismaClient} from "@repo/db/prisma";
-import {processAdvancedChange} from "@/maintenance_tasks/advanced_changes/processing";
-import {changeCreationInput} from "@/data/save-resolution/changes";
-import {ChangeAdvancedResolveResult} from "@repo/db/prisma/enums";
+import { TransactionPrismaClient } from "@repo/db/prisma";
+import { processAdvancedChange } from "@/maintenance_tasks/advanced_changes/processing";
+import { changeCreationInput } from "@/data/save-resolution/changes";
+import { ChangeAdvancedResolveResult } from "@repo/db/prisma/enums";
 
 export async function saveAdvancedChangeResult(changeId: string, result: Awaited<ReturnType<typeof processAdvancedChange>>, tx: TransactionPrismaClient) {
     const advancedChange = await tx.changeAdvanced.findUnique({
@@ -67,6 +67,8 @@ export async function saveAdvancedChangeResult(changeId: string, result: Awaited
             } : undefined,
             resolveResult: resolveResult,
             resolvedAt: new Date(),
+            resolvedHash: result.resolvedHash,
+            modelVersion: result.modelVersion
         }
     });
 }

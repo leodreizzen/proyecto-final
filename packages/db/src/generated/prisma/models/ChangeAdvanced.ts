@@ -29,6 +29,8 @@ export type ChangeAdvancedMinAggregateOutputType = {
   targetReferenceId: string | null
   resolvedAt: Date | null
   resolveResult: $Enums.ChangeAdvancedResolveResult | null
+  resolvedHash: string | null
+  modelVersion: string | null
 }
 
 export type ChangeAdvancedMaxAggregateOutputType = {
@@ -36,6 +38,8 @@ export type ChangeAdvancedMaxAggregateOutputType = {
   targetReferenceId: string | null
   resolvedAt: Date | null
   resolveResult: $Enums.ChangeAdvancedResolveResult | null
+  resolvedHash: string | null
+  modelVersion: string | null
 }
 
 export type ChangeAdvancedCountAggregateOutputType = {
@@ -43,6 +47,8 @@ export type ChangeAdvancedCountAggregateOutputType = {
   targetReferenceId: number
   resolvedAt: number
   resolveResult: number
+  resolvedHash: number
+  modelVersion: number
   _all: number
 }
 
@@ -52,6 +58,8 @@ export type ChangeAdvancedMinAggregateInputType = {
   targetReferenceId?: true
   resolvedAt?: true
   resolveResult?: true
+  resolvedHash?: true
+  modelVersion?: true
 }
 
 export type ChangeAdvancedMaxAggregateInputType = {
@@ -59,6 +67,8 @@ export type ChangeAdvancedMaxAggregateInputType = {
   targetReferenceId?: true
   resolvedAt?: true
   resolveResult?: true
+  resolvedHash?: true
+  modelVersion?: true
 }
 
 export type ChangeAdvancedCountAggregateInputType = {
@@ -66,6 +76,8 @@ export type ChangeAdvancedCountAggregateInputType = {
   targetReferenceId?: true
   resolvedAt?: true
   resolveResult?: true
+  resolvedHash?: true
+  modelVersion?: true
   _all?: true
 }
 
@@ -146,6 +158,8 @@ export type ChangeAdvancedGroupByOutputType = {
   targetReferenceId: string
   resolvedAt: Date | null
   resolveResult: $Enums.ChangeAdvancedResolveResult | null
+  resolvedHash: string | null
+  modelVersion: string | null
   _count: ChangeAdvancedCountAggregateOutputType | null
   _min: ChangeAdvancedMinAggregateOutputType | null
   _max: ChangeAdvancedMaxAggregateOutputType | null
@@ -174,6 +188,8 @@ export type ChangeAdvancedWhereInput = {
   targetReferenceId?: Prisma.UuidFilter<"ChangeAdvanced"> | string
   resolvedAt?: Prisma.DateTimeNullableFilter<"ChangeAdvanced"> | Date | string | null
   resolveResult?: Prisma.EnumChangeAdvancedResolveResultNullableFilter<"ChangeAdvanced"> | $Enums.ChangeAdvancedResolveResult | null
+  resolvedHash?: Prisma.StringNullableFilter<"ChangeAdvanced"> | string | null
+  modelVersion?: Prisma.StringNullableFilter<"ChangeAdvanced"> | string | null
   change?: Prisma.XOR<Prisma.ChangeScalarRelationFilter, Prisma.ChangeWhereInput>
   target?: Prisma.XOR<Prisma.ReferenceScalarRelationFilter, Prisma.ReferenceWhereInput>
   resolvedChanges?: Prisma.ChangeListRelationFilter
@@ -184,6 +200,8 @@ export type ChangeAdvancedOrderByWithRelationInput = {
   targetReferenceId?: Prisma.SortOrder
   resolvedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   resolveResult?: Prisma.SortOrderInput | Prisma.SortOrder
+  resolvedHash?: Prisma.SortOrderInput | Prisma.SortOrder
+  modelVersion?: Prisma.SortOrderInput | Prisma.SortOrder
   change?: Prisma.ChangeOrderByWithRelationInput
   target?: Prisma.ReferenceOrderByWithRelationInput
   resolvedChanges?: Prisma.ChangeOrderByRelationAggregateInput
@@ -197,6 +215,8 @@ export type ChangeAdvancedWhereUniqueInput = Prisma.AtLeast<{
   NOT?: Prisma.ChangeAdvancedWhereInput | Prisma.ChangeAdvancedWhereInput[]
   resolvedAt?: Prisma.DateTimeNullableFilter<"ChangeAdvanced"> | Date | string | null
   resolveResult?: Prisma.EnumChangeAdvancedResolveResultNullableFilter<"ChangeAdvanced"> | $Enums.ChangeAdvancedResolveResult | null
+  resolvedHash?: Prisma.StringNullableFilter<"ChangeAdvanced"> | string | null
+  modelVersion?: Prisma.StringNullableFilter<"ChangeAdvanced"> | string | null
   change?: Prisma.XOR<Prisma.ChangeScalarRelationFilter, Prisma.ChangeWhereInput>
   target?: Prisma.XOR<Prisma.ReferenceScalarRelationFilter, Prisma.ReferenceWhereInput>
   resolvedChanges?: Prisma.ChangeListRelationFilter
@@ -207,6 +227,8 @@ export type ChangeAdvancedOrderByWithAggregationInput = {
   targetReferenceId?: Prisma.SortOrder
   resolvedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   resolveResult?: Prisma.SortOrderInput | Prisma.SortOrder
+  resolvedHash?: Prisma.SortOrderInput | Prisma.SortOrder
+  modelVersion?: Prisma.SortOrderInput | Prisma.SortOrder
   _count?: Prisma.ChangeAdvancedCountOrderByAggregateInput
   _max?: Prisma.ChangeAdvancedMaxOrderByAggregateInput
   _min?: Prisma.ChangeAdvancedMinOrderByAggregateInput
@@ -220,11 +242,15 @@ export type ChangeAdvancedScalarWhereWithAggregatesInput = {
   targetReferenceId?: Prisma.UuidWithAggregatesFilter<"ChangeAdvanced"> | string
   resolvedAt?: Prisma.DateTimeNullableWithAggregatesFilter<"ChangeAdvanced"> | Date | string | null
   resolveResult?: Prisma.EnumChangeAdvancedResolveResultNullableWithAggregatesFilter<"ChangeAdvanced"> | $Enums.ChangeAdvancedResolveResult | null
+  resolvedHash?: Prisma.StringNullableWithAggregatesFilter<"ChangeAdvanced"> | string | null
+  modelVersion?: Prisma.StringNullableWithAggregatesFilter<"ChangeAdvanced"> | string | null
 }
 
 export type ChangeAdvancedCreateInput = {
   resolvedAt?: Date | string | null
   resolveResult?: $Enums.ChangeAdvancedResolveResult | null
+  resolvedHash?: string | null
+  modelVersion?: string | null
   change: Prisma.ChangeCreateNestedOneWithoutChangeAdvancedInput
   target: Prisma.ReferenceCreateNestedOneWithoutChangeAdvancedInput
   resolvedChanges?: Prisma.ChangeCreateNestedManyWithoutResolvedForChangeAdvancedInput
@@ -235,12 +261,16 @@ export type ChangeAdvancedUncheckedCreateInput = {
   targetReferenceId: string
   resolvedAt?: Date | string | null
   resolveResult?: $Enums.ChangeAdvancedResolveResult | null
+  resolvedHash?: string | null
+  modelVersion?: string | null
   resolvedChanges?: Prisma.ChangeUncheckedCreateNestedManyWithoutResolvedForChangeAdvancedInput
 }
 
 export type ChangeAdvancedUpdateInput = {
   resolvedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   resolveResult?: Prisma.NullableEnumChangeAdvancedResolveResultFieldUpdateOperationsInput | $Enums.ChangeAdvancedResolveResult | null
+  resolvedHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  modelVersion?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   change?: Prisma.ChangeUpdateOneRequiredWithoutChangeAdvancedNestedInput
   target?: Prisma.ReferenceUpdateOneRequiredWithoutChangeAdvancedNestedInput
   resolvedChanges?: Prisma.ChangeUpdateManyWithoutResolvedForChangeAdvancedNestedInput
@@ -251,6 +281,8 @@ export type ChangeAdvancedUncheckedUpdateInput = {
   targetReferenceId?: Prisma.StringFieldUpdateOperationsInput | string
   resolvedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   resolveResult?: Prisma.NullableEnumChangeAdvancedResolveResultFieldUpdateOperationsInput | $Enums.ChangeAdvancedResolveResult | null
+  resolvedHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  modelVersion?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   resolvedChanges?: Prisma.ChangeUncheckedUpdateManyWithoutResolvedForChangeAdvancedNestedInput
 }
 
@@ -259,11 +291,15 @@ export type ChangeAdvancedCreateManyInput = {
   targetReferenceId: string
   resolvedAt?: Date | string | null
   resolveResult?: $Enums.ChangeAdvancedResolveResult | null
+  resolvedHash?: string | null
+  modelVersion?: string | null
 }
 
 export type ChangeAdvancedUpdateManyMutationInput = {
   resolvedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   resolveResult?: Prisma.NullableEnumChangeAdvancedResolveResultFieldUpdateOperationsInput | $Enums.ChangeAdvancedResolveResult | null
+  resolvedHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  modelVersion?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 export type ChangeAdvancedUncheckedUpdateManyInput = {
@@ -271,6 +307,8 @@ export type ChangeAdvancedUncheckedUpdateManyInput = {
   targetReferenceId?: Prisma.StringFieldUpdateOperationsInput | string
   resolvedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   resolveResult?: Prisma.NullableEnumChangeAdvancedResolveResultFieldUpdateOperationsInput | $Enums.ChangeAdvancedResolveResult | null
+  resolvedHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  modelVersion?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 export type ChangeAdvancedNullableScalarRelationFilter = {
@@ -283,6 +321,8 @@ export type ChangeAdvancedCountOrderByAggregateInput = {
   targetReferenceId?: Prisma.SortOrder
   resolvedAt?: Prisma.SortOrder
   resolveResult?: Prisma.SortOrder
+  resolvedHash?: Prisma.SortOrder
+  modelVersion?: Prisma.SortOrder
 }
 
 export type ChangeAdvancedMaxOrderByAggregateInput = {
@@ -290,6 +330,8 @@ export type ChangeAdvancedMaxOrderByAggregateInput = {
   targetReferenceId?: Prisma.SortOrder
   resolvedAt?: Prisma.SortOrder
   resolveResult?: Prisma.SortOrder
+  resolvedHash?: Prisma.SortOrder
+  modelVersion?: Prisma.SortOrder
 }
 
 export type ChangeAdvancedMinOrderByAggregateInput = {
@@ -297,6 +339,8 @@ export type ChangeAdvancedMinOrderByAggregateInput = {
   targetReferenceId?: Prisma.SortOrder
   resolvedAt?: Prisma.SortOrder
   resolveResult?: Prisma.SortOrder
+  resolvedHash?: Prisma.SortOrder
+  modelVersion?: Prisma.SortOrder
 }
 
 export type ChangeAdvancedCreateNestedOneWithoutResolvedChangesInput = {
@@ -390,6 +434,8 @@ export type ChangeAdvancedUncheckedUpdateOneWithoutTargetNestedInput = {
 export type ChangeAdvancedCreateWithoutResolvedChangesInput = {
   resolvedAt?: Date | string | null
   resolveResult?: $Enums.ChangeAdvancedResolveResult | null
+  resolvedHash?: string | null
+  modelVersion?: string | null
   change: Prisma.ChangeCreateNestedOneWithoutChangeAdvancedInput
   target: Prisma.ReferenceCreateNestedOneWithoutChangeAdvancedInput
 }
@@ -399,6 +445,8 @@ export type ChangeAdvancedUncheckedCreateWithoutResolvedChangesInput = {
   targetReferenceId: string
   resolvedAt?: Date | string | null
   resolveResult?: $Enums.ChangeAdvancedResolveResult | null
+  resolvedHash?: string | null
+  modelVersion?: string | null
 }
 
 export type ChangeAdvancedCreateOrConnectWithoutResolvedChangesInput = {
@@ -409,6 +457,8 @@ export type ChangeAdvancedCreateOrConnectWithoutResolvedChangesInput = {
 export type ChangeAdvancedCreateWithoutChangeInput = {
   resolvedAt?: Date | string | null
   resolveResult?: $Enums.ChangeAdvancedResolveResult | null
+  resolvedHash?: string | null
+  modelVersion?: string | null
   target: Prisma.ReferenceCreateNestedOneWithoutChangeAdvancedInput
   resolvedChanges?: Prisma.ChangeCreateNestedManyWithoutResolvedForChangeAdvancedInput
 }
@@ -417,6 +467,8 @@ export type ChangeAdvancedUncheckedCreateWithoutChangeInput = {
   targetReferenceId: string
   resolvedAt?: Date | string | null
   resolveResult?: $Enums.ChangeAdvancedResolveResult | null
+  resolvedHash?: string | null
+  modelVersion?: string | null
   resolvedChanges?: Prisma.ChangeUncheckedCreateNestedManyWithoutResolvedForChangeAdvancedInput
 }
 
@@ -439,6 +491,8 @@ export type ChangeAdvancedUpdateToOneWithWhereWithoutResolvedChangesInput = {
 export type ChangeAdvancedUpdateWithoutResolvedChangesInput = {
   resolvedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   resolveResult?: Prisma.NullableEnumChangeAdvancedResolveResultFieldUpdateOperationsInput | $Enums.ChangeAdvancedResolveResult | null
+  resolvedHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  modelVersion?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   change?: Prisma.ChangeUpdateOneRequiredWithoutChangeAdvancedNestedInput
   target?: Prisma.ReferenceUpdateOneRequiredWithoutChangeAdvancedNestedInput
 }
@@ -448,6 +502,8 @@ export type ChangeAdvancedUncheckedUpdateWithoutResolvedChangesInput = {
   targetReferenceId?: Prisma.StringFieldUpdateOperationsInput | string
   resolvedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   resolveResult?: Prisma.NullableEnumChangeAdvancedResolveResultFieldUpdateOperationsInput | $Enums.ChangeAdvancedResolveResult | null
+  resolvedHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  modelVersion?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 export type ChangeAdvancedUpsertWithoutChangeInput = {
@@ -464,6 +520,8 @@ export type ChangeAdvancedUpdateToOneWithWhereWithoutChangeInput = {
 export type ChangeAdvancedUpdateWithoutChangeInput = {
   resolvedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   resolveResult?: Prisma.NullableEnumChangeAdvancedResolveResultFieldUpdateOperationsInput | $Enums.ChangeAdvancedResolveResult | null
+  resolvedHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  modelVersion?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   target?: Prisma.ReferenceUpdateOneRequiredWithoutChangeAdvancedNestedInput
   resolvedChanges?: Prisma.ChangeUpdateManyWithoutResolvedForChangeAdvancedNestedInput
 }
@@ -472,12 +530,16 @@ export type ChangeAdvancedUncheckedUpdateWithoutChangeInput = {
   targetReferenceId?: Prisma.StringFieldUpdateOperationsInput | string
   resolvedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   resolveResult?: Prisma.NullableEnumChangeAdvancedResolveResultFieldUpdateOperationsInput | $Enums.ChangeAdvancedResolveResult | null
+  resolvedHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  modelVersion?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   resolvedChanges?: Prisma.ChangeUncheckedUpdateManyWithoutResolvedForChangeAdvancedNestedInput
 }
 
 export type ChangeAdvancedCreateWithoutTargetInput = {
   resolvedAt?: Date | string | null
   resolveResult?: $Enums.ChangeAdvancedResolveResult | null
+  resolvedHash?: string | null
+  modelVersion?: string | null
   change: Prisma.ChangeCreateNestedOneWithoutChangeAdvancedInput
   resolvedChanges?: Prisma.ChangeCreateNestedManyWithoutResolvedForChangeAdvancedInput
 }
@@ -486,6 +548,8 @@ export type ChangeAdvancedUncheckedCreateWithoutTargetInput = {
   id: string
   resolvedAt?: Date | string | null
   resolveResult?: $Enums.ChangeAdvancedResolveResult | null
+  resolvedHash?: string | null
+  modelVersion?: string | null
   resolvedChanges?: Prisma.ChangeUncheckedCreateNestedManyWithoutResolvedForChangeAdvancedInput
 }
 
@@ -508,6 +572,8 @@ export type ChangeAdvancedUpdateToOneWithWhereWithoutTargetInput = {
 export type ChangeAdvancedUpdateWithoutTargetInput = {
   resolvedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   resolveResult?: Prisma.NullableEnumChangeAdvancedResolveResultFieldUpdateOperationsInput | $Enums.ChangeAdvancedResolveResult | null
+  resolvedHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  modelVersion?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   change?: Prisma.ChangeUpdateOneRequiredWithoutChangeAdvancedNestedInput
   resolvedChanges?: Prisma.ChangeUpdateManyWithoutResolvedForChangeAdvancedNestedInput
 }
@@ -516,6 +582,8 @@ export type ChangeAdvancedUncheckedUpdateWithoutTargetInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   resolvedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   resolveResult?: Prisma.NullableEnumChangeAdvancedResolveResultFieldUpdateOperationsInput | $Enums.ChangeAdvancedResolveResult | null
+  resolvedHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  modelVersion?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   resolvedChanges?: Prisma.ChangeUncheckedUpdateManyWithoutResolvedForChangeAdvancedNestedInput
 }
 
@@ -555,6 +623,8 @@ export type ChangeAdvancedSelect<ExtArgs extends runtime.Types.Extensions.Intern
   targetReferenceId?: boolean
   resolvedAt?: boolean
   resolveResult?: boolean
+  resolvedHash?: boolean
+  modelVersion?: boolean
   change?: boolean | Prisma.ChangeDefaultArgs<ExtArgs>
   target?: boolean | Prisma.ReferenceDefaultArgs<ExtArgs>
   resolvedChanges?: boolean | Prisma.ChangeAdvanced$resolvedChangesArgs<ExtArgs>
@@ -566,6 +636,8 @@ export type ChangeAdvancedSelectCreateManyAndReturn<ExtArgs extends runtime.Type
   targetReferenceId?: boolean
   resolvedAt?: boolean
   resolveResult?: boolean
+  resolvedHash?: boolean
+  modelVersion?: boolean
   change?: boolean | Prisma.ChangeDefaultArgs<ExtArgs>
   target?: boolean | Prisma.ReferenceDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["changeAdvanced"]>
@@ -575,6 +647,8 @@ export type ChangeAdvancedSelectUpdateManyAndReturn<ExtArgs extends runtime.Type
   targetReferenceId?: boolean
   resolvedAt?: boolean
   resolveResult?: boolean
+  resolvedHash?: boolean
+  modelVersion?: boolean
   change?: boolean | Prisma.ChangeDefaultArgs<ExtArgs>
   target?: boolean | Prisma.ReferenceDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["changeAdvanced"]>
@@ -584,9 +658,11 @@ export type ChangeAdvancedSelectScalar = {
   targetReferenceId?: boolean
   resolvedAt?: boolean
   resolveResult?: boolean
+  resolvedHash?: boolean
+  modelVersion?: boolean
 }
 
-export type ChangeAdvancedOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "targetReferenceId" | "resolvedAt" | "resolveResult", ExtArgs["result"]["changeAdvanced"]>
+export type ChangeAdvancedOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "targetReferenceId" | "resolvedAt" | "resolveResult" | "resolvedHash" | "modelVersion", ExtArgs["result"]["changeAdvanced"]>
 export type ChangeAdvancedInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   change?: boolean | Prisma.ChangeDefaultArgs<ExtArgs>
   target?: boolean | Prisma.ReferenceDefaultArgs<ExtArgs>
@@ -614,6 +690,8 @@ export type $ChangeAdvancedPayload<ExtArgs extends runtime.Types.Extensions.Inte
     targetReferenceId: string
     resolvedAt: Date | null
     resolveResult: $Enums.ChangeAdvancedResolveResult | null
+    resolvedHash: string | null
+    modelVersion: string | null
   }, ExtArgs["result"]["changeAdvanced"]>
   composites: {}
 }
@@ -1044,6 +1122,8 @@ export interface ChangeAdvancedFieldRefs {
   readonly targetReferenceId: Prisma.FieldRef<"ChangeAdvanced", 'String'>
   readonly resolvedAt: Prisma.FieldRef<"ChangeAdvanced", 'DateTime'>
   readonly resolveResult: Prisma.FieldRef<"ChangeAdvanced", 'ChangeAdvancedResolveResult'>
+  readonly resolvedHash: Prisma.FieldRef<"ChangeAdvanced", 'String'>
+  readonly modelVersion: Prisma.FieldRef<"ChangeAdvanced", 'String'>
 }
     
 

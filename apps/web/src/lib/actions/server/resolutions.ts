@@ -67,7 +67,7 @@ async function createImpactTasksBeforeDeletion(resolutionId: string, tx: Transac
     const impacted = await getDirectlyAffectedResolutionIds(resolutionId, tx);
     const tasks = [];
     for (const impactedResolutionId of impacted) {
-        const task = await upsertImpactEvaluationTask(impactedResolutionId, eventId, tx);
+        const task = await upsertImpactEvaluationTask(impactedResolutionId, eventId, {}, tx);
         if (task.created) {
             tasks.push({taskId: task.id, resolutionId: impactedResolutionId});
         }

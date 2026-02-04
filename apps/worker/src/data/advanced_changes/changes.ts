@@ -54,7 +54,7 @@ export async function fetchAdvancedChangeForTask(changeId: string) {
     const rootResolutionId = changeContext.rootResolutionId;
     const otherChanges = change.change.articleModifier.changes.map(c => c.id);
 
-    return  {
+    return {
         date,
         rootResolutionId,
         rootResolutionCoords: {
@@ -63,6 +63,9 @@ export async function fetchAdvancedChangeForTask(changeId: string) {
             year: changeContext.resYear
         },
         otherChanges,
-        articleModifierId
+        articleModifierId,
+        resolvedHash: change.resolvedHash,
+        resolvedAt: change.resolvedAt,
+        modelVersion: change.modelVersion
     }
 }

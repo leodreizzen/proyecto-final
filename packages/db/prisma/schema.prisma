@@ -214,9 +214,11 @@ model ChangeAdvanced {
 
   resolvedAt      DateTime?
   resolveResult   ChangeAdvancedResolveResult?
+  resolvedHash    String?
+  modelVersion    String?
   resolvedChanges Change[]                     @relation(name: "resolved_for_change_advanced")
 
-  // TODO check: resolvedAt and resolveResult must be both present or both null
+  // Check: resolvedAt, resolveResult, resolvedHash and modelVersion must be all present or all null
   // Trigger: Cleanup references when deleted
   @@index([targetReferenceId])
 }

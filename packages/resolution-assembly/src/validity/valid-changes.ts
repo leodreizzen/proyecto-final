@@ -4,7 +4,7 @@ import {getChangesDataForValidityGraph} from "../data/validity-graph";
 import {getChangesContext} from "../data/context";
 import {ChangeContext, ChangeWithContextForAssembly, ChangeWithIDAndContext} from "../definitions/changes";
 import {ResolutionNaturalID, ResolutionVersion, VersionSpec} from "../definitions/resolutions";
-import {sortChangeWithContext} from "../utils";
+import {compareChangeWithContext} from "../utils";
 import {stableStringify} from "../utils/serialization";
 import {ChangeDataForAssembly, fetchChangesDataForAssembly} from "../data/changes";
 
@@ -30,7 +30,7 @@ export async function getValidChangesAndVersionsForAssembly(resUuid: string, nat
 }
 
 function filterChangesByVersionSpec(allChanges: ChangeWithIDAndContext[], versionSpec: VersionSpec): ChangeWithIDAndContext[] {
-    allChanges.sort(sortChangeWithContext);
+    allChanges.sort(compareChangeWithContext);
 
     let cutoffIndex = allChanges.length - 1; // Index of the last change to include
     let found = false;
@@ -92,7 +92,7 @@ function getVersionsFromChanges(changes: Map<string, ChangeContext>, thisResolut
         context
     }));
 
-    allChanges.sort(sortChangeWithContext);
+    allChanges.sort(compareChangeWithContext);
 
     const versions: ResolutionVersion[] = [];
     const seenResolutions = new Set<string>();

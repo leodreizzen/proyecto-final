@@ -215,7 +215,7 @@ DirtyScope(entity_id, entity_type, res_init, res_num, res_year, annex_num, chap_
             'ADVANCED_IMPACT'::text AS reason,
             FALSE AS should_expand -- <--- RECURSION HALT
         FROM "ChangeAdvanced" ca
-                 JOIN "v_ResolvedReferences" ref ON ca."targetReferenceId" = ref.native_id
+                 JOIN "v_ResolvedReferences" ref ON ca."targetReferenceId" = ref.ref_id
                  JOIN "Resolution" res ON
             res.number = ref.res_num AND
             res.year = ref.res_year AND

@@ -1,6 +1,6 @@
 import { ChangeWithIDAndContext } from "./definitions/changes";
 
-export function sortChangeWithContext(c1: ChangeWithIDAndContext, c2: ChangeWithIDAndContext): number {
+export function compareChangeWithContext(c1: ChangeWithIDAndContext, c2: ChangeWithIDAndContext): number {
     const dateDiff = c1.context.date.getTime() - c2.context.date.getTime();
     if (dateDiff !== 0) {
         return dateDiff;
