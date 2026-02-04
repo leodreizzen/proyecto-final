@@ -14,7 +14,7 @@ function UploadToasts({currentFile}: {
 }
 
 function UploadResultDescription({results}: {
-    results: { status: "success" | "error", fileName: string }[]
+    results: { status: "success" | "error" | "cancelled", fileName: string }[]
 }) {
     const successCount = results.filter(r => r.status === "success").length;
     const errors = results.filter(r => r.status === "error");
@@ -71,21 +71,39 @@ export function showUploadToast({id, totalFiles, errorCount, currentFile}: {
 export function showUploadFinishedToast({id, results}: {
     id: string,
     results: {
-        status: "success" | "error", fileName: string,
+        status: "success" | "error" | "cancelled", fileName: string,
     }[]
 }) {
     const description = <UploadResultDescription results={results}/>;
     const successCount = results.filter(r => r.status === "success").length;
     const errorCount = results.filter(r => r.status === "error").length;
+    const cancelledCount = results.filter(r => r.status === "cancelled").length;
 
-    const title = `Subida finalizada` + (errorCount > 0 ? ` con errores` : "");
+
+    let title;
+    if (cancelledCount > 0) {
+        title = "Subida cancelada";
+    } else {
+        title = `Subida finalizada`
+    }
+    if (errorCount > 0) {
+        title += ` con errores`
+    }
 
     if (errorCount === 0) {
-        toast.success(title, {
-            id: id,
-            description: description,
-            duration: 5000
-        });
+        if (cancelledCount > 0) {
+            toast.info(title, {
+                id: id,
+                description: description,
+                duration: 5000
+            })
+        } else {
+            toast.success(title, {
+                id: id,
+                description: description,
+                duration: 5000
+            });
+        }
     } else if (successCount > 0) {
         toast.warning(title, {
             id: id,

@@ -3,8 +3,9 @@ import {Geist, Geist_Mono} from "next/font/google";
 import "./globals.css";
 import {ThemeProvider} from "next-themes";
 import QueryProvider from "@/lib/actions/queryClient";
-import { Toaster } from "@/components/ui/sonner"
+import {Toaster} from "@/components/ui/sonner"
 import {SITE_CONFIG} from "../../config/site";
+import {NavigationGuardProvider} from "next-navigation-guard";
 
 export const metadata: Metadata = {
     title: {
@@ -34,12 +35,14 @@ export default function RootLayout({
         <body
             className={`${geistSans.variable} ${geistMono.variable} antialiased`}
         >
-        <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
-            <QueryProvider>
-                {children}
-                <Toaster position="bottom-right" richColors/>
-            </QueryProvider>
-        </ThemeProvider>
+        <NavigationGuardProvider>
+            <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
+                <QueryProvider>
+                    {children}
+                    <Toaster position="bottom-right" richColors/>
+                </QueryProvider>
+            </ThemeProvider>
+        </NavigationGuardProvider>
         </body>
         </html>
     );

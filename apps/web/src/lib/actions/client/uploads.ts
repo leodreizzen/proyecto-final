@@ -2,18 +2,21 @@ import saveUploadedResolution, {getResolutionUploadUrl} from "@/lib/actions/serv
 import {uploadFileToSignedURL} from "@/lib/file-storage/client";
 import {showUploadFinishedToast, showUploadToast} from "@/components/admin/UploadToasts";
 import {v4} from "uuid";
+import axios from "axios";
 
-export async function uploadResolutions(files: File[]) {
+export async function uploadResolutions(files: File[], abortController?: AbortController) {
     const clientUploadId = v4();
     const results: {
         fileName: string,
-        status: "success" | "error"
+        status: "success" | "error" | "cancelled"
     }[] = [];
 
     for (const [index, file] of files.entries()) {
+        if (abortController?.signal.aborted) {
+            results.push({fileName: file.name, status: "cancelled"});
+            break;
+        }
         try {
-            console.log("Showing upload toast for file:", file.name);
-
             const showProgress = (progress: number) => {
                 showUploadToast({
                     id: clientUploadId,
@@ -44,7 +47,8 @@ export async function uploadResolutions(files: File[]) {
 
             const {url, key} = urlRes.data;
             await uploadFileToSignedURL(url, file, {
-                onProgress: showProgress
+                onProgress: showProgress,
+                abortSignal: abortController?.signal
             });
 
             const saveRes = await saveUploadedResolution({key});
@@ -55,6 +59,12 @@ export async function uploadResolutions(files: File[]) {
 
             results.push({fileName: file.name, status: "success"});
         } catch (error) {
+            if (axios.isCancel(error)) {
+                console.warn("Upload cancelled for file:", file.name);
+                results.push({fileName: file.name, status: "cancelled"});
+                break; // Exit the loop if upload is cancelled
+            }
+
             console.error("Error uploading file:", file.name, error);
             results.push({fileName: file.name, status: "error"});
         }
