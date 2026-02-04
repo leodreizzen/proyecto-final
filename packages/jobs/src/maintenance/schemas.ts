@@ -10,3 +10,10 @@ export const EvaluateImpactPayloadSchema = z.object({
 });
 
 export type EvaluateImpactPayload = z.infer<typeof EvaluateImpactPayloadSchema>;
+
+export const TaskMetadataSchema = z.object({
+    completedChanges: z.uuidv7().array(),
+    failedChanges: z.uuidv7().array(),
+})
+
+export type TaskMetadata = z.infer<typeof TaskMetadataSchema>;

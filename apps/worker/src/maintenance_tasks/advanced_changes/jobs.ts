@@ -1,5 +1,4 @@
 import {findMaintenanceTask} from "@/data/queries";
-import {TaskMetadata, TaskMetadataSchema} from "@/maintenance_tasks/advanced_changes/schemas";
 import {filterResolutionsImpactedByAdvancedChanges} from "@/data/advanced_changes/filter";
 import {processAdvancedChange} from "@/maintenance_tasks/advanced_changes/processing";
 import prisma from "@repo/db/prisma";
@@ -11,7 +10,12 @@ import {
 } from "@repo/jobs/maintenance/mutations";
 import {MaintenanceTaskStatus} from "@repo/db/prisma/enums";
 import {fetchAdvancedChangeForTask} from "@/data/advanced_changes/changes";
-import {EvaluateImpactPayload, EvaluateImpactPayloadSchema} from "@repo/jobs/maintenance/schemas";
+import {
+    EvaluateImpactPayload,
+    EvaluateImpactPayloadSchema,
+    TaskMetadata,
+    TaskMetadataSchema
+} from "@repo/jobs/maintenance/schemas";
 import {scheduleImpactTask} from "@repo/jobs/maintenance/queue";
 
 export async function processAdvancedChangesJob(jobId: string) {

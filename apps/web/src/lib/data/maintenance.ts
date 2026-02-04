@@ -7,6 +7,10 @@ import {
     Prisma
 } from "@repo/db/prisma/client";
 import prisma from "@/lib/prisma";
+import {TaskMetadata, TaskMetadataSchema} from "@repo/jobs/maintenance/schemas";
+import {JsonNull} from "@prisma/client/runtime/client";
+import {retryMaintenanceTaskJob} from "@repo/jobs/maintenance/queue";
+import {publishMaintenanceTaskUpdate} from "@repo/pubsub/publish/maintenance_tasks";
 
 export type MaintenanceTaskWithResolution = Prisma.MaintenanceTaskGetPayload<{
     include: {
@@ -24,12 +28,12 @@ export type MaintenanceTaskFilter = "ALL" | "ACTIVE" | "COMPLETED" | "FAILED";
 
 
 export async function fetchMaintenanceTasks({
-    cursor,
-    filter,
-    query,
-    limit = 20,
-    resolutionId
-}: {
+                                                cursor,
+                                                filter,
+                                                query,
+                                                limit = 20,
+                                                resolutionId
+                                            }: {
     cursor: string | null,
     filter: MaintenanceTaskFilter,
     query?: string | null,
@@ -115,4 +119,53 @@ export async function countFailedTasks(): Promise<number> {
 export async function deleteMaintenanceTasksById(id: string[]): Promise<void> {
     await checkResourcePermission("maintenanceTask", "delete");
     return deleteMaintenanceTasksMutation(id);
+}
+
+export async function retryMaintenanceTask(id: string): Promise<void> {
+    await checkResourcePermission("maintenanceTask", "retry");
+
+    const task = await prisma.$transaction(async tx => {
+        const task = await tx.maintenanceTask.findUnique({
+            where: {
+                id: id
+            }
+        });
+
+        if (!task) {
+            throw new Error(`Maintenance task with ID ${id} not found`);
+        }
+
+        let payload = task.payload;
+
+        if (task.type === "PROCESS_ADVANCED_CHANGES") {
+            const payloadParseRes = TaskMetadataSchema.safeParse(payload);
+            if (!payloadParseRes.success) {
+                payload = {
+                    completedChanges: [],
+                    failedChanges: []
+                } satisfies TaskMetadata
+            } else {
+                payload = {
+                    ...payloadParseRes.data,
+                    failedChanges: []
+                } satisfies TaskMetadata
+            }
+        }
+
+
+        return await tx.maintenanceTask.update({
+            where: {
+                id: id
+            },
+            data: {
+                status: "PENDING",
+                payload: payload ?? JsonNull,
+                errorMsg: null
+            }
+        });
+    })
+
+    await retryMaintenanceTaskJob(task.id, task.resolutionId, task.type);
+
+    await publishMaintenanceTaskUpdate(task.id, ["status", "errorMsg"]);
 }

@@ -19,6 +19,7 @@ export async function processEvaluateImpactJob(jobId: string) {
         throw new Error(`Maintenance task with ID ${jobId} not found`);
     }
     let jobsToCreate: Awaited<ReturnType<typeof createTasksForImpactedResolutions>> | null = null;
+    let ok = true;
     try {
         await updateMaintenanceTaskStatus({taskId: jobId, status: "PROCESSING"});
         await publishMaintenanceTaskUpdate(jobId, ["status"]);
@@ -46,6 +47,7 @@ export async function processEvaluateImpactJob(jobId: string) {
     } catch (error) {
         console.log(`Impact evaluation for maintenance task ${jobId} failed:`, error);
         await updateMaintenanceTaskStatus({taskId: jobId, status: "FAILED", errorMessage: "Error interno"});
+        ok = false;
         jobsToCreate = null;
     }
 
@@ -62,7 +64,7 @@ export async function processEvaluateImpactJob(jobId: string) {
         ];
         await publishNewMaintenanceTasks(allNewTaskIds);
     }
-    await publishMaintenanceTaskUpdate(jobId, ["status"]); // either COMPLETED or FAILED
+    await publishMaintenanceTaskUpdate(jobId, ["status", ...(ok? ["errorMsg" as const]: [])]); // either COMPLETED or FAILED
 }
 
 async function getImpactedResolutions(resolutionId: string, tx: TransactionPrismaClient = prisma) {

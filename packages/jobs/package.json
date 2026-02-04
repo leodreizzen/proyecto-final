@@ -37,7 +37,7 @@
     "@repo/text-utils": "workspace:*",
     "bullmq": "^5.41.1",
     "ioredis": "^5.5.0",
-    "zod": "^3.22.4"
+    "zod": "^4.1.13"
   },
   "devDependencies": {
     "typescript": "^5.7.3"

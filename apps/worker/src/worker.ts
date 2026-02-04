@@ -11,6 +11,7 @@ import {publishUploadProgress, publishUploadStatus} from "@repo/pubsub/publish/u
 import {processEvaluateImpactJob} from "@/maintenance_tasks/impact-evaluation";
 import {updateMaintenanceTaskStatus} from "@repo/jobs/maintenance/mutations";
 import {processAdvancedChangesJob} from "@/maintenance_tasks/advanced_changes/jobs";
+import {publishMaintenanceTaskUpdate} from "@repo/pubsub/publish/maintenance_tasks";
 
 const worker = new Worker(
     resolutionsQueue.name,
@@ -84,6 +85,7 @@ maintenanceWorker.on("failed", async (job, err) => {
         if (job?.id) {
             const errorMessage = "Error interno";
             await updateMaintenanceTaskStatus({taskId: job.id, status: "FAILED", errorMessage})
+            await publishMaintenanceTaskUpdate(job.id, ["status", "errorMsg"]);
         }
     } catch (e) {
         console.error(`Failed to update maintenance task status for job ${job?.id}:`, e);

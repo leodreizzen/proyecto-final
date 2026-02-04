@@ -1,6 +1,6 @@
 "use client";
 
-import { AlertCircle, CheckCircle2, Clock, HelpCircle, Loader2, XCircle } from "lucide-react";
+import {AlertCircle, CheckCircle2, Clock, HelpCircle, Loader2, Loader2Icon, XCircle} from "lucide-react";
 import {
     Popover,
     PopoverContent,
@@ -12,6 +12,9 @@ import { TableVirtuoso, TableVirtuosoHandle, Virtuoso, VirtuosoHandle } from "re
 import React, { useImperativeHandle, useRef } from "react";
 import { MaintenanceTaskWithResolution } from "@/lib/data/maintenance";
 import { cn } from "@/lib/utils";
+import {useMutation} from "@tanstack/react-query";
+import {toast} from "sonner";
+import {retryMaintenanceTaskAction} from "@/lib/actions/server/maintenance-tasks";
 
 export type MaintenanceTasksTableHandle = {
     scrollToTop: () => void;
@@ -47,6 +50,25 @@ const StatusIcon = ({ status }: { status: MaintenanceTaskStatus }) => {
 export function MaintenanceTasksTable({ tasks, fetchNextPage, ref }: MaintenanceTasksTableProps) {
     const desktopRef = useRef<TableVirtuosoHandle | null>(null);
     const mobileRef = useRef<VirtuosoHandle>(null);
+
+    const {mutate: retryTask, status: retryStatus, variables: retryVariables} = useMutation({
+        mutationFn: async ({id}: { id: string }) => {
+            const res = await retryMaintenanceTaskAction({id})
+            if (!res.success) {
+                throw new Error();
+            }
+        },
+        onSuccess: () => {
+            toast.success("Reintento desencadenado con éxito");
+        },
+        onError: (_error, {id}) => {
+            toast.error("Error al reintentar la tarea");
+            console.log(`error retrying task ${id}: ${_error}`);
+        }
+    })
+
+    const processing = retryStatus === "pending";
+
 
     useImperativeHandle(ref, () => ({
         scrollToTop: () => {
@@ -137,12 +159,13 @@ export function MaintenanceTasksTable({ tasks, fetchNextPage, ref }: Maintenance
                                     </span>
                                 </td>
                                 <td className="px-4 py-3">
-                                    {task.status === "FAILED" || task.status === "PARTIAL_FAILURE" && (
+                                    {(task.status === "FAILED" || task.status === "PARTIAL_FAILURE") && (
                                         <button
-                                            onClick={() => console.log("Retry task", task.id)}
+                                            onClick={() => retryTask({id: task.id})}
+                                            disabled={processing}
                                             className="text-xs font-medium text-primary hover:underline"
                                         >
-                                            Reintentar
+                                            {processing? <Loader2Icon className="size-4 animate-spin" /> :"Reintentar"}
                                         </button>
                                     )}
                                 </td>

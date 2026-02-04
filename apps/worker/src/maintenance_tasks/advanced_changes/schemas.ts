@@ -21,10 +21,3 @@ export const AdvancedChangeResultSchema = z.discriminatedUnion("success", [
 ]).meta({title: "ResultadoAnalisisCambioAvanzado"})
 
 export type AdvancedChangeResult = z.infer<typeof AdvancedChangeResultSchema>;
-
-export const TaskMetadataSchema = z.object({
-    completedChanges: z.uuidv7().array(),
-    failedChanges: z.uuidv7().array(),
-})
-
-export type TaskMetadata = z.infer<typeof TaskMetadataSchema>;

@@ -29,6 +29,24 @@ export async function scheduleAdvancedChangesTask(taskId: string, resolutionId: 
     });
 }
 
+export async function retryMaintenanceTaskJob(taskId: string, resolutionId: string, taskType: 'EVALUATE_IMPACT' | 'CALCULATE_EMBEDDINGS' | 'PROCESS_ADVANCED_CHANGES', depth?: number) {
+    const job = await maintenanceQueue.getJob(taskId);
+    if (job) {
+        await job.retry();
+    } else {
+        if (taskType === 'EVALUATE_IMPACT') {
+            await scheduleImpactTask(taskId, resolutionId);
+        } else if (taskType === 'CALCULATE_EMBEDDINGS') {
+            await scheduleEmbeddingsTask(taskId, resolutionId, depth || 0);
+        } else if (taskType === 'PROCESS_ADVANCED_CHANGES') {
+            await scheduleAdvancedChangesTask(taskId, resolutionId, depth || 0);
+        } else {
+            const _: never = taskType;
+            throw new Error(`Unknown task type: ${taskType}`);
+        }
+    }
+}
+
 export async function cancelMaintenanceTaskJob(taskId: string) {
     const job = await maintenanceQueue.getJob(taskId);
     if (job) {
