@@ -1,6 +1,6 @@
 "use client"
 
-import {FileText, ExternalLink, Trash2, Check, AlertTriangle, AlertCircle, Loader2} from "lucide-react"
+import {FileText, ExternalLink, Trash2, Check, AlertCircle, Loader2} from "lucide-react"
 import {cn, formatResolutionId} from "@/lib/utils"
 import {Button} from "@/components/ui/button"
 import {
