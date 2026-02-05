@@ -37,7 +37,7 @@ export function Hero() {
             <div className="mt-4 flex flex-col items-center gap-2 animate-pulse duration-[3000ms]">
                 <span className="text-xs text-muted-foreground">Conocé cómo funciona</span>
                 <Link 
-                    href="#latest-resolutions"
+                    href="#how-it-works"
                     className="p-2 rounded-full hover:bg-muted/50 transition-colors"
                     aria-label="Ir a novedades"
                 >
