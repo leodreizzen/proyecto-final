@@ -29,7 +29,7 @@ export function Hero() {
                 <Button asChild size="lg" variant="outline" className="rounded-full px-8 border-primary/20 hover:bg-primary/5 hover:text-primary transition-all duration-300">
                     <Link href="/chat">
                         <Bot className="mr-2 h-5 w-5" />
-                        Preguntar al {SITE_CONFIG.CHATBOT_NAME}
+                        Preguntar a {SITE_CONFIG.CHATBOT_NAME}
                     </Link>
                 </Button>
             </div>
