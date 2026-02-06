@@ -1,6 +1,7 @@
 import {ExponentialBackoff, handleType, IRetryContext, wrap} from 'cockatiel';
 import {InvalidLLMResponseError, LLMAPIError, LLMConsistencyValidationError} from "@/parser/llms/errors";
 import {retry} from "cockatiel";
+import {EmbeddingsAPIError} from "@/maintenance_tasks/embeddings/helpers/error";
 
 const apiPolicy = retry(handleType(LLMAPIError), {
     maxAttempts: 2,
@@ -10,6 +11,15 @@ const apiPolicy = retry(handleType(LLMAPIError), {
         exponent: 2
     })
 }); // TODO special treatment for rate limit?
+
+const embeddingApiPolicy = retry(handleType(EmbeddingsAPIError), {
+    maxAttempts: 4,
+    backoff: new ExponentialBackoff({
+        initialDelay: 500,
+        maxDelay: 10000,
+        exponent: 2
+    })
+});
 
 const validationPolicy = retry(handleType(InvalidLLMResponseError), {
     maxAttempts: 2
@@ -25,7 +35,16 @@ export async function withLlmRetry<T>(operation: (context: IRetryContext) => Pro
         console.error("Error occurred while executing LLM operation:", e);
         throw e;
     }
+}
 
+export async function withEmbeddingsRetry<T>(operation: (context: IRetryContext) => Promise<T>): Promise<T> {
+    try{
+        return embeddingApiPolicy.execute(operation);
+    }
+    catch (e){
+        console.error("Error occurred while executing embedding operation:", e);
+        throw e;
+    }
 }
 
 

@@ -26,13 +26,6 @@ function createPrismaClient() {
                     return query(args);
                 }
 
-                // If args.data is present (create/update), validate nested content blocks if possible.
-                // However, Prisma args structure is complex (can be 'create', 'connect', 'update', nested writes).
-                // Validating deeply nested JSONs in a generic extension is hard.
-                // Given we moved logic to Worker (ContentBlock creation), explicit Zod parsing before DB call is safer.
-                // For now, I'll remove the generic 'validate' call as it was specific to the old 'Table' model which had 'content'.
-                // 'ContentBlock' has 'tableContent'.
-                
                 return query(args);
             }
         },

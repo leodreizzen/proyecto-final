@@ -4,9 +4,26 @@ import {
     ChatCompletionChunk,
 } from "openai/resources";
 import {Stream} from "openai/streaming";
+import {EmbeddingCreateParams} from "openai/resources/embeddings";
 
 export type CreateOpenAICompletionInput = Parameters<OpenAI["chat"]["completions"]["create"]>[0] &  {
     model: `gemini-${string}`
+}
+
+export type GeminiTaskType =
+    | "RETRIEVAL_QUERY"
+    | "RETRIEVAL_DOCUMENT"
+    | "SEMANTIC_SIMILARITY"
+    | "CLASSIFICATION"
+    | "CODE_RETRIEVAL_QUERY"
+    | "QUESTION_ANSWERING"
+    | "FACT_VERIFICATION"
+    | "CLUSTERING";
+
+export type CreateOpenAIEmbeddingInput = EmbeddingCreateParams & {
+    model: `gemini-${string}`
+} & {
+    taskType?: GeminiTaskType
 }
 
 function isGemini(name: string): name is `gemini-${string}` {
@@ -42,11 +59,31 @@ export async function createOpenAICompletion<P extends CreateOpenAICompletionInp
             finalModelName = `google/${modelName}`;
         } else {
             const _exhaustiveCheck: never = modelName;
-            throw new Error("Model not supported yet with OpenRouter: " + modelName);
+            throw new Error("Model not supported yet with OpenRouter in this app: " + modelName);
         }
     }
 
     return openAIInstance.chat.completions.create({
+        ...params,
+        model: finalModelName,
+    });
+}
+
+export async function createOpenaiEmbedding(
+    params: CreateOpenAIEmbeddingInput
+) {
+    const modelName = params.model;
+    let finalModelName: string = params.model;
+    if (useOpenRouter) {
+        if (isGemini(modelName)) {
+            finalModelName = `google/${modelName}`;
+        } else {
+            const _exhaustiveCheck: never = modelName;
+            throw new Error("Model not supported yet with OpenRouter in this app: " + modelName);
+        }
+    }
+
+    return openAIInstance.embeddings.create({
         ...params,
         model: finalModelName,
     });

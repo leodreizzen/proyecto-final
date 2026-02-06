@@ -421,6 +421,7 @@ export const ModelName = {
   Verification: 'Verification',
   Asset: 'Asset',
   MaintenanceTask: 'MaintenanceTask',
+  SearchableContent: 'SearchableContent',
   v_ArticleContext: 'v_ArticleContext',
   v_ResolutionSearch: 'v_ResolutionSearch',
   v_MissingResolution: 'v_MissingResolution',
@@ -440,7 +441,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "resolution" | "recital" | "consideration" | "article" | "articleNormative" | "articleModifier" | "articleCreateDocument" | "articleFormality" | "change" | "changeModifyArticle" | "changeReplaceArticle" | "changeAdvanced" | "changeRatifyAdReferendum" | "changeReplaceAnnex" | "changeAddAnnex" | "changeModifyTextAnnex" | "changeAddArticle" | "changeRepeal" | "changeApplyModificationsAnnex" | "annex" | "annexText" | "annexWithArticles" | "annexChapter" | "contentBlock" | "textReference" | "reference" | "referenceResolution" | "referenceArticle" | "referenceAnnex" | "referenceChapter" | "resolutionUpload" | "user" | "session" | "account" | "verification" | "asset" | "maintenanceTask" | "v_ArticleContext" | "v_ResolutionSearch" | "v_MissingResolution" | "v_ResolvedReferences"
+    modelProps: "resolution" | "recital" | "consideration" | "article" | "articleNormative" | "articleModifier" | "articleCreateDocument" | "articleFormality" | "change" | "changeModifyArticle" | "changeReplaceArticle" | "changeAdvanced" | "changeRatifyAdReferendum" | "changeReplaceAnnex" | "changeAddAnnex" | "changeModifyTextAnnex" | "changeAddArticle" | "changeRepeal" | "changeApplyModificationsAnnex" | "annex" | "annexText" | "annexWithArticles" | "annexChapter" | "contentBlock" | "textReference" | "reference" | "referenceResolution" | "referenceArticle" | "referenceAnnex" | "referenceChapter" | "resolutionUpload" | "user" | "session" | "account" | "verification" | "asset" | "maintenanceTask" | "searchableContent" | "v_ArticleContext" | "v_ResolutionSearch" | "v_MissingResolution" | "v_ResolvedReferences"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -3182,6 +3183,64 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    SearchableContent: {
+      payload: Prisma.$SearchableContentPayload<ExtArgs>
+      fields: Prisma.SearchableContentFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.SearchableContentFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SearchableContentPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.SearchableContentFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SearchableContentPayload>
+        }
+        findFirst: {
+          args: Prisma.SearchableContentFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SearchableContentPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.SearchableContentFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SearchableContentPayload>
+        }
+        findMany: {
+          args: Prisma.SearchableContentFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SearchableContentPayload>[]
+        }
+        delete: {
+          args: Prisma.SearchableContentDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SearchableContentPayload>
+        }
+        update: {
+          args: Prisma.SearchableContentUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SearchableContentPayload>
+        }
+        deleteMany: {
+          args: Prisma.SearchableContentDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.SearchableContentUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.SearchableContentUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SearchableContentPayload>[]
+        }
+        aggregate: {
+          args: Prisma.SearchableContentAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateSearchableContent>
+        }
+        groupBy: {
+          args: Prisma.SearchableContentGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.SearchableContentGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.SearchableContentCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.SearchableContentCountAggregateOutputType> | number
+        }
+      }
+    }
     v_ArticleContext: {
       payload: Prisma.$v_ArticleContextPayload<ExtArgs>
       fields: Prisma.v_ArticleContextFieldRefs
@@ -3799,6 +3858,28 @@ export const MaintenanceTaskScalarFieldEnum = {
 export type MaintenanceTaskScalarFieldEnum = (typeof MaintenanceTaskScalarFieldEnum)[keyof typeof MaintenanceTaskScalarFieldEnum]
 
 
+export const SearchableContentScalarFieldEnum = {
+  id: 'id',
+  resolutionID: 'resolutionID',
+  type: 'type',
+  recitalNumber: 'recitalNumber',
+  considerationNumber: 'considerationNumber',
+  articleNumber: 'articleNumber',
+  articleSuffix: 'articleSuffix',
+  articleIndexType: 'articleIndexType',
+  annexNumber: 'annexNumber',
+  annexIndexType: 'annexIndexType',
+  chapterNumber: 'chapterNumber',
+  chunkNumber: 'chunkNumber',
+  context: 'context',
+  mainText: 'mainText',
+  engineVersion: 'engineVersion',
+  createdAt: 'createdAt'
+} as const
+
+export type SearchableContentScalarFieldEnum = (typeof SearchableContentScalarFieldEnum)[keyof typeof SearchableContentScalarFieldEnum]
+
+
 export const V_ArticleContextScalarFieldEnum = {
   id: 'id',
   number: 'number',
@@ -4132,6 +4213,34 @@ export type ListEnumMaintenanceTaskStatusFieldRefInput<$PrismaModel> = FieldRefI
 
 
 /**
+ * Reference to a field of type 'SearchableContentType'
+ */
+export type EnumSearchableContentTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'SearchableContentType'>
+    
+
+
+/**
+ * Reference to a field of type 'SearchableContentType[]'
+ */
+export type ListEnumSearchableContentTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'SearchableContentType[]'>
+    
+
+
+/**
+ * Reference to a field of type 'IndexType'
+ */
+export type EnumIndexTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'IndexType'>
+    
+
+
+/**
+ * Reference to a field of type 'IndexType[]'
+ */
+export type ListEnumIndexTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'IndexType[]'>
+    
+
+
+/**
  * Reference to a field of type 'Float'
  */
 export type FloatFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Float'>
@@ -4260,6 +4369,7 @@ export type GlobalOmitConfig = {
   verification?: Prisma.VerificationOmit
   asset?: Prisma.AssetOmit
   maintenanceTask?: Prisma.MaintenanceTaskOmit
+  searchableContent?: Prisma.SearchableContentOmit
   v_ArticleContext?: Prisma.v_ArticleContextOmit
   v_ResolutionSearch?: Prisma.v_ResolutionSearchOmit
   v_MissingResolution?: Prisma.v_MissingResolutionOmit

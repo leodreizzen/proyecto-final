@@ -303,6 +303,7 @@ export type ResolutionWhereInput = {
   upload?: Prisma.XOR<Prisma.ResolutionUploadScalarRelationFilter, Prisma.ResolutionUploadWhereInput>
   vArticleContexts?: Prisma.V_ArticleContextListRelationFilter
   maintenanceTasks?: Prisma.MaintenanceTaskListRelationFilter
+  searchableItems?: Prisma.SearchableContentListRelationFilter
 }
 
 export type ResolutionOrderByWithRelationInput = {
@@ -332,6 +333,7 @@ export type ResolutionOrderByWithRelationInput = {
   upload?: Prisma.ResolutionUploadOrderByWithRelationInput
   vArticleContexts?: Prisma.v_ArticleContextOrderByRelationAggregateInput
   maintenanceTasks?: Prisma.MaintenanceTaskOrderByRelationAggregateInput
+  searchableItems?: Prisma.SearchableContentOrderByRelationAggregateInput
 }
 
 export type ResolutionWhereUniqueInput = Prisma.AtLeast<{
@@ -365,6 +367,7 @@ export type ResolutionWhereUniqueInput = Prisma.AtLeast<{
   upload?: Prisma.XOR<Prisma.ResolutionUploadScalarRelationFilter, Prisma.ResolutionUploadWhereInput>
   vArticleContexts?: Prisma.V_ArticleContextListRelationFilter
   maintenanceTasks?: Prisma.MaintenanceTaskListRelationFilter
+  searchableItems?: Prisma.SearchableContentListRelationFilter
 }, "id" | "originalFileId" | "resolutionUploadId" | "initial_number_year">
 
 export type ResolutionOrderByWithAggregationInput = {
@@ -435,6 +438,7 @@ export type ResolutionCreateInput = {
   upload: Prisma.ResolutionUploadCreateNestedOneWithoutResolutionInput
   vArticleContexts?: Prisma.v_ArticleContextCreateNestedManyWithoutRootResolutionInput
   maintenanceTasks?: Prisma.MaintenanceTaskCreateNestedManyWithoutResolutionInput
+  searchableItems?: Prisma.SearchableContentCreateNestedManyWithoutResolutionInput
 }
 
 export type ResolutionUncheckedCreateInput = {
@@ -461,6 +465,7 @@ export type ResolutionUncheckedCreateInput = {
   search?: Prisma.v_ResolutionSearchUncheckedCreateNestedOneWithoutResolutionInput
   vArticleContexts?: Prisma.v_ArticleContextUncheckedCreateNestedManyWithoutRootResolutionInput
   maintenanceTasks?: Prisma.MaintenanceTaskUncheckedCreateNestedManyWithoutResolutionInput
+  searchableItems?: Prisma.SearchableContentUncheckedCreateNestedManyWithoutResolutionInput
 }
 
 export type ResolutionUpdateInput = {
@@ -487,6 +492,7 @@ export type ResolutionUpdateInput = {
   upload?: Prisma.ResolutionUploadUpdateOneRequiredWithoutResolutionNestedInput
   vArticleContexts?: Prisma.v_ArticleContextUpdateManyWithoutRootResolutionNestedInput
   maintenanceTasks?: Prisma.MaintenanceTaskUpdateManyWithoutResolutionNestedInput
+  searchableItems?: Prisma.SearchableContentUpdateManyWithoutResolutionNestedInput
 }
 
 export type ResolutionUncheckedUpdateInput = {
@@ -513,6 +519,7 @@ export type ResolutionUncheckedUpdateInput = {
   search?: Prisma.v_ResolutionSearchUncheckedUpdateOneWithoutResolutionNestedInput
   vArticleContexts?: Prisma.v_ArticleContextUncheckedUpdateManyWithoutRootResolutionNestedInput
   maintenanceTasks?: Prisma.MaintenanceTaskUncheckedUpdateManyWithoutResolutionNestedInput
+  searchableItems?: Prisma.SearchableContentUncheckedUpdateManyWithoutResolutionNestedInput
 }
 
 export type ResolutionCreateManyInput = {
@@ -890,6 +897,14 @@ export type ResolutionUpdateOneRequiredWithoutMaintenanceTasksNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.ResolutionUpdateToOneWithWhereWithoutMaintenanceTasksInput, Prisma.ResolutionUpdateWithoutMaintenanceTasksInput>, Prisma.ResolutionUncheckedUpdateWithoutMaintenanceTasksInput>
 }
 
+export type ResolutionUpdateOneRequiredWithoutSearchableItemsNestedInput = {
+  create?: Prisma.XOR<Prisma.ResolutionCreateWithoutSearchableItemsInput, Prisma.ResolutionUncheckedCreateWithoutSearchableItemsInput>
+  connectOrCreate?: Prisma.ResolutionCreateOrConnectWithoutSearchableItemsInput
+  upsert?: Prisma.ResolutionUpsertWithoutSearchableItemsInput
+  connect?: Prisma.ResolutionWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.ResolutionUpdateToOneWithWhereWithoutSearchableItemsInput, Prisma.ResolutionUpdateWithoutSearchableItemsInput>, Prisma.ResolutionUncheckedUpdateWithoutSearchableItemsInput>
+}
+
 export type ResolutionCreateWithoutRecitalsInput = {
   id?: string
   initial: string
@@ -913,6 +928,7 @@ export type ResolutionCreateWithoutRecitalsInput = {
   upload: Prisma.ResolutionUploadCreateNestedOneWithoutResolutionInput
   vArticleContexts?: Prisma.v_ArticleContextCreateNestedManyWithoutRootResolutionInput
   maintenanceTasks?: Prisma.MaintenanceTaskCreateNestedManyWithoutResolutionInput
+  searchableItems?: Prisma.SearchableContentCreateNestedManyWithoutResolutionInput
 }
 
 export type ResolutionUncheckedCreateWithoutRecitalsInput = {
@@ -938,6 +954,7 @@ export type ResolutionUncheckedCreateWithoutRecitalsInput = {
   search?: Prisma.v_ResolutionSearchUncheckedCreateNestedOneWithoutResolutionInput
   vArticleContexts?: Prisma.v_ArticleContextUncheckedCreateNestedManyWithoutRootResolutionInput
   maintenanceTasks?: Prisma.MaintenanceTaskUncheckedCreateNestedManyWithoutResolutionInput
+  searchableItems?: Prisma.SearchableContentUncheckedCreateNestedManyWithoutResolutionInput
 }
 
 export type ResolutionCreateOrConnectWithoutRecitalsInput = {
@@ -979,6 +996,7 @@ export type ResolutionUpdateWithoutRecitalsInput = {
   upload?: Prisma.ResolutionUploadUpdateOneRequiredWithoutResolutionNestedInput
   vArticleContexts?: Prisma.v_ArticleContextUpdateManyWithoutRootResolutionNestedInput
   maintenanceTasks?: Prisma.MaintenanceTaskUpdateManyWithoutResolutionNestedInput
+  searchableItems?: Prisma.SearchableContentUpdateManyWithoutResolutionNestedInput
 }
 
 export type ResolutionUncheckedUpdateWithoutRecitalsInput = {
@@ -1004,6 +1022,7 @@ export type ResolutionUncheckedUpdateWithoutRecitalsInput = {
   search?: Prisma.v_ResolutionSearchUncheckedUpdateOneWithoutResolutionNestedInput
   vArticleContexts?: Prisma.v_ArticleContextUncheckedUpdateManyWithoutRootResolutionNestedInput
   maintenanceTasks?: Prisma.MaintenanceTaskUncheckedUpdateManyWithoutResolutionNestedInput
+  searchableItems?: Prisma.SearchableContentUncheckedUpdateManyWithoutResolutionNestedInput
 }
 
 export type ResolutionCreateWithoutConsiderationsInput = {
@@ -1029,6 +1048,7 @@ export type ResolutionCreateWithoutConsiderationsInput = {
   upload: Prisma.ResolutionUploadCreateNestedOneWithoutResolutionInput
   vArticleContexts?: Prisma.v_ArticleContextCreateNestedManyWithoutRootResolutionInput
   maintenanceTasks?: Prisma.MaintenanceTaskCreateNestedManyWithoutResolutionInput
+  searchableItems?: Prisma.SearchableContentCreateNestedManyWithoutResolutionInput
 }
 
 export type ResolutionUncheckedCreateWithoutConsiderationsInput = {
@@ -1054,6 +1074,7 @@ export type ResolutionUncheckedCreateWithoutConsiderationsInput = {
   search?: Prisma.v_ResolutionSearchUncheckedCreateNestedOneWithoutResolutionInput
   vArticleContexts?: Prisma.v_ArticleContextUncheckedCreateNestedManyWithoutRootResolutionInput
   maintenanceTasks?: Prisma.MaintenanceTaskUncheckedCreateNestedManyWithoutResolutionInput
+  searchableItems?: Prisma.SearchableContentUncheckedCreateNestedManyWithoutResolutionInput
 }
 
 export type ResolutionCreateOrConnectWithoutConsiderationsInput = {
@@ -1095,6 +1116,7 @@ export type ResolutionUpdateWithoutConsiderationsInput = {
   upload?: Prisma.ResolutionUploadUpdateOneRequiredWithoutResolutionNestedInput
   vArticleContexts?: Prisma.v_ArticleContextUpdateManyWithoutRootResolutionNestedInput
   maintenanceTasks?: Prisma.MaintenanceTaskUpdateManyWithoutResolutionNestedInput
+  searchableItems?: Prisma.SearchableContentUpdateManyWithoutResolutionNestedInput
 }
 
 export type ResolutionUncheckedUpdateWithoutConsiderationsInput = {
@@ -1120,6 +1142,7 @@ export type ResolutionUncheckedUpdateWithoutConsiderationsInput = {
   search?: Prisma.v_ResolutionSearchUncheckedUpdateOneWithoutResolutionNestedInput
   vArticleContexts?: Prisma.v_ArticleContextUncheckedUpdateManyWithoutRootResolutionNestedInput
   maintenanceTasks?: Prisma.MaintenanceTaskUncheckedUpdateManyWithoutResolutionNestedInput
+  searchableItems?: Prisma.SearchableContentUncheckedUpdateManyWithoutResolutionNestedInput
 }
 
 export type ResolutionCreateWithoutArticlesInput = {
@@ -1145,6 +1168,7 @@ export type ResolutionCreateWithoutArticlesInput = {
   upload: Prisma.ResolutionUploadCreateNestedOneWithoutResolutionInput
   vArticleContexts?: Prisma.v_ArticleContextCreateNestedManyWithoutRootResolutionInput
   maintenanceTasks?: Prisma.MaintenanceTaskCreateNestedManyWithoutResolutionInput
+  searchableItems?: Prisma.SearchableContentCreateNestedManyWithoutResolutionInput
 }
 
 export type ResolutionUncheckedCreateWithoutArticlesInput = {
@@ -1170,6 +1194,7 @@ export type ResolutionUncheckedCreateWithoutArticlesInput = {
   search?: Prisma.v_ResolutionSearchUncheckedCreateNestedOneWithoutResolutionInput
   vArticleContexts?: Prisma.v_ArticleContextUncheckedCreateNestedManyWithoutRootResolutionInput
   maintenanceTasks?: Prisma.MaintenanceTaskUncheckedCreateNestedManyWithoutResolutionInput
+  searchableItems?: Prisma.SearchableContentUncheckedCreateNestedManyWithoutResolutionInput
 }
 
 export type ResolutionCreateOrConnectWithoutArticlesInput = {
@@ -1211,6 +1236,7 @@ export type ResolutionUpdateWithoutArticlesInput = {
   upload?: Prisma.ResolutionUploadUpdateOneRequiredWithoutResolutionNestedInput
   vArticleContexts?: Prisma.v_ArticleContextUpdateManyWithoutRootResolutionNestedInput
   maintenanceTasks?: Prisma.MaintenanceTaskUpdateManyWithoutResolutionNestedInput
+  searchableItems?: Prisma.SearchableContentUpdateManyWithoutResolutionNestedInput
 }
 
 export type ResolutionUncheckedUpdateWithoutArticlesInput = {
@@ -1236,6 +1262,7 @@ export type ResolutionUncheckedUpdateWithoutArticlesInput = {
   search?: Prisma.v_ResolutionSearchUncheckedUpdateOneWithoutResolutionNestedInput
   vArticleContexts?: Prisma.v_ArticleContextUncheckedUpdateManyWithoutRootResolutionNestedInput
   maintenanceTasks?: Prisma.MaintenanceTaskUncheckedUpdateManyWithoutResolutionNestedInput
+  searchableItems?: Prisma.SearchableContentUncheckedUpdateManyWithoutResolutionNestedInput
 }
 
 export type ResolutionCreateWithoutAnnexesInput = {
@@ -1261,6 +1288,7 @@ export type ResolutionCreateWithoutAnnexesInput = {
   upload: Prisma.ResolutionUploadCreateNestedOneWithoutResolutionInput
   vArticleContexts?: Prisma.v_ArticleContextCreateNestedManyWithoutRootResolutionInput
   maintenanceTasks?: Prisma.MaintenanceTaskCreateNestedManyWithoutResolutionInput
+  searchableItems?: Prisma.SearchableContentCreateNestedManyWithoutResolutionInput
 }
 
 export type ResolutionUncheckedCreateWithoutAnnexesInput = {
@@ -1286,6 +1314,7 @@ export type ResolutionUncheckedCreateWithoutAnnexesInput = {
   search?: Prisma.v_ResolutionSearchUncheckedCreateNestedOneWithoutResolutionInput
   vArticleContexts?: Prisma.v_ArticleContextUncheckedCreateNestedManyWithoutRootResolutionInput
   maintenanceTasks?: Prisma.MaintenanceTaskUncheckedCreateNestedManyWithoutResolutionInput
+  searchableItems?: Prisma.SearchableContentUncheckedCreateNestedManyWithoutResolutionInput
 }
 
 export type ResolutionCreateOrConnectWithoutAnnexesInput = {
@@ -1327,6 +1356,7 @@ export type ResolutionUpdateWithoutAnnexesInput = {
   upload?: Prisma.ResolutionUploadUpdateOneRequiredWithoutResolutionNestedInput
   vArticleContexts?: Prisma.v_ArticleContextUpdateManyWithoutRootResolutionNestedInput
   maintenanceTasks?: Prisma.MaintenanceTaskUpdateManyWithoutResolutionNestedInput
+  searchableItems?: Prisma.SearchableContentUpdateManyWithoutResolutionNestedInput
 }
 
 export type ResolutionUncheckedUpdateWithoutAnnexesInput = {
@@ -1352,6 +1382,7 @@ export type ResolutionUncheckedUpdateWithoutAnnexesInput = {
   search?: Prisma.v_ResolutionSearchUncheckedUpdateOneWithoutResolutionNestedInput
   vArticleContexts?: Prisma.v_ArticleContextUncheckedUpdateManyWithoutRootResolutionNestedInput
   maintenanceTasks?: Prisma.MaintenanceTaskUncheckedUpdateManyWithoutResolutionNestedInput
+  searchableItems?: Prisma.SearchableContentUncheckedUpdateManyWithoutResolutionNestedInput
 }
 
 export type ResolutionCreateWithoutReferencedByInput = {
@@ -1377,6 +1408,7 @@ export type ResolutionCreateWithoutReferencedByInput = {
   upload: Prisma.ResolutionUploadCreateNestedOneWithoutResolutionInput
   vArticleContexts?: Prisma.v_ArticleContextCreateNestedManyWithoutRootResolutionInput
   maintenanceTasks?: Prisma.MaintenanceTaskCreateNestedManyWithoutResolutionInput
+  searchableItems?: Prisma.SearchableContentCreateNestedManyWithoutResolutionInput
 }
 
 export type ResolutionUncheckedCreateWithoutReferencedByInput = {
@@ -1402,6 +1434,7 @@ export type ResolutionUncheckedCreateWithoutReferencedByInput = {
   search?: Prisma.v_ResolutionSearchUncheckedCreateNestedOneWithoutResolutionInput
   vArticleContexts?: Prisma.v_ArticleContextUncheckedCreateNestedManyWithoutRootResolutionInput
   maintenanceTasks?: Prisma.MaintenanceTaskUncheckedCreateNestedManyWithoutResolutionInput
+  searchableItems?: Prisma.SearchableContentUncheckedCreateNestedManyWithoutResolutionInput
 }
 
 export type ResolutionCreateOrConnectWithoutReferencedByInput = {
@@ -1443,6 +1476,7 @@ export type ResolutionUpdateWithoutReferencedByInput = {
   upload?: Prisma.ResolutionUploadUpdateOneRequiredWithoutResolutionNestedInput
   vArticleContexts?: Prisma.v_ArticleContextUpdateManyWithoutRootResolutionNestedInput
   maintenanceTasks?: Prisma.MaintenanceTaskUpdateManyWithoutResolutionNestedInput
+  searchableItems?: Prisma.SearchableContentUpdateManyWithoutResolutionNestedInput
 }
 
 export type ResolutionUncheckedUpdateWithoutReferencedByInput = {
@@ -1468,6 +1502,7 @@ export type ResolutionUncheckedUpdateWithoutReferencedByInput = {
   search?: Prisma.v_ResolutionSearchUncheckedUpdateOneWithoutResolutionNestedInput
   vArticleContexts?: Prisma.v_ArticleContextUncheckedUpdateManyWithoutRootResolutionNestedInput
   maintenanceTasks?: Prisma.MaintenanceTaskUncheckedUpdateManyWithoutResolutionNestedInput
+  searchableItems?: Prisma.SearchableContentUncheckedUpdateManyWithoutResolutionNestedInput
 }
 
 export type ResolutionCreateWithoutUploadInput = {
@@ -1493,6 +1528,7 @@ export type ResolutionCreateWithoutUploadInput = {
   search?: Prisma.v_ResolutionSearchCreateNestedOneWithoutResolutionInput
   vArticleContexts?: Prisma.v_ArticleContextCreateNestedManyWithoutRootResolutionInput
   maintenanceTasks?: Prisma.MaintenanceTaskCreateNestedManyWithoutResolutionInput
+  searchableItems?: Prisma.SearchableContentCreateNestedManyWithoutResolutionInput
 }
 
 export type ResolutionUncheckedCreateWithoutUploadInput = {
@@ -1518,6 +1554,7 @@ export type ResolutionUncheckedCreateWithoutUploadInput = {
   search?: Prisma.v_ResolutionSearchUncheckedCreateNestedOneWithoutResolutionInput
   vArticleContexts?: Prisma.v_ArticleContextUncheckedCreateNestedManyWithoutRootResolutionInput
   maintenanceTasks?: Prisma.MaintenanceTaskUncheckedCreateNestedManyWithoutResolutionInput
+  searchableItems?: Prisma.SearchableContentUncheckedCreateNestedManyWithoutResolutionInput
 }
 
 export type ResolutionCreateOrConnectWithoutUploadInput = {
@@ -1559,6 +1596,7 @@ export type ResolutionUpdateWithoutUploadInput = {
   search?: Prisma.v_ResolutionSearchUpdateOneWithoutResolutionNestedInput
   vArticleContexts?: Prisma.v_ArticleContextUpdateManyWithoutRootResolutionNestedInput
   maintenanceTasks?: Prisma.MaintenanceTaskUpdateManyWithoutResolutionNestedInput
+  searchableItems?: Prisma.SearchableContentUpdateManyWithoutResolutionNestedInput
 }
 
 export type ResolutionUncheckedUpdateWithoutUploadInput = {
@@ -1584,6 +1622,7 @@ export type ResolutionUncheckedUpdateWithoutUploadInput = {
   search?: Prisma.v_ResolutionSearchUncheckedUpdateOneWithoutResolutionNestedInput
   vArticleContexts?: Prisma.v_ArticleContextUncheckedUpdateManyWithoutRootResolutionNestedInput
   maintenanceTasks?: Prisma.MaintenanceTaskUncheckedUpdateManyWithoutResolutionNestedInput
+  searchableItems?: Prisma.SearchableContentUncheckedUpdateManyWithoutResolutionNestedInput
 }
 
 export type ResolutionCreateWithoutLastUpdateByInput = {
@@ -1609,6 +1648,7 @@ export type ResolutionCreateWithoutLastUpdateByInput = {
   upload: Prisma.ResolutionUploadCreateNestedOneWithoutResolutionInput
   vArticleContexts?: Prisma.v_ArticleContextCreateNestedManyWithoutRootResolutionInput
   maintenanceTasks?: Prisma.MaintenanceTaskCreateNestedManyWithoutResolutionInput
+  searchableItems?: Prisma.SearchableContentCreateNestedManyWithoutResolutionInput
 }
 
 export type ResolutionUncheckedCreateWithoutLastUpdateByInput = {
@@ -1634,6 +1674,7 @@ export type ResolutionUncheckedCreateWithoutLastUpdateByInput = {
   search?: Prisma.v_ResolutionSearchUncheckedCreateNestedOneWithoutResolutionInput
   vArticleContexts?: Prisma.v_ArticleContextUncheckedCreateNestedManyWithoutRootResolutionInput
   maintenanceTasks?: Prisma.MaintenanceTaskUncheckedCreateNestedManyWithoutResolutionInput
+  searchableItems?: Prisma.SearchableContentUncheckedCreateNestedManyWithoutResolutionInput
 }
 
 export type ResolutionCreateOrConnectWithoutLastUpdateByInput = {
@@ -1706,6 +1747,7 @@ export type ResolutionCreateWithoutOriginalFileInput = {
   upload: Prisma.ResolutionUploadCreateNestedOneWithoutResolutionInput
   vArticleContexts?: Prisma.v_ArticleContextCreateNestedManyWithoutRootResolutionInput
   maintenanceTasks?: Prisma.MaintenanceTaskCreateNestedManyWithoutResolutionInput
+  searchableItems?: Prisma.SearchableContentCreateNestedManyWithoutResolutionInput
 }
 
 export type ResolutionUncheckedCreateWithoutOriginalFileInput = {
@@ -1731,6 +1773,7 @@ export type ResolutionUncheckedCreateWithoutOriginalFileInput = {
   search?: Prisma.v_ResolutionSearchUncheckedCreateNestedOneWithoutResolutionInput
   vArticleContexts?: Prisma.v_ArticleContextUncheckedCreateNestedManyWithoutRootResolutionInput
   maintenanceTasks?: Prisma.MaintenanceTaskUncheckedCreateNestedManyWithoutResolutionInput
+  searchableItems?: Prisma.SearchableContentUncheckedCreateNestedManyWithoutResolutionInput
 }
 
 export type ResolutionCreateOrConnectWithoutOriginalFileInput = {
@@ -1772,6 +1815,7 @@ export type ResolutionUpdateWithoutOriginalFileInput = {
   upload?: Prisma.ResolutionUploadUpdateOneRequiredWithoutResolutionNestedInput
   vArticleContexts?: Prisma.v_ArticleContextUpdateManyWithoutRootResolutionNestedInput
   maintenanceTasks?: Prisma.MaintenanceTaskUpdateManyWithoutResolutionNestedInput
+  searchableItems?: Prisma.SearchableContentUpdateManyWithoutResolutionNestedInput
 }
 
 export type ResolutionUncheckedUpdateWithoutOriginalFileInput = {
@@ -1797,6 +1841,7 @@ export type ResolutionUncheckedUpdateWithoutOriginalFileInput = {
   search?: Prisma.v_ResolutionSearchUncheckedUpdateOneWithoutResolutionNestedInput
   vArticleContexts?: Prisma.v_ArticleContextUncheckedUpdateManyWithoutRootResolutionNestedInput
   maintenanceTasks?: Prisma.MaintenanceTaskUncheckedUpdateManyWithoutResolutionNestedInput
+  searchableItems?: Prisma.SearchableContentUncheckedUpdateManyWithoutResolutionNestedInput
 }
 
 export type ResolutionCreateWithoutMaintenanceTasksInput = {
@@ -1822,6 +1867,7 @@ export type ResolutionCreateWithoutMaintenanceTasksInput = {
   search?: Prisma.v_ResolutionSearchCreateNestedOneWithoutResolutionInput
   upload: Prisma.ResolutionUploadCreateNestedOneWithoutResolutionInput
   vArticleContexts?: Prisma.v_ArticleContextCreateNestedManyWithoutRootResolutionInput
+  searchableItems?: Prisma.SearchableContentCreateNestedManyWithoutResolutionInput
 }
 
 export type ResolutionUncheckedCreateWithoutMaintenanceTasksInput = {
@@ -1847,6 +1893,7 @@ export type ResolutionUncheckedCreateWithoutMaintenanceTasksInput = {
   referencedBy?: Prisma.ReferenceResolutionUncheckedCreateNestedManyWithoutResolutionInput
   search?: Prisma.v_ResolutionSearchUncheckedCreateNestedOneWithoutResolutionInput
   vArticleContexts?: Prisma.v_ArticleContextUncheckedCreateNestedManyWithoutRootResolutionInput
+  searchableItems?: Prisma.SearchableContentUncheckedCreateNestedManyWithoutResolutionInput
 }
 
 export type ResolutionCreateOrConnectWithoutMaintenanceTasksInput = {
@@ -1888,6 +1935,7 @@ export type ResolutionUpdateWithoutMaintenanceTasksInput = {
   search?: Prisma.v_ResolutionSearchUpdateOneWithoutResolutionNestedInput
   upload?: Prisma.ResolutionUploadUpdateOneRequiredWithoutResolutionNestedInput
   vArticleContexts?: Prisma.v_ArticleContextUpdateManyWithoutRootResolutionNestedInput
+  searchableItems?: Prisma.SearchableContentUpdateManyWithoutResolutionNestedInput
 }
 
 export type ResolutionUncheckedUpdateWithoutMaintenanceTasksInput = {
@@ -1913,6 +1961,127 @@ export type ResolutionUncheckedUpdateWithoutMaintenanceTasksInput = {
   referencedBy?: Prisma.ReferenceResolutionUncheckedUpdateManyWithoutResolutionNestedInput
   search?: Prisma.v_ResolutionSearchUncheckedUpdateOneWithoutResolutionNestedInput
   vArticleContexts?: Prisma.v_ArticleContextUncheckedUpdateManyWithoutRootResolutionNestedInput
+  searchableItems?: Prisma.SearchableContentUncheckedUpdateManyWithoutResolutionNestedInput
+}
+
+export type ResolutionCreateWithoutSearchableItemsInput = {
+  id?: string
+  initial: string
+  number: number
+  year: number
+  decisionBy: string
+  date: Date | string
+  title: string
+  summary: string
+  keywords?: Prisma.ResolutionCreatekeywordsInput | string[]
+  caseFiles?: Prisma.ResolutionCreatecaseFilesInput | string[]
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  recitals?: Prisma.RecitalCreateNestedManyWithoutResolutionInput
+  considerations?: Prisma.ConsiderationCreateNestedManyWithoutResolutionInput
+  articles?: Prisma.ArticleCreateNestedManyWithoutResolutionInput
+  annexes?: Prisma.AnnexCreateNestedManyWithoutResolutionInput
+  originalFile: Prisma.AssetCreateNestedOneWithoutResolutionInput
+  lastUpdateBy: Prisma.UserCreateNestedOneWithoutUpdatedResolutionsInput
+  referencedBy?: Prisma.ReferenceResolutionCreateNestedManyWithoutResolutionInput
+  search?: Prisma.v_ResolutionSearchCreateNestedOneWithoutResolutionInput
+  upload: Prisma.ResolutionUploadCreateNestedOneWithoutResolutionInput
+  vArticleContexts?: Prisma.v_ArticleContextCreateNestedManyWithoutRootResolutionInput
+  maintenanceTasks?: Prisma.MaintenanceTaskCreateNestedManyWithoutResolutionInput
+}
+
+export type ResolutionUncheckedCreateWithoutSearchableItemsInput = {
+  id?: string
+  initial: string
+  number: number
+  year: number
+  decisionBy: string
+  date: Date | string
+  title: string
+  summary: string
+  keywords?: Prisma.ResolutionCreatekeywordsInput | string[]
+  caseFiles?: Prisma.ResolutionCreatecaseFilesInput | string[]
+  originalFileId: string
+  lastUpdateById: string
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  resolutionUploadId: string
+  recitals?: Prisma.RecitalUncheckedCreateNestedManyWithoutResolutionInput
+  considerations?: Prisma.ConsiderationUncheckedCreateNestedManyWithoutResolutionInput
+  articles?: Prisma.ArticleUncheckedCreateNestedManyWithoutResolutionInput
+  annexes?: Prisma.AnnexUncheckedCreateNestedManyWithoutResolutionInput
+  referencedBy?: Prisma.ReferenceResolutionUncheckedCreateNestedManyWithoutResolutionInput
+  search?: Prisma.v_ResolutionSearchUncheckedCreateNestedOneWithoutResolutionInput
+  vArticleContexts?: Prisma.v_ArticleContextUncheckedCreateNestedManyWithoutRootResolutionInput
+  maintenanceTasks?: Prisma.MaintenanceTaskUncheckedCreateNestedManyWithoutResolutionInput
+}
+
+export type ResolutionCreateOrConnectWithoutSearchableItemsInput = {
+  where: Prisma.ResolutionWhereUniqueInput
+  create: Prisma.XOR<Prisma.ResolutionCreateWithoutSearchableItemsInput, Prisma.ResolutionUncheckedCreateWithoutSearchableItemsInput>
+}
+
+export type ResolutionUpsertWithoutSearchableItemsInput = {
+  update: Prisma.XOR<Prisma.ResolutionUpdateWithoutSearchableItemsInput, Prisma.ResolutionUncheckedUpdateWithoutSearchableItemsInput>
+  create: Prisma.XOR<Prisma.ResolutionCreateWithoutSearchableItemsInput, Prisma.ResolutionUncheckedCreateWithoutSearchableItemsInput>
+  where?: Prisma.ResolutionWhereInput
+}
+
+export type ResolutionUpdateToOneWithWhereWithoutSearchableItemsInput = {
+  where?: Prisma.ResolutionWhereInput
+  data: Prisma.XOR<Prisma.ResolutionUpdateWithoutSearchableItemsInput, Prisma.ResolutionUncheckedUpdateWithoutSearchableItemsInput>
+}
+
+export type ResolutionUpdateWithoutSearchableItemsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  initial?: Prisma.StringFieldUpdateOperationsInput | string
+  number?: Prisma.IntFieldUpdateOperationsInput | number
+  year?: Prisma.IntFieldUpdateOperationsInput | number
+  decisionBy?: Prisma.StringFieldUpdateOperationsInput | string
+  date?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  title?: Prisma.StringFieldUpdateOperationsInput | string
+  summary?: Prisma.StringFieldUpdateOperationsInput | string
+  keywords?: Prisma.ResolutionUpdatekeywordsInput | string[]
+  caseFiles?: Prisma.ResolutionUpdatecaseFilesInput | string[]
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  recitals?: Prisma.RecitalUpdateManyWithoutResolutionNestedInput
+  considerations?: Prisma.ConsiderationUpdateManyWithoutResolutionNestedInput
+  articles?: Prisma.ArticleUpdateManyWithoutResolutionNestedInput
+  annexes?: Prisma.AnnexUpdateManyWithoutResolutionNestedInput
+  originalFile?: Prisma.AssetUpdateOneRequiredWithoutResolutionNestedInput
+  lastUpdateBy?: Prisma.UserUpdateOneRequiredWithoutUpdatedResolutionsNestedInput
+  referencedBy?: Prisma.ReferenceResolutionUpdateManyWithoutResolutionNestedInput
+  search?: Prisma.v_ResolutionSearchUpdateOneWithoutResolutionNestedInput
+  upload?: Prisma.ResolutionUploadUpdateOneRequiredWithoutResolutionNestedInput
+  vArticleContexts?: Prisma.v_ArticleContextUpdateManyWithoutRootResolutionNestedInput
+  maintenanceTasks?: Prisma.MaintenanceTaskUpdateManyWithoutResolutionNestedInput
+}
+
+export type ResolutionUncheckedUpdateWithoutSearchableItemsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  initial?: Prisma.StringFieldUpdateOperationsInput | string
+  number?: Prisma.IntFieldUpdateOperationsInput | number
+  year?: Prisma.IntFieldUpdateOperationsInput | number
+  decisionBy?: Prisma.StringFieldUpdateOperationsInput | string
+  date?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  title?: Prisma.StringFieldUpdateOperationsInput | string
+  summary?: Prisma.StringFieldUpdateOperationsInput | string
+  keywords?: Prisma.ResolutionUpdatekeywordsInput | string[]
+  caseFiles?: Prisma.ResolutionUpdatecaseFilesInput | string[]
+  originalFileId?: Prisma.StringFieldUpdateOperationsInput | string
+  lastUpdateById?: Prisma.StringFieldUpdateOperationsInput | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  resolutionUploadId?: Prisma.StringFieldUpdateOperationsInput | string
+  recitals?: Prisma.RecitalUncheckedUpdateManyWithoutResolutionNestedInput
+  considerations?: Prisma.ConsiderationUncheckedUpdateManyWithoutResolutionNestedInput
+  articles?: Prisma.ArticleUncheckedUpdateManyWithoutResolutionNestedInput
+  annexes?: Prisma.AnnexUncheckedUpdateManyWithoutResolutionNestedInput
+  referencedBy?: Prisma.ReferenceResolutionUncheckedUpdateManyWithoutResolutionNestedInput
+  search?: Prisma.v_ResolutionSearchUncheckedUpdateOneWithoutResolutionNestedInput
+  vArticleContexts?: Prisma.v_ArticleContextUncheckedUpdateManyWithoutRootResolutionNestedInput
+  maintenanceTasks?: Prisma.MaintenanceTaskUncheckedUpdateManyWithoutResolutionNestedInput
 }
 
 export type ResolutionUpdateOneRequiredWithoutVArticleContextsNestedInput = {
@@ -1963,6 +2132,7 @@ export type ResolutionUpdateWithoutLastUpdateByInput = {
   upload?: Prisma.ResolutionUploadUpdateOneRequiredWithoutResolutionNestedInput
   vArticleContexts?: Prisma.v_ArticleContextUpdateManyWithoutRootResolutionNestedInput
   maintenanceTasks?: Prisma.MaintenanceTaskUpdateManyWithoutResolutionNestedInput
+  searchableItems?: Prisma.SearchableContentUpdateManyWithoutResolutionNestedInput
 }
 
 export type ResolutionUncheckedUpdateWithoutLastUpdateByInput = {
@@ -1988,6 +2158,7 @@ export type ResolutionUncheckedUpdateWithoutLastUpdateByInput = {
   search?: Prisma.v_ResolutionSearchUncheckedUpdateOneWithoutResolutionNestedInput
   vArticleContexts?: Prisma.v_ArticleContextUncheckedUpdateManyWithoutRootResolutionNestedInput
   maintenanceTasks?: Prisma.MaintenanceTaskUncheckedUpdateManyWithoutResolutionNestedInput
+  searchableItems?: Prisma.SearchableContentUncheckedUpdateManyWithoutResolutionNestedInput
 }
 
 export type ResolutionUncheckedUpdateManyWithoutLastUpdateByInput = {
@@ -2030,6 +2201,7 @@ export type ResolutionCreateWithoutVArticleContextsInput = {
   search?: Prisma.v_ResolutionSearchCreateNestedOneWithoutResolutionInput
   upload: Prisma.ResolutionUploadCreateNestedOneWithoutResolutionInput
   maintenanceTasks?: Prisma.MaintenanceTaskCreateNestedManyWithoutResolutionInput
+  searchableItems?: Prisma.SearchableContentCreateNestedManyWithoutResolutionInput
 }
 
 export type ResolutionUncheckedCreateWithoutVArticleContextsInput = {
@@ -2055,6 +2227,7 @@ export type ResolutionUncheckedCreateWithoutVArticleContextsInput = {
   referencedBy?: Prisma.ReferenceResolutionUncheckedCreateNestedManyWithoutResolutionInput
   search?: Prisma.v_ResolutionSearchUncheckedCreateNestedOneWithoutResolutionInput
   maintenanceTasks?: Prisma.MaintenanceTaskUncheckedCreateNestedManyWithoutResolutionInput
+  searchableItems?: Prisma.SearchableContentUncheckedCreateNestedManyWithoutResolutionInput
 }
 
 export type ResolutionCreateOrConnectWithoutVArticleContextsInput = {
@@ -2096,6 +2269,7 @@ export type ResolutionUpdateWithoutVArticleContextsInput = {
   search?: Prisma.v_ResolutionSearchUpdateOneWithoutResolutionNestedInput
   upload?: Prisma.ResolutionUploadUpdateOneRequiredWithoutResolutionNestedInput
   maintenanceTasks?: Prisma.MaintenanceTaskUpdateManyWithoutResolutionNestedInput
+  searchableItems?: Prisma.SearchableContentUpdateManyWithoutResolutionNestedInput
 }
 
 export type ResolutionUncheckedUpdateWithoutVArticleContextsInput = {
@@ -2121,6 +2295,7 @@ export type ResolutionUncheckedUpdateWithoutVArticleContextsInput = {
   referencedBy?: Prisma.ReferenceResolutionUncheckedUpdateManyWithoutResolutionNestedInput
   search?: Prisma.v_ResolutionSearchUncheckedUpdateOneWithoutResolutionNestedInput
   maintenanceTasks?: Prisma.MaintenanceTaskUncheckedUpdateManyWithoutResolutionNestedInput
+  searchableItems?: Prisma.SearchableContentUncheckedUpdateManyWithoutResolutionNestedInput
 }
 
 
@@ -2136,6 +2311,7 @@ export type ResolutionCountOutputType = {
   referencedBy: number
   vArticleContexts: number
   maintenanceTasks: number
+  searchableItems: number
 }
 
 export type ResolutionCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -2146,6 +2322,7 @@ export type ResolutionCountOutputTypeSelect<ExtArgs extends runtime.Types.Extens
   referencedBy?: boolean | ResolutionCountOutputTypeCountReferencedByArgs
   vArticleContexts?: boolean | ResolutionCountOutputTypeCountVArticleContextsArgs
   maintenanceTasks?: boolean | ResolutionCountOutputTypeCountMaintenanceTasksArgs
+  searchableItems?: boolean | ResolutionCountOutputTypeCountSearchableItemsArgs
 }
 
 /**
@@ -2207,6 +2384,13 @@ export type ResolutionCountOutputTypeCountMaintenanceTasksArgs<ExtArgs extends r
   where?: Prisma.MaintenanceTaskWhereInput
 }
 
+/**
+ * ResolutionCountOutputType without action
+ */
+export type ResolutionCountOutputTypeCountSearchableItemsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.SearchableContentWhereInput
+}
+
 
 export type ResolutionSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
@@ -2235,6 +2419,7 @@ export type ResolutionSelect<ExtArgs extends runtime.Types.Extensions.InternalAr
   upload?: boolean | Prisma.ResolutionUploadDefaultArgs<ExtArgs>
   vArticleContexts?: boolean | Prisma.Resolution$vArticleContextsArgs<ExtArgs>
   maintenanceTasks?: boolean | Prisma.Resolution$maintenanceTasksArgs<ExtArgs>
+  searchableItems?: boolean | Prisma.Resolution$searchableItemsArgs<ExtArgs>
   _count?: boolean | Prisma.ResolutionCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["resolution"]>
 
@@ -2311,6 +2496,7 @@ export type ResolutionInclude<ExtArgs extends runtime.Types.Extensions.InternalA
   upload?: boolean | Prisma.ResolutionUploadDefaultArgs<ExtArgs>
   vArticleContexts?: boolean | Prisma.Resolution$vArticleContextsArgs<ExtArgs>
   maintenanceTasks?: boolean | Prisma.Resolution$maintenanceTasksArgs<ExtArgs>
+  searchableItems?: boolean | Prisma.Resolution$searchableItemsArgs<ExtArgs>
   _count?: boolean | Prisma.ResolutionCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type ResolutionIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -2338,6 +2524,7 @@ export type $ResolutionPayload<ExtArgs extends runtime.Types.Extensions.Internal
     upload: Prisma.$ResolutionUploadPayload<ExtArgs>
     vArticleContexts: Prisma.$v_ArticleContextPayload<ExtArgs>[]
     maintenanceTasks: Prisma.$MaintenanceTaskPayload<ExtArgs>[]
+    searchableItems: Prisma.$SearchableContentPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -2760,6 +2947,7 @@ export interface Prisma__ResolutionClient<T, Null = never, ExtArgs extends runti
   upload<T extends Prisma.ResolutionUploadDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.ResolutionUploadDefaultArgs<ExtArgs>>): Prisma.Prisma__ResolutionUploadClient<runtime.Types.Result.GetResult<Prisma.$ResolutionUploadPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   vArticleContexts<T extends Prisma.Resolution$vArticleContextsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Resolution$vArticleContextsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$v_ArticleContextPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   maintenanceTasks<T extends Prisma.Resolution$maintenanceTasksArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Resolution$maintenanceTasksArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$MaintenanceTaskPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  searchableItems<T extends Prisma.Resolution$searchableItemsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Resolution$searchableItemsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$SearchableContentPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -3384,6 +3572,30 @@ export type Resolution$maintenanceTasksArgs<ExtArgs extends runtime.Types.Extens
   take?: number
   skip?: number
   distinct?: Prisma.MaintenanceTaskScalarFieldEnum | Prisma.MaintenanceTaskScalarFieldEnum[]
+}
+
+/**
+ * Resolution.searchableItems
+ */
+export type Resolution$searchableItemsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the SearchableContent
+   */
+  select?: Prisma.SearchableContentSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the SearchableContent
+   */
+  omit?: Prisma.SearchableContentOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.SearchableContentInclude<ExtArgs> | null
+  where?: Prisma.SearchableContentWhereInput
+  orderBy?: Prisma.SearchableContentOrderByWithRelationInput | Prisma.SearchableContentOrderByWithRelationInput[]
+  cursor?: Prisma.SearchableContentWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.SearchableContentScalarFieldEnum | Prisma.SearchableContentScalarFieldEnum[]
 }
 
 /**

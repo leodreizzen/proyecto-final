@@ -16,4 +16,6 @@ export interface $DbEnums {
   UserRole: "USER" | "ADMIN"
   MaintenanceTaskType: "EVALUATE_IMPACT" | "PROCESS_ADVANCED_CHANGES" | "CALCULATE_EMBEDDINGS"
   MaintenanceTaskStatus: "PENDING" | "PROCESSING" | "COMPLETED" | "FAILED" | "PARTIAL_FAILURE"
+  IndexType: "DEFINED" | "GENERATED"
+  SearchableContentType: "RECITAL" | "CONSIDERATION" | "ARTICLE" | "TEXT_ANNEX"
 }

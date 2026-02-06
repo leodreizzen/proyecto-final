@@ -88,6 +88,7 @@ export type AnnexToShow = ({
     modifiedBy?: ResolutionNaturalID[];
 }) & Repealable & {
     index: AnnexIndex;
+    name: string | null;
     addedBy: ResolutionNaturalID | null;
 }
 
@@ -104,6 +105,7 @@ export type ConsiderationToShow = {
 
 export type ResolutionToShow = {
     id: ResolutionNaturalID;
+    summary: string;
 
     decisionBy: string;
     date: Date;
@@ -131,3 +133,5 @@ export type VersionSpec = {
     causedBy?: ResolutionNaturalID;
     exclusive?: boolean;
 }
+
+export type {ReferenceMarker};

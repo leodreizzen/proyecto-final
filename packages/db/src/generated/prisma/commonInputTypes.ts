@@ -511,6 +511,40 @@ export type EnumMaintenanceTaskStatusWithAggregatesFilter<$PrismaModel = never> 
   _max?: Prisma.NestedEnumMaintenanceTaskStatusFilter<$PrismaModel>
 }
 
+export type EnumSearchableContentTypeFilter<$PrismaModel = never> = {
+  equals?: $Enums.SearchableContentType | Prisma.EnumSearchableContentTypeFieldRefInput<$PrismaModel>
+  in?: $Enums.SearchableContentType[] | Prisma.ListEnumSearchableContentTypeFieldRefInput<$PrismaModel>
+  notIn?: $Enums.SearchableContentType[] | Prisma.ListEnumSearchableContentTypeFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumSearchableContentTypeFilter<$PrismaModel> | $Enums.SearchableContentType
+}
+
+export type EnumIndexTypeNullableFilter<$PrismaModel = never> = {
+  equals?: $Enums.IndexType | Prisma.EnumIndexTypeFieldRefInput<$PrismaModel> | null
+  in?: $Enums.IndexType[] | Prisma.ListEnumIndexTypeFieldRefInput<$PrismaModel> | null
+  notIn?: $Enums.IndexType[] | Prisma.ListEnumIndexTypeFieldRefInput<$PrismaModel> | null
+  not?: Prisma.NestedEnumIndexTypeNullableFilter<$PrismaModel> | $Enums.IndexType | null
+}
+
+export type EnumSearchableContentTypeWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.SearchableContentType | Prisma.EnumSearchableContentTypeFieldRefInput<$PrismaModel>
+  in?: $Enums.SearchableContentType[] | Prisma.ListEnumSearchableContentTypeFieldRefInput<$PrismaModel>
+  notIn?: $Enums.SearchableContentType[] | Prisma.ListEnumSearchableContentTypeFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumSearchableContentTypeWithAggregatesFilter<$PrismaModel> | $Enums.SearchableContentType
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumSearchableContentTypeFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumSearchableContentTypeFilter<$PrismaModel>
+}
+
+export type EnumIndexTypeNullableWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.IndexType | Prisma.EnumIndexTypeFieldRefInput<$PrismaModel> | null
+  in?: $Enums.IndexType[] | Prisma.ListEnumIndexTypeFieldRefInput<$PrismaModel> | null
+  notIn?: $Enums.IndexType[] | Prisma.ListEnumIndexTypeFieldRefInput<$PrismaModel> | null
+  not?: Prisma.NestedEnumIndexTypeNullableWithAggregatesFilter<$PrismaModel> | $Enums.IndexType | null
+  _count?: Prisma.NestedIntNullableFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumIndexTypeNullableFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumIndexTypeNullableFilter<$PrismaModel>
+}
+
 export type NestedUuidFilter<$PrismaModel = never> = {
   equals?: string | Prisma.StringFieldRefInput<$PrismaModel>
   in?: string[] | Prisma.ListStringFieldRefInput<$PrismaModel>
@@ -988,6 +1022,40 @@ export type NestedEnumMaintenanceTaskStatusWithAggregatesFilter<$PrismaModel = n
   _count?: Prisma.NestedIntFilter<$PrismaModel>
   _min?: Prisma.NestedEnumMaintenanceTaskStatusFilter<$PrismaModel>
   _max?: Prisma.NestedEnumMaintenanceTaskStatusFilter<$PrismaModel>
+}
+
+export type NestedEnumSearchableContentTypeFilter<$PrismaModel = never> = {
+  equals?: $Enums.SearchableContentType | Prisma.EnumSearchableContentTypeFieldRefInput<$PrismaModel>
+  in?: $Enums.SearchableContentType[] | Prisma.ListEnumSearchableContentTypeFieldRefInput<$PrismaModel>
+  notIn?: $Enums.SearchableContentType[] | Prisma.ListEnumSearchableContentTypeFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumSearchableContentTypeFilter<$PrismaModel> | $Enums.SearchableContentType
+}
+
+export type NestedEnumIndexTypeNullableFilter<$PrismaModel = never> = {
+  equals?: $Enums.IndexType | Prisma.EnumIndexTypeFieldRefInput<$PrismaModel> | null
+  in?: $Enums.IndexType[] | Prisma.ListEnumIndexTypeFieldRefInput<$PrismaModel> | null
+  notIn?: $Enums.IndexType[] | Prisma.ListEnumIndexTypeFieldRefInput<$PrismaModel> | null
+  not?: Prisma.NestedEnumIndexTypeNullableFilter<$PrismaModel> | $Enums.IndexType | null
+}
+
+export type NestedEnumSearchableContentTypeWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.SearchableContentType | Prisma.EnumSearchableContentTypeFieldRefInput<$PrismaModel>
+  in?: $Enums.SearchableContentType[] | Prisma.ListEnumSearchableContentTypeFieldRefInput<$PrismaModel>
+  notIn?: $Enums.SearchableContentType[] | Prisma.ListEnumSearchableContentTypeFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumSearchableContentTypeWithAggregatesFilter<$PrismaModel> | $Enums.SearchableContentType
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumSearchableContentTypeFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumSearchableContentTypeFilter<$PrismaModel>
+}
+
+export type NestedEnumIndexTypeNullableWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.IndexType | Prisma.EnumIndexTypeFieldRefInput<$PrismaModel> | null
+  in?: $Enums.IndexType[] | Prisma.ListEnumIndexTypeFieldRefInput<$PrismaModel> | null
+  notIn?: $Enums.IndexType[] | Prisma.ListEnumIndexTypeFieldRefInput<$PrismaModel> | null
+  not?: Prisma.NestedEnumIndexTypeNullableWithAggregatesFilter<$PrismaModel> | $Enums.IndexType | null
+  _count?: Prisma.NestedIntNullableFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumIndexTypeNullableFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumIndexTypeNullableFilter<$PrismaModel>
 }
 
 

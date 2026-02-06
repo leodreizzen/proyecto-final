@@ -7,11 +7,12 @@
 generator client {
   provider        = "prisma-client"
   output          = "../src/generated/prisma"
-  previewFeatures = ["typedSql", "views"]
+  previewFeatures = ["typedSql", "views", "postgresqlExtensions"]
 }
 
 datasource db {
-  provider = "postgresql"
+  provider   = "postgresql"
+  extensions = [vector, pg_trgm]
 }
 
 model Resolution {
@@ -50,6 +51,8 @@ model Resolution {
   vArticleContexts   v_ArticleContext[]
 
   maintenanceTasks MaintenanceTask[]
+
+  searchableItems SearchableContent[]
 
   // Check: "year" must be between 1000 and 9999 and match the year of "date"
   // Check: "number" > 0
@@ -826,4 +829,53 @@ enum MaintenanceTaskStatus {
   COMPLETED
   FAILED
   PARTIAL_FAILURE
+}
+
+model SearchableContent {
+  id           String                @id @default(dbgenerated("uuidv7()")) @db.Uuid
+  resolution   Resolution            @relation(fields: [resolutionID], references: [id], onDelete: Cascade)
+  resolutionID String                @db.Uuid
+  type         SearchableContentType
+
+  recitalNumber       Int?
+  considerationNumber Int?
+  articleNumber       Int?
+  articleSuffix       Int?
+  articleIndexType    IndexType?
+  
+  annexNumber         Int?
+  annexIndexType      IndexType?
+
+  chapterNumber       Int?
+  chunkNumber         Int
+
+  context       String
+  mainText      String
+  engineVersion String
+  embedding     Unsupported("vector(768)")
+
+  createdAt DateTime @default(now())
+
+  @@index([mainText(ops: raw("gin_trgm_ops"))], type: Gin)
+  @@index([embedding]) // hnsw
+
+  // checks:
+  // type = recital => recitalNumber is not null, rest IS null
+  // type = consideration => considerationNumber is not null, rest IS null
+  // type = article => articleNumber is not null, recitalNumber and considerationNumber IS null
+  // type = text_annex => annexNumber is not null, rest IS null
+
+  // unique indexes in migration to prevent duplicates
+}
+
+enum IndexType {
+  DEFINED
+  GENERATED
+}
+
+enum SearchableContentType {
+  RECITAL
+  CONSIDERATION
+  ARTICLE
+  TEXT_ANNEX
 }

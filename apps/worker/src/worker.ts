@@ -12,6 +12,7 @@ import {processEvaluateImpactJob} from "@/maintenance_tasks/impact-evaluation";
 import {updateMaintenanceTaskStatus} from "@repo/jobs/maintenance/mutations";
 import {processAdvancedChangesJob} from "@/maintenance_tasks/advanced_changes/jobs";
 import {publishMaintenanceTaskUpdate} from "@repo/pubsub/publish/maintenance_tasks";
+import {processEmbeddingsJob} from "@/maintenance_tasks/embeddings/job";
 
 const worker = new Worker(
     resolutionsQueue.name,
@@ -65,6 +66,8 @@ const maintenanceWorker = new Worker(maintenanceQueue.name,
         }
         else if (job.name == "processAdvancedChanges") {
             return processAdvancedChangesJob(job.id);
+        } else if (job.name === "generateEmbeddings"){
+            return processEmbeddingsJob(job.id)
         }
         else{
             console.error("Job name not implemented:", job.name);

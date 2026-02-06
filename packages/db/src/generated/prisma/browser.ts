@@ -203,6 +203,11 @@ export type Asset = Prisma.AssetModel
  */
 export type MaintenanceTask = Prisma.MaintenanceTaskModel
 /**
+ * Model SearchableContent
+ * 
+ */
+export type SearchableContent = Prisma.SearchableContentModel
+/**
  * Model v_ArticleContext
  * 
  */

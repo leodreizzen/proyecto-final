@@ -133,3 +133,21 @@ export const MaintenanceTaskStatus = {
 } as const
 
 export type MaintenanceTaskStatus = (typeof MaintenanceTaskStatus)[keyof typeof MaintenanceTaskStatus]
+
+
+export const IndexType = {
+  DEFINED: 'DEFINED',
+  GENERATED: 'GENERATED'
+} as const
+
+export type IndexType = (typeof IndexType)[keyof typeof IndexType]
+
+
+export const SearchableContentType = {
+  RECITAL: 'RECITAL',
+  CONSIDERATION: 'CONSIDERATION',
+  ARTICLE: 'ARTICLE',
+  TEXT_ANNEX: 'TEXT_ANNEX'
+} as const
+
+export type SearchableContentType = (typeof SearchableContentType)[keyof typeof SearchableContentType]

@@ -88,6 +88,7 @@ export const ModelName = {
   Verification: 'Verification',
   Asset: 'Asset',
   MaintenanceTask: 'MaintenanceTask',
+  SearchableContent: 'SearchableContent',
   v_ArticleContext: 'v_ArticleContext',
   v_ResolutionSearch: 'v_ResolutionSearch',
   v_MissingResolution: 'v_MissingResolution',
@@ -530,6 +531,28 @@ export const MaintenanceTaskScalarFieldEnum = {
 } as const
 
 export type MaintenanceTaskScalarFieldEnum = (typeof MaintenanceTaskScalarFieldEnum)[keyof typeof MaintenanceTaskScalarFieldEnum]
+
+
+export const SearchableContentScalarFieldEnum = {
+  id: 'id',
+  resolutionID: 'resolutionID',
+  type: 'type',
+  recitalNumber: 'recitalNumber',
+  considerationNumber: 'considerationNumber',
+  articleNumber: 'articleNumber',
+  articleSuffix: 'articleSuffix',
+  articleIndexType: 'articleIndexType',
+  annexNumber: 'annexNumber',
+  annexIndexType: 'annexIndexType',
+  chapterNumber: 'chapterNumber',
+  chunkNumber: 'chunkNumber',
+  context: 'context',
+  mainText: 'mainText',
+  engineVersion: 'engineVersion',
+  createdAt: 'createdAt'
+} as const
+
+export type SearchableContentScalarFieldEnum = (typeof SearchableContentScalarFieldEnum)[keyof typeof SearchableContentScalarFieldEnum]
 
 
 export const V_ArticleContextScalarFieldEnum = {
