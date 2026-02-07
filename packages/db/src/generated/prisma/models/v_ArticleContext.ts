@@ -320,6 +320,7 @@ export type v_ArticleContextOrderByWithRelationInput = {
   resDate?: Prisma.SortOrder
   article?: Prisma.ArticleOrderByWithRelationInput
   rootResolution?: Prisma.ResolutionOrderByWithRelationInput
+  _relevance?: Prisma.v_ArticleContextOrderByRelevanceInput
 }
 
 export type v_ArticleContextWhereUniqueInput = Prisma.AtLeast<{
@@ -396,6 +397,12 @@ export type v_ArticleContextOrderByRelationAggregateInput = {
 export type V_ArticleContextNullableScalarRelationFilter = {
   is?: Prisma.v_ArticleContextWhereInput | null
   isNot?: Prisma.v_ArticleContextWhereInput | null
+}
+
+export type v_ArticleContextOrderByRelevanceInput = {
+  fields: Prisma.v_ArticleContextOrderByRelevanceFieldEnum | Prisma.v_ArticleContextOrderByRelevanceFieldEnum[]
+  sort: Prisma.SortOrder
+  search: string
 }
 
 export type v_ArticleContextCountOrderByAggregateInput = {

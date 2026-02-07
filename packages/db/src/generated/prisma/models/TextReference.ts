@@ -203,6 +203,7 @@ export type TextReferenceOrderByWithRelationInput = {
   contentBlockId?: Prisma.SortOrder
   reference?: Prisma.ReferenceOrderByWithRelationInput
   contentBlock?: Prisma.ContentBlockOrderByWithRelationInput
+  _relevance?: Prisma.TextReferenceOrderByRelevanceInput
 }
 
 export type TextReferenceWhereUniqueInput = Prisma.AtLeast<{
@@ -312,6 +313,12 @@ export type TextReferenceListRelationFilter = {
 
 export type TextReferenceOrderByRelationAggregateInput = {
   _count?: Prisma.SortOrder
+}
+
+export type TextReferenceOrderByRelevanceInput = {
+  fields: Prisma.TextReferenceOrderByRelevanceFieldEnum | Prisma.TextReferenceOrderByRelevanceFieldEnum[]
+  sort: Prisma.SortOrder
+  search: string
 }
 
 export type TextReferenceCountOrderByAggregateInput = {

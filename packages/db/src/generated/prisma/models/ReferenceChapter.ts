@@ -260,6 +260,7 @@ export type ReferenceChapterOrderByWithRelationInput = {
   reference?: Prisma.ReferenceOrderByWithRelationInput
   chapter?: Prisma.AnnexChapterOrderByWithRelationInput
   changeAddArticleTarget?: Prisma.ChangeAddArticleOrderByWithRelationInput
+  _relevance?: Prisma.ReferenceChapterOrderByRelevanceInput
 }
 
 export type ReferenceChapterWhereUniqueInput = Prisma.AtLeast<{
@@ -391,6 +392,12 @@ export type ReferenceChapterListRelationFilter = {
 
 export type ReferenceChapterOrderByRelationAggregateInput = {
   _count?: Prisma.SortOrder
+}
+
+export type ReferenceChapterOrderByRelevanceInput = {
+  fields: Prisma.ReferenceChapterOrderByRelevanceFieldEnum | Prisma.ReferenceChapterOrderByRelevanceFieldEnum[]
+  sort: Prisma.SortOrder
+  search: string
 }
 
 export type ReferenceChapterCountOrderByAggregateInput = {

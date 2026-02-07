@@ -188,6 +188,7 @@ export type ReferenceOrderByWithRelationInput = {
   changeAdvanced?: Prisma.ChangeAdvancedOrderByWithRelationInput
   changeRepeal?: Prisma.ChangeRepealOrderByWithRelationInput
   resolved?: Prisma.v_ResolvedReferencesOrderByWithRelationInput
+  _relevance?: Prisma.ReferenceOrderByRelevanceInput
 }
 
 export type ReferenceWhereUniqueInput = Prisma.AtLeast<{
@@ -302,6 +303,12 @@ export type ReferenceUncheckedUpdateManyInput = {
 export type ReferenceScalarRelationFilter = {
   is?: Prisma.ReferenceWhereInput
   isNot?: Prisma.ReferenceWhereInput
+}
+
+export type ReferenceOrderByRelevanceInput = {
+  fields: Prisma.ReferenceOrderByRelevanceFieldEnum | Prisma.ReferenceOrderByRelevanceFieldEnum[]
+  sort: Prisma.SortOrder
+  search: string
 }
 
 export type ReferenceCountOrderByAggregateInput = {

@@ -165,6 +165,7 @@ export type v_ResolutionSearchOrderByWithRelationInput = {
   id?: Prisma.SortOrder
   search_id?: Prisma.SortOrder
   resolution?: Prisma.ResolutionOrderByWithRelationInput
+  _relevance?: Prisma.v_ResolutionSearchOrderByRelevanceInput
 }
 
 export type v_ResolutionSearchWhereUniqueInput = Prisma.AtLeast<{
@@ -195,6 +196,12 @@ export type v_ResolutionSearchScalarWhereWithAggregatesInput = {
 export type V_ResolutionSearchNullableScalarRelationFilter = {
   is?: Prisma.v_ResolutionSearchWhereInput | null
   isNot?: Prisma.v_ResolutionSearchWhereInput | null
+}
+
+export type v_ResolutionSearchOrderByRelevanceInput = {
+  fields: Prisma.v_ResolutionSearchOrderByRelevanceFieldEnum | Prisma.v_ResolutionSearchOrderByRelevanceFieldEnum[]
+  sort: Prisma.SortOrder
+  search: string
 }
 
 export type v_ResolutionSearchCountOrderByAggregateInput = {

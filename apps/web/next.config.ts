@@ -19,7 +19,7 @@ const nextConfig: NextConfig = {
         authInterrupts: true
     },
 
-    transpilePackages: ["@repo/db", "@repo/pubsub", "@repo/jobs", "@repo/resolution-assembly"],
+    transpilePackages: ["@repo/db", "@repo/pubsub", "@repo/jobs", "@repo/resolution-assembly", "@repo/ai"],
 };
 
 export default nextConfig;

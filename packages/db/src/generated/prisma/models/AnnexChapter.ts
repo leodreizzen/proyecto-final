@@ -221,6 +221,7 @@ export type AnnexChapterOrderByWithRelationInput = {
   annex?: Prisma.AnnexWithArticlesOrderByWithRelationInput
   articles?: Prisma.ArticleOrderByRelationAggregateInput
   referencedBy?: Prisma.ReferenceChapterOrderByRelationAggregateInput
+  _relevance?: Prisma.AnnexChapterOrderByRelevanceInput
 }
 
 export type AnnexChapterWhereUniqueInput = Prisma.AtLeast<{
@@ -328,6 +329,12 @@ export type AnnexChapterListRelationFilter = {
 
 export type AnnexChapterOrderByRelationAggregateInput = {
   _count?: Prisma.SortOrder
+}
+
+export type AnnexChapterOrderByRelevanceInput = {
+  fields: Prisma.AnnexChapterOrderByRelevanceFieldEnum | Prisma.AnnexChapterOrderByRelevanceFieldEnum[]
+  sort: Prisma.SortOrder
+  search: string
 }
 
 export type AnnexChapterAnnexIdNumberCompoundUniqueInput = {

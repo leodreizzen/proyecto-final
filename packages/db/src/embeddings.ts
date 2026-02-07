@@ -1,6 +1,6 @@
 import {SearchableContentType, IndexType} from "./generated/prisma/enums";
-import {TransactionPrismaClient} from "./prisma.ts";
-import {insertSearchableContentBulk} from "./generated/prisma/sql/insertSearchableContentBulk.ts";
+import {TransactionPrismaClient} from "./prisma";
+import {insertSearchableContentBulk} from "./generated/prisma/sql/insertSearchableContentBulk";
 import {InputJsonObject} from "@prisma/client/runtime/client";
 
 export interface SearchableContentInsertRow {

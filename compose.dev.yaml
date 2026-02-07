@@ -18,6 +18,7 @@ services:
       - text-utils-modules:/app/packages/text-utils/node_modules
       - jobs-modules:/app/packages/jobs/node_modules
       - resolution-assembly-modules:/app/packages/resolution-assembly/node_modules
+      - ai-modules:/app/packages/ai/node_modules
       - /app/apps/web/.next
       - pnpm-store:/app/.pnpm-store
     command: ["turbo", "dev", "--filter", "web"]
@@ -37,6 +38,9 @@ services:
       S3_PUBLIC_BUCKET_NAME: ${S3_PUBLIC_BUCKET_NAME}
       S3_INTERNAL_BUCKET_NAME: ${S3_INTERNAL_BUCKET_NAME}
       PUBLIC_S3_ENDPOINT: ${PUBLIC_S3_ENDPOINT}
+      OPENROUTER_API_KEY: ${OPENROUTER_API_KEY}
+      USE_OPENROUTER: ${USE_OPENROUTER}
+      GOOGLE_API_KEY: ${GOOGLE_API_KEY}
       POLLING: "${POLLING}"
     depends_on:
       garage-init:
@@ -66,6 +70,7 @@ services:
       - text-utils-modules:/app/packages/text-utils/node_modules
       - jobs-modules:/app/packages/jobs/node_modules
       - resolution-assembly-modules:/app/packages/resolution-assembly/node_modules
+      - ai-modules:/app/packages/ai/node_modules
       - eslint-config-modules:/app/packages/eslint-config/node_modules
       - typescript-config-modules:/app/packages/typescript-config/node_modules
       - pnpm-store:/app/.pnpm-store
@@ -217,6 +222,7 @@ services:
       - jobs-modules:/app/packages/jobs/node_modules
       - resolution-assembly-modules:/app/packages/resolution-assembly/node_modules
       - pnpm-store:/app/.pnpm-store
+      - ai-modules:/app/packages/ai/node_modules
     environment:
       DATABASE_URL: ${DATABASE_URL}
       SHADOW_DATABASE_URL: ${SHADOW_DATABASE_URL}
@@ -238,3 +244,4 @@ volumes:
   garage_data:
   worker-venv:
   pnpm-store:
+  ai-modules:

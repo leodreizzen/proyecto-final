@@ -169,6 +169,7 @@ export type ChangeReplaceArticleOrderByWithRelationInput = {
   change?: Prisma.ChangeOrderByWithRelationInput
   newContent?: Prisma.ArticleOrderByWithRelationInput
   targetArticle?: Prisma.ReferenceArticleOrderByWithRelationInput
+  _relevance?: Prisma.ChangeReplaceArticleOrderByRelevanceInput
 }
 
 export type ChangeReplaceArticleWhereUniqueInput = Prisma.AtLeast<{
@@ -239,6 +240,12 @@ export type ChangeReplaceArticleUncheckedUpdateManyInput = {
 export type ChangeReplaceArticleNullableScalarRelationFilter = {
   is?: Prisma.ChangeReplaceArticleWhereInput | null
   isNot?: Prisma.ChangeReplaceArticleWhereInput | null
+}
+
+export type ChangeReplaceArticleOrderByRelevanceInput = {
+  fields: Prisma.ChangeReplaceArticleOrderByRelevanceFieldEnum | Prisma.ChangeReplaceArticleOrderByRelevanceFieldEnum[]
+  sort: Prisma.SortOrder
+  search: string
 }
 
 export type ChangeReplaceArticleCountOrderByAggregateInput = {

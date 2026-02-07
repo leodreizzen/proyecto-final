@@ -288,6 +288,7 @@ export type ArticleOrderByWithRelationInput = {
   articleFormality?: Prisma.ArticleFormalityOrderByWithRelationInput
   referencedBy?: Prisma.ReferenceArticleOrderByRelationAggregateInput
   context?: Prisma.v_ArticleContextOrderByWithRelationInput
+  _relevance?: Prisma.ArticleOrderByRelevanceInput
 }
 
 export type ArticleWhereUniqueInput = Prisma.AtLeast<{
@@ -467,6 +468,12 @@ export type ArticleListRelationFilter = {
 
 export type ArticleOrderByRelationAggregateInput = {
   _count?: Prisma.SortOrder
+}
+
+export type ArticleOrderByRelevanceInput = {
+  fields: Prisma.ArticleOrderByRelevanceFieldEnum | Prisma.ArticleOrderByRelevanceFieldEnum[]
+  sort: Prisma.SortOrder
+  search: string
 }
 
 export type ArticleResolutionIdNumberSuffixCompoundUniqueInput = {

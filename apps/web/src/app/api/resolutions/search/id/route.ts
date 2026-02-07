@@ -1,5 +1,5 @@
 import {NextRequest, NextResponse} from "next/server";
-import {searchResolutions} from "@/lib/data/search";
+import {searchResolutionsById} from "@/lib/data/search";
 import {z} from "zod";
 import {authCheck, publicRoute} from "@/lib/auth/route-authorization";
 import {SearchByIdReturnType} from "@/app/api/resolutions/search/id/types";
@@ -29,7 +29,7 @@ export async function GET(request: NextRequest): Promise<NextResponse<SearchById
 
     const { cursor, initial, number, year } = parseRes.data;
 
-    const result = await searchResolutions({ initial, number, year }, cursor);
+    const result = await searchResolutionsById({ initial, number, year }, cursor);
 
     return NextResponse.json(result);
 }

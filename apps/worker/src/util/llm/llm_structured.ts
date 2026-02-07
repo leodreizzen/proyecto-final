@@ -1,8 +1,8 @@
-import {createOpenAICompletion} from "@/util/llm/openai_wrapper";
+import {createOpenAICompletion} from "@repo/ai/openai_wrapper";
 import {z, ZodType} from "zod";
 import {parseLLMResponse} from "@/util/llm/llm_response";
 import {LLMAPIError} from "@/parser/llms/errors";
-import {APIError as OpenAIAPIError} from "openai";
+import {APIError as OpenAIAPIError} from "@repo/ai/openai_wrapper";
 
 export async function structuredLLMCall<T extends ZodType>(
     params: Parameters<typeof createOpenAICompletion>[0],

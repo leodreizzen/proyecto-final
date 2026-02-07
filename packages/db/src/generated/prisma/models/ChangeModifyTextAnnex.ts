@@ -171,6 +171,7 @@ export type ChangeModifyTextAnnexOrderByWithRelationInput = {
   targetAnnex?: Prisma.ReferenceAnnexOrderByWithRelationInput
   before?: Prisma.ContentBlockOrderByRelationAggregateInput
   after?: Prisma.ContentBlockOrderByRelationAggregateInput
+  _relevance?: Prisma.ChangeModifyTextAnnexOrderByRelevanceInput
 }
 
 export type ChangeModifyTextAnnexWhereUniqueInput = Prisma.AtLeast<{
@@ -246,6 +247,12 @@ export type ChangeModifyTextAnnexUncheckedUpdateManyInput = {
 export type ChangeModifyTextAnnexNullableScalarRelationFilter = {
   is?: Prisma.ChangeModifyTextAnnexWhereInput | null
   isNot?: Prisma.ChangeModifyTextAnnexWhereInput | null
+}
+
+export type ChangeModifyTextAnnexOrderByRelevanceInput = {
+  fields: Prisma.ChangeModifyTextAnnexOrderByRelevanceFieldEnum | Prisma.ChangeModifyTextAnnexOrderByRelevanceFieldEnum[]
+  sort: Prisma.SortOrder
+  search: string
 }
 
 export type ChangeModifyTextAnnexCountOrderByAggregateInput = {

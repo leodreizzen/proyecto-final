@@ -1,4 +1,4 @@
-import {APIError} from "openai";
+import {APIError} from "@repo/ai/openai_wrapper";
 
 export class EmbeddingsAPIError extends Error {
     public details: APIError | Error | null;

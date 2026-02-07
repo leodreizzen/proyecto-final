@@ -167,6 +167,7 @@ export type ChangeRepealOrderByWithRelationInput = {
   targetReferenceId?: Prisma.SortOrder
   change?: Prisma.ChangeOrderByWithRelationInput
   target?: Prisma.ReferenceOrderByWithRelationInput
+  _relevance?: Prisma.ChangeRepealOrderByRelevanceInput
 }
 
 export type ChangeRepealWhereUniqueInput = Prisma.AtLeast<{
@@ -232,6 +233,12 @@ export type ChangeRepealUncheckedUpdateManyInput = {
 export type ChangeRepealNullableScalarRelationFilter = {
   is?: Prisma.ChangeRepealWhereInput | null
   isNot?: Prisma.ChangeRepealWhereInput | null
+}
+
+export type ChangeRepealOrderByRelevanceInput = {
+  fields: Prisma.ChangeRepealOrderByRelevanceFieldEnum | Prisma.ChangeRepealOrderByRelevanceFieldEnum[]
+  sort: Prisma.SortOrder
+  search: string
 }
 
 export type ChangeRepealCountOrderByAggregateInput = {

@@ -158,6 +158,7 @@ export type AnnexTextOrderByWithRelationInput = {
   id?: Prisma.SortOrder
   annex?: Prisma.AnnexOrderByWithRelationInput
   content?: Prisma.ContentBlockOrderByRelationAggregateInput
+  _relevance?: Prisma.AnnexTextOrderByRelevanceInput
 }
 
 export type AnnexTextWhereUniqueInput = Prisma.AtLeast<{
@@ -218,6 +219,12 @@ export type AnnexTextUncheckedUpdateManyInput = {
 export type AnnexTextNullableScalarRelationFilter = {
   is?: Prisma.AnnexTextWhereInput | null
   isNot?: Prisma.AnnexTextWhereInput | null
+}
+
+export type AnnexTextOrderByRelevanceInput = {
+  fields: Prisma.AnnexTextOrderByRelevanceFieldEnum | Prisma.AnnexTextOrderByRelevanceFieldEnum[]
+  sort: Prisma.SortOrder
+  search: string
 }
 
 export type AnnexTextCountOrderByAggregateInput = {

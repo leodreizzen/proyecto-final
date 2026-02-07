@@ -349,6 +349,7 @@ export type SearchableContentOrderByWithRelationInput = {
   engineVersion?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   resolution?: Prisma.ResolutionOrderByWithRelationInput
+  _relevance?: Prisma.SearchableContentOrderByRelevanceInput
 }
 
 export type SearchableContentWhereUniqueInput = Prisma.AtLeast<{
@@ -503,6 +504,12 @@ export type SearchableContentListRelationFilter = {
 
 export type SearchableContentOrderByRelationAggregateInput = {
   _count?: Prisma.SortOrder
+}
+
+export type SearchableContentOrderByRelevanceInput = {
+  fields: Prisma.SearchableContentOrderByRelevanceFieldEnum | Prisma.SearchableContentOrderByRelevanceFieldEnum[]
+  sort: Prisma.SortOrder
+  search: string
 }
 
 export type SearchableContentCountOrderByAggregateInput = {

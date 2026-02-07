@@ -1,6 +1,6 @@
 import {parseLLMStringWithZodObject} from "@/util/llm/json_parse";
 import {z, ZodType} from "zod";
-import { ChatCompletion } from "openai/resources";
+import { ChatCompletion } from "@repo/ai/openai_wrapper";
 import {LLMAPIError} from "@/parser/llms/errors";
 
 export function parseLLMResponse<S extends ZodType>(res: ChatCompletion, schema: S): z.infer<S> {

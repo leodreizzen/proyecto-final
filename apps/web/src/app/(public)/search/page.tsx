@@ -1,6 +1,6 @@
 import {authCheck, publicRoute} from "@/lib/auth/route-authorization";
 import {SearchWidget} from "@/components/home/search-widget";
-import {searchResolutions} from "@/lib/data/search";
+import {searchResolutionsById} from "@/lib/data/search";
 import {SearchResults} from "./search-results";
 import {SearchSummary} from "@/components/search/search-summary";
 import {z} from "zod";
@@ -41,7 +41,7 @@ export default async function SearchPage({searchParams}: SearchPageProps) {
         year: parseRes.data.year,
     };
 
-    const initialResult = await searchResolutions(filters, undefined);
+    const initialResult = await searchResolutionsById(filters, undefined);
 
     return (
         <div className="mx-4 md:mx-14 space-y-8 my-10">

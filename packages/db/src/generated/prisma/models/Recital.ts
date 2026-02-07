@@ -210,6 +210,7 @@ export type RecitalOrderByWithRelationInput = {
   number?: Prisma.SortOrder
   resolution?: Prisma.ResolutionOrderByWithRelationInput
   content?: Prisma.ContentBlockOrderByRelationAggregateInput
+  _relevance?: Prisma.RecitalOrderByRelevanceInput
 }
 
 export type RecitalWhereUniqueInput = Prisma.AtLeast<{
@@ -297,6 +298,12 @@ export type RecitalListRelationFilter = {
 
 export type RecitalOrderByRelationAggregateInput = {
   _count?: Prisma.SortOrder
+}
+
+export type RecitalOrderByRelevanceInput = {
+  fields: Prisma.RecitalOrderByRelevanceFieldEnum | Prisma.RecitalOrderByRelevanceFieldEnum[]
+  sort: Prisma.SortOrder
+  search: string
 }
 
 export type RecitalResolutionIdNumberCompoundUniqueInput = {

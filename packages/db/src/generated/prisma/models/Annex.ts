@@ -243,6 +243,7 @@ export type AnnexOrderByWithRelationInput = {
   annexText?: Prisma.AnnexTextOrderByWithRelationInput
   annexWithArticles?: Prisma.AnnexWithArticlesOrderByWithRelationInput
   referencedBy?: Prisma.ReferenceAnnexOrderByRelationAggregateInput
+  _relevance?: Prisma.AnnexOrderByRelevanceInput
 }
 
 export type AnnexWhereUniqueInput = Prisma.AtLeast<{
@@ -375,6 +376,12 @@ export type AnnexOrderByRelationAggregateInput = {
 export type AnnexNullableScalarRelationFilter = {
   is?: Prisma.AnnexWhereInput | null
   isNot?: Prisma.AnnexWhereInput | null
+}
+
+export type AnnexOrderByRelevanceInput = {
+  fields: Prisma.AnnexOrderByRelevanceFieldEnum | Prisma.AnnexOrderByRelevanceFieldEnum[]
+  sort: Prisma.SortOrder
+  search: string
 }
 
 export type AnnexResolutionIdNumberCompoundUniqueInput = {

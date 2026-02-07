@@ -1,0 +1,24 @@
+{
+  "name": "@repo/ai",
+  "private": "true",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "dependencies": {
+    "openai": "^6.9.0",
+    "zod": "^4.1.12"
+  },
+  "exports": {
+    "./*": {
+      "import": "./src/*.ts",
+      "require": "./src/*.ts",
+      "types": "./src/*.ts"
+    }
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
+}

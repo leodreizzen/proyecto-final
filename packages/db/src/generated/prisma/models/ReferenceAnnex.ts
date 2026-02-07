@@ -261,6 +261,7 @@ export type ReferenceAnnexOrderByWithRelationInput = {
   changeModifyTextAnnex?: Prisma.ChangeModifyTextAnnexOrderByWithRelationInput
   changeAddArticle?: Prisma.ChangeAddArticleOrderByWithRelationInput
   articleCreateDocument?: Prisma.ArticleCreateDocumentOrderByWithRelationInput
+  _relevance?: Prisma.ReferenceAnnexOrderByRelevanceInput
 }
 
 export type ReferenceAnnexWhereUniqueInput = Prisma.AtLeast<{
@@ -422,6 +423,12 @@ export type ReferenceAnnexListRelationFilter = {
 
 export type ReferenceAnnexOrderByRelationAggregateInput = {
   _count?: Prisma.SortOrder
+}
+
+export type ReferenceAnnexOrderByRelevanceInput = {
+  fields: Prisma.ReferenceAnnexOrderByRelevanceFieldEnum | Prisma.ReferenceAnnexOrderByRelevanceFieldEnum[]
+  sort: Prisma.SortOrder
+  search: string
 }
 
 export type ReferenceAnnexCountOrderByAggregateInput = {

@@ -267,6 +267,7 @@ export type MaintenanceTaskOrderByWithRelationInput = {
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   resolution?: Prisma.ResolutionOrderByWithRelationInput
+  _relevance?: Prisma.MaintenanceTaskOrderByRelevanceInput
 }
 
 export type MaintenanceTaskWhereUniqueInput = Prisma.AtLeast<{
@@ -419,6 +420,12 @@ export type MaintenanceTaskListRelationFilter = {
 
 export type MaintenanceTaskOrderByRelationAggregateInput = {
   _count?: Prisma.SortOrder
+}
+
+export type MaintenanceTaskOrderByRelevanceInput = {
+  fields: Prisma.MaintenanceTaskOrderByRelevanceFieldEnum | Prisma.MaintenanceTaskOrderByRelevanceFieldEnum[]
+  sort: Prisma.SortOrder
+  search: string
 }
 
 export type MaintenanceTaskResolutionIdTypeTriggerEventIdCompoundUniqueInput = {

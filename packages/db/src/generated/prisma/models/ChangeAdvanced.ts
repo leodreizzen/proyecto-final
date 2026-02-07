@@ -205,6 +205,7 @@ export type ChangeAdvancedOrderByWithRelationInput = {
   change?: Prisma.ChangeOrderByWithRelationInput
   target?: Prisma.ReferenceOrderByWithRelationInput
   resolvedChanges?: Prisma.ChangeOrderByRelationAggregateInput
+  _relevance?: Prisma.ChangeAdvancedOrderByRelevanceInput
 }
 
 export type ChangeAdvancedWhereUniqueInput = Prisma.AtLeast<{
@@ -314,6 +315,12 @@ export type ChangeAdvancedUncheckedUpdateManyInput = {
 export type ChangeAdvancedNullableScalarRelationFilter = {
   is?: Prisma.ChangeAdvancedWhereInput | null
   isNot?: Prisma.ChangeAdvancedWhereInput | null
+}
+
+export type ChangeAdvancedOrderByRelevanceInput = {
+  fields: Prisma.ChangeAdvancedOrderByRelevanceFieldEnum | Prisma.ChangeAdvancedOrderByRelevanceFieldEnum[]
+  sort: Prisma.SortOrder
+  search: string
 }
 
 export type ChangeAdvancedCountOrderByAggregateInput = {

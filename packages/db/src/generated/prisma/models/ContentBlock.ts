@@ -310,6 +310,7 @@ export type ContentBlockOrderByWithRelationInput = {
   changeModifyTextAnnexBefore?: Prisma.ChangeModifyTextAnnexOrderByWithRelationInput
   changeModifyTextAnnexAfter?: Prisma.ChangeModifyTextAnnexOrderByWithRelationInput
   references?: Prisma.TextReferenceOrderByRelationAggregateInput
+  _relevance?: Prisma.ContentBlockOrderByRelevanceInput
 }
 
 export type ContentBlockWhereUniqueInput = Prisma.AtLeast<{
@@ -504,6 +505,12 @@ export type ContentBlockListRelationFilter = {
 
 export type ContentBlockOrderByRelationAggregateInput = {
   _count?: Prisma.SortOrder
+}
+
+export type ContentBlockOrderByRelevanceInput = {
+  fields: Prisma.ContentBlockOrderByRelevanceFieldEnum | Prisma.ContentBlockOrderByRelevanceFieldEnum[]
+  sort: Prisma.SortOrder
+  search: string
 }
 
 export type ContentBlockRecitalIdOrderCompoundUniqueInput = {

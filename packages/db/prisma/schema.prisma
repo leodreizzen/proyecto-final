@@ -7,12 +7,12 @@
 generator client {
   provider        = "prisma-client"
   output          = "../src/generated/prisma"
-  previewFeatures = ["typedSql", "views", "postgresqlExtensions"]
+  previewFeatures = ["typedSql", "views", "postgresqlExtensions", "fullTextSearchPostgres"]
 }
 
 datasource db {
   provider   = "postgresql"
-  extensions = [vector, pg_trgm]
+  extensions = [vector, pg_trgm, unaccent]
 }
 
 model Resolution {
@@ -842,12 +842,12 @@ model SearchableContent {
   articleNumber       Int?
   articleSuffix       Int?
   articleIndexType    IndexType?
-  
-  annexNumber         Int?
-  annexIndexType      IndexType?
 
-  chapterNumber       Int?
-  chunkNumber         Int
+  annexNumber    Int?
+  annexIndexType IndexType?
+
+  chapterNumber Int?
+  chunkNumber   Int
 
   context       String
   mainText      String

@@ -167,6 +167,7 @@ export type ArticleCreateDocumentOrderByWithRelationInput = {
   annexToApproveReferenceId?: Prisma.SortOrder
   article?: Prisma.ArticleOrderByWithRelationInput
   annexToApprove?: Prisma.ReferenceAnnexOrderByWithRelationInput
+  _relevance?: Prisma.ArticleCreateDocumentOrderByRelevanceInput
 }
 
 export type ArticleCreateDocumentWhereUniqueInput = Prisma.AtLeast<{
@@ -232,6 +233,12 @@ export type ArticleCreateDocumentUncheckedUpdateManyInput = {
 export type ArticleCreateDocumentNullableScalarRelationFilter = {
   is?: Prisma.ArticleCreateDocumentWhereInput | null
   isNot?: Prisma.ArticleCreateDocumentWhereInput | null
+}
+
+export type ArticleCreateDocumentOrderByRelevanceInput = {
+  fields: Prisma.ArticleCreateDocumentOrderByRelevanceFieldEnum | Prisma.ArticleCreateDocumentOrderByRelevanceFieldEnum[]
+  sort: Prisma.SortOrder
+  search: string
 }
 
 export type ArticleCreateDocumentCountOrderByAggregateInput = {

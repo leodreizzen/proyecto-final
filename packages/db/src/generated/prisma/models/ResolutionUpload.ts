@@ -214,6 +214,7 @@ export type ResolutionUploadOrderByWithRelationInput = {
   uploader?: Prisma.UserOrderByWithRelationInput
   file?: Prisma.AssetOrderByWithRelationInput
   resolution?: Prisma.ResolutionOrderByWithRelationInput
+  _relevance?: Prisma.ResolutionUploadOrderByRelevanceInput
 }
 
 export type ResolutionUploadWhereUniqueInput = Prisma.AtLeast<{
@@ -333,6 +334,12 @@ export type ResolutionUploadUncheckedUpdateManyInput = {
 export type ResolutionUploadScalarRelationFilter = {
   is?: Prisma.ResolutionUploadWhereInput
   isNot?: Prisma.ResolutionUploadWhereInput
+}
+
+export type ResolutionUploadOrderByRelevanceInput = {
+  fields: Prisma.ResolutionUploadOrderByRelevanceFieldEnum | Prisma.ResolutionUploadOrderByRelevanceFieldEnum[]
+  sort: Prisma.SortOrder
+  search: string
 }
 
 export type ResolutionUploadCountOrderByAggregateInput = {

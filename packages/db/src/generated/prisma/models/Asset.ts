@@ -255,6 +255,7 @@ export type AssetOrderByWithRelationInput = {
   deleted?: Prisma.SortOrder
   resolutionUpload?: Prisma.ResolutionUploadOrderByWithRelationInput
   resolution?: Prisma.ResolutionOrderByWithRelationInput
+  _relevance?: Prisma.AssetOrderByRelevanceInput
 }
 
 export type AssetWhereUniqueInput = Prisma.AtLeast<{
@@ -397,6 +398,12 @@ export type AssetScalarRelationFilter = {
 export type AssetNullableScalarRelationFilter = {
   is?: Prisma.AssetWhereInput | null
   isNot?: Prisma.AssetWhereInput | null
+}
+
+export type AssetOrderByRelevanceInput = {
+  fields: Prisma.AssetOrderByRelevanceFieldEnum | Prisma.AssetOrderByRelevanceFieldEnum[]
+  sort: Prisma.SortOrder
+  search: string
 }
 
 export type AssetBucketPathCompoundUniqueInput = {

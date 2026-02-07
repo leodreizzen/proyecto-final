@@ -6,6 +6,14 @@ import {
 import {Stream} from "openai/streaming";
 import {EmbeddingCreateParams} from "openai/resources/embeddings";
 
+declare module "openai/resources" {
+    interface ChatCompletionContentPartText {
+        cache_control?: {
+            type: "ephemeral" | "persistent";
+        };
+    }
+}
+
 export type CreateOpenAICompletionInput = Parameters<OpenAI["chat"]["completions"]["create"]>[0] &  {
     model: `gemini-${string}`
 }
@@ -88,3 +96,6 @@ export async function createOpenaiEmbedding(
         model: finalModelName,
     });
 }
+
+export {APIError} from "openai";
+export type {ChatCompletion} from "openai/resources"

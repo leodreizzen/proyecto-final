@@ -3958,12 +3958,216 @@ export const QueryMode = {
 export type QueryMode = (typeof QueryMode)[keyof typeof QueryMode]
 
 
+export const ResolutionOrderByRelevanceFieldEnum = {
+  id: 'id',
+  initial: 'initial',
+  decisionBy: 'decisionBy',
+  title: 'title',
+  summary: 'summary',
+  keywords: 'keywords',
+  caseFiles: 'caseFiles',
+  originalFileId: 'originalFileId',
+  lastUpdateById: 'lastUpdateById',
+  resolutionUploadId: 'resolutionUploadId'
+} as const
+
+export type ResolutionOrderByRelevanceFieldEnum = (typeof ResolutionOrderByRelevanceFieldEnum)[keyof typeof ResolutionOrderByRelevanceFieldEnum]
+
+
+export const RecitalOrderByRelevanceFieldEnum = {
+  id: 'id',
+  resolutionId: 'resolutionId'
+} as const
+
+export type RecitalOrderByRelevanceFieldEnum = (typeof RecitalOrderByRelevanceFieldEnum)[keyof typeof RecitalOrderByRelevanceFieldEnum]
+
+
+export const ConsiderationOrderByRelevanceFieldEnum = {
+  id: 'id',
+  resolutionId: 'resolutionId'
+} as const
+
+export type ConsiderationOrderByRelevanceFieldEnum = (typeof ConsiderationOrderByRelevanceFieldEnum)[keyof typeof ConsiderationOrderByRelevanceFieldEnum]
+
+
 export const NullsOrder = {
   first: 'first',
   last: 'last'
 } as const
 
 export type NullsOrder = (typeof NullsOrder)[keyof typeof NullsOrder]
+
+
+export const ArticleOrderByRelevanceFieldEnum = {
+  id: 'id',
+  resolutionId: 'resolutionId',
+  annexId: 'annexId',
+  chapterId: 'chapterId',
+  addedByChangeId: 'addedByChangeId',
+  newContentFromChangeId: 'newContentFromChangeId'
+} as const
+
+export type ArticleOrderByRelevanceFieldEnum = (typeof ArticleOrderByRelevanceFieldEnum)[keyof typeof ArticleOrderByRelevanceFieldEnum]
+
+
+export const ArticleNormativeOrderByRelevanceFieldEnum = {
+  id: 'id'
+} as const
+
+export type ArticleNormativeOrderByRelevanceFieldEnum = (typeof ArticleNormativeOrderByRelevanceFieldEnum)[keyof typeof ArticleNormativeOrderByRelevanceFieldEnum]
+
+
+export const ArticleModifierOrderByRelevanceFieldEnum = {
+  id: 'id'
+} as const
+
+export type ArticleModifierOrderByRelevanceFieldEnum = (typeof ArticleModifierOrderByRelevanceFieldEnum)[keyof typeof ArticleModifierOrderByRelevanceFieldEnum]
+
+
+export const ArticleCreateDocumentOrderByRelevanceFieldEnum = {
+  id: 'id',
+  annexToApproveReferenceId: 'annexToApproveReferenceId'
+} as const
+
+export type ArticleCreateDocumentOrderByRelevanceFieldEnum = (typeof ArticleCreateDocumentOrderByRelevanceFieldEnum)[keyof typeof ArticleCreateDocumentOrderByRelevanceFieldEnum]
+
+
+export const ArticleFormalityOrderByRelevanceFieldEnum = {
+  id: 'id'
+} as const
+
+export type ArticleFormalityOrderByRelevanceFieldEnum = (typeof ArticleFormalityOrderByRelevanceFieldEnum)[keyof typeof ArticleFormalityOrderByRelevanceFieldEnum]
+
+
+export const ChangeOrderByRelevanceFieldEnum = {
+  id: 'id',
+  articleModifierId: 'articleModifierId',
+  resolvedForChangeAdvancedId: 'resolvedForChangeAdvancedId'
+} as const
+
+export type ChangeOrderByRelevanceFieldEnum = (typeof ChangeOrderByRelevanceFieldEnum)[keyof typeof ChangeOrderByRelevanceFieldEnum]
+
+
+export const ChangeModifyArticleOrderByRelevanceFieldEnum = {
+  id: 'id',
+  targetArticleReferenceId: 'targetArticleReferenceId'
+} as const
+
+export type ChangeModifyArticleOrderByRelevanceFieldEnum = (typeof ChangeModifyArticleOrderByRelevanceFieldEnum)[keyof typeof ChangeModifyArticleOrderByRelevanceFieldEnum]
+
+
+export const ChangeReplaceArticleOrderByRelevanceFieldEnum = {
+  id: 'id',
+  targetArticleReferenceId: 'targetArticleReferenceId'
+} as const
+
+export type ChangeReplaceArticleOrderByRelevanceFieldEnum = (typeof ChangeReplaceArticleOrderByRelevanceFieldEnum)[keyof typeof ChangeReplaceArticleOrderByRelevanceFieldEnum]
+
+
+export const ChangeAdvancedOrderByRelevanceFieldEnum = {
+  id: 'id',
+  targetReferenceId: 'targetReferenceId',
+  resolvedHash: 'resolvedHash',
+  modelVersion: 'modelVersion'
+} as const
+
+export type ChangeAdvancedOrderByRelevanceFieldEnum = (typeof ChangeAdvancedOrderByRelevanceFieldEnum)[keyof typeof ChangeAdvancedOrderByRelevanceFieldEnum]
+
+
+export const ChangeRatifyAdReferendumOrderByRelevanceFieldEnum = {
+  id: 'id',
+  targetResolutionReferenceId: 'targetResolutionReferenceId'
+} as const
+
+export type ChangeRatifyAdReferendumOrderByRelevanceFieldEnum = (typeof ChangeRatifyAdReferendumOrderByRelevanceFieldEnum)[keyof typeof ChangeRatifyAdReferendumOrderByRelevanceFieldEnum]
+
+
+export const ChangeReplaceAnnexOrderByRelevanceFieldEnum = {
+  id: 'id',
+  targetAnnexReferenceId: 'targetAnnexReferenceId',
+  newAnnexReferenceId: 'newAnnexReferenceId'
+} as const
+
+export type ChangeReplaceAnnexOrderByRelevanceFieldEnum = (typeof ChangeReplaceAnnexOrderByRelevanceFieldEnum)[keyof typeof ChangeReplaceAnnexOrderByRelevanceFieldEnum]
+
+
+export const ChangeAddAnnexOrderByRelevanceFieldEnum = {
+  id: 'id',
+  annexToAddReferenceId: 'annexToAddReferenceId',
+  targetResolutionReferenceId: 'targetResolutionReferenceId',
+  targetAnnexReferenceId: 'targetAnnexReferenceId'
+} as const
+
+export type ChangeAddAnnexOrderByRelevanceFieldEnum = (typeof ChangeAddAnnexOrderByRelevanceFieldEnum)[keyof typeof ChangeAddAnnexOrderByRelevanceFieldEnum]
+
+
+export const ChangeModifyTextAnnexOrderByRelevanceFieldEnum = {
+  id: 'id',
+  targetAnnexReferenceId: 'targetAnnexReferenceId'
+} as const
+
+export type ChangeModifyTextAnnexOrderByRelevanceFieldEnum = (typeof ChangeModifyTextAnnexOrderByRelevanceFieldEnum)[keyof typeof ChangeModifyTextAnnexOrderByRelevanceFieldEnum]
+
+
+export const ChangeAddArticleOrderByRelevanceFieldEnum = {
+  id: 'id',
+  targetResolutionReferenceId: 'targetResolutionReferenceId',
+  targetAnnexReferenceId: 'targetAnnexReferenceId',
+  targetChapterReferenceId: 'targetChapterReferenceId'
+} as const
+
+export type ChangeAddArticleOrderByRelevanceFieldEnum = (typeof ChangeAddArticleOrderByRelevanceFieldEnum)[keyof typeof ChangeAddArticleOrderByRelevanceFieldEnum]
+
+
+export const ChangeRepealOrderByRelevanceFieldEnum = {
+  id: 'id',
+  targetReferenceId: 'targetReferenceId'
+} as const
+
+export type ChangeRepealOrderByRelevanceFieldEnum = (typeof ChangeRepealOrderByRelevanceFieldEnum)[keyof typeof ChangeRepealOrderByRelevanceFieldEnum]
+
+
+export const ChangeApplyModificationsAnnexOrderByRelevanceFieldEnum = {
+  id: 'id',
+  annexToApplyId: 'annexToApplyId'
+} as const
+
+export type ChangeApplyModificationsAnnexOrderByRelevanceFieldEnum = (typeof ChangeApplyModificationsAnnexOrderByRelevanceFieldEnum)[keyof typeof ChangeApplyModificationsAnnexOrderByRelevanceFieldEnum]
+
+
+export const AnnexOrderByRelevanceFieldEnum = {
+  id: 'id',
+  resolutionId: 'resolutionId',
+  changeReplaceAnnexId: 'changeReplaceAnnexId',
+  name: 'name'
+} as const
+
+export type AnnexOrderByRelevanceFieldEnum = (typeof AnnexOrderByRelevanceFieldEnum)[keyof typeof AnnexOrderByRelevanceFieldEnum]
+
+
+export const AnnexTextOrderByRelevanceFieldEnum = {
+  id: 'id'
+} as const
+
+export type AnnexTextOrderByRelevanceFieldEnum = (typeof AnnexTextOrderByRelevanceFieldEnum)[keyof typeof AnnexTextOrderByRelevanceFieldEnum]
+
+
+export const AnnexWithArticlesOrderByRelevanceFieldEnum = {
+  id: 'id',
+  initialText: 'initialText',
+  finalText: 'finalText'
+} as const
+
+export type AnnexWithArticlesOrderByRelevanceFieldEnum = (typeof AnnexWithArticlesOrderByRelevanceFieldEnum)[keyof typeof AnnexWithArticlesOrderByRelevanceFieldEnum]
+
+
+export const AnnexChapterOrderByRelevanceFieldEnum = {
+  id: 'id',
+  annexId: 'annexId',
+  title: 'title'
+} as const
+
+export type AnnexChapterOrderByRelevanceFieldEnum = (typeof AnnexChapterOrderByRelevanceFieldEnum)[keyof typeof AnnexChapterOrderByRelevanceFieldEnum]
 
 
 export const JsonNullValueFilter = {
@@ -3973,6 +4177,202 @@ export const JsonNullValueFilter = {
 } as const
 
 export type JsonNullValueFilter = (typeof JsonNullValueFilter)[keyof typeof JsonNullValueFilter]
+
+
+export const ContentBlockOrderByRelevanceFieldEnum = {
+  id: 'id',
+  text: 'text',
+  recitalId: 'recitalId',
+  considerationId: 'considerationId',
+  articleId: 'articleId',
+  annexTextId: 'annexTextId',
+  changeModifyArticleBeforeId: 'changeModifyArticleBeforeId',
+  changeModifyArticleAfterId: 'changeModifyArticleAfterId',
+  changeModifyTextAnnexBeforeId: 'changeModifyTextAnnexBeforeId',
+  changeModifyTextAnnexAfterId: 'changeModifyTextAnnexAfterId'
+} as const
+
+export type ContentBlockOrderByRelevanceFieldEnum = (typeof ContentBlockOrderByRelevanceFieldEnum)[keyof typeof ContentBlockOrderByRelevanceFieldEnum]
+
+
+export const TextReferenceOrderByRelevanceFieldEnum = {
+  id: 'id',
+  textBefore: 'textBefore',
+  textAfter: 'textAfter',
+  text: 'text',
+  referenceId: 'referenceId',
+  contentBlockId: 'contentBlockId'
+} as const
+
+export type TextReferenceOrderByRelevanceFieldEnum = (typeof TextReferenceOrderByRelevanceFieldEnum)[keyof typeof TextReferenceOrderByRelevanceFieldEnum]
+
+
+export const ReferenceOrderByRelevanceFieldEnum = {
+  id: 'id'
+} as const
+
+export type ReferenceOrderByRelevanceFieldEnum = (typeof ReferenceOrderByRelevanceFieldEnum)[keyof typeof ReferenceOrderByRelevanceFieldEnum]
+
+
+export const ReferenceResolutionOrderByRelevanceFieldEnum = {
+  id: 'id',
+  resolutionId: 'resolutionId',
+  initial: 'initial'
+} as const
+
+export type ReferenceResolutionOrderByRelevanceFieldEnum = (typeof ReferenceResolutionOrderByRelevanceFieldEnum)[keyof typeof ReferenceResolutionOrderByRelevanceFieldEnum]
+
+
+export const ReferenceArticleOrderByRelevanceFieldEnum = {
+  id: 'id',
+  articleId: 'articleId',
+  initial: 'initial'
+} as const
+
+export type ReferenceArticleOrderByRelevanceFieldEnum = (typeof ReferenceArticleOrderByRelevanceFieldEnum)[keyof typeof ReferenceArticleOrderByRelevanceFieldEnum]
+
+
+export const ReferenceAnnexOrderByRelevanceFieldEnum = {
+  id: 'id',
+  annexId: 'annexId',
+  initial: 'initial'
+} as const
+
+export type ReferenceAnnexOrderByRelevanceFieldEnum = (typeof ReferenceAnnexOrderByRelevanceFieldEnum)[keyof typeof ReferenceAnnexOrderByRelevanceFieldEnum]
+
+
+export const ReferenceChapterOrderByRelevanceFieldEnum = {
+  id: 'id',
+  chapterId: 'chapterId',
+  initial: 'initial'
+} as const
+
+export type ReferenceChapterOrderByRelevanceFieldEnum = (typeof ReferenceChapterOrderByRelevanceFieldEnum)[keyof typeof ReferenceChapterOrderByRelevanceFieldEnum]
+
+
+export const ResolutionUploadOrderByRelevanceFieldEnum = {
+  id: 'id',
+  uploaderId: 'uploaderId',
+  fileId: 'fileId',
+  errorMsg: 'errorMsg'
+} as const
+
+export type ResolutionUploadOrderByRelevanceFieldEnum = (typeof ResolutionUploadOrderByRelevanceFieldEnum)[keyof typeof ResolutionUploadOrderByRelevanceFieldEnum]
+
+
+export const UserOrderByRelevanceFieldEnum = {
+  id: 'id',
+  name: 'name',
+  email: 'email',
+  banReason: 'banReason',
+  image: 'image'
+} as const
+
+export type UserOrderByRelevanceFieldEnum = (typeof UserOrderByRelevanceFieldEnum)[keyof typeof UserOrderByRelevanceFieldEnum]
+
+
+export const SessionOrderByRelevanceFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  token: 'token',
+  ipAddress: 'ipAddress',
+  userAgent: 'userAgent',
+  impersonatedBy: 'impersonatedBy'
+} as const
+
+export type SessionOrderByRelevanceFieldEnum = (typeof SessionOrderByRelevanceFieldEnum)[keyof typeof SessionOrderByRelevanceFieldEnum]
+
+
+export const AccountOrderByRelevanceFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  accountId: 'accountId',
+  providerId: 'providerId',
+  accessToken: 'accessToken',
+  refreshToken: 'refreshToken',
+  scope: 'scope',
+  idToken: 'idToken',
+  password: 'password'
+} as const
+
+export type AccountOrderByRelevanceFieldEnum = (typeof AccountOrderByRelevanceFieldEnum)[keyof typeof AccountOrderByRelevanceFieldEnum]
+
+
+export const VerificationOrderByRelevanceFieldEnum = {
+  id: 'id',
+  identifier: 'identifier',
+  value: 'value'
+} as const
+
+export type VerificationOrderByRelevanceFieldEnum = (typeof VerificationOrderByRelevanceFieldEnum)[keyof typeof VerificationOrderByRelevanceFieldEnum]
+
+
+export const AssetOrderByRelevanceFieldEnum = {
+  id: 'id',
+  path: 'path',
+  bucket: 'bucket',
+  mimeType: 'mimeType',
+  originalFileName: 'originalFileName'
+} as const
+
+export type AssetOrderByRelevanceFieldEnum = (typeof AssetOrderByRelevanceFieldEnum)[keyof typeof AssetOrderByRelevanceFieldEnum]
+
+
+export const MaintenanceTaskOrderByRelevanceFieldEnum = {
+  id: 'id',
+  resolutionId: 'resolutionId',
+  triggerEventId: 'triggerEventId',
+  errorMsg: 'errorMsg'
+} as const
+
+export type MaintenanceTaskOrderByRelevanceFieldEnum = (typeof MaintenanceTaskOrderByRelevanceFieldEnum)[keyof typeof MaintenanceTaskOrderByRelevanceFieldEnum]
+
+
+export const SearchableContentOrderByRelevanceFieldEnum = {
+  id: 'id',
+  resolutionID: 'resolutionID',
+  context: 'context',
+  mainText: 'mainText',
+  engineVersion: 'engineVersion'
+} as const
+
+export type SearchableContentOrderByRelevanceFieldEnum = (typeof SearchableContentOrderByRelevanceFieldEnum)[keyof typeof SearchableContentOrderByRelevanceFieldEnum]
+
+
+export const v_ArticleContextOrderByRelevanceFieldEnum = {
+  id: 'id',
+  rootResolutionId: 'rootResolutionId',
+  rootAnnexId: 'rootAnnexId',
+  rootChapterId: 'rootChapterId',
+  resInitial: 'resInitial'
+} as const
+
+export type v_ArticleContextOrderByRelevanceFieldEnum = (typeof v_ArticleContextOrderByRelevanceFieldEnum)[keyof typeof v_ArticleContextOrderByRelevanceFieldEnum]
+
+
+export const v_ResolutionSearchOrderByRelevanceFieldEnum = {
+  id: 'id',
+  search_id: 'search_id'
+} as const
+
+export type v_ResolutionSearchOrderByRelevanceFieldEnum = (typeof v_ResolutionSearchOrderByRelevanceFieldEnum)[keyof typeof v_ResolutionSearchOrderByRelevanceFieldEnum]
+
+
+export const v_MissingResolutionOrderByRelevanceFieldEnum = {
+  initial: 'initial',
+  search_id: 'search_id'
+} as const
+
+export type v_MissingResolutionOrderByRelevanceFieldEnum = (typeof v_MissingResolutionOrderByRelevanceFieldEnum)[keyof typeof v_MissingResolutionOrderByRelevanceFieldEnum]
+
+
+export const v_ResolvedReferencesOrderByRelevanceFieldEnum = {
+  ref_id: 'ref_id',
+  native_id: 'native_id',
+  res_init: 'res_init'
+} as const
+
+export type v_ResolvedReferencesOrderByRelevanceFieldEnum = (typeof v_ResolvedReferencesOrderByRelevanceFieldEnum)[keyof typeof v_ResolvedReferencesOrderByRelevanceFieldEnum]
 
 
 

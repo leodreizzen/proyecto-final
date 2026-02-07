@@ -12,3 +12,7 @@ export * from "./sql/getRelevantChanges.ts"
 export * from "./sql/getResolutionsDirectlyAffectedByRes.ts"
 
 export * from "./sql/insertSearchableContentBulk.ts"
+
+export * from "./sql/keywordSearch.ts"
+
+export * from "./sql/semanticSearch.ts"

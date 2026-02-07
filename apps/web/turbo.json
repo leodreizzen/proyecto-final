@@ -17,7 +17,10 @@
         "S3_REGION",
         "S3_PUBLIC_BUCKET_NAME",
         "S3_INTERNAL_BUCKET_NAME",
-        "PUBLIC_S3_ENDPOINT"
+        "PUBLIC_S3_ENDPOINT",
+        "GOOGLE_API_KEY",
+        "OPENROUTER_API_KEY",
+        "USE_OPENROUTER"
       ]
     },
     "build": {
@@ -33,7 +36,10 @@
         "S3_REGION",
         "S3_PUBLIC_BUCKET_NAME",
         "S3_INTERNAL_BUCKET_NAME",
-        "PUBLIC_S3_ENDPOINT"
+        "PUBLIC_S3_ENDPOINT",
+        "GOOGLE_API_KEY",
+        "OPENROUTER_API_KEY",
+        "USE_OPENROUTER"
       ]
     }
   }

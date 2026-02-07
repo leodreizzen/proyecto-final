@@ -238,6 +238,7 @@ export type ReferenceResolutionOrderByWithRelationInput = {
   changeRatifyAdReferendum?: Prisma.ChangeRatifyAdReferendumOrderByWithRelationInput
   changeAddAnnexTarget?: Prisma.ChangeAddAnnexOrderByWithRelationInput
   changeAddArticleTarget?: Prisma.ChangeAddArticleOrderByWithRelationInput
+  _relevance?: Prisma.ReferenceResolutionOrderByRelevanceInput
 }
 
 export type ReferenceResolutionWhereUniqueInput = Prisma.AtLeast<{
@@ -364,6 +365,12 @@ export type ReferenceResolutionScalarRelationFilter = {
 export type ReferenceResolutionNullableScalarRelationFilter = {
   is?: Prisma.ReferenceResolutionWhereInput | null
   isNot?: Prisma.ReferenceResolutionWhereInput | null
+}
+
+export type ReferenceResolutionOrderByRelevanceInput = {
+  fields: Prisma.ReferenceResolutionOrderByRelevanceFieldEnum | Prisma.ReferenceResolutionOrderByRelevanceFieldEnum[]
+  sort: Prisma.SortOrder
+  search: string
 }
 
 export type ReferenceResolutionCountOrderByAggregateInput = {

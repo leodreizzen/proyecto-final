@@ -334,6 +334,7 @@ export type ResolutionOrderByWithRelationInput = {
   vArticleContexts?: Prisma.v_ArticleContextOrderByRelationAggregateInput
   maintenanceTasks?: Prisma.MaintenanceTaskOrderByRelationAggregateInput
   searchableItems?: Prisma.SearchableContentOrderByRelationAggregateInput
+  _relevance?: Prisma.ResolutionOrderByRelevanceInput
 }
 
 export type ResolutionWhereUniqueInput = Prisma.AtLeast<{
@@ -579,6 +580,12 @@ export type StringNullableListFilter<$PrismaModel = never> = {
   hasEvery?: string[] | Prisma.ListStringFieldRefInput<$PrismaModel>
   hasSome?: string[] | Prisma.ListStringFieldRefInput<$PrismaModel>
   isEmpty?: boolean
+}
+
+export type ResolutionOrderByRelevanceInput = {
+  fields: Prisma.ResolutionOrderByRelevanceFieldEnum | Prisma.ResolutionOrderByRelevanceFieldEnum[]
+  sort: Prisma.SortOrder
+  search: string
 }
 
 export type ResolutionInitialNumberYearCompoundUniqueInput = {

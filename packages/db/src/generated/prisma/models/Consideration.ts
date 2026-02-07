@@ -210,6 +210,7 @@ export type ConsiderationOrderByWithRelationInput = {
   number?: Prisma.SortOrder
   resolution?: Prisma.ResolutionOrderByWithRelationInput
   content?: Prisma.ContentBlockOrderByRelationAggregateInput
+  _relevance?: Prisma.ConsiderationOrderByRelevanceInput
 }
 
 export type ConsiderationWhereUniqueInput = Prisma.AtLeast<{
@@ -297,6 +298,12 @@ export type ConsiderationListRelationFilter = {
 
 export type ConsiderationOrderByRelationAggregateInput = {
   _count?: Prisma.SortOrder
+}
+
+export type ConsiderationOrderByRelevanceInput = {
+  fields: Prisma.ConsiderationOrderByRelevanceFieldEnum | Prisma.ConsiderationOrderByRelevanceFieldEnum[]
+  sort: Prisma.SortOrder
+  search: string
 }
 
 export type ConsiderationResolutionIdNumberCompoundUniqueInput = {

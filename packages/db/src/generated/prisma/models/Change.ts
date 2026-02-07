@@ -205,6 +205,7 @@ export type ChangeOrderByWithRelationInput = {
   changeModifyTextAnnex?: Prisma.ChangeModifyTextAnnexOrderByWithRelationInput
   changeAddArticle?: Prisma.ChangeAddArticleOrderByWithRelationInput
   changeApplyModificationsAnnex?: Prisma.ChangeApplyModificationsAnnexOrderByWithRelationInput
+  _relevance?: Prisma.ChangeOrderByRelevanceInput
 }
 
 export type ChangeWhereUniqueInput = Prisma.AtLeast<{
@@ -344,6 +345,12 @@ export type ChangeListRelationFilter = {
 
 export type ChangeOrderByRelationAggregateInput = {
   _count?: Prisma.SortOrder
+}
+
+export type ChangeOrderByRelevanceInput = {
+  fields: Prisma.ChangeOrderByRelevanceFieldEnum | Prisma.ChangeOrderByRelevanceFieldEnum[]
+  sort: Prisma.SortOrder
+  search: string
 }
 
 export type ChangeCountOrderByAggregateInput = {

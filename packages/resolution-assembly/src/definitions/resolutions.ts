@@ -105,6 +105,7 @@ export type ConsiderationToShow = {
 
 export type ResolutionToShow = {
     id: ResolutionNaturalID;
+    title: string;
     summary: string;
 
     decisionBy: string;

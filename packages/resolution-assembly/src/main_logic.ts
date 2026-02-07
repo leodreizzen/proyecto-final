@@ -67,6 +67,7 @@ function getInitialDataToShow(resolution: ResolutionDBDataToShow, validationCont
     return {
         id,
         summary: resolution.summary,
+        title: resolution.title,
         recitals,
         considerations,
         articles,

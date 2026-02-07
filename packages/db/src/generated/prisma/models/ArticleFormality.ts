@@ -156,6 +156,7 @@ export type ArticleFormalityWhereInput = {
 export type ArticleFormalityOrderByWithRelationInput = {
   id?: Prisma.SortOrder
   article?: Prisma.ArticleOrderByWithRelationInput
+  _relevance?: Prisma.ArticleFormalityOrderByRelevanceInput
 }
 
 export type ArticleFormalityWhereUniqueInput = Prisma.AtLeast<{
@@ -211,6 +212,12 @@ export type ArticleFormalityUncheckedUpdateManyInput = {
 export type ArticleFormalityNullableScalarRelationFilter = {
   is?: Prisma.ArticleFormalityWhereInput | null
   isNot?: Prisma.ArticleFormalityWhereInput | null
+}
+
+export type ArticleFormalityOrderByRelevanceInput = {
+  fields: Prisma.ArticleFormalityOrderByRelevanceFieldEnum | Prisma.ArticleFormalityOrderByRelevanceFieldEnum[]
+  sort: Prisma.SortOrder
+  search: string
 }
 
 export type ArticleFormalityCountOrderByAggregateInput = {

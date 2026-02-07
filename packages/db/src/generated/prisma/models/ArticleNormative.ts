@@ -156,6 +156,7 @@ export type ArticleNormativeWhereInput = {
 export type ArticleNormativeOrderByWithRelationInput = {
   id?: Prisma.SortOrder
   article?: Prisma.ArticleOrderByWithRelationInput
+  _relevance?: Prisma.ArticleNormativeOrderByRelevanceInput
 }
 
 export type ArticleNormativeWhereUniqueInput = Prisma.AtLeast<{
@@ -211,6 +212,12 @@ export type ArticleNormativeUncheckedUpdateManyInput = {
 export type ArticleNormativeNullableScalarRelationFilter = {
   is?: Prisma.ArticleNormativeWhereInput | null
   isNot?: Prisma.ArticleNormativeWhereInput | null
+}
+
+export type ArticleNormativeOrderByRelevanceInput = {
+  fields: Prisma.ArticleNormativeOrderByRelevanceFieldEnum | Prisma.ArticleNormativeOrderByRelevanceFieldEnum[]
+  sort: Prisma.SortOrder
+  search: string
 }
 
 export type ArticleNormativeCountOrderByAggregateInput = {

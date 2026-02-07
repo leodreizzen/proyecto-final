@@ -1,6 +1,10 @@
 import prisma from "@/lib/prisma";
-import { Prisma } from "@repo/db/prisma/client";
+import {Prisma} from "@repo/db/prisma/client";
 import {checkResourcePermission} from "@/lib/auth/data-authorization";
+import {createOpenaiEmbedding} from "@repo/ai/openai_wrapper";
+import {EMBEDDINGS_DIMENSIONS, EMBEDDINGS_MODEL} from "@repo/ai/embeddings";
+import {semanticSearch} from "@repo/db/prisma/sql/semanticSearch";
+import {keywordSearch} from "@repo/db/prisma/sql/keywordSearch";
 
 export type SearchFilters = {
     initial?: string;
@@ -10,33 +14,33 @@ export type SearchFilters = {
 
 const PAGE_SIZE = 12; // multiple of 3 and 2 for grid layouts
 
-export async function searchResolutions(filters: SearchFilters, cursor?: string) {
+export async function searchResolutionsById(filters: SearchFilters, cursor?: string) {
     await checkResourcePermission("resolution", "read");
     const where: Prisma.ResolutionWhereInput = {};
 
     if (filters.initial) {
-        where.initial = { equals: filters.initial, mode: "insensitive" };
+        where.initial = {equals: filters.initial, mode: "insensitive"};
     }
-    
+
     if (filters.number) {
         where.number = filters.number;
     }
-    
+
     if (filters.year) {
         where.year = filters.year;
     }
 
     const [count, data] = await prisma.$transaction([
-        prisma.resolution.count({ where }),
+        prisma.resolution.count({where}),
         prisma.resolution.findMany({
             where,
             orderBy: [
-                { date: 'desc' },
-                { number: 'desc' }
+                {date: 'desc'},
+                {number: 'desc'}
             ],
             take: PAGE_SIZE,
             skip: cursor ? 1 : 0,
-            cursor: cursor ? { id: cursor } : undefined,
+            cursor: cursor ? {id: cursor} : undefined,
             select: {
                 id: true,
                 initial: true,
@@ -48,7 +52,7 @@ export async function searchResolutions(filters: SearchFilters, cursor?: string)
             }
         })
     ]);
-    
+
     const lastItem = data[data.length - 1];
     const nextCursor = (data.length === PAGE_SIZE && lastItem) ? lastItem.id : undefined;
 
@@ -63,4 +67,100 @@ export async function searchResolutions(filters: SearchFilters, cursor?: string)
             pageSize: PAGE_SIZE
         }
     };
+}
+
+export async function searchResolutionsByKeyword(keywords: string, cursor?: string) {
+    await checkResourcePermission("resolution", "read");
+
+    return await prisma.$transaction(async tx => {
+        const results = await tx.$queryRawTyped(keywordSearch(keywords, cursor ?? null, PAGE_SIZE))
+        const contents = await prisma.searchableContent.findMany({
+            where: {
+                id: {
+                    in: results.map(r => r.id)
+                }
+            },
+            include: {
+                resolution: {
+                    select: {
+                        id: true,
+                        initial: true,
+                        number: true,
+                        year: true,
+                        date: true,
+                        summary: true,
+                        title: true,
+                    }
+                }
+            },
+            take: PAGE_SIZE,
+            skip: cursor ? 1 : 0,
+            cursor: cursor ? {id: cursor} : undefined,
+        });
+
+        const contentMap = new Map(contents.map(c => [c.id, c]));
+        const finalresults = [];
+        for (const result of results) {
+            const content = contentMap.get(result.id);
+            if (content) {
+                finalresults.push(content);
+            }
+        }
+        return finalresults;
+    })
+}
+
+export async function searchResolutionsBySemantic(query: string, cursor?: string) {
+    await checkResourcePermission("resolution", "read");
+
+    const embedding = await createOpenaiEmbedding({
+        input: query,
+        dimensions: EMBEDDINGS_DIMENSIONS,
+        model: EMBEDDINGS_MODEL,
+        taskType: "QUESTION_ANSWERING"
+    });
+
+
+    const vector = embedding.data[0]?.embedding;
+    if (!vector) {
+        throw new Error("Failed to get embedding for the query");
+    }
+
+    const SIMILARITY_THRESHOLD = 0.5;
+
+    const safeCursorId = cursor || null;
+
+    const vectorStr = JSON.stringify(vector);
+
+    const results = await prisma.$queryRawTyped(semanticSearch(vectorStr, safeCursorId, SIMILARITY_THRESHOLD, PAGE_SIZE));
+
+    const contentIds = results.map(r => r.id);
+    const contents = await prisma.searchableContent.findMany({
+        where: {
+            id: {in: contentIds}
+        },
+        include: {
+            resolution: {
+                select: {
+                    id: true,
+                    initial: true,
+                    number: true,
+                    year: true,
+                    date: true,
+                    summary: true,
+                    title: true,
+                }
+            }
+        }
+    });
+
+    const contentMap = new Map(contents.map(c => [c.id, c]));
+    const finalResults = [];
+    for (const result of results) {
+        const content = contentMap.get(result.id);
+        if (content) {
+            finalResults.push(content);
+        }
+    }
+    return finalResults;
 }

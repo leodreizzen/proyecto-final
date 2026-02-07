@@ -22,6 +22,8 @@ DIFF_OUTPUT=$(pnpm exec prisma migrate diff \
 CLEAN_OUTPUT=$(echo "$DIFF_OUTPUT" \
   | grep -vF -- "-- CreateSchema" \
   | grep -vF 'CREATE SCHEMA IF NOT EXISTS "public";' \
+  | grep -vF -- '-- CreateExtension' \
+  | grep -vF 'CREATE EXTENSION IF NOT EXISTS "plpgsql"' \
   | sed '/^[[:space:]]*$/d')
 
 if [ -n "$CLEAN_OUTPUT" ]; then

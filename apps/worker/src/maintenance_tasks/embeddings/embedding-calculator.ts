@@ -1,26 +1,26 @@
 import pLimit from "p-limit";
-
+import {APIError, createOpenaiEmbedding, CreateOpenAIEmbeddingInput} from "@repo/ai/openai_wrapper";
 import {ChunkToEmbed} from "@/maintenance_tasks/embeddings/definitions";
 import {formatChunkText} from "@/maintenance_tasks/embeddings/helpers/final-formatter";
+import {EmbeddingsAPIError} from "@/maintenance_tasks/embeddings/helpers/error";
+import {withEmbeddingsRetry} from "@/util/llm/retries";
+import {EMBEDDINGS_DIMENSIONS, EMBEDDINGS_MODEL} from "@repo/ai/embeddings";
 
 
 export async function calculateChunkEmbeddings(chunks: ChunkToEmbed[]) {
     const chunkTexts = chunks.map(formatChunkText);
     return getEmbeddingsBatched({
         texts: chunkTexts,
-        model: "gemini-embedding-001",
+        model: EMBEDDINGS_MODEL,
         encoding_format: "float",
         concurrencyLimit: 5,
         batchSize: 1,
-        dimensions: 768,
+        dimensions: EMBEDDINGS_DIMENSIONS,
         taskType: "RETRIEVAL_DOCUMENT"
     })
 }
 
-import {createOpenaiEmbedding, CreateOpenAIEmbeddingInput} from "@/util/llm/openai_wrapper";
-import {EmbeddingsAPIError} from "@/maintenance_tasks/embeddings/helpers/error";
-import {APIError} from "openai";
-import {withEmbeddingsRetry} from "@/util/llm/retries";
+
 
 export type GetEmbeddingsBatchedParams = Omit<CreateOpenAIEmbeddingInput, "input"> & {
     texts: string[], concurrencyLimit: number, batchSize: number

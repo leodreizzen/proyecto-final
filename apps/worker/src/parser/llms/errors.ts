@@ -1,5 +1,5 @@
 import {ZodError} from "zod";
-import {APIError} from "openai";
+import {APIError} from "@repo/ai/openai_wrapper";
 
 export class InvalidLLMResponseError extends Error {
     constructor(message: string) {

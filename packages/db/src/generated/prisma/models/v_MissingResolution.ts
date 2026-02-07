@@ -232,6 +232,7 @@ export type v_MissingResolutionOrderByWithRelationInput = {
   year?: Prisma.SortOrder
   referencesCount?: Prisma.SortOrder
   search_id?: Prisma.SortOrder
+  _relevance?: Prisma.v_MissingResolutionOrderByRelevanceInput
 }
 
 export type v_MissingResolutionWhereUniqueInput = Prisma.AtLeast<{
@@ -268,6 +269,12 @@ export type v_MissingResolutionScalarWhereWithAggregatesInput = {
   year?: Prisma.IntWithAggregatesFilter<"v_MissingResolution"> | number
   referencesCount?: Prisma.IntWithAggregatesFilter<"v_MissingResolution"> | number
   search_id?: Prisma.StringWithAggregatesFilter<"v_MissingResolution"> | string
+}
+
+export type v_MissingResolutionOrderByRelevanceInput = {
+  fields: Prisma.v_MissingResolutionOrderByRelevanceFieldEnum | Prisma.v_MissingResolutionOrderByRelevanceFieldEnum[]
+  sort: Prisma.SortOrder
+  search: string
 }
 
 export type v_MissingResolutionInitialNumberYearCompoundUniqueInput = {

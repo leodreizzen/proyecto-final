@@ -291,6 +291,7 @@ export type v_ResolvedReferencesOrderByWithRelationInput = {
   annex_num?: Prisma.SortOrderInput | Prisma.SortOrder
   chap_num?: Prisma.SortOrderInput | Prisma.SortOrder
   reference?: Prisma.ReferenceOrderByWithRelationInput
+  _relevance?: Prisma.v_ResolvedReferencesOrderByRelevanceInput
 }
 
 export type v_ResolvedReferencesWhereUniqueInput = Prisma.AtLeast<{
@@ -347,6 +348,12 @@ export type v_ResolvedReferencesScalarWhereWithAggregatesInput = {
 export type V_ResolvedReferencesNullableScalarRelationFilter = {
   is?: Prisma.v_ResolvedReferencesWhereInput | null
   isNot?: Prisma.v_ResolvedReferencesWhereInput | null
+}
+
+export type v_ResolvedReferencesOrderByRelevanceInput = {
+  fields: Prisma.v_ResolvedReferencesOrderByRelevanceFieldEnum | Prisma.v_ResolvedReferencesOrderByRelevanceFieldEnum[]
+  sort: Prisma.SortOrder
+  search: string
 }
 
 export type v_ResolvedReferencesCountOrderByAggregateInput = {
