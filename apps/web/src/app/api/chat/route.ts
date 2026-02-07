@@ -15,6 +15,7 @@ import {databaseInformationTool} from "@/lib/chatbot/tools/database-information"
 import {z} from "zod";
 import {loadChat, saveChat} from "@/lib/chatbot/chat-store";
 import {v7} from "uuid";
+import {chatLimiter, getIpAddress} from "@/lib/limiters";
 
 let model: LanguageModel;
 if (process.env.USE_OPENROUTER?.toLowerCase() === 'true') {
@@ -41,6 +42,7 @@ const tools = {
 }
 
 
+
 export async function POST(req: Request) {
     const params = await req.json();
     await authCheck(publicRoute);
@@ -48,6 +50,15 @@ export async function POST(req: Request) {
         message: z.object().loose(),
         id: z.uuid(),
     }).parse(params);
+
+    const ip = getIpAddress(req);
+    if (ip) {
+        try {
+            await chatLimiter.consume(ip);
+        } catch {
+            return new Response('Too Many Requests', { status: 429 });
+        }
+    }
 
     const history = await loadChat(id);
 

@@ -1,8 +1,7 @@
 import "server-only";
 import {UIMessage} from "ai";
-import Redis from "ioredis";
+import {redis} from "@/lib/redis";
 
-const redis = new Redis(process.env.REDIS_URL!, {lazyConnect: true});
 const CHAT_TTL = 60 * 60 * 24;
 
 export async function loadChat(chatId: string): Promise<UIMessage[]> {
