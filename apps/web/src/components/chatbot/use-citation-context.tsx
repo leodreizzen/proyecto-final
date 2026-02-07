@@ -3,11 +3,13 @@ import { UIMessage } from '@ai-sdk/react';
 import { IdLookupInput, SearchToolOutput } from "@/lib/chatbot/tools/schemas";
 import { formatResolutionId } from "@/lib/utils";
 import { CITATION_REGEX_GLOBAL } from "./citation-utils";
+import {pathForResolution} from "@/lib/paths";
 
 export type CitationData = {
     title: string;
     source: string;
     quote: string;
+    href: string | null;
 };
 
 export type CitationContextType = Map<string, { number: number; data: CitationData }>;
@@ -26,7 +28,12 @@ export function useCitationContext(messages: UIMessage[]) {
                             return {
                                 title: `Resolución ${formattedId}`,
                                 source: formattedId,
-                                quote: typeof part.output === 'string' ? part.output : "Contenido de la resolución"
+                                quote: typeof part.output === 'string' ? part.output : "Contenido de la resolución",
+                                href: pathForResolution({
+                                    initial: input.initial,
+                                    number: input.number,
+                                    year: input.year
+                                })
                             };
                         }
                     }
@@ -35,14 +42,22 @@ export function useCitationContext(messages: UIMessage[]) {
                 for (const part of msg.parts) {
                     if (part.type === "tool-search") {
                         const output = part.output as SearchToolOutput;
-                        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                        const chunk = output?.find((c: any) => c.chunkId === id);
+                        const chunk = output?.find((c) => c.chunkId === id);
                         if (chunk) {
                             const resId = formatResolutionId(chunk.resolution);
                             return {
                                 title: `Resolución ${resId}: ${chunk.resolution.title}`,
                                 source: resId,
-                                quote: chunk.content
+                                quote: chunk.content,
+                                href: pathForResolution({
+                                    initial: chunk.resolution.initial,
+                                    number: chunk.resolution.number,
+                                    year: chunk.resolution.year,
+                                    articleNumber: chunk.chunkData.articleNumber,
+                                    articleSuffix: chunk.chunkData.articleSuffix,
+                                    annexNumber: chunk.chunkData.annexNumber,
+                                    chapterNumber: chunk.chunkData.chapterNumber
+                                })
                             };
                         }
                     }

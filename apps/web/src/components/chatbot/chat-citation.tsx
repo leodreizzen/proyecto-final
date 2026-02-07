@@ -1,94 +1,9 @@
 "use client";
 
-import { UIMessage } from "@ai-sdk/react";
-import { formatResolutionId } from "@/lib/utils";
-import { TriangleAlertIcon } from "lucide-react";
-import { useMemo } from "react";
+import { ExternalLinkIcon } from "lucide-react";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import Link from "next/link";
 
-interface ChatCitationProps {
-    id: string;
-    type: "CHUNK" | "RES";
-    parts: UIMessage["parts"] | undefined;
-    index: number;
-}
-
-export function ChatCitation({ id, type, parts, index }: ChatCitationProps) {
-    const citationData = useMemo(() => {
-        if (!parts) return null;
-
-        if (type === "CHUNK") {
-            for (const part of parts) {
-                // Robust check
-                // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                const p = part as any;
-                const toolName = p.toolName || p.toolInvocation?.toolName;
-                const result = p.result || p.toolInvocation?.result;
-
-                if (toolName === "search" && result) {
-                    const results = result as Array<{
-                        resolution: {
-                            id: string;
-                            initial: string;
-                            number: number;
-                            year: number;
-                            title: string
-                        };
-                        content: string;
-                        chunkId: string;
-                    }>;
-
-                    const match = results.find((r) => r.chunkId === id);
-                    if (match) {
-                        return {
-                            title: `Resolución ${formatResolutionId(match.resolution)}: ${match.resolution.title}`,
-                            source: formatResolutionId(match.resolution),
-                            quote: match.content
-                        };
-                    }
-                }
-            }
-        } else if (type === "RES") {
-            for (const part of parts) {
-                // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                const p = part as any;
-                const toolName = p.toolName || p.toolInvocation?.toolName;
-                const input = p.args || p.toolInvocation?.args || p.input;
-                const result = p.result || p.toolInvocation?.result;
-
-
-                if (toolName === "idLookup") {
-                    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                    const formatted = input ? formatResolutionId(input as any) : '';
-
-                    if (formatted && (id.includes(formatted) || formatted.includes(id))) {
-                        return {
-                            title: `Resolución ${formatted}`,
-                            source: formatted,
-                            quote: typeof result === 'string' ? result : "Contenido de la resolución"
-                        }
-                    }
-                }
-            }
-        }
-        return null;
-    }, [id, type, parts]);
-
-    if (!citationData) {
-        return (
-            <span className="inline-flex items-center justify-center align-top -mt-1 mx-0.5">
-                <TriangleAlertIcon className="size-3 text-destructive" />
-            </span>
-        );
-    }
-
-    return (
-        <PrecomputedChatCitation
-            index={index}
-            data={citationData}
-        />
-    );
-}
 
 interface PrecomputedChatCitationProps {
     index: number;
@@ -96,6 +11,7 @@ interface PrecomputedChatCitationProps {
         title: string;
         source: string;
         quote: string;
+        href?: string | null;
     };
 }
 
@@ -117,10 +33,14 @@ export function PrecomputedChatCitation({ index, data }: PrecomputedChatCitation
                             {data.quote}
                         </p>
                     </div>
-                    {/* Optional Link Placeholder - to be implemented */}
-                    {/* <div className="p-2 border-t bg-muted/20">
-                         <a href="#" className="text-xs text-primary hover:underline">Ver resolución completa</a>
-                     </div> */}
+                    {data.href && (
+                        <div className="p-2 border-t bg-muted/20 flex justify-end">
+                            <Link href={data.href} target="_blank" prefetch={false} className="inline-flex items-center gap-1.5 text-xs text-primary hover:underline font-medium px-2 py-1">
+                                Ver resolución completa
+                                <ExternalLinkIcon className="size-3" />
+                            </Link>
+                        </div>
+                    )}
                 </div>
             </PopoverContent>
         </Popover>

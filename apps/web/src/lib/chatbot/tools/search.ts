@@ -37,7 +37,14 @@ export async function formatSearchResults(results: SearchableContentWithResoluti
             title: result.resolution.title,
         },
         content: result.context + result.mainText,
-        chunkId: result.id
+        chunkId: result.id,
+        chunkData: {
+            articleNumber: result.articleNumber,
+            articleSuffix: result.articleSuffix,
+            annexNumber: result.annexNumber,
+            chapterNumber: result.chapterNumber,
+            chunkNumber: result.chunkNumber
+        }
     }));
     return mapped;
 }
