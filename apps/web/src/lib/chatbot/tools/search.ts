@@ -1,5 +1,4 @@
 import {tool} from 'ai';
-import {z} from "zod";
 import {searchResolutionsByKeyword, searchResolutionsBySemantic} from "@/lib/data/search";
 import {SearchableContentWithResolution} from "@/lib/definitions/resolutions";
 import {searchToolSchema} from "@/lib/chatbot/tools/schemas";
@@ -38,6 +37,9 @@ export async function formatSearchResults(results: SearchableContentWithResoluti
             title: result.resolution.title,
         },
         content: result.context + result.mainText,
+        chunkId: result.id
     }));
     return mapped;
 }
+
+export type FormattedSearchResults = Awaited<ReturnType<typeof formatSearchResults>>;

@@ -1,4 +1,5 @@
 import z from "zod";
+import {FormattedSearchResults} from "@/lib/chatbot/tools/search";
 
 export const idLookupToolSchema = z.object({
     initial: z.string().min(1, "La inicial de la resolución no puede estar vacía.").describe("La inicial de la resolución, por ejemplo 'CSU' o 'REC"),
@@ -16,3 +17,5 @@ export const searchToolSchema = z.object({
 })
 
 export type SearchToolInput = z.infer<typeof searchToolSchema>;
+
+export type SearchToolOutput = FormattedSearchResults
