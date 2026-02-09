@@ -9,6 +9,6 @@ export const chatLimiter = new RateLimiterRedis({
     storeClient: redis,
     keyPrefix: 'chat-limit',
     points: 1,
-    duration: 2,
+    duration: 4,
 });
 
