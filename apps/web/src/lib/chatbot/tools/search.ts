@@ -1,5 +1,5 @@
 import {tool} from 'ai';
-import {searchResolutionsByKeyword, searchResolutionsBySemantic} from "@/lib/data/search";
+import {searchChunksByKeyword, searchChunksBySemantic} from "@/lib/data/search";
 import {SearchableContentWithResolution} from "@/lib/definitions/resolutions";
 import {searchToolSchema} from "@/lib/chatbot/tools/schemas";
 
@@ -10,11 +10,11 @@ export const searchTool = tool({
     execute: async({searchType, query, cursor}) => {
         try {
             if (searchType === 'KEYWORD') {
-                const results = await searchResolutionsByKeyword(query, cursor);
+                const results = await searchChunksByKeyword(query, cursor);
                 return formatSearchResults(results);
             }
             else {
-                const results = await searchResolutionsBySemantic(query, cursor);
+                const results = await searchChunksBySemantic(query, cursor);
                 return formatSearchResults(results);
             }
         } catch (error) {

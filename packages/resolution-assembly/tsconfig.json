@@ -9,9 +9,6 @@
     "declaration": false,
     "declarationMap": false,
     "types": ["node"],
-    "typeRoots": [
-      "./types"
-    ]
   },
   "include": [
     "**/*.ts"

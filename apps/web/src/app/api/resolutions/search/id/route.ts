@@ -2,7 +2,7 @@ import {NextRequest, NextResponse} from "next/server";
 import {searchResolutionsById} from "@/lib/data/search";
 import {z} from "zod";
 import {authCheck, publicRoute} from "@/lib/auth/route-authorization";
-import {SearchByIdReturnType} from "@/app/api/resolutions/search/id/types";
+import {SearchResolutionByIdResult} from "@/app/api/resolutions/search/id/types";
 
 const ParamsSchema = z.object({
     cursor: z.uuidv7().optional(),
@@ -11,7 +11,7 @@ const ParamsSchema = z.object({
     year: z.coerce.number().optional(),
 })
 
-export async function GET(request: NextRequest): Promise<NextResponse<SearchByIdReturnType | { error: string }>> {
+export async function GET(request: NextRequest): Promise<NextResponse<SearchResolutionByIdResult | { error: string }>> {
     await authCheck(publicRoute);
 
     const searchParams = request.nextUrl.searchParams;
@@ -29,7 +29,7 @@ export async function GET(request: NextRequest): Promise<NextResponse<SearchById
 
     const { cursor, initial, number, year } = parseRes.data;
 
-    const result = await searchResolutionsById({ initial, number, year }, cursor);
+    const result = await searchResolutionsById({ search_type: "by_id", initial, number, year }, cursor);
 
     return NextResponse.json(result);
 }

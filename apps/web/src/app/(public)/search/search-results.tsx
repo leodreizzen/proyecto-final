@@ -2,14 +2,14 @@
 import {useInfiniteQuery} from "@tanstack/react-query";
 import {VirtuosoGrid} from "react-virtuoso";
 import {SearchFilters} from "@/lib/data/search";
-import {SearchByIdReturnType} from "@/app/api/resolutions/search/id/types";
 import {ResolutionCard} from "@/components/resolution-card";
 import {Loader2} from "lucide-react";
 import React from "react";
 import {resolutionIdSearchQuery} from "@/lib/queries/search/search-queries";
+import {SearchResolutionQueryResult} from "@/app/api/resolutions/search/types";
 
 interface SearchResultsProps {
-    initialData: SearchByIdReturnType;
+    initialData: SearchResolutionQueryResult;
     filters: SearchFilters;
 }
 
@@ -83,7 +83,7 @@ export function SearchResults({initialData, filters}: SearchResultsProps) {
                 computeItemKey={(_index, item) => item.id}
                 endReached={() => {
                     if (hasNextPage && !isFetchingNextPage) {
-                        fetchNextPage();
+                        fetchNextPage({cancelRefetch: false});
                     }
                 }}
                 overscan={400}

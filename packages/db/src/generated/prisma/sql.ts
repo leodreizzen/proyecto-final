@@ -15,4 +15,8 @@ export * from "./sql/insertSearchableContentBulk.ts"
 
 export * from "./sql/keywordSearch.ts"
 
+export * from "./sql/keywordSearchResolutions.ts"
+
 export * from "./sql/semanticSearch.ts"
+
+export * from "./sql/semanticSearchResolutions.ts"

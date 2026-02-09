@@ -4,7 +4,7 @@ import {ChunkToEmbed} from "@/maintenance_tasks/embeddings/definitions";
 import {formatChunkText} from "@/maintenance_tasks/embeddings/helpers/final-formatter";
 import {EmbeddingsAPIError} from "@/maintenance_tasks/embeddings/helpers/error";
 import {withEmbeddingsRetry} from "@/util/llm/retries";
-import {EMBEDDINGS_DIMENSIONS, EMBEDDINGS_MODEL} from "@repo/ai/embeddings";
+import {EMBEDDINGS_BATCH_SIZE, EMBEDDINGS_DIMENSIONS, EMBEDDINGS_MODEL} from "@repo/ai/embeddings";
 
 
 export async function calculateChunkEmbeddings(chunks: ChunkToEmbed[]) {
@@ -14,9 +14,8 @@ export async function calculateChunkEmbeddings(chunks: ChunkToEmbed[]) {
         model: EMBEDDINGS_MODEL,
         encoding_format: "float",
         concurrencyLimit: 5,
-        batchSize: 1,
+        batchSize: EMBEDDINGS_BATCH_SIZE,
         dimensions: EMBEDDINGS_DIMENSIONS,
-        taskType: "RETRIEVAL_DOCUMENT"
     })
 }
 

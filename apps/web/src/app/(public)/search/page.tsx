@@ -1,11 +1,11 @@
-import {authCheck, publicRoute} from "@/lib/auth/route-authorization";
-import {SearchWidget} from "@/components/home/search-widget";
-import {searchResolutionsById} from "@/lib/data/search";
-import {SearchResults} from "./search-results";
-import {SearchSummary} from "@/components/search/search-summary";
-import {z} from "zod";
-import {redirect} from "next/navigation";
-import {Metadata} from "next";
+import { authCheck, publicRoute } from "@/lib/auth/route-authorization";
+import { SearchWidget } from "@/components/home/search-widget";
+import {searchResolutionsById, searchResolutionsByKeyword, searchResolutionsBySemantic} from "@/lib/data/search";
+import { SearchResults } from "./search-results";
+import { SearchSummary } from "@/components/search/search-summary";
+import { z } from "zod";
+import { redirect } from "next/navigation";
+import { Metadata } from "next";
 
 type SearchPageProps = {
     searchParams: Promise<{ [key: string]: string | string[] | undefined }>
@@ -16,32 +16,64 @@ const SearchByIdParamsSchema = z.object({
     initial: z.string().optional(),
     number: z.coerce.number().optional(),
     year: z.coerce.number().optional(),
-})
+});
+
+const SearchBySemanticParamsSchema = z.object({
+    search_type: z.literal('semantic'),
+    q: z.string()
+});
+
+const SearchByKeywordParamsSchema = z.object({
+    search_type: z.literal('keywords'),
+    q: z.string()
+});
+
+const SearchParamsSchema = z.discriminatedUnion('search_type', [
+    SearchByIdParamsSchema,
+    SearchBySemanticParamsSchema,
+    SearchByKeywordParamsSchema
+]);
 
 export const metadata: Metadata = {
     title: "Búsqueda"
 }
 
-export default async function SearchPage({searchParams}: SearchPageProps) {
+export default async function SearchPage({ searchParams }: SearchPageProps) {
     await authCheck(publicRoute);
 
     const params = await searchParams;
 
 
-    const parseRes = SearchByIdParamsSchema.safeParse(params);
+    const parseRes = SearchParamsSchema.safeParse(params);
 
     if (!parseRes.success) {
         console.error("Error parsing search");
         redirect("/");
     }
 
-    const filters = {
-        initial: parseRes.data.initial,
-        number: parseRes.data.number,
-        year: parseRes.data.year,
-    };
+    const { data } = parseRes;
 
-    const initialResult = await searchResolutionsById(filters, undefined);
+    let initialResult;
+    if (data.search_type === 'by_id') {
+        initialResult = await searchResolutionsById(data, undefined);
+    } else if (data.search_type === 'semantic') {
+        initialResult = await searchResolutionsBySemantic(data.q, undefined);
+    } else if (data.search_type === 'keywords') {
+        initialResult = await searchResolutionsByKeyword(data.q, undefined);
+    } else {
+        const _exhaustiveCheck: never = data;
+        console.error("Invalid search type");
+        redirect("/");
+    }
+
+    const widgetInitialValues = {
+        initial: data.search_type === 'by_id' ? data.initial : undefined,
+        number: data.search_type === 'by_id' && data.number ? data.number.toString() : undefined,
+        year: data.search_type === 'by_id' && data.year ? data.year.toString() : undefined,
+        query: (data.search_type === 'semantic' || data.search_type === 'keywords') ? data.q : undefined,
+        activeTab: data.search_type === 'by_id' ? 'id' : data.search_type
+    }
+
 
     return (
         <div className="mx-4 md:mx-14 space-y-8 my-10">
@@ -57,11 +89,7 @@ export default async function SearchPage({searchParams}: SearchPageProps) {
 
                         <div className="w-full">
                             <SearchWidget
-                                initialValues={{
-                                    initial: filters.initial,
-                                    number: filters.number?.toString(),
-                                    year: filters.year?.toString()
-                                }}
+                                initialValues={widgetInitialValues}
                             />
                         </div>
                     </div>
@@ -69,14 +97,14 @@ export default async function SearchPage({searchParams}: SearchPageProps) {
                     {/* Summary Footer inside the card */}
                     <div
                         className="sm:bg-muted/30 px-6 md:px-8 py-4 sm:border-t flex items-center justify-center md:justify-start">
-                        <SearchSummary filters={filters} count={initialResult.meta.total}/>
+                        <SearchSummary filters={data} count={initialResult.meta.total} />
                     </div>
                 </div>
             </div>
 
             {/* Results Area */}
             <div className="w-full container mx-auto px-4 sm:px-6 lg:px-8">
-                <SearchResults initialData={initialResult} filters={filters}/>
+                <SearchResults initialData={initialResult} filters={data} />
             </div>
         </div>
     );
