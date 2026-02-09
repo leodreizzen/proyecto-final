@@ -15,6 +15,7 @@ import {Avatar, AvatarFallback} from "@/components/ui/avatar"
 import {logoutClient} from "@/lib/auth/auth-client";
 import {usePathname, useRouter} from "next/navigation";
 import Link from "next/link";
+import {SITE_CONFIG} from "../../../config/site";
 
 const NAV_ITEMS: {
     route: string,
@@ -52,8 +53,8 @@ export function Sidebar({user}: { user: { name: string, email: string } }) {
                     <FileText className="h-5 w-5 text-sidebar-primary-foreground"/>
                 </div>
                 <div>
-                    <h1 className="text-sm font-semibold text-sidebar-foreground">Gestor de</h1>
-                    <p className="text-xs text-sidebar-muted">Resoluciones</p>
+                    <h1 className="text-sm font-semibold text-sidebar-foreground">Administrador</h1>
+                    <p className="text-xs text-sidebar-muted">{SITE_CONFIG.PROJECT_NAME}</p>
                 </div>
             </div>
 
