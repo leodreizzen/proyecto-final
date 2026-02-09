@@ -11,17 +11,19 @@ import { getContextForEmbedding } from "./context-generator";
 import { splitContentInChunks } from "./helpers/chunking";
 
 export function getDataToEmbed(resolutionData: ResolutionToShow): DataToEmbed[] {
+    if (resolutionData.repealedBy !== null)
+        return [];
     const referenceMap = buildReferenceMap(resolutionData);
 
     const dataToEmbed: DataToEmbed[] = [];
 
     const recitalsData = resolutionData.recitals.map(recital => getRecitalDataToEmbed(recital, resolutionData, referenceMap));
     const considerationsData = resolutionData.considerations.map(consideration => getConsiderationDataToEmbed(consideration, resolutionData, referenceMap));
-    const articlesData = resolutionData.articles.flatMap(article => getArticleDataToEmbed(article, resolutionData, referenceMap, {
+    const articlesData = resolutionData.articles.filter(a => a.repealedBy === null).flatMap(article => getArticleDataToEmbed(article, resolutionData, referenceMap, {
         chapterNumber: null,
         annexIndex: null
     }));
-    const annexesData = resolutionData.annexes.flatMap((annex => getAnnexDataToEmbed(annex, resolutionData, referenceMap)));
+    const annexesData = resolutionData.annexes.filter(a => a.repealedBy === null).flatMap((annex => getAnnexDataToEmbed(annex, resolutionData, referenceMap)));
 
     dataToEmbed.push(...recitalsData, ...considerationsData, ...articlesData, ...annexesData);
     return dataToEmbed;
@@ -82,6 +84,7 @@ function getAnnexWithArticlesDataToEmbed(annex: AnnexToShow & {
 }, resolutionData: ResolutionToShow, referenceMap: Map<string, IndexedBlock[]>): DataToEmbed[] {
     const dataToEmbed: DataToEmbed[] = [];
     for (const article of annex.standaloneArticles) {
+        if (article.repealedBy !== null) continue;
         const articleData = getArticleDataToEmbed(article, resolutionData, referenceMap, {
             chapterNumber: null,
             annexIndex: annex.index
@@ -89,7 +92,9 @@ function getAnnexWithArticlesDataToEmbed(annex: AnnexToShow & {
         dataToEmbed.push(articleData);
     }
     for (const chapter of annex.chapters) {
+        if (chapter.repealedBy !== null) continue;
         for (const article of chapter.articles) {
+            if (article.repealedBy !== null) continue;
             const articleData = getArticleDataToEmbed(article, resolutionData, referenceMap, {
                 chapterNumber: chapter.number,
                 annexIndex: annex.index
