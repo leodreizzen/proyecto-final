@@ -73,8 +73,6 @@ export const llmModerationMiddleware: LanguageModelMiddleware = {
                     if (!await moderateMessage(nextMessage, params.prompt, false)) {
                         markAsUnsafeAndFinish(controller);
                     }
-                } else if (chunk.type === "tool-call") {
-                    console.log("tool call with message:" + nextMessage);
                 }
                 if (!finished) {
                     controller.enqueue(chunk);
@@ -99,26 +97,31 @@ export async function moderateMessage(message: string, prompt: LanguageModelV3Pr
 
     const contentForModeration = formatContentForModeration(prompt, message, tagSuffix);
     try {
-        const reponse = await generateText({
-            model,
-            system: moderationSystemPrompt(partial, tagSuffix),
-            messages: [{
-                role: "user",
-                content: contentForModeration
-            }]
-        })
+        for (let attempt = 0; attempt < 4; attempt++) {
+            const reponse = await generateText({
+                model,
+                system: moderationSystemPrompt(partial, tagSuffix),
+                messages: [{
+                    role: "user",
+                    content: contentForModeration
+                }]
+            })
 
-        if (reponse.text !== "SAFE") {
-            console.warn("Moderation result:", reponse.text);
-            console.warn("FULL DATA:", JSON.stringify(reponse));
+            if (reponse.text == "") {
+                await new Promise(resolve => setTimeout(resolve, 1000));
+                continue //retry
+            }
+
+            return reponse.text === "SAFE";
         }
-
-        return reponse.text === "SAFE";
     } catch (error) {
         console.error("Error during moderation:", error);
         return false; // treat the content as unsafe
     }
 
+    console.error("Moderation failed after multiple attempts, treating content as unsafe.");
+
+    return false;
 }
 
 function formatContentForModeration(prompt: LanguageModelV3Prompt, message: string, tagSuffix: string): string {
