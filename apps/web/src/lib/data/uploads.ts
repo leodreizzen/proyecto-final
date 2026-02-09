@@ -7,6 +7,7 @@ import {
 import { getUploadProgress } from "@repo/jobs/resolutions/queue";
 import prisma from "@/lib/prisma";
 import {Mutable} from "@/lib/definitions/util";
+import {compareUploads} from "@/lib/utils/sorters";
 
 export type UploadHistoryItem = {
     id: string;
@@ -46,10 +47,15 @@ export async function fetchUnfinishedUploads(): Promise<UploadWithProgressAndFil
                     originalFile: true
                 }
             }
+        },
+        orderBy: {
+            uploadedAt: "asc"
         }
     });
 
-    const mappedUploads = uploads.map(upload => {
+    const sortedUploads = uploads.sort(compareUploads); // This works because the query is not paginated. If pagination is added, this sorting should be moved to the database query.
+
+    const mappedUploads = sortedUploads.map(upload => {
         let file = upload.file;
         if (upload.resolution) {
             file = upload.resolution.originalFile;
@@ -72,7 +78,7 @@ export async function fetchUnfinishedUploads(): Promise<UploadWithProgressAndFil
 
 export async function fetchRecentFinishedUploads(): Promise<UploadWithFileAndUploader[]> {
     await checkResourcePermission("upload", "read");
-    
+
     const uploads = await prisma.resolutionUpload.findMany({
         where: {
             status: {
@@ -124,7 +130,7 @@ export async function createResolutionUpload(fileKey: string, uploaderId: string
 
 export async function fetchUploadHistory(cursor: string | null): Promise<UploadHistoryItem[]> {
     await checkResourcePermission("upload", "read");
-    
+
     const allowedStatuses = ["COMPLETED", "FAILED"] as const;
     const cursorParams = cursor ? {
         skip: 1,

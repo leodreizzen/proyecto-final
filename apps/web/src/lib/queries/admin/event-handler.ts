@@ -9,6 +9,7 @@ import {
 } from "@/lib/queries/admin/queries";
 import {UploadStatusData} from "@repo/pubsub/publish/uploads";
 import {AdminUserEvent} from "@/lib/events";
+import {compareUploads} from "@/lib/utils/sorters";
 
 export function mountDashboardEventStream(): () => void {
     const eventSource = new EventSource('/api/events/admin/dashboard');
@@ -95,18 +96,22 @@ async function handleUploadStatusUpdate(uploadId: string, data: UploadStatusData
 
     queryClient.setQueryData(pendingUploadsQuery.queryKey, (oldData) => {
         if (!oldData) return oldData;
+        let newData: typeof oldData;
         if (status === "COMPLETED" || status === "FAILED") {
-            return oldData.filter((upload) => upload.id !== uploadId);
+            newData = oldData.filter((upload) => upload.id !== uploadId);
         }
-        return oldData.map((upload) => {
-            if (upload.id === uploadId) {
-                return {
-                    ...upload,
-                    status
-                };
-            } else
-                return upload;
-        })
+        else {
+            newData = oldData.map((upload) => {
+                if (upload.id === uploadId) {
+                    return {
+                        ...upload,
+                        status
+                    };
+                } else
+                    return upload;
+            })
+        }
+        return newData.sort(compareUploads);
     });
     if (status === "COMPLETED" || status === "FAILED") {
         const finishedUpload = {
