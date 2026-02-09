@@ -41,16 +41,41 @@ export class ValidityGraphNode {
         }
     }
 
-    getRepealers(): ValidityGraphNode[] {
-        return Array.from(this.repealers);
-    }
-
-    getDependencies(): ValidityGraphNode[] {
-        return Array.from(this.dependencies);
-    }
-
     subscribeInvalidation(callback: () => void) {
         this.invalidationSubscribers.push(callback);
+    }
+
+    getIndirectRepealer(): ValidityGraphNode | null {
+        if (this.evaluating) {
+            console.error("Cycle detected while searching for indirect repealer for node", this.id, ". Returning null as fallback.");
+            return null;
+        }
+
+        this.evaluating = true;
+
+        try {
+            const repealers = this.repealers;
+
+            for(const repealer of repealers) {
+                if (repealer.isValid()) {
+                    return repealer;
+                }
+            }
+
+            const dependencies = this.dependencies;
+            for(const dep of dependencies) {
+                const depRepealer = dep.getIndirectRepealer();
+                if (depRepealer) {
+                    return depRepealer;
+                }
+            }
+
+            console.error("Node is invalid but no valid repealer found. This should not happen unless there is a cycle. Returning null as fallback.", this.id);
+            return null;
+        } finally {
+            this.evaluating = false;
+        }
+
     }
 
     private calculateIsValid(): boolean {
