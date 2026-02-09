@@ -1,12 +1,9 @@
 import {
     streamText,
     convertToModelMessages,
-    LanguageModel,
     stepCountIs,
-    validateUIMessages, TypeValidationError, Tool, UIMessage
+    validateUIMessages, TypeValidationError, Tool, UIMessage, wrapLanguageModel
 } from 'ai';
-import {createOpenRouter} from '@openrouter/ai-sdk-provider';
-import {createGoogleGenerativeAI} from '@ai-sdk/google';
 import {authCheck, publicRoute} from "@/lib/auth/route-authorization";
 import {chatbotSystemPrompt} from "@/lib/chatbot/system-prompt";
 import {idLookupTool} from "@/lib/chatbot/tools/id-lookup";
@@ -16,25 +13,11 @@ import {z} from "zod";
 import {loadChat, saveChat} from "@/lib/chatbot/chat-store";
 import {v7} from "uuid";
 import {chatLimiter, getIpAddress} from "@/lib/limiters";
-import { cookies } from 'next/headers';
 import {extendTokenExpiration, getTokenFromCookies} from "@/lib/chatbot/token";
+import {llmModerationMiddleware} from "@/lib/chatbot/middleware";
+import {rejectLastAssistantMessage} from "@/lib/chatbot/moderation-filter";
+import {getChatbotModel} from "@/lib/chatbot/models";
 
-let model: LanguageModel;
-if (process.env.USE_OPENROUTER?.toLowerCase() === 'true') {
-    if (!process.env.OPENROUTER_API_KEY) {
-        throw new Error('OPENROUTER_API_KEY is not set in environment variables.');
-    }
-    model = createOpenRouter({
-        apiKey: process.env.OPENROUTER_API_KEY,
-    }).chat("google/gemini-3-flash-preview");
-} else {
-    if (!process.env.GOOGLE_API_KEY) {
-        throw new Error('GOOGLE_API_KEY is not set in environment variables.');
-    }
-    model = createGoogleGenerativeAI({
-        apiKey: process.env.GOOGLE_API_KEY,
-    }).chat("gemini-3-flash-preview");
-}
 
 
 const tools = {
@@ -100,7 +83,10 @@ export async function POST(req: Request) {
 
 
     const result = streamText({
-        model: model,
+        model: wrapLanguageModel({
+            model: getChatbotModel(),
+            middleware: llmModerationMiddleware
+        }),
         messages: await convertToModelMessages(validatedMessages),
         system: chatbotSystemPrompt,
         tools: tools,
@@ -110,8 +96,12 @@ export async function POST(req: Request) {
     return result.toUIMessageStreamResponse({
         originalMessages: validatedMessages,
         generateMessageId: () => v7(),
-        onFinish: ({messages}) => {
-            saveChat(id, messages, token)
+        onFinish: async ({messages, finishReason}) => {
+            let messagesToSave = messages;
+            if (finishReason === "content-filter") {
+                messagesToSave = rejectLastAssistantMessage(messages);
+            }
+            await saveChat(id, messagesToSave, token)
         },
         headers: {
             'x-accel-buffering': 'no',

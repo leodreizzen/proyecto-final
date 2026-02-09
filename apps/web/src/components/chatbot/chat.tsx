@@ -2,7 +2,7 @@
 import Link from 'next/link';
 import React, {useEffect, useState} from 'react';
 import { UIMessage, useChat } from '@ai-sdk/react';
-import { DefaultChatTransport } from 'ai';
+import {ChatOnFinishCallback, DefaultChatTransport} from 'ai';
 import { v7 } from "uuid";
 import { Bot, PlusIcon } from "lucide-react";
 
@@ -25,15 +25,18 @@ import { Button } from "@/components/ui/button";
 import { MessageParts } from "./message-parts";
 import { useCitationContext } from "./use-citation-context";
 import {extendChatSession} from "@/lib/actions/server/chat";
+import {rejectLastAssistantMessage} from "@/lib/chatbot/moderation-filter";
 
 export default function Chat({
     id,
     initialMessages,
 }: { id?: string | undefined; initialMessages?: UIMessage[] } = {}) {
-    const { sendMessage, messages, status, regenerate } = useChat({
+
+    const { sendMessage, messages, status, regenerate, setMessages } = useChat({
         id,
         messages: initialMessages,
         generateId: v7,
+        onFinish: handleFinish,
         transport: new DefaultChatTransport({
             api: '/api/chat',
             prepareSendMessagesRequest({ messages, id }) {
@@ -42,13 +45,19 @@ export default function Chat({
         }),
     });
 
+    function handleFinish({finishReason}: Parameters<ChatOnFinishCallback<UIMessage>>[0]){
+        if (finishReason === "content-filter") {
+            setMessages(rejectLastAssistantMessage(messages));
+        }
+    }
+
     const citationContext = useCitationContext(messages);
     const isReady = status === "ready" || status === "error";
     const [isInputEmpty, setIsInputEmpty] = useState(true);
 
     function handleSubmit(message: PromptInputMessage) {
         setIsInputEmpty(true);
-        sendMessage(message);
+        sendMessage(message).catch(console.error);
     }
 
     useEffect(() => {

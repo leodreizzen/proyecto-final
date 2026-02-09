@@ -76,6 +76,9 @@ importers:
       '@ai-sdk/google':
         specifier: ^3.0.21
         version: 3.0.21(zod@4.1.13)
+      '@ai-sdk/provider':
+        specifier: ^3.0.8
+        version: 3.0.8
       '@ai-sdk/react':
         specifier: ^3.0.75
         version: 3.0.75(react@19.2.1)(zod@4.1.13)
@@ -642,6 +645,10 @@ packages:
 
   '@ai-sdk/provider@3.0.7':
     resolution: {integrity: sha512-VkPLrutM6VdA924/mG8OS+5frbVTcu6e046D2bgDo00tehBANR1QBJ/mPcZ9tXMFOsVcm6SQArOregxePzTFPw==}
+    engines: {node: '>=18'}
+
+  '@ai-sdk/provider@3.0.8':
+    resolution: {integrity: sha512-oGMAgGoQdBXbZqNG0Ze56CHjDZ1IDYOwGYxYjO5KLSlz5HiNQ9udIXsPZ61VWaHGZ5XW/jyjmr6t2xz2jGVwbQ==}
     engines: {node: '>=18'}
 
   '@ai-sdk/react@3.0.75':
@@ -9270,6 +9277,10 @@ snapshots:
       zod: 4.1.13
 
   '@ai-sdk/provider@3.0.7':
+    dependencies:
+      json-schema: 0.4.0
+
+  '@ai-sdk/provider@3.0.8':
     dependencies:
       json-schema: 0.4.0
 
