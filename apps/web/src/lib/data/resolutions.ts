@@ -5,8 +5,10 @@ import {
     MissingResolution,
     ResolutionCounts,
     ResolutionNaturalID,
-    ResolutionWithStatus
+    ResolutionWithStatus,
+    resolutionStatus
 } from "@/lib/definitions/resolutions";
+import {countPendingTasks} from "@/lib/data/maintenance";
 import {createDeleteAssetJob} from "@repo/jobs/assets/queue";
 import {ResolutionFindManyArgs, v_MissingResolutionFindManyArgs} from "@repo/db/prisma/models";
 import {TransactionPrismaClient} from "@repo/db/prisma";
@@ -46,11 +48,12 @@ export async function fetchResolutionsWithStatus(cursor: string | null, query?: 
             maintenanceTasks: {
                 where: {
                     status: {
-                        in: ["FAILED", "PARTIAL_FAILURE"]
+                        in: ["FAILED", "PARTIAL_FAILURE", "PENDING", "PROCESSING"]
                     }
                 },
                 select: {
-                    id: true
+                    id: true,
+                    status: true
                 },
                 take: 1
             }
@@ -59,9 +62,16 @@ export async function fetchResolutionsWithStatus(cursor: string | null, query?: 
 
     return resolutionsWithTasks.map(resolution => {
         const {maintenanceTasks, ...res} = resolution;
+        let status: resolutionStatus = "ok";
+        if (maintenanceTasks.some(t => t.status === "FAILED" || t.status === "PARTIAL_FAILURE")) {
+            status = "failedTask";
+        } else if (maintenanceTasks.length > 0) {
+            status = "pendingTask";
+        }
+
         return {
             ...res,
-            status: maintenanceTasks.length > 0 ? "failedTask" : "ok"
+            status
         }
     });
 }
@@ -111,10 +121,12 @@ export async function countResolutions(): Promise<ResolutionCounts> {
             }
         }
     });
+    const pendingTasksCount = await countPendingTasks();
     return {
         total: totalCount,
         missingRef: missingCount,
-        failedTasks: failedTasksCount
+        failedTasks: failedTasksCount,
+        pendingTasks: pendingTasksCount
     }
 }
 

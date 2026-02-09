@@ -115,6 +115,17 @@ export async function countFailedTasks(): Promise<number> {
     });
 }
 
+export async function countPendingTasks(): Promise<number> {
+    await checkResourcePermission("maintenanceTask", "read");
+    return prisma.maintenanceTask.count({
+        where: {
+            status: {
+                in: ["PENDING", "PROCESSING"]
+            }
+        },
+    });
+}
+
 
 export async function deleteMaintenanceTasksById(id: string[]): Promise<void> {
     await checkResourcePermission("maintenanceTask", "delete");

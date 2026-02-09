@@ -1,4 +1,4 @@
-import { FileCheck, Zap, AlertTriangle, AlertCircle } from "lucide-react"
+import { FileCheck, Zap, AlertTriangle, AlertCircle, Clock } from "lucide-react"
 import { cn } from "@/lib/utils"
 import React from "react";
 import Link from "next/link";
@@ -9,30 +9,54 @@ interface KpiHeaderProps {
     inQueue: number
     missing: number
     failedTasks: number
+    pendingTasks: number
   }
 }
 
-const KPI_CONFIG: {
-  key: keyof KpiHeaderProps["stats"],
-  label: string,
-  icon: React.ComponentType<React.SVGProps<SVGSVGElement>>,
-  color: string,
-  bg: string,
-  href?: string
-}[] = [
-    {
-      key: "total",
-      label: "Subidas",
-      icon: FileCheck,
-      color: "text-status-success",
-      bg: "bg-status-success/10",
-    },
-    { key: "inQueue", label: "En Cola", icon: Zap, color: "text-status-info", bg: "bg-status-info/10" },
-    { key: "missing", label: "Faltantes", icon: AlertTriangle, color: "text-status-warning", bg: "bg-status-warning/10", href: "/admin/revision" },
-    { key: "failedTasks", label: "Tareas Fallidas", icon: AlertCircle, color: "text-status-error", bg: "bg-status-error/10", href: "/admin/revision" },
-  ]
-
 export function KpiHeader({ stats }: KpiHeaderProps) {
+  const showPending = stats.failedTasks === 0 && stats.pendingTasks > 0;
+
+    const KPI_CONFIG: {
+        key: keyof KpiHeaderProps["stats"],
+        label: string,
+        icon: React.ComponentType<React.SVGProps<SVGSVGElement>>,
+        color: string,
+        bg: string,
+        href?: string
+    }[] = [
+        {
+            key: "total",
+            label: "Subidas",
+            icon: FileCheck,
+            color: "text-status-success",
+            bg: "bg-status-success/10",
+        },
+        {key: "inQueue", label: "En Cola", icon: Zap, color: "text-status-info", bg: "bg-status-info/10"},
+        {
+            key: "missing",
+            label: "Faltantes",
+            icon: AlertTriangle,
+            color: "text-status-warning",
+            bg: "bg-status-warning/10",
+            href: "/admin/revision"
+        },
+        showPending ? {
+            key: "pendingTasks",
+            label: "Tareas Pendientes",
+            icon: Clock,
+            color: "text-blue-500",
+            bg: "bg-blue-500/10",
+            href: "/admin/maintenance"
+        } : {
+            key: "failedTasks",
+            label: "Tareas Fallidas",
+            icon: AlertCircle,
+            color: "text-status-error",
+            bg: "bg-status-error/10",
+            href: "/admin/revision"
+        },
+    ]
+
   return (
     <div className="flex gap-4 lg:gap-4 xl:gap-5 mb-4 md:mb-6">
       {KPI_CONFIG.map((kpi) => {
@@ -49,14 +73,14 @@ export function KpiHeader({ stats }: KpiHeaderProps) {
         )
         if (kpi.href) {
           return (
-            <Link key={kpi.key} href={kpi.href} prefetch={false} className="flex-1 min-w-0">
+            <Link key={kpi.key as string} href={kpi.href} prefetch={false} className="flex-1 min-w-0">
               {Content}
             </Link>
           )
         }
 
         return (
-          <div key={kpi.key} className="flex-1 min-w-0">
+          <div key={kpi.key as string} className="flex-1 min-w-0">
             {Content}
           </div>
         )

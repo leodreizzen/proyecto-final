@@ -90,6 +90,7 @@ export function ResolutionsView({
         inQueue: pendingUploads.length,
         missing: resCounts.missingRef,
         failedTasks: resCounts.failedTasks,
+        pendingTasks: resCounts.pendingTasks,
     }
 
     function handleResolutionsRefetch() {

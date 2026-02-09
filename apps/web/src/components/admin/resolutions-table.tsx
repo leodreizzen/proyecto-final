@@ -1,6 +1,6 @@
 "use client"
 
-import {FileText, ExternalLink, Trash2, Check, AlertCircle, Loader2} from "lucide-react"
+import {FileText, ExternalLink, Trash2, Check, AlertCircle, Loader2, Clock} from "lucide-react"
 import {cn, formatResolutionId} from "@/lib/utils"
 import {Button} from "@/components/ui/button"
 import {
@@ -44,6 +44,11 @@ const statusConfig = {
         icon: AlertCircle,
         className: "bg-status-error/10 text-status-error border-status-error/20",
     },
+    pendingTask: {
+        label: "Tarea pendiente",
+        icon: Clock,
+        className: "bg-status-info/10 text-status-info border-status-info/20",
+    }
 }
 
 
@@ -109,7 +114,7 @@ export function ResolutionsTable({resolutions, fetchNextPage, ref}: ResolutionsT
                     TableBody: (props) => (
                         <tbody {...props} className="divide-y divide-border"/>
                     )
-                }} computeItemKey={(_, item) => item.id } itemContent={
+                }} computeItemKey={(_, item) => item.id} itemContent={
                     (index, resolution) => {
                         const status = statusConfig[resolution.status]
                         const StatusIcon = status.icon
@@ -144,7 +149,11 @@ export function ResolutionsTable({resolutions, fetchNextPage, ref}: ResolutionsT
                                         className="h-8 w-8 text-muted-foreground hover:text-foreground"
                                         disabled={deleting}
                                     >
-                                        <Link prefetch={false} href={pathForResolution({initial: resolution.initial, number: resolution.number, year: resolution.year})}><ExternalLink className="h-4 w-4"/></Link>
+                                        <Link prefetch={false} href={pathForResolution({
+                                            initial: resolution.initial,
+                                            number: resolution.number,
+                                            year: resolution.year
+                                        })}><ExternalLink className="h-4 w-4"/></Link>
                                     </Button>
                                     {(deleting && deleteId === resolution.id) ? (
                                         <div className="flex items-center justify-center h-8 w-8">
@@ -241,7 +250,8 @@ export function ResolutionsTable({resolutions, fetchNextPage, ref}: ResolutionsT
                                               : <AlertDialog>
                                                   <AlertDialogTrigger asChild>
                                                       <Button variant="ghost" size="icon"
-                                                          className="h-8 w-8 text-muted-foreground" disabled={deleting}>
+                                                              className="h-8 w-8 text-muted-foreground"
+                                                              disabled={deleting}>
                                                           <Trash2 className="h-4 w-4"/>
                                                       </Button>
                                                   </AlertDialogTrigger>
@@ -249,7 +259,8 @@ export function ResolutionsTable({resolutions, fetchNextPage, ref}: ResolutionsT
                                                       <AlertDialogHeader>
                                                           <AlertDialogTitle>¿Eliminar resolución?</AlertDialogTitle>
                                                           <AlertDialogDescription>
-                                                          Esta acción no se puede deshacer. Se eliminará permanentemente
+                                                              Esta acción no se puede deshacer. Se eliminará
+                                                              permanentemente
                                                               la
                                                               resolución{" "}
                                                               <span

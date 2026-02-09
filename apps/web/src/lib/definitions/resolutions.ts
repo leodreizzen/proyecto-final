@@ -16,7 +16,7 @@ export type {
     TableContent
 } from "@repo/resolution-assembly/definitions/resolutions";
 
-export type resolutionStatus = "ok" | "failedTask"
+export type resolutionStatus = "ok" | "failedTask" | "pendingTask"
 
 export interface ResolutionWithStatus extends Resolution {
     status: resolutionStatus;
@@ -26,6 +26,7 @@ export type ResolutionCounts = {
     total: number;
     missingRef: number;
     failedTasks: number;
+    pendingTasks: number;
 }
 
 export type MissingResolution = {

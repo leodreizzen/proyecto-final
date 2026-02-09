@@ -60,13 +60,17 @@ async function handleAdminEvent(event: MessageEvent) {
             await queryClient.invalidateQueries({queryKey: resolutionKeys.details(eventData.params.id)});
         }
     } else if (eventData.scope === "MAINTENANCE_TASKS_GLOBAL") {
-        if (eventData.data.type === "NEW")
+        if (eventData.data.type === "NEW") {
             await queryClient.invalidateQueries({queryKey: maintenanceKeys.all});
-        else if (eventData.data.type === "DELETE")
+            await queryClient.invalidateQueries({queryKey: resolutionKeys.all});
+        } else if (eventData.data.type === "DELETE") {
             await queryClient.invalidateQueries({queryKey: maintenanceKeys.all}); // todo optimize to remove only deleted task
+            await queryClient.invalidateQueries({queryKey: resolutionKeys.all});
+        }
     } else if (eventData.scope === "MAINTENANCE_TASKS_SPECIFIC") {
         if (eventData.data.type === "UPDATE") {
             await queryClient.invalidateQueries({queryKey: maintenanceKeys.all}); // todo optimize to update only specific task
+            await queryClient.invalidateQueries({queryKey: resolutionKeys.all});
         }
     }
 }
@@ -99,8 +103,7 @@ async function handleUploadStatusUpdate(uploadId: string, data: UploadStatusData
         let newData: typeof oldData;
         if (status === "COMPLETED" || status === "FAILED") {
             newData = oldData.filter((upload) => upload.id !== uploadId);
-        }
-        else {
+        } else {
             newData = oldData.map((upload) => {
                 if (upload.id === uploadId) {
                     return {
