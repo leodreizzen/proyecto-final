@@ -32,7 +32,7 @@ export function useCitationContext(messages: UIMessage[]) {
                                 href: pathForResolution({
                                     initial: input.initial,
                                     number: input.number,
-                                    year: input.year
+                                    year: input.year,
                                 })
                             };
                         }
@@ -56,7 +56,9 @@ export function useCitationContext(messages: UIMessage[]) {
                                     articleNumber: chunk.chunkData.articleNumber,
                                     articleSuffix: chunk.chunkData.articleSuffix,
                                     annexNumber: chunk.chunkData.annexNumber,
-                                    chapterNumber: chunk.chunkData.chapterNumber
+                                    chapterNumber: chunk.chunkData.chapterNumber,
+                                    recitalNumber: chunk.chunkData.recitalNumber,
+                                    considerationNumber: chunk.chunkData.considerationNumber
                                 })
                             };
                         }

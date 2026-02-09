@@ -1,6 +1,6 @@
 "use client"
 import Link from 'next/link';
-import React, { useState } from 'react';
+import React, {useEffect, useState} from 'react';
 import { UIMessage, useChat } from '@ai-sdk/react';
 import { DefaultChatTransport } from 'ai';
 import { v7 } from "uuid";
@@ -24,6 +24,7 @@ import { Button } from "@/components/ui/button";
 
 import { MessageParts } from "./message-parts";
 import { useCitationContext } from "./use-citation-context";
+import {extendChatSession} from "@/lib/actions/server/chat";
 
 export default function Chat({
     id,
@@ -49,6 +50,10 @@ export default function Chat({
         setIsInputEmpty(true);
         sendMessage(message);
     }
+
+    useEffect(() => {
+        extendChatSession().catch(console.error);
+    }, []);
 
     return (
         <div className="flex flex-col w-full h-[calc(100dvh-4rem)] min-h-0 max-w-3xl mx-auto bg-background relative">

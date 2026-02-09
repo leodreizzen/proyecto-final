@@ -37,7 +37,7 @@ function RecitalsView({recitals, hasConsiderations}: {
                     }
 
                     return (
-                        <div key={i} className="text-justify">
+                        <div key={i} className="text-justify" id={`rec-${r.number}`}>
                             <ContentBlockRenderer content={content} />
                         </div>
                     )
@@ -65,7 +65,7 @@ function ConsiderationsView({considerations}: { considerations: ResolutionToShow
                         }
                     }
                     return (
-                        <div key={i} className="text-justify">
+                        <div key={i} className="text-justify" id={`cons-${c.number}`}>
                             <ContentBlockRenderer content={content} />
                         </div>
                     );

@@ -43,7 +43,9 @@ export async function formatSearchResults(results: SearchableContentWithResoluti
             articleSuffix: result.articleSuffix,
             annexNumber: result.annexNumber,
             chapterNumber: result.chapterNumber,
-            chunkNumber: result.chunkNumber
+            chunkNumber: result.chunkNumber,
+            recitalNumber: result.recitalNumber,
+            considerationNumber: result.considerationNumber
         }
     }));
     return mapped;

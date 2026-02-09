@@ -23,10 +23,24 @@ export function resIDToSlug(resId: { initial: string; number: number; year: numb
     return encodeURIComponent(`${resId.initial.toUpperCase()}-${resId.number}-${resId.year}`);
 }
 
-export function pathForResolution(resId: { initial: string; number: number; year: number, articleNumber?: number | null, annexNumber?: number| null, chapterNumber?: number| null, articleSuffix?: number| null }) {
+export function pathForResolution(resId: {
+    initial: string;
+    number: number;
+    year: number,
+    articleNumber?: number | null,
+    annexNumber?: number | null,
+    chapterNumber?: number | null,
+    articleSuffix?: number | null,
+    recitalNumber?: number | null,
+    considerationNumber?: number | null
+}) {
     let fragment = "";
 
-    if (typeof resId.articleNumber === "number" || typeof resId.annexNumber === "number" || typeof resId.chapterNumber === "number") {
+    if (typeof resId.recitalNumber === "number") {
+        fragment = `#rec-${resId.recitalNumber}`
+    } else if (typeof resId.considerationNumber === "number") {
+        fragment = `#cons-${resId.considerationNumber}`
+    } else if (typeof resId.articleNumber === "number" || typeof resId.annexNumber === "number" || typeof resId.chapterNumber === "number") {
         fragment += "#";
         let prefix = "";
         if (typeof resId.annexNumber === "number") {
@@ -38,13 +52,12 @@ export function pathForResolution(resId: { initial: string; number: number; year
         }
         if (typeof resId.articleNumber === "number") {
             prefix += "art";
-            fragment += getArticleId(prefix, { 
-                type: "defined", 
-                number: resId.articleNumber, 
-                suffix: resId.articleSuffix ?? 0 
+            fragment += getArticleId(prefix, {
+                type: "defined",
+                number: resId.articleNumber,
+                suffix: resId.articleSuffix ?? 0
             });
-        }
-        else {
+        } else {
             fragment += prefix;
         }
     }

@@ -16,6 +16,8 @@ import {z} from "zod";
 import {loadChat, saveChat} from "@/lib/chatbot/chat-store";
 import {v7} from "uuid";
 import {chatLimiter, getIpAddress} from "@/lib/limiters";
+import { cookies } from 'next/headers';
+import {extendTokenExpiration, getTokenFromCookies} from "@/lib/chatbot/token";
 
 let model: LanguageModel;
 if (process.env.USE_OPENROUTER?.toLowerCase() === 'true') {
@@ -44,8 +46,8 @@ const tools = {
 
 
 export async function POST(req: Request) {
-    const params = await req.json();
     await authCheck(publicRoute);
+    const params = await req.json();
     const {message, id} = z.object({
         message: z.object().loose(),
         id: z.uuid(),
@@ -60,7 +62,20 @@ export async function POST(req: Request) {
         }
     }
 
-    const history = await loadChat(id);
+    const token = await getTokenFromCookies();
+
+    if (!token) {
+        console.error("No token found in cookies");
+        return new Response('No conversation token. Start a new conversation', { status: 401 });
+    }
+
+    const history = await loadChat(id, token);
+
+    if (!history) {
+        return new Response('Conversation not found or token invalid. Start a new conversation', { status: 400 });
+    }
+
+    await extendTokenExpiration();
 
     let validatedMessages: UIMessage[];
     try {
@@ -96,7 +111,7 @@ export async function POST(req: Request) {
         originalMessages: validatedMessages,
         generateMessageId: () => v7(),
         onFinish: ({messages}) => {
-            saveChat(id, messages)
+            saveChat(id, messages, token)
         },
         headers: {
             'x-accel-buffering': 'no',
