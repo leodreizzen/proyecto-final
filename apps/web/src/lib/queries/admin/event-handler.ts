@@ -114,16 +114,7 @@ async function handleUploadStatusUpdate(uploadId: string, data: UploadStatusData
         return newData.sort(compareUploads);
     });
     if (status === "COMPLETED" || status === "FAILED") {
-        const finishedUpload = {
-            ...uploadToUpdate,
-            status: data.status,
-            errorMsg: data.status === "FAILED" ? data.errorMessage : null
-        } satisfies typeof uploadToUpdate;
-
-        queryClient.setQueryData(recentFinishedUploadsQuery.queryKey, (oldData) => {
-            if (!oldData) return oldData;
-            return [finishedUpload, ...oldData].slice(0, 10); // Keep only the latest 10
-        });
+        queryClient.invalidateQueries({queryKey: uploadKeys.recentFinished()});
     }
 }
 
