@@ -241,7 +241,13 @@ export class ResolutionChangeApplier {
     private inapplicableChanges: ChangeWithContextForAssembly[] = [];
     private generatedCounter = 0;
 
-    constructor(private resolution: ResolutionToShow, private validationContext: ValidationContext) {
+    constructor(private resolution: ResolutionToShow, private validationContext: ValidationContext, orphanedAnnexes: {id: string, repealedBy: ResolutionID}[]) {
+        resolution.annexes.forEach(annex => {
+            const orphannedEntry = orphanedAnnexes.find(o => o.id === annex.uuid);
+            if (orphannedEntry) {
+                annex.repealedBy = orphannedEntry.repealedBy;
+            }
+        })
     }
 
     private getNextGeneratedNumber(): number {
@@ -288,7 +294,7 @@ export class ResolutionChangeApplier {
             case "ADVANCED":
                 this.applyAdvancedChange(change);
                 break;
-            case "APPLY_MODIFICATIONS_ANNEX":
+            case "APPROVE_ANNEX":
                 // ignore the change
                 break;
             case "RATIFY_AD_REFERENDUM":

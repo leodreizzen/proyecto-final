@@ -87,6 +87,7 @@ export type AnnexToShow = ({
     content: ContentBlock[];
     modifiedBy?: ResolutionNaturalID[];
 }) & Repealable & {
+    uuid: string;
     index: AnnexIndex;
     name: string | null;
     addedBy: ResolutionNaturalID | null;

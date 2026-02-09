@@ -246,9 +246,9 @@ export async function getChangesDataForValidityGraph(changeIds: string[], contex
                     targetChapter: targetChapterReferenceData // referenceChapter
                 }
             },
-            changeApplyModificationsAnnex: {
+            changeApproveAnnex: {
                 select: {
-                    annexToApply: {
+                    annexToApprove: {
                         include: {
                             annex: {
                                 select: newAnnexContentSelect

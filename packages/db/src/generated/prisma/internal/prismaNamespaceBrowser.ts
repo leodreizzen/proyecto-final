@@ -57,7 +57,6 @@ export const ModelName = {
   Article: 'Article',
   ArticleNormative: 'ArticleNormative',
   ArticleModifier: 'ArticleModifier',
-  ArticleCreateDocument: 'ArticleCreateDocument',
   ArticleFormality: 'ArticleFormality',
   Change: 'Change',
   ChangeModifyArticle: 'ChangeModifyArticle',
@@ -69,7 +68,7 @@ export const ModelName = {
   ChangeModifyTextAnnex: 'ChangeModifyTextAnnex',
   ChangeAddArticle: 'ChangeAddArticle',
   ChangeRepeal: 'ChangeRepeal',
-  ChangeApplyModificationsAnnex: 'ChangeApplyModificationsAnnex',
+  ChangeApproveAnnex: 'ChangeApproveAnnex',
   Annex: 'Annex',
   AnnexText: 'AnnexText',
   AnnexWithArticles: 'AnnexWithArticles',
@@ -179,14 +178,6 @@ export const ArticleModifierScalarFieldEnum = {
 export type ArticleModifierScalarFieldEnum = (typeof ArticleModifierScalarFieldEnum)[keyof typeof ArticleModifierScalarFieldEnum]
 
 
-export const ArticleCreateDocumentScalarFieldEnum = {
-  id: 'id',
-  annexToApproveReferenceId: 'annexToApproveReferenceId'
-} as const
-
-export type ArticleCreateDocumentScalarFieldEnum = (typeof ArticleCreateDocumentScalarFieldEnum)[keyof typeof ArticleCreateDocumentScalarFieldEnum]
-
-
 export const ArticleFormalityScalarFieldEnum = {
   id: 'id'
 } as const
@@ -289,12 +280,13 @@ export const ChangeRepealScalarFieldEnum = {
 export type ChangeRepealScalarFieldEnum = (typeof ChangeRepealScalarFieldEnum)[keyof typeof ChangeRepealScalarFieldEnum]
 
 
-export const ChangeApplyModificationsAnnexScalarFieldEnum = {
+export const ChangeApproveAnnexScalarFieldEnum = {
   id: 'id',
-  annexToApplyId: 'annexToApplyId'
+  annexToApproveId: 'annexToApproveId',
+  annexIsDocument: 'annexIsDocument'
 } as const
 
-export type ChangeApplyModificationsAnnexScalarFieldEnum = (typeof ChangeApplyModificationsAnnexScalarFieldEnum)[keyof typeof ChangeApplyModificationsAnnexScalarFieldEnum]
+export type ChangeApproveAnnexScalarFieldEnum = (typeof ChangeApproveAnnexScalarFieldEnum)[keyof typeof ChangeApproveAnnexScalarFieldEnum]
 
 
 export const AnnexScalarFieldEnum = {
@@ -699,14 +691,6 @@ export const ArticleModifierOrderByRelevanceFieldEnum = {
 export type ArticleModifierOrderByRelevanceFieldEnum = (typeof ArticleModifierOrderByRelevanceFieldEnum)[keyof typeof ArticleModifierOrderByRelevanceFieldEnum]
 
 
-export const ArticleCreateDocumentOrderByRelevanceFieldEnum = {
-  id: 'id',
-  annexToApproveReferenceId: 'annexToApproveReferenceId'
-} as const
-
-export type ArticleCreateDocumentOrderByRelevanceFieldEnum = (typeof ArticleCreateDocumentOrderByRelevanceFieldEnum)[keyof typeof ArticleCreateDocumentOrderByRelevanceFieldEnum]
-
-
 export const ArticleFormalityOrderByRelevanceFieldEnum = {
   id: 'id'
 } as const
@@ -802,12 +786,12 @@ export const ChangeRepealOrderByRelevanceFieldEnum = {
 export type ChangeRepealOrderByRelevanceFieldEnum = (typeof ChangeRepealOrderByRelevanceFieldEnum)[keyof typeof ChangeRepealOrderByRelevanceFieldEnum]
 
 
-export const ChangeApplyModificationsAnnexOrderByRelevanceFieldEnum = {
+export const ChangeApproveAnnexOrderByRelevanceFieldEnum = {
   id: 'id',
-  annexToApplyId: 'annexToApplyId'
+  annexToApproveId: 'annexToApproveId'
 } as const
 
-export type ChangeApplyModificationsAnnexOrderByRelevanceFieldEnum = (typeof ChangeApplyModificationsAnnexOrderByRelevanceFieldEnum)[keyof typeof ChangeApplyModificationsAnnexOrderByRelevanceFieldEnum]
+export type ChangeApproveAnnexOrderByRelevanceFieldEnum = (typeof ChangeApproveAnnexOrderByRelevanceFieldEnum)[keyof typeof ChangeApproveAnnexOrderByRelevanceFieldEnum]
 
 
 export const AnnexOrderByRelevanceFieldEnum = {

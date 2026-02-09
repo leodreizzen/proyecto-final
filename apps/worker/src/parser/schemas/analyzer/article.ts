@@ -38,7 +38,7 @@ export const ArticleSchemaWithText = z.object({
     }
 }).meta({title: "ArticuloConTexto"});
 
-export type ArticleSchemaWithText = z.infer<typeof ArticleSchemaWithText>;
+export type NewAnalyzedArticle = z.infer<typeof ArticleSchemaWithText>;
 
 export type ArticleAnalysisSchema = z.ZodDiscriminatedUnion<[typeof ArticleNormativeSchema, typeof ArticleFormalitySchema, typeof ArticleModifierSchema, typeof ArticleCreateDocumentSchema], "type">;
 export type ArticleAnalysis = z.infer<typeof ArticleSchema>;

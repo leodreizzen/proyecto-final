@@ -48,11 +48,6 @@ export type ArticleNormative = Prisma.ArticleNormativeModel
  */
 export type ArticleModifier = Prisma.ArticleModifierModel
 /**
- * Model ArticleCreateDocument
- * 
- */
-export type ArticleCreateDocument = Prisma.ArticleCreateDocumentModel
-/**
  * Model ArticleFormality
  * 
  */
@@ -108,10 +103,10 @@ export type ChangeAddArticle = Prisma.ChangeAddArticleModel
  */
 export type ChangeRepeal = Prisma.ChangeRepealModel
 /**
- * Model ChangeApplyModificationsAnnex
+ * Model ChangeApproveAnnex
  * 
  */
-export type ChangeApplyModificationsAnnex = Prisma.ChangeApplyModificationsAnnexModel
+export type ChangeApproveAnnex = Prisma.ChangeApproveAnnexModel
 /**
  * Model Annex
  * 

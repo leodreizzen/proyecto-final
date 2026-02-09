@@ -4,7 +4,7 @@ import {
     ArticleWithoutTables, ChangeMapped,
     FullResolutionAnalysis,
     Resolution,
-    Article, StandaloneAnnex, NewAnnexWithoutTables, NewAnnex
+    Article, StandaloneAnnex, NewAnnexWithoutTables, NewAnnex, NewArticle
 } from "@/parser/types";
 import {RowJoin, TableAnalysis} from "@/parser/schemas/analyzer/tables/table";
 import {TableStructure} from "@/parser/schemas/structure_parser/table";
@@ -19,6 +19,7 @@ import {
     mapRecitalToContentBlocks,
     mapTextAnnexToContentBlocks
 } from "@/parser/postprocessing/content_blocks";
+import {NewAnalyzedArticle} from "@/parser/schemas/analyzer/article";
 
 // Resolution parts must be validated before calling this function
 export function assembleResolution(structure: ResolutionStructure, _analysis: FullResolutionAnalysis): Resolution {
@@ -156,12 +157,23 @@ function mapArticle(article: ArticleWithoutTables, currentResolutionId: Resoluti
     const content = textToContentBlocks(text, allTables, references, usedTableNumbersClone, `${context} article ${article.number} ${article.suffix || ""}`);
 
     let mappedArticle;
-    if (restArticle.type !== "Modifier")
+    if (restArticle.type === "Normative" || restArticle.type === "Formality") {
         mappedArticle = {
             ...restArticle,
             content
         } satisfies Article
-    else {
+    } else if (restArticle.type === "CreateDocument") {
+        mappedArticle = {
+            ...restArticle,
+            type: "Modifier",
+            changes: [{
+                type: "ApproveAnnex",
+                annexToApprove: restArticle.annexToApprove,
+                targetIsDocument: true
+            }],
+            content
+        } satisfies Article
+    } else {
         const changes = restArticle.changes.map(change => {
             const changeWithMappedAnalysis = mapAnalysis(change, currentResolutionId, allTables, references, usedTableNumbers);
             return mapChangeDocumentReferences(changeWithMappedAnalysis, currentResolutionId);
@@ -180,58 +192,54 @@ function mapArticle(article: ArticleWithoutTables, currentResolutionId: Resoluti
 }
 
 
+export function mapNewArticle(article: NewAnalyzedArticle, currentResolutionId: ResolutionID, allTables: TableStructure[], references: TextReference[], usedTableNumbers: Set<number>): NewArticle {
+    const {analysis, text, ...restArticle} = article;
+
+    let mappedAnalysis;
+    if (analysis.type === "Modifier") {
+        const mappedChanges = analysis.changes.map(change => mapAnalysis(change, currentResolutionId, allTables, references, usedTableNumbers));
+        mappedAnalysis = {
+            ...analysis,
+            changes: mappedChanges
+        }
+    } else if (analysis.type === "CreateDocument") {
+        mappedAnalysis = {
+            ...analysis,
+            type: "Modifier" as const,
+            changes: [{
+                type: "ApproveAnnex" as const,
+                annexToApprove: analysis.annexToApprove,
+                targetIsDocument: true
+            }]
+        }
+    } else {
+        mappedAnalysis = analysis;
+    }
+
+    const blocks = textToContentBlocks(text, allTables, references, usedTableNumbers, "Add Article Change");
+    return {
+        ...restArticle,
+        ...mappedAnalysis,
+        content: blocks,
+    }
+}
+
+
 export function mapAnalysis(change: Change, currentResolutionId: ResolutionID, allTables: TableStructure[], references: TextReference[], usedTableNumbers: Set<number>): ChangeMapped {
     if (change.type === "AddArticleToResolution" || change.type === "AddArticleToAnnex") {
         const articleToAdd = change.articleToAdd;
 
-        const {analysis, text, ...restArticle} = articleToAdd;
-
-        let mappedAnalysis;
-        if (analysis.type === "Modifier") {
-            const mappedChanges = analysis.changes.map(change => mapAnalysis(change, currentResolutionId, allTables, references, usedTableNumbers));
-            mappedAnalysis = {
-                ...analysis,
-                changes: mappedChanges
-            }
-        } else {
-            mappedAnalysis = analysis;
-        }
-
-        const blocks = textToContentBlocks(text, allTables, references, usedTableNumbers, "Add Article Change");
-
         return {
             ...change,
-            articleToAdd: {
-                ...restArticle,
-                ...mappedAnalysis,
-                content: blocks,
-            }
+            articleToAdd: mapNewArticle(articleToAdd, currentResolutionId, allTables, references, usedTableNumbers)
         };
+
     } else if (change.type === "ReplaceArticle") {
         const newContent = change.newContent;
 
-        const {analysis, text, ...restArticle} = newContent;
-
-        let mappedAnalysis;
-        if (analysis.type === "Modifier") {
-            const mappedChanges = analysis.changes.map(change => mapAnalysis(change, currentResolutionId, allTables, references, usedTableNumbers));
-            mappedAnalysis = {
-                ...analysis,
-                changes: mappedChanges
-            }
-        } else {
-            mappedAnalysis = analysis;
-        }
-
-        const blocks = textToContentBlocks(text, allTables, references, usedTableNumbers, "Replace Article Change");
-
         return {
             ...change,
-            newContent: {
-                ...restArticle,
-                ...mappedAnalysis,
-                content: blocks
-            }
+            newContent: mapNewArticle(newContent, currentResolutionId, allTables, references, usedTableNumbers)
         };
     } else if (change.type === "ModifyArticle" || change.type === "ModifyTextAnnex") {
         const beforeBlocks = textToContentBlocks(patchModifyText(change.before), allTables, references, usedTableNumbers, "Modify Change (before)");
@@ -261,6 +269,12 @@ export function mapAnalysis(change: Change, currentResolutionId: ResolutionID, a
                 ...change,
                 newContent
             }
+        }
+    }  else if (change.type === "ApplyModificationsAnnex") {
+        return {
+            type: "ApproveAnnex",
+            annexToApprove: change.annexToApply,
+            targetIsDocument: false
         }
     } else {
         return {

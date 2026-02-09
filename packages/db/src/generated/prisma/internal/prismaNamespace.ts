@@ -390,7 +390,6 @@ export const ModelName = {
   Article: 'Article',
   ArticleNormative: 'ArticleNormative',
   ArticleModifier: 'ArticleModifier',
-  ArticleCreateDocument: 'ArticleCreateDocument',
   ArticleFormality: 'ArticleFormality',
   Change: 'Change',
   ChangeModifyArticle: 'ChangeModifyArticle',
@@ -402,7 +401,7 @@ export const ModelName = {
   ChangeModifyTextAnnex: 'ChangeModifyTextAnnex',
   ChangeAddArticle: 'ChangeAddArticle',
   ChangeRepeal: 'ChangeRepeal',
-  ChangeApplyModificationsAnnex: 'ChangeApplyModificationsAnnex',
+  ChangeApproveAnnex: 'ChangeApproveAnnex',
   Annex: 'Annex',
   AnnexText: 'AnnexText',
   AnnexWithArticles: 'AnnexWithArticles',
@@ -441,7 +440,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "resolution" | "recital" | "consideration" | "article" | "articleNormative" | "articleModifier" | "articleCreateDocument" | "articleFormality" | "change" | "changeModifyArticle" | "changeReplaceArticle" | "changeAdvanced" | "changeRatifyAdReferendum" | "changeReplaceAnnex" | "changeAddAnnex" | "changeModifyTextAnnex" | "changeAddArticle" | "changeRepeal" | "changeApplyModificationsAnnex" | "annex" | "annexText" | "annexWithArticles" | "annexChapter" | "contentBlock" | "textReference" | "reference" | "referenceResolution" | "referenceArticle" | "referenceAnnex" | "referenceChapter" | "resolutionUpload" | "user" | "session" | "account" | "verification" | "asset" | "maintenanceTask" | "searchableContent" | "v_ArticleContext" | "v_ResolutionSearch" | "v_MissingResolution" | "v_ResolvedReferences"
+    modelProps: "resolution" | "recital" | "consideration" | "article" | "articleNormative" | "articleModifier" | "articleFormality" | "change" | "changeModifyArticle" | "changeReplaceArticle" | "changeAdvanced" | "changeRatifyAdReferendum" | "changeReplaceAnnex" | "changeAddAnnex" | "changeModifyTextAnnex" | "changeAddArticle" | "changeRepeal" | "changeApproveAnnex" | "annex" | "annexText" | "annexWithArticles" | "annexChapter" | "contentBlock" | "textReference" | "reference" | "referenceResolution" | "referenceArticle" | "referenceAnnex" | "referenceChapter" | "resolutionUpload" | "user" | "session" | "account" | "verification" | "asset" | "maintenanceTask" | "searchableContent" | "v_ArticleContext" | "v_ResolutionSearch" | "v_MissingResolution" | "v_ResolvedReferences"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -886,80 +885,6 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         count: {
           args: Prisma.ArticleModifierCountArgs<ExtArgs>
           result: runtime.Types.Utils.Optional<Prisma.ArticleModifierCountAggregateOutputType> | number
-        }
-      }
-    }
-    ArticleCreateDocument: {
-      payload: Prisma.$ArticleCreateDocumentPayload<ExtArgs>
-      fields: Prisma.ArticleCreateDocumentFieldRefs
-      operations: {
-        findUnique: {
-          args: Prisma.ArticleCreateDocumentFindUniqueArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$ArticleCreateDocumentPayload> | null
-        }
-        findUniqueOrThrow: {
-          args: Prisma.ArticleCreateDocumentFindUniqueOrThrowArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$ArticleCreateDocumentPayload>
-        }
-        findFirst: {
-          args: Prisma.ArticleCreateDocumentFindFirstArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$ArticleCreateDocumentPayload> | null
-        }
-        findFirstOrThrow: {
-          args: Prisma.ArticleCreateDocumentFindFirstOrThrowArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$ArticleCreateDocumentPayload>
-        }
-        findMany: {
-          args: Prisma.ArticleCreateDocumentFindManyArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$ArticleCreateDocumentPayload>[]
-        }
-        create: {
-          args: Prisma.ArticleCreateDocumentCreateArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$ArticleCreateDocumentPayload>
-        }
-        createMany: {
-          args: Prisma.ArticleCreateDocumentCreateManyArgs<ExtArgs>
-          result: BatchPayload
-        }
-        createManyAndReturn: {
-          args: Prisma.ArticleCreateDocumentCreateManyAndReturnArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$ArticleCreateDocumentPayload>[]
-        }
-        delete: {
-          args: Prisma.ArticleCreateDocumentDeleteArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$ArticleCreateDocumentPayload>
-        }
-        update: {
-          args: Prisma.ArticleCreateDocumentUpdateArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$ArticleCreateDocumentPayload>
-        }
-        deleteMany: {
-          args: Prisma.ArticleCreateDocumentDeleteManyArgs<ExtArgs>
-          result: BatchPayload
-        }
-        updateMany: {
-          args: Prisma.ArticleCreateDocumentUpdateManyArgs<ExtArgs>
-          result: BatchPayload
-        }
-        updateManyAndReturn: {
-          args: Prisma.ArticleCreateDocumentUpdateManyAndReturnArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$ArticleCreateDocumentPayload>[]
-        }
-        upsert: {
-          args: Prisma.ArticleCreateDocumentUpsertArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$ArticleCreateDocumentPayload>
-        }
-        aggregate: {
-          args: Prisma.ArticleCreateDocumentAggregateArgs<ExtArgs>
-          result: runtime.Types.Utils.Optional<Prisma.AggregateArticleCreateDocument>
-        }
-        groupBy: {
-          args: Prisma.ArticleCreateDocumentGroupByArgs<ExtArgs>
-          result: runtime.Types.Utils.Optional<Prisma.ArticleCreateDocumentGroupByOutputType>[]
-        }
-        count: {
-          args: Prisma.ArticleCreateDocumentCountArgs<ExtArgs>
-          result: runtime.Types.Utils.Optional<Prisma.ArticleCreateDocumentCountAggregateOutputType> | number
         }
       }
     }
@@ -1777,77 +1702,77 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
-    ChangeApplyModificationsAnnex: {
-      payload: Prisma.$ChangeApplyModificationsAnnexPayload<ExtArgs>
-      fields: Prisma.ChangeApplyModificationsAnnexFieldRefs
+    ChangeApproveAnnex: {
+      payload: Prisma.$ChangeApproveAnnexPayload<ExtArgs>
+      fields: Prisma.ChangeApproveAnnexFieldRefs
       operations: {
         findUnique: {
-          args: Prisma.ChangeApplyModificationsAnnexFindUniqueArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$ChangeApplyModificationsAnnexPayload> | null
+          args: Prisma.ChangeApproveAnnexFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ChangeApproveAnnexPayload> | null
         }
         findUniqueOrThrow: {
-          args: Prisma.ChangeApplyModificationsAnnexFindUniqueOrThrowArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$ChangeApplyModificationsAnnexPayload>
+          args: Prisma.ChangeApproveAnnexFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ChangeApproveAnnexPayload>
         }
         findFirst: {
-          args: Prisma.ChangeApplyModificationsAnnexFindFirstArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$ChangeApplyModificationsAnnexPayload> | null
+          args: Prisma.ChangeApproveAnnexFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ChangeApproveAnnexPayload> | null
         }
         findFirstOrThrow: {
-          args: Prisma.ChangeApplyModificationsAnnexFindFirstOrThrowArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$ChangeApplyModificationsAnnexPayload>
+          args: Prisma.ChangeApproveAnnexFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ChangeApproveAnnexPayload>
         }
         findMany: {
-          args: Prisma.ChangeApplyModificationsAnnexFindManyArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$ChangeApplyModificationsAnnexPayload>[]
+          args: Prisma.ChangeApproveAnnexFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ChangeApproveAnnexPayload>[]
         }
         create: {
-          args: Prisma.ChangeApplyModificationsAnnexCreateArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$ChangeApplyModificationsAnnexPayload>
+          args: Prisma.ChangeApproveAnnexCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ChangeApproveAnnexPayload>
         }
         createMany: {
-          args: Prisma.ChangeApplyModificationsAnnexCreateManyArgs<ExtArgs>
+          args: Prisma.ChangeApproveAnnexCreateManyArgs<ExtArgs>
           result: BatchPayload
         }
         createManyAndReturn: {
-          args: Prisma.ChangeApplyModificationsAnnexCreateManyAndReturnArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$ChangeApplyModificationsAnnexPayload>[]
+          args: Prisma.ChangeApproveAnnexCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ChangeApproveAnnexPayload>[]
         }
         delete: {
-          args: Prisma.ChangeApplyModificationsAnnexDeleteArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$ChangeApplyModificationsAnnexPayload>
+          args: Prisma.ChangeApproveAnnexDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ChangeApproveAnnexPayload>
         }
         update: {
-          args: Prisma.ChangeApplyModificationsAnnexUpdateArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$ChangeApplyModificationsAnnexPayload>
+          args: Prisma.ChangeApproveAnnexUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ChangeApproveAnnexPayload>
         }
         deleteMany: {
-          args: Prisma.ChangeApplyModificationsAnnexDeleteManyArgs<ExtArgs>
+          args: Prisma.ChangeApproveAnnexDeleteManyArgs<ExtArgs>
           result: BatchPayload
         }
         updateMany: {
-          args: Prisma.ChangeApplyModificationsAnnexUpdateManyArgs<ExtArgs>
+          args: Prisma.ChangeApproveAnnexUpdateManyArgs<ExtArgs>
           result: BatchPayload
         }
         updateManyAndReturn: {
-          args: Prisma.ChangeApplyModificationsAnnexUpdateManyAndReturnArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$ChangeApplyModificationsAnnexPayload>[]
+          args: Prisma.ChangeApproveAnnexUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ChangeApproveAnnexPayload>[]
         }
         upsert: {
-          args: Prisma.ChangeApplyModificationsAnnexUpsertArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$ChangeApplyModificationsAnnexPayload>
+          args: Prisma.ChangeApproveAnnexUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ChangeApproveAnnexPayload>
         }
         aggregate: {
-          args: Prisma.ChangeApplyModificationsAnnexAggregateArgs<ExtArgs>
-          result: runtime.Types.Utils.Optional<Prisma.AggregateChangeApplyModificationsAnnex>
+          args: Prisma.ChangeApproveAnnexAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateChangeApproveAnnex>
         }
         groupBy: {
-          args: Prisma.ChangeApplyModificationsAnnexGroupByArgs<ExtArgs>
-          result: runtime.Types.Utils.Optional<Prisma.ChangeApplyModificationsAnnexGroupByOutputType>[]
+          args: Prisma.ChangeApproveAnnexGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.ChangeApproveAnnexGroupByOutputType>[]
         }
         count: {
-          args: Prisma.ChangeApplyModificationsAnnexCountArgs<ExtArgs>
-          result: runtime.Types.Utils.Optional<Prisma.ChangeApplyModificationsAnnexCountAggregateOutputType> | number
+          args: Prisma.ChangeApproveAnnexCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.ChangeApproveAnnexCountAggregateOutputType> | number
         }
       }
     }
@@ -3504,14 +3429,6 @@ export const ArticleModifierScalarFieldEnum = {
 export type ArticleModifierScalarFieldEnum = (typeof ArticleModifierScalarFieldEnum)[keyof typeof ArticleModifierScalarFieldEnum]
 
 
-export const ArticleCreateDocumentScalarFieldEnum = {
-  id: 'id',
-  annexToApproveReferenceId: 'annexToApproveReferenceId'
-} as const
-
-export type ArticleCreateDocumentScalarFieldEnum = (typeof ArticleCreateDocumentScalarFieldEnum)[keyof typeof ArticleCreateDocumentScalarFieldEnum]
-
-
 export const ArticleFormalityScalarFieldEnum = {
   id: 'id'
 } as const
@@ -3614,12 +3531,13 @@ export const ChangeRepealScalarFieldEnum = {
 export type ChangeRepealScalarFieldEnum = (typeof ChangeRepealScalarFieldEnum)[keyof typeof ChangeRepealScalarFieldEnum]
 
 
-export const ChangeApplyModificationsAnnexScalarFieldEnum = {
+export const ChangeApproveAnnexScalarFieldEnum = {
   id: 'id',
-  annexToApplyId: 'annexToApplyId'
+  annexToApproveId: 'annexToApproveId',
+  annexIsDocument: 'annexIsDocument'
 } as const
 
-export type ChangeApplyModificationsAnnexScalarFieldEnum = (typeof ChangeApplyModificationsAnnexScalarFieldEnum)[keyof typeof ChangeApplyModificationsAnnexScalarFieldEnum]
+export type ChangeApproveAnnexScalarFieldEnum = (typeof ChangeApproveAnnexScalarFieldEnum)[keyof typeof ChangeApproveAnnexScalarFieldEnum]
 
 
 export const AnnexScalarFieldEnum = {
@@ -4024,14 +3942,6 @@ export const ArticleModifierOrderByRelevanceFieldEnum = {
 export type ArticleModifierOrderByRelevanceFieldEnum = (typeof ArticleModifierOrderByRelevanceFieldEnum)[keyof typeof ArticleModifierOrderByRelevanceFieldEnum]
 
 
-export const ArticleCreateDocumentOrderByRelevanceFieldEnum = {
-  id: 'id',
-  annexToApproveReferenceId: 'annexToApproveReferenceId'
-} as const
-
-export type ArticleCreateDocumentOrderByRelevanceFieldEnum = (typeof ArticleCreateDocumentOrderByRelevanceFieldEnum)[keyof typeof ArticleCreateDocumentOrderByRelevanceFieldEnum]
-
-
 export const ArticleFormalityOrderByRelevanceFieldEnum = {
   id: 'id'
 } as const
@@ -4127,12 +4037,12 @@ export const ChangeRepealOrderByRelevanceFieldEnum = {
 export type ChangeRepealOrderByRelevanceFieldEnum = (typeof ChangeRepealOrderByRelevanceFieldEnum)[keyof typeof ChangeRepealOrderByRelevanceFieldEnum]
 
 
-export const ChangeApplyModificationsAnnexOrderByRelevanceFieldEnum = {
+export const ChangeApproveAnnexOrderByRelevanceFieldEnum = {
   id: 'id',
-  annexToApplyId: 'annexToApplyId'
+  annexToApproveId: 'annexToApproveId'
 } as const
 
-export type ChangeApplyModificationsAnnexOrderByRelevanceFieldEnum = (typeof ChangeApplyModificationsAnnexOrderByRelevanceFieldEnum)[keyof typeof ChangeApplyModificationsAnnexOrderByRelevanceFieldEnum]
+export type ChangeApproveAnnexOrderByRelevanceFieldEnum = (typeof ChangeApproveAnnexOrderByRelevanceFieldEnum)[keyof typeof ChangeApproveAnnexOrderByRelevanceFieldEnum]
 
 
 export const AnnexOrderByRelevanceFieldEnum = {
@@ -4480,6 +4390,13 @@ export type ListEnumReplaceAnnexContentTypeFieldRefInput<$PrismaModel> = FieldRe
 
 
 /**
+ * Reference to a field of type 'Boolean'
+ */
+export type BooleanFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Boolean'>
+    
+
+
+/**
  * Reference to a field of type 'AnnexType'
  */
 export type EnumAnnexTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'AnnexType'>
@@ -4560,13 +4477,6 @@ export type EnumUploadStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$Pri
  * Reference to a field of type 'UploadStatus[]'
  */
 export type ListEnumUploadStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'UploadStatus[]'>
-    
-
-
-/**
- * Reference to a field of type 'Boolean'
- */
-export type BooleanFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Boolean'>
     
 
 
@@ -4738,7 +4648,6 @@ export type GlobalOmitConfig = {
   article?: Prisma.ArticleOmit
   articleNormative?: Prisma.ArticleNormativeOmit
   articleModifier?: Prisma.ArticleModifierOmit
-  articleCreateDocument?: Prisma.ArticleCreateDocumentOmit
   articleFormality?: Prisma.ArticleFormalityOmit
   change?: Prisma.ChangeOmit
   changeModifyArticle?: Prisma.ChangeModifyArticleOmit
@@ -4750,7 +4659,7 @@ export type GlobalOmitConfig = {
   changeModifyTextAnnex?: Prisma.ChangeModifyTextAnnexOmit
   changeAddArticle?: Prisma.ChangeAddArticleOmit
   changeRepeal?: Prisma.ChangeRepealOmit
-  changeApplyModificationsAnnex?: Prisma.ChangeApplyModificationsAnnexOmit
+  changeApproveAnnex?: Prisma.ChangeApproveAnnexOmit
   annex?: Prisma.AnnexOmit
   annexText?: Prisma.AnnexTextOmit
   annexWithArticles?: Prisma.AnnexWithArticlesOmit

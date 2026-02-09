@@ -58,5 +58,32 @@ export class ValidityGraph {
         });
         return validChanges;
     }
+
+    getNodeRepealer(nodeId: string): ValidityGraphNode | null {
+        const node = this.nodes.get(nodeId);
+        if (!node) return null;
+
+        if (node.isValid())
+            return null;
+
+        const repealers = node.getRepealers();
+
+        for(const repealer of repealers) {
+            if (repealer.isValid()) {
+                return repealer;
+            }
+        }
+
+        const dependencies = node.getDependencies();
+        for(const dep of dependencies) {
+            const depRepealer = this.getNodeRepealer(dep.id);
+            if (depRepealer) {
+                return depRepealer;
+            }
+        }
+
+        console.error("Node is invalid but no valid repealer found. This should not happen unless there is a cycle. Returning null as fallback.", nodeId);
+        return null;
+    }
 }
 

@@ -1,5 +1,4 @@
 import {
-    ArticleCreateDocumentCreateWithoutArticleInput,
     ArticleCreateWithoutResolutionInput,
     ArticleFormalityCreateWithoutArticleInput,
     ArticleModifierCreateWithoutArticleInput,
@@ -9,9 +8,11 @@ import {
 import {changeCreationInput} from "@/data/save-resolution/changes";
 import * as Parser from "@/parser/types";
 import {suffixToNumber} from "@/data/save-resolution/util";
-import {annexReferenceCreateInput, textReferencesCreationInput} from "@/data/save-resolution/references";
+import {textReferencesCreationInput} from "@/data/save-resolution/references";
 
-type GeneralArticle = ({ standalone: true } & Parser.StandaloneArticle) | ({ standalone: false } & Parser.NewArticle);
+type GeneralArticle = (({ standalone: true } & Parser.StandaloneArticle) | ({ standalone: false } & Parser.NewArticle)) & {
+    type: Exclude<Parser.Article["type"], "CreateDocument">;
+};
 
 export function articleCreationInput(article: GeneralArticle): ArticleCreateWithoutResolutionInput {
     const concreteArticleFields = concreateArticleCreationFields(article);
@@ -53,7 +54,7 @@ export function contentBlockCreationInput(block: Parser.ContentBlock, order: num
     }
 }
 
-function concreateArticleCreationFields(article: GeneralArticle): Pick<ArticleCreateWithoutResolutionInput, "type" | "articleNormative" | "articleModifier" | "articleCreateDocument" | "articleFormality"> {
+function concreateArticleCreationFields(article: GeneralArticle): Pick<ArticleCreateWithoutResolutionInput, "type" | "articleNormative" | "articleModifier" | "articleFormality"> {
     switch (article.type) {
         case "Normative":
             return {
@@ -65,13 +66,6 @@ function concreateArticleCreationFields(article: GeneralArticle): Pick<ArticleCr
                 type: "FORMALITY",
                 articleFormality: {
                     create: articleFormalityCreationInput(article)
-                }
-            };
-        case "CreateDocument":
-            return {
-                type: "CREATE_DOCUMENT",
-                articleCreateDocument: {
-                    create: articleCreateDocumentCreationInput(article)
                 }
             };
         case "Modifier":
@@ -98,16 +92,6 @@ function articleFormalityCreationInput(_article: Extract<GeneralArticle, {
     type: "Formality"
 }>): ArticleFormalityCreateWithoutArticleInput {
     return {}
-}
-
-function articleCreateDocumentCreationInput(article: Extract<GeneralArticle, {
-    type: "CreateDocument"
-}>): ArticleCreateDocumentCreateWithoutArticleInput {
-    return {
-        annexToApprove: {
-            create: annexReferenceCreateInput(article.annexToApprove, "ARTICLE_CREATE_DOCUMENT")
-        }
-    }
 }
 
 function articleModifierCreationInput(article: Extract<GeneralArticle, {

@@ -41,6 +41,14 @@ export class ValidityGraphNode {
         }
     }
 
+    getRepealers(): ValidityGraphNode[] {
+        return Array.from(this.repealers);
+    }
+
+    getDependencies(): ValidityGraphNode[] {
+        return Array.from(this.dependencies);
+    }
+
     subscribeInvalidation(callback: () => void) {
         this.invalidationSubscribers.push(callback);
     }

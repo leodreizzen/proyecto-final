@@ -234,14 +234,13 @@ export type ReferenceAnnexWhereInput = {
   annexNumber?: Prisma.IntFilter<"ReferenceAnnex"> | number
   reference?: Prisma.XOR<Prisma.ReferenceScalarRelationFilter, Prisma.ReferenceWhereInput>
   annex?: Prisma.XOR<Prisma.AnnexNullableScalarRelationFilter, Prisma.AnnexWhereInput> | null
-  changeApplyModificationsAnnex?: Prisma.XOR<Prisma.ChangeApplyModificationsAnnexNullableScalarRelationFilter, Prisma.ChangeApplyModificationsAnnexWhereInput> | null
+  changeApproveAnnex?: Prisma.XOR<Prisma.ChangeApproveAnnexNullableScalarRelationFilter, Prisma.ChangeApproveAnnexWhereInput> | null
   changeReplaceAnnexTarget?: Prisma.XOR<Prisma.ChangeReplaceAnnexNullableScalarRelationFilter, Prisma.ChangeReplaceAnnexWhereInput> | null
   changeReplaceAnnexNewReference?: Prisma.XOR<Prisma.ChangeReplaceAnnexNullableScalarRelationFilter, Prisma.ChangeReplaceAnnexWhereInput> | null
   changeAddAnnexTarget?: Prisma.XOR<Prisma.ChangeAddAnnexNullableScalarRelationFilter, Prisma.ChangeAddAnnexWhereInput> | null
   changeAddAnnexAnnexToAdd?: Prisma.XOR<Prisma.ChangeAddAnnexNullableScalarRelationFilter, Prisma.ChangeAddAnnexWhereInput> | null
   changeModifyTextAnnex?: Prisma.XOR<Prisma.ChangeModifyTextAnnexNullableScalarRelationFilter, Prisma.ChangeModifyTextAnnexWhereInput> | null
   changeAddArticle?: Prisma.XOR<Prisma.ChangeAddArticleNullableScalarRelationFilter, Prisma.ChangeAddArticleWhereInput> | null
-  articleCreateDocument?: Prisma.XOR<Prisma.ArticleCreateDocumentNullableScalarRelationFilter, Prisma.ArticleCreateDocumentWhereInput> | null
 }
 
 export type ReferenceAnnexOrderByWithRelationInput = {
@@ -253,14 +252,13 @@ export type ReferenceAnnexOrderByWithRelationInput = {
   annexNumber?: Prisma.SortOrder
   reference?: Prisma.ReferenceOrderByWithRelationInput
   annex?: Prisma.AnnexOrderByWithRelationInput
-  changeApplyModificationsAnnex?: Prisma.ChangeApplyModificationsAnnexOrderByWithRelationInput
+  changeApproveAnnex?: Prisma.ChangeApproveAnnexOrderByWithRelationInput
   changeReplaceAnnexTarget?: Prisma.ChangeReplaceAnnexOrderByWithRelationInput
   changeReplaceAnnexNewReference?: Prisma.ChangeReplaceAnnexOrderByWithRelationInput
   changeAddAnnexTarget?: Prisma.ChangeAddAnnexOrderByWithRelationInput
   changeAddAnnexAnnexToAdd?: Prisma.ChangeAddAnnexOrderByWithRelationInput
   changeModifyTextAnnex?: Prisma.ChangeModifyTextAnnexOrderByWithRelationInput
   changeAddArticle?: Prisma.ChangeAddArticleOrderByWithRelationInput
-  articleCreateDocument?: Prisma.ArticleCreateDocumentOrderByWithRelationInput
   _relevance?: Prisma.ReferenceAnnexOrderByRelevanceInput
 }
 
@@ -276,14 +274,13 @@ export type ReferenceAnnexWhereUniqueInput = Prisma.AtLeast<{
   annexNumber?: Prisma.IntFilter<"ReferenceAnnex"> | number
   reference?: Prisma.XOR<Prisma.ReferenceScalarRelationFilter, Prisma.ReferenceWhereInput>
   annex?: Prisma.XOR<Prisma.AnnexNullableScalarRelationFilter, Prisma.AnnexWhereInput> | null
-  changeApplyModificationsAnnex?: Prisma.XOR<Prisma.ChangeApplyModificationsAnnexNullableScalarRelationFilter, Prisma.ChangeApplyModificationsAnnexWhereInput> | null
+  changeApproveAnnex?: Prisma.XOR<Prisma.ChangeApproveAnnexNullableScalarRelationFilter, Prisma.ChangeApproveAnnexWhereInput> | null
   changeReplaceAnnexTarget?: Prisma.XOR<Prisma.ChangeReplaceAnnexNullableScalarRelationFilter, Prisma.ChangeReplaceAnnexWhereInput> | null
   changeReplaceAnnexNewReference?: Prisma.XOR<Prisma.ChangeReplaceAnnexNullableScalarRelationFilter, Prisma.ChangeReplaceAnnexWhereInput> | null
   changeAddAnnexTarget?: Prisma.XOR<Prisma.ChangeAddAnnexNullableScalarRelationFilter, Prisma.ChangeAddAnnexWhereInput> | null
   changeAddAnnexAnnexToAdd?: Prisma.XOR<Prisma.ChangeAddAnnexNullableScalarRelationFilter, Prisma.ChangeAddAnnexWhereInput> | null
   changeModifyTextAnnex?: Prisma.XOR<Prisma.ChangeModifyTextAnnexNullableScalarRelationFilter, Prisma.ChangeModifyTextAnnexWhereInput> | null
   changeAddArticle?: Prisma.XOR<Prisma.ChangeAddArticleNullableScalarRelationFilter, Prisma.ChangeAddArticleWhereInput> | null
-  articleCreateDocument?: Prisma.XOR<Prisma.ArticleCreateDocumentNullableScalarRelationFilter, Prisma.ArticleCreateDocumentWhereInput> | null
 }, "id">
 
 export type ReferenceAnnexOrderByWithAggregationInput = {
@@ -319,14 +316,13 @@ export type ReferenceAnnexCreateInput = {
   annexNumber: number
   reference: Prisma.ReferenceCreateNestedOneWithoutAnnexInput
   annex?: Prisma.AnnexCreateNestedOneWithoutReferencedByInput
-  changeApplyModificationsAnnex?: Prisma.ChangeApplyModificationsAnnexCreateNestedOneWithoutAnnexToApplyInput
+  changeApproveAnnex?: Prisma.ChangeApproveAnnexCreateNestedOneWithoutAnnexToApproveInput
   changeReplaceAnnexTarget?: Prisma.ChangeReplaceAnnexCreateNestedOneWithoutTargetAnnexInput
   changeReplaceAnnexNewReference?: Prisma.ChangeReplaceAnnexCreateNestedOneWithoutNewAnnexReferenceInput
   changeAddAnnexTarget?: Prisma.ChangeAddAnnexCreateNestedOneWithoutTargetAnnexInput
   changeAddAnnexAnnexToAdd?: Prisma.ChangeAddAnnexCreateNestedOneWithoutAnnexToAddInput
   changeModifyTextAnnex?: Prisma.ChangeModifyTextAnnexCreateNestedOneWithoutTargetAnnexInput
   changeAddArticle?: Prisma.ChangeAddArticleCreateNestedOneWithoutTargetAnnexInput
-  articleCreateDocument?: Prisma.ArticleCreateDocumentCreateNestedOneWithoutAnnexToApproveInput
 }
 
 export type ReferenceAnnexUncheckedCreateInput = {
@@ -336,14 +332,13 @@ export type ReferenceAnnexUncheckedCreateInput = {
   resNumber: number
   year: number
   annexNumber: number
-  changeApplyModificationsAnnex?: Prisma.ChangeApplyModificationsAnnexUncheckedCreateNestedOneWithoutAnnexToApplyInput
+  changeApproveAnnex?: Prisma.ChangeApproveAnnexUncheckedCreateNestedOneWithoutAnnexToApproveInput
   changeReplaceAnnexTarget?: Prisma.ChangeReplaceAnnexUncheckedCreateNestedOneWithoutTargetAnnexInput
   changeReplaceAnnexNewReference?: Prisma.ChangeReplaceAnnexUncheckedCreateNestedOneWithoutNewAnnexReferenceInput
   changeAddAnnexTarget?: Prisma.ChangeAddAnnexUncheckedCreateNestedOneWithoutTargetAnnexInput
   changeAddAnnexAnnexToAdd?: Prisma.ChangeAddAnnexUncheckedCreateNestedOneWithoutAnnexToAddInput
   changeModifyTextAnnex?: Prisma.ChangeModifyTextAnnexUncheckedCreateNestedOneWithoutTargetAnnexInput
   changeAddArticle?: Prisma.ChangeAddArticleUncheckedCreateNestedOneWithoutTargetAnnexInput
-  articleCreateDocument?: Prisma.ArticleCreateDocumentUncheckedCreateNestedOneWithoutAnnexToApproveInput
 }
 
 export type ReferenceAnnexUpdateInput = {
@@ -353,14 +348,13 @@ export type ReferenceAnnexUpdateInput = {
   annexNumber?: Prisma.IntFieldUpdateOperationsInput | number
   reference?: Prisma.ReferenceUpdateOneRequiredWithoutAnnexNestedInput
   annex?: Prisma.AnnexUpdateOneWithoutReferencedByNestedInput
-  changeApplyModificationsAnnex?: Prisma.ChangeApplyModificationsAnnexUpdateOneWithoutAnnexToApplyNestedInput
+  changeApproveAnnex?: Prisma.ChangeApproveAnnexUpdateOneWithoutAnnexToApproveNestedInput
   changeReplaceAnnexTarget?: Prisma.ChangeReplaceAnnexUpdateOneWithoutTargetAnnexNestedInput
   changeReplaceAnnexNewReference?: Prisma.ChangeReplaceAnnexUpdateOneWithoutNewAnnexReferenceNestedInput
   changeAddAnnexTarget?: Prisma.ChangeAddAnnexUpdateOneWithoutTargetAnnexNestedInput
   changeAddAnnexAnnexToAdd?: Prisma.ChangeAddAnnexUpdateOneWithoutAnnexToAddNestedInput
   changeModifyTextAnnex?: Prisma.ChangeModifyTextAnnexUpdateOneWithoutTargetAnnexNestedInput
   changeAddArticle?: Prisma.ChangeAddArticleUpdateOneWithoutTargetAnnexNestedInput
-  articleCreateDocument?: Prisma.ArticleCreateDocumentUpdateOneWithoutAnnexToApproveNestedInput
 }
 
 export type ReferenceAnnexUncheckedUpdateInput = {
@@ -370,14 +364,13 @@ export type ReferenceAnnexUncheckedUpdateInput = {
   resNumber?: Prisma.IntFieldUpdateOperationsInput | number
   year?: Prisma.IntFieldUpdateOperationsInput | number
   annexNumber?: Prisma.IntFieldUpdateOperationsInput | number
-  changeApplyModificationsAnnex?: Prisma.ChangeApplyModificationsAnnexUncheckedUpdateOneWithoutAnnexToApplyNestedInput
+  changeApproveAnnex?: Prisma.ChangeApproveAnnexUncheckedUpdateOneWithoutAnnexToApproveNestedInput
   changeReplaceAnnexTarget?: Prisma.ChangeReplaceAnnexUncheckedUpdateOneWithoutTargetAnnexNestedInput
   changeReplaceAnnexNewReference?: Prisma.ChangeReplaceAnnexUncheckedUpdateOneWithoutNewAnnexReferenceNestedInput
   changeAddAnnexTarget?: Prisma.ChangeAddAnnexUncheckedUpdateOneWithoutTargetAnnexNestedInput
   changeAddAnnexAnnexToAdd?: Prisma.ChangeAddAnnexUncheckedUpdateOneWithoutAnnexToAddNestedInput
   changeModifyTextAnnex?: Prisma.ChangeModifyTextAnnexUncheckedUpdateOneWithoutTargetAnnexNestedInput
   changeAddArticle?: Prisma.ChangeAddArticleUncheckedUpdateOneWithoutTargetAnnexNestedInput
-  articleCreateDocument?: Prisma.ArticleCreateDocumentUncheckedUpdateOneWithoutAnnexToApproveNestedInput
 }
 
 export type ReferenceAnnexCreateManyInput = {
@@ -470,20 +463,6 @@ export type ReferenceAnnexSumOrderByAggregateInput = {
   annexNumber?: Prisma.SortOrder
 }
 
-export type ReferenceAnnexCreateNestedOneWithoutArticleCreateDocumentInput = {
-  create?: Prisma.XOR<Prisma.ReferenceAnnexCreateWithoutArticleCreateDocumentInput, Prisma.ReferenceAnnexUncheckedCreateWithoutArticleCreateDocumentInput>
-  connectOrCreate?: Prisma.ReferenceAnnexCreateOrConnectWithoutArticleCreateDocumentInput
-  connect?: Prisma.ReferenceAnnexWhereUniqueInput
-}
-
-export type ReferenceAnnexUpdateOneRequiredWithoutArticleCreateDocumentNestedInput = {
-  create?: Prisma.XOR<Prisma.ReferenceAnnexCreateWithoutArticleCreateDocumentInput, Prisma.ReferenceAnnexUncheckedCreateWithoutArticleCreateDocumentInput>
-  connectOrCreate?: Prisma.ReferenceAnnexCreateOrConnectWithoutArticleCreateDocumentInput
-  upsert?: Prisma.ReferenceAnnexUpsertWithoutArticleCreateDocumentInput
-  connect?: Prisma.ReferenceAnnexWhereUniqueInput
-  update?: Prisma.XOR<Prisma.XOR<Prisma.ReferenceAnnexUpdateToOneWithWhereWithoutArticleCreateDocumentInput, Prisma.ReferenceAnnexUpdateWithoutArticleCreateDocumentInput>, Prisma.ReferenceAnnexUncheckedUpdateWithoutArticleCreateDocumentInput>
-}
-
 export type ReferenceAnnexCreateNestedOneWithoutChangeReplaceAnnexTargetInput = {
   create?: Prisma.XOR<Prisma.ReferenceAnnexCreateWithoutChangeReplaceAnnexTargetInput, Prisma.ReferenceAnnexUncheckedCreateWithoutChangeReplaceAnnexTargetInput>
   connectOrCreate?: Prisma.ReferenceAnnexCreateOrConnectWithoutChangeReplaceAnnexTargetInput
@@ -574,18 +553,18 @@ export type ReferenceAnnexUpdateOneWithoutChangeAddArticleNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.ReferenceAnnexUpdateToOneWithWhereWithoutChangeAddArticleInput, Prisma.ReferenceAnnexUpdateWithoutChangeAddArticleInput>, Prisma.ReferenceAnnexUncheckedUpdateWithoutChangeAddArticleInput>
 }
 
-export type ReferenceAnnexCreateNestedOneWithoutChangeApplyModificationsAnnexInput = {
-  create?: Prisma.XOR<Prisma.ReferenceAnnexCreateWithoutChangeApplyModificationsAnnexInput, Prisma.ReferenceAnnexUncheckedCreateWithoutChangeApplyModificationsAnnexInput>
-  connectOrCreate?: Prisma.ReferenceAnnexCreateOrConnectWithoutChangeApplyModificationsAnnexInput
+export type ReferenceAnnexCreateNestedOneWithoutChangeApproveAnnexInput = {
+  create?: Prisma.XOR<Prisma.ReferenceAnnexCreateWithoutChangeApproveAnnexInput, Prisma.ReferenceAnnexUncheckedCreateWithoutChangeApproveAnnexInput>
+  connectOrCreate?: Prisma.ReferenceAnnexCreateOrConnectWithoutChangeApproveAnnexInput
   connect?: Prisma.ReferenceAnnexWhereUniqueInput
 }
 
-export type ReferenceAnnexUpdateOneRequiredWithoutChangeApplyModificationsAnnexNestedInput = {
-  create?: Prisma.XOR<Prisma.ReferenceAnnexCreateWithoutChangeApplyModificationsAnnexInput, Prisma.ReferenceAnnexUncheckedCreateWithoutChangeApplyModificationsAnnexInput>
-  connectOrCreate?: Prisma.ReferenceAnnexCreateOrConnectWithoutChangeApplyModificationsAnnexInput
-  upsert?: Prisma.ReferenceAnnexUpsertWithoutChangeApplyModificationsAnnexInput
+export type ReferenceAnnexUpdateOneRequiredWithoutChangeApproveAnnexNestedInput = {
+  create?: Prisma.XOR<Prisma.ReferenceAnnexCreateWithoutChangeApproveAnnexInput, Prisma.ReferenceAnnexUncheckedCreateWithoutChangeApproveAnnexInput>
+  connectOrCreate?: Prisma.ReferenceAnnexCreateOrConnectWithoutChangeApproveAnnexInput
+  upsert?: Prisma.ReferenceAnnexUpsertWithoutChangeApproveAnnexInput
   connect?: Prisma.ReferenceAnnexWhereUniqueInput
-  update?: Prisma.XOR<Prisma.XOR<Prisma.ReferenceAnnexUpdateToOneWithWhereWithoutChangeApplyModificationsAnnexInput, Prisma.ReferenceAnnexUpdateWithoutChangeApplyModificationsAnnexInput>, Prisma.ReferenceAnnexUncheckedUpdateWithoutChangeApplyModificationsAnnexInput>
+  update?: Prisma.XOR<Prisma.XOR<Prisma.ReferenceAnnexUpdateToOneWithWhereWithoutChangeApproveAnnexInput, Prisma.ReferenceAnnexUpdateWithoutChangeApproveAnnexInput>, Prisma.ReferenceAnnexUncheckedUpdateWithoutChangeApproveAnnexInput>
 }
 
 export type ReferenceAnnexCreateNestedManyWithoutAnnexInput = {
@@ -662,86 +641,6 @@ export type ReferenceAnnexUncheckedUpdateOneWithoutReferenceNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.ReferenceAnnexUpdateToOneWithWhereWithoutReferenceInput, Prisma.ReferenceAnnexUpdateWithoutReferenceInput>, Prisma.ReferenceAnnexUncheckedUpdateWithoutReferenceInput>
 }
 
-export type ReferenceAnnexCreateWithoutArticleCreateDocumentInput = {
-  initial: string
-  resNumber: number
-  year: number
-  annexNumber: number
-  reference: Prisma.ReferenceCreateNestedOneWithoutAnnexInput
-  annex?: Prisma.AnnexCreateNestedOneWithoutReferencedByInput
-  changeApplyModificationsAnnex?: Prisma.ChangeApplyModificationsAnnexCreateNestedOneWithoutAnnexToApplyInput
-  changeReplaceAnnexTarget?: Prisma.ChangeReplaceAnnexCreateNestedOneWithoutTargetAnnexInput
-  changeReplaceAnnexNewReference?: Prisma.ChangeReplaceAnnexCreateNestedOneWithoutNewAnnexReferenceInput
-  changeAddAnnexTarget?: Prisma.ChangeAddAnnexCreateNestedOneWithoutTargetAnnexInput
-  changeAddAnnexAnnexToAdd?: Prisma.ChangeAddAnnexCreateNestedOneWithoutAnnexToAddInput
-  changeModifyTextAnnex?: Prisma.ChangeModifyTextAnnexCreateNestedOneWithoutTargetAnnexInput
-  changeAddArticle?: Prisma.ChangeAddArticleCreateNestedOneWithoutTargetAnnexInput
-}
-
-export type ReferenceAnnexUncheckedCreateWithoutArticleCreateDocumentInput = {
-  id: string
-  annexId?: string | null
-  initial: string
-  resNumber: number
-  year: number
-  annexNumber: number
-  changeApplyModificationsAnnex?: Prisma.ChangeApplyModificationsAnnexUncheckedCreateNestedOneWithoutAnnexToApplyInput
-  changeReplaceAnnexTarget?: Prisma.ChangeReplaceAnnexUncheckedCreateNestedOneWithoutTargetAnnexInput
-  changeReplaceAnnexNewReference?: Prisma.ChangeReplaceAnnexUncheckedCreateNestedOneWithoutNewAnnexReferenceInput
-  changeAddAnnexTarget?: Prisma.ChangeAddAnnexUncheckedCreateNestedOneWithoutTargetAnnexInput
-  changeAddAnnexAnnexToAdd?: Prisma.ChangeAddAnnexUncheckedCreateNestedOneWithoutAnnexToAddInput
-  changeModifyTextAnnex?: Prisma.ChangeModifyTextAnnexUncheckedCreateNestedOneWithoutTargetAnnexInput
-  changeAddArticle?: Prisma.ChangeAddArticleUncheckedCreateNestedOneWithoutTargetAnnexInput
-}
-
-export type ReferenceAnnexCreateOrConnectWithoutArticleCreateDocumentInput = {
-  where: Prisma.ReferenceAnnexWhereUniqueInput
-  create: Prisma.XOR<Prisma.ReferenceAnnexCreateWithoutArticleCreateDocumentInput, Prisma.ReferenceAnnexUncheckedCreateWithoutArticleCreateDocumentInput>
-}
-
-export type ReferenceAnnexUpsertWithoutArticleCreateDocumentInput = {
-  update: Prisma.XOR<Prisma.ReferenceAnnexUpdateWithoutArticleCreateDocumentInput, Prisma.ReferenceAnnexUncheckedUpdateWithoutArticleCreateDocumentInput>
-  create: Prisma.XOR<Prisma.ReferenceAnnexCreateWithoutArticleCreateDocumentInput, Prisma.ReferenceAnnexUncheckedCreateWithoutArticleCreateDocumentInput>
-  where?: Prisma.ReferenceAnnexWhereInput
-}
-
-export type ReferenceAnnexUpdateToOneWithWhereWithoutArticleCreateDocumentInput = {
-  where?: Prisma.ReferenceAnnexWhereInput
-  data: Prisma.XOR<Prisma.ReferenceAnnexUpdateWithoutArticleCreateDocumentInput, Prisma.ReferenceAnnexUncheckedUpdateWithoutArticleCreateDocumentInput>
-}
-
-export type ReferenceAnnexUpdateWithoutArticleCreateDocumentInput = {
-  initial?: Prisma.StringFieldUpdateOperationsInput | string
-  resNumber?: Prisma.IntFieldUpdateOperationsInput | number
-  year?: Prisma.IntFieldUpdateOperationsInput | number
-  annexNumber?: Prisma.IntFieldUpdateOperationsInput | number
-  reference?: Prisma.ReferenceUpdateOneRequiredWithoutAnnexNestedInput
-  annex?: Prisma.AnnexUpdateOneWithoutReferencedByNestedInput
-  changeApplyModificationsAnnex?: Prisma.ChangeApplyModificationsAnnexUpdateOneWithoutAnnexToApplyNestedInput
-  changeReplaceAnnexTarget?: Prisma.ChangeReplaceAnnexUpdateOneWithoutTargetAnnexNestedInput
-  changeReplaceAnnexNewReference?: Prisma.ChangeReplaceAnnexUpdateOneWithoutNewAnnexReferenceNestedInput
-  changeAddAnnexTarget?: Prisma.ChangeAddAnnexUpdateOneWithoutTargetAnnexNestedInput
-  changeAddAnnexAnnexToAdd?: Prisma.ChangeAddAnnexUpdateOneWithoutAnnexToAddNestedInput
-  changeModifyTextAnnex?: Prisma.ChangeModifyTextAnnexUpdateOneWithoutTargetAnnexNestedInput
-  changeAddArticle?: Prisma.ChangeAddArticleUpdateOneWithoutTargetAnnexNestedInput
-}
-
-export type ReferenceAnnexUncheckedUpdateWithoutArticleCreateDocumentInput = {
-  id?: Prisma.StringFieldUpdateOperationsInput | string
-  annexId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  initial?: Prisma.StringFieldUpdateOperationsInput | string
-  resNumber?: Prisma.IntFieldUpdateOperationsInput | number
-  year?: Prisma.IntFieldUpdateOperationsInput | number
-  annexNumber?: Prisma.IntFieldUpdateOperationsInput | number
-  changeApplyModificationsAnnex?: Prisma.ChangeApplyModificationsAnnexUncheckedUpdateOneWithoutAnnexToApplyNestedInput
-  changeReplaceAnnexTarget?: Prisma.ChangeReplaceAnnexUncheckedUpdateOneWithoutTargetAnnexNestedInput
-  changeReplaceAnnexNewReference?: Prisma.ChangeReplaceAnnexUncheckedUpdateOneWithoutNewAnnexReferenceNestedInput
-  changeAddAnnexTarget?: Prisma.ChangeAddAnnexUncheckedUpdateOneWithoutTargetAnnexNestedInput
-  changeAddAnnexAnnexToAdd?: Prisma.ChangeAddAnnexUncheckedUpdateOneWithoutAnnexToAddNestedInput
-  changeModifyTextAnnex?: Prisma.ChangeModifyTextAnnexUncheckedUpdateOneWithoutTargetAnnexNestedInput
-  changeAddArticle?: Prisma.ChangeAddArticleUncheckedUpdateOneWithoutTargetAnnexNestedInput
-}
-
 export type ReferenceAnnexCreateWithoutChangeReplaceAnnexTargetInput = {
   initial: string
   resNumber: number
@@ -749,13 +648,12 @@ export type ReferenceAnnexCreateWithoutChangeReplaceAnnexTargetInput = {
   annexNumber: number
   reference: Prisma.ReferenceCreateNestedOneWithoutAnnexInput
   annex?: Prisma.AnnexCreateNestedOneWithoutReferencedByInput
-  changeApplyModificationsAnnex?: Prisma.ChangeApplyModificationsAnnexCreateNestedOneWithoutAnnexToApplyInput
+  changeApproveAnnex?: Prisma.ChangeApproveAnnexCreateNestedOneWithoutAnnexToApproveInput
   changeReplaceAnnexNewReference?: Prisma.ChangeReplaceAnnexCreateNestedOneWithoutNewAnnexReferenceInput
   changeAddAnnexTarget?: Prisma.ChangeAddAnnexCreateNestedOneWithoutTargetAnnexInput
   changeAddAnnexAnnexToAdd?: Prisma.ChangeAddAnnexCreateNestedOneWithoutAnnexToAddInput
   changeModifyTextAnnex?: Prisma.ChangeModifyTextAnnexCreateNestedOneWithoutTargetAnnexInput
   changeAddArticle?: Prisma.ChangeAddArticleCreateNestedOneWithoutTargetAnnexInput
-  articleCreateDocument?: Prisma.ArticleCreateDocumentCreateNestedOneWithoutAnnexToApproveInput
 }
 
 export type ReferenceAnnexUncheckedCreateWithoutChangeReplaceAnnexTargetInput = {
@@ -765,13 +663,12 @@ export type ReferenceAnnexUncheckedCreateWithoutChangeReplaceAnnexTargetInput = 
   resNumber: number
   year: number
   annexNumber: number
-  changeApplyModificationsAnnex?: Prisma.ChangeApplyModificationsAnnexUncheckedCreateNestedOneWithoutAnnexToApplyInput
+  changeApproveAnnex?: Prisma.ChangeApproveAnnexUncheckedCreateNestedOneWithoutAnnexToApproveInput
   changeReplaceAnnexNewReference?: Prisma.ChangeReplaceAnnexUncheckedCreateNestedOneWithoutNewAnnexReferenceInput
   changeAddAnnexTarget?: Prisma.ChangeAddAnnexUncheckedCreateNestedOneWithoutTargetAnnexInput
   changeAddAnnexAnnexToAdd?: Prisma.ChangeAddAnnexUncheckedCreateNestedOneWithoutAnnexToAddInput
   changeModifyTextAnnex?: Prisma.ChangeModifyTextAnnexUncheckedCreateNestedOneWithoutTargetAnnexInput
   changeAddArticle?: Prisma.ChangeAddArticleUncheckedCreateNestedOneWithoutTargetAnnexInput
-  articleCreateDocument?: Prisma.ArticleCreateDocumentUncheckedCreateNestedOneWithoutAnnexToApproveInput
 }
 
 export type ReferenceAnnexCreateOrConnectWithoutChangeReplaceAnnexTargetInput = {
@@ -786,13 +683,12 @@ export type ReferenceAnnexCreateWithoutChangeReplaceAnnexNewReferenceInput = {
   annexNumber: number
   reference: Prisma.ReferenceCreateNestedOneWithoutAnnexInput
   annex?: Prisma.AnnexCreateNestedOneWithoutReferencedByInput
-  changeApplyModificationsAnnex?: Prisma.ChangeApplyModificationsAnnexCreateNestedOneWithoutAnnexToApplyInput
+  changeApproveAnnex?: Prisma.ChangeApproveAnnexCreateNestedOneWithoutAnnexToApproveInput
   changeReplaceAnnexTarget?: Prisma.ChangeReplaceAnnexCreateNestedOneWithoutTargetAnnexInput
   changeAddAnnexTarget?: Prisma.ChangeAddAnnexCreateNestedOneWithoutTargetAnnexInput
   changeAddAnnexAnnexToAdd?: Prisma.ChangeAddAnnexCreateNestedOneWithoutAnnexToAddInput
   changeModifyTextAnnex?: Prisma.ChangeModifyTextAnnexCreateNestedOneWithoutTargetAnnexInput
   changeAddArticle?: Prisma.ChangeAddArticleCreateNestedOneWithoutTargetAnnexInput
-  articleCreateDocument?: Prisma.ArticleCreateDocumentCreateNestedOneWithoutAnnexToApproveInput
 }
 
 export type ReferenceAnnexUncheckedCreateWithoutChangeReplaceAnnexNewReferenceInput = {
@@ -802,13 +698,12 @@ export type ReferenceAnnexUncheckedCreateWithoutChangeReplaceAnnexNewReferenceIn
   resNumber: number
   year: number
   annexNumber: number
-  changeApplyModificationsAnnex?: Prisma.ChangeApplyModificationsAnnexUncheckedCreateNestedOneWithoutAnnexToApplyInput
+  changeApproveAnnex?: Prisma.ChangeApproveAnnexUncheckedCreateNestedOneWithoutAnnexToApproveInput
   changeReplaceAnnexTarget?: Prisma.ChangeReplaceAnnexUncheckedCreateNestedOneWithoutTargetAnnexInput
   changeAddAnnexTarget?: Prisma.ChangeAddAnnexUncheckedCreateNestedOneWithoutTargetAnnexInput
   changeAddAnnexAnnexToAdd?: Prisma.ChangeAddAnnexUncheckedCreateNestedOneWithoutAnnexToAddInput
   changeModifyTextAnnex?: Prisma.ChangeModifyTextAnnexUncheckedCreateNestedOneWithoutTargetAnnexInput
   changeAddArticle?: Prisma.ChangeAddArticleUncheckedCreateNestedOneWithoutTargetAnnexInput
-  articleCreateDocument?: Prisma.ArticleCreateDocumentUncheckedCreateNestedOneWithoutAnnexToApproveInput
 }
 
 export type ReferenceAnnexCreateOrConnectWithoutChangeReplaceAnnexNewReferenceInput = {
@@ -834,13 +729,12 @@ export type ReferenceAnnexUpdateWithoutChangeReplaceAnnexTargetInput = {
   annexNumber?: Prisma.IntFieldUpdateOperationsInput | number
   reference?: Prisma.ReferenceUpdateOneRequiredWithoutAnnexNestedInput
   annex?: Prisma.AnnexUpdateOneWithoutReferencedByNestedInput
-  changeApplyModificationsAnnex?: Prisma.ChangeApplyModificationsAnnexUpdateOneWithoutAnnexToApplyNestedInput
+  changeApproveAnnex?: Prisma.ChangeApproveAnnexUpdateOneWithoutAnnexToApproveNestedInput
   changeReplaceAnnexNewReference?: Prisma.ChangeReplaceAnnexUpdateOneWithoutNewAnnexReferenceNestedInput
   changeAddAnnexTarget?: Prisma.ChangeAddAnnexUpdateOneWithoutTargetAnnexNestedInput
   changeAddAnnexAnnexToAdd?: Prisma.ChangeAddAnnexUpdateOneWithoutAnnexToAddNestedInput
   changeModifyTextAnnex?: Prisma.ChangeModifyTextAnnexUpdateOneWithoutTargetAnnexNestedInput
   changeAddArticle?: Prisma.ChangeAddArticleUpdateOneWithoutTargetAnnexNestedInput
-  articleCreateDocument?: Prisma.ArticleCreateDocumentUpdateOneWithoutAnnexToApproveNestedInput
 }
 
 export type ReferenceAnnexUncheckedUpdateWithoutChangeReplaceAnnexTargetInput = {
@@ -850,13 +744,12 @@ export type ReferenceAnnexUncheckedUpdateWithoutChangeReplaceAnnexTargetInput = 
   resNumber?: Prisma.IntFieldUpdateOperationsInput | number
   year?: Prisma.IntFieldUpdateOperationsInput | number
   annexNumber?: Prisma.IntFieldUpdateOperationsInput | number
-  changeApplyModificationsAnnex?: Prisma.ChangeApplyModificationsAnnexUncheckedUpdateOneWithoutAnnexToApplyNestedInput
+  changeApproveAnnex?: Prisma.ChangeApproveAnnexUncheckedUpdateOneWithoutAnnexToApproveNestedInput
   changeReplaceAnnexNewReference?: Prisma.ChangeReplaceAnnexUncheckedUpdateOneWithoutNewAnnexReferenceNestedInput
   changeAddAnnexTarget?: Prisma.ChangeAddAnnexUncheckedUpdateOneWithoutTargetAnnexNestedInput
   changeAddAnnexAnnexToAdd?: Prisma.ChangeAddAnnexUncheckedUpdateOneWithoutAnnexToAddNestedInput
   changeModifyTextAnnex?: Prisma.ChangeModifyTextAnnexUncheckedUpdateOneWithoutTargetAnnexNestedInput
   changeAddArticle?: Prisma.ChangeAddArticleUncheckedUpdateOneWithoutTargetAnnexNestedInput
-  articleCreateDocument?: Prisma.ArticleCreateDocumentUncheckedUpdateOneWithoutAnnexToApproveNestedInput
 }
 
 export type ReferenceAnnexUpsertWithoutChangeReplaceAnnexNewReferenceInput = {
@@ -877,13 +770,12 @@ export type ReferenceAnnexUpdateWithoutChangeReplaceAnnexNewReferenceInput = {
   annexNumber?: Prisma.IntFieldUpdateOperationsInput | number
   reference?: Prisma.ReferenceUpdateOneRequiredWithoutAnnexNestedInput
   annex?: Prisma.AnnexUpdateOneWithoutReferencedByNestedInput
-  changeApplyModificationsAnnex?: Prisma.ChangeApplyModificationsAnnexUpdateOneWithoutAnnexToApplyNestedInput
+  changeApproveAnnex?: Prisma.ChangeApproveAnnexUpdateOneWithoutAnnexToApproveNestedInput
   changeReplaceAnnexTarget?: Prisma.ChangeReplaceAnnexUpdateOneWithoutTargetAnnexNestedInput
   changeAddAnnexTarget?: Prisma.ChangeAddAnnexUpdateOneWithoutTargetAnnexNestedInput
   changeAddAnnexAnnexToAdd?: Prisma.ChangeAddAnnexUpdateOneWithoutAnnexToAddNestedInput
   changeModifyTextAnnex?: Prisma.ChangeModifyTextAnnexUpdateOneWithoutTargetAnnexNestedInput
   changeAddArticle?: Prisma.ChangeAddArticleUpdateOneWithoutTargetAnnexNestedInput
-  articleCreateDocument?: Prisma.ArticleCreateDocumentUpdateOneWithoutAnnexToApproveNestedInput
 }
 
 export type ReferenceAnnexUncheckedUpdateWithoutChangeReplaceAnnexNewReferenceInput = {
@@ -893,13 +785,12 @@ export type ReferenceAnnexUncheckedUpdateWithoutChangeReplaceAnnexNewReferenceIn
   resNumber?: Prisma.IntFieldUpdateOperationsInput | number
   year?: Prisma.IntFieldUpdateOperationsInput | number
   annexNumber?: Prisma.IntFieldUpdateOperationsInput | number
-  changeApplyModificationsAnnex?: Prisma.ChangeApplyModificationsAnnexUncheckedUpdateOneWithoutAnnexToApplyNestedInput
+  changeApproveAnnex?: Prisma.ChangeApproveAnnexUncheckedUpdateOneWithoutAnnexToApproveNestedInput
   changeReplaceAnnexTarget?: Prisma.ChangeReplaceAnnexUncheckedUpdateOneWithoutTargetAnnexNestedInput
   changeAddAnnexTarget?: Prisma.ChangeAddAnnexUncheckedUpdateOneWithoutTargetAnnexNestedInput
   changeAddAnnexAnnexToAdd?: Prisma.ChangeAddAnnexUncheckedUpdateOneWithoutAnnexToAddNestedInput
   changeModifyTextAnnex?: Prisma.ChangeModifyTextAnnexUncheckedUpdateOneWithoutTargetAnnexNestedInput
   changeAddArticle?: Prisma.ChangeAddArticleUncheckedUpdateOneWithoutTargetAnnexNestedInput
-  articleCreateDocument?: Prisma.ArticleCreateDocumentUncheckedUpdateOneWithoutAnnexToApproveNestedInput
 }
 
 export type ReferenceAnnexCreateWithoutChangeAddAnnexAnnexToAddInput = {
@@ -909,13 +800,12 @@ export type ReferenceAnnexCreateWithoutChangeAddAnnexAnnexToAddInput = {
   annexNumber: number
   reference: Prisma.ReferenceCreateNestedOneWithoutAnnexInput
   annex?: Prisma.AnnexCreateNestedOneWithoutReferencedByInput
-  changeApplyModificationsAnnex?: Prisma.ChangeApplyModificationsAnnexCreateNestedOneWithoutAnnexToApplyInput
+  changeApproveAnnex?: Prisma.ChangeApproveAnnexCreateNestedOneWithoutAnnexToApproveInput
   changeReplaceAnnexTarget?: Prisma.ChangeReplaceAnnexCreateNestedOneWithoutTargetAnnexInput
   changeReplaceAnnexNewReference?: Prisma.ChangeReplaceAnnexCreateNestedOneWithoutNewAnnexReferenceInput
   changeAddAnnexTarget?: Prisma.ChangeAddAnnexCreateNestedOneWithoutTargetAnnexInput
   changeModifyTextAnnex?: Prisma.ChangeModifyTextAnnexCreateNestedOneWithoutTargetAnnexInput
   changeAddArticle?: Prisma.ChangeAddArticleCreateNestedOneWithoutTargetAnnexInput
-  articleCreateDocument?: Prisma.ArticleCreateDocumentCreateNestedOneWithoutAnnexToApproveInput
 }
 
 export type ReferenceAnnexUncheckedCreateWithoutChangeAddAnnexAnnexToAddInput = {
@@ -925,13 +815,12 @@ export type ReferenceAnnexUncheckedCreateWithoutChangeAddAnnexAnnexToAddInput = 
   resNumber: number
   year: number
   annexNumber: number
-  changeApplyModificationsAnnex?: Prisma.ChangeApplyModificationsAnnexUncheckedCreateNestedOneWithoutAnnexToApplyInput
+  changeApproveAnnex?: Prisma.ChangeApproveAnnexUncheckedCreateNestedOneWithoutAnnexToApproveInput
   changeReplaceAnnexTarget?: Prisma.ChangeReplaceAnnexUncheckedCreateNestedOneWithoutTargetAnnexInput
   changeReplaceAnnexNewReference?: Prisma.ChangeReplaceAnnexUncheckedCreateNestedOneWithoutNewAnnexReferenceInput
   changeAddAnnexTarget?: Prisma.ChangeAddAnnexUncheckedCreateNestedOneWithoutTargetAnnexInput
   changeModifyTextAnnex?: Prisma.ChangeModifyTextAnnexUncheckedCreateNestedOneWithoutTargetAnnexInput
   changeAddArticle?: Prisma.ChangeAddArticleUncheckedCreateNestedOneWithoutTargetAnnexInput
-  articleCreateDocument?: Prisma.ArticleCreateDocumentUncheckedCreateNestedOneWithoutAnnexToApproveInput
 }
 
 export type ReferenceAnnexCreateOrConnectWithoutChangeAddAnnexAnnexToAddInput = {
@@ -946,13 +835,12 @@ export type ReferenceAnnexCreateWithoutChangeAddAnnexTargetInput = {
   annexNumber: number
   reference: Prisma.ReferenceCreateNestedOneWithoutAnnexInput
   annex?: Prisma.AnnexCreateNestedOneWithoutReferencedByInput
-  changeApplyModificationsAnnex?: Prisma.ChangeApplyModificationsAnnexCreateNestedOneWithoutAnnexToApplyInput
+  changeApproveAnnex?: Prisma.ChangeApproveAnnexCreateNestedOneWithoutAnnexToApproveInput
   changeReplaceAnnexTarget?: Prisma.ChangeReplaceAnnexCreateNestedOneWithoutTargetAnnexInput
   changeReplaceAnnexNewReference?: Prisma.ChangeReplaceAnnexCreateNestedOneWithoutNewAnnexReferenceInput
   changeAddAnnexAnnexToAdd?: Prisma.ChangeAddAnnexCreateNestedOneWithoutAnnexToAddInput
   changeModifyTextAnnex?: Prisma.ChangeModifyTextAnnexCreateNestedOneWithoutTargetAnnexInput
   changeAddArticle?: Prisma.ChangeAddArticleCreateNestedOneWithoutTargetAnnexInput
-  articleCreateDocument?: Prisma.ArticleCreateDocumentCreateNestedOneWithoutAnnexToApproveInput
 }
 
 export type ReferenceAnnexUncheckedCreateWithoutChangeAddAnnexTargetInput = {
@@ -962,13 +850,12 @@ export type ReferenceAnnexUncheckedCreateWithoutChangeAddAnnexTargetInput = {
   resNumber: number
   year: number
   annexNumber: number
-  changeApplyModificationsAnnex?: Prisma.ChangeApplyModificationsAnnexUncheckedCreateNestedOneWithoutAnnexToApplyInput
+  changeApproveAnnex?: Prisma.ChangeApproveAnnexUncheckedCreateNestedOneWithoutAnnexToApproveInput
   changeReplaceAnnexTarget?: Prisma.ChangeReplaceAnnexUncheckedCreateNestedOneWithoutTargetAnnexInput
   changeReplaceAnnexNewReference?: Prisma.ChangeReplaceAnnexUncheckedCreateNestedOneWithoutNewAnnexReferenceInput
   changeAddAnnexAnnexToAdd?: Prisma.ChangeAddAnnexUncheckedCreateNestedOneWithoutAnnexToAddInput
   changeModifyTextAnnex?: Prisma.ChangeModifyTextAnnexUncheckedCreateNestedOneWithoutTargetAnnexInput
   changeAddArticle?: Prisma.ChangeAddArticleUncheckedCreateNestedOneWithoutTargetAnnexInput
-  articleCreateDocument?: Prisma.ArticleCreateDocumentUncheckedCreateNestedOneWithoutAnnexToApproveInput
 }
 
 export type ReferenceAnnexCreateOrConnectWithoutChangeAddAnnexTargetInput = {
@@ -994,13 +881,12 @@ export type ReferenceAnnexUpdateWithoutChangeAddAnnexAnnexToAddInput = {
   annexNumber?: Prisma.IntFieldUpdateOperationsInput | number
   reference?: Prisma.ReferenceUpdateOneRequiredWithoutAnnexNestedInput
   annex?: Prisma.AnnexUpdateOneWithoutReferencedByNestedInput
-  changeApplyModificationsAnnex?: Prisma.ChangeApplyModificationsAnnexUpdateOneWithoutAnnexToApplyNestedInput
+  changeApproveAnnex?: Prisma.ChangeApproveAnnexUpdateOneWithoutAnnexToApproveNestedInput
   changeReplaceAnnexTarget?: Prisma.ChangeReplaceAnnexUpdateOneWithoutTargetAnnexNestedInput
   changeReplaceAnnexNewReference?: Prisma.ChangeReplaceAnnexUpdateOneWithoutNewAnnexReferenceNestedInput
   changeAddAnnexTarget?: Prisma.ChangeAddAnnexUpdateOneWithoutTargetAnnexNestedInput
   changeModifyTextAnnex?: Prisma.ChangeModifyTextAnnexUpdateOneWithoutTargetAnnexNestedInput
   changeAddArticle?: Prisma.ChangeAddArticleUpdateOneWithoutTargetAnnexNestedInput
-  articleCreateDocument?: Prisma.ArticleCreateDocumentUpdateOneWithoutAnnexToApproveNestedInput
 }
 
 export type ReferenceAnnexUncheckedUpdateWithoutChangeAddAnnexAnnexToAddInput = {
@@ -1010,13 +896,12 @@ export type ReferenceAnnexUncheckedUpdateWithoutChangeAddAnnexAnnexToAddInput = 
   resNumber?: Prisma.IntFieldUpdateOperationsInput | number
   year?: Prisma.IntFieldUpdateOperationsInput | number
   annexNumber?: Prisma.IntFieldUpdateOperationsInput | number
-  changeApplyModificationsAnnex?: Prisma.ChangeApplyModificationsAnnexUncheckedUpdateOneWithoutAnnexToApplyNestedInput
+  changeApproveAnnex?: Prisma.ChangeApproveAnnexUncheckedUpdateOneWithoutAnnexToApproveNestedInput
   changeReplaceAnnexTarget?: Prisma.ChangeReplaceAnnexUncheckedUpdateOneWithoutTargetAnnexNestedInput
   changeReplaceAnnexNewReference?: Prisma.ChangeReplaceAnnexUncheckedUpdateOneWithoutNewAnnexReferenceNestedInput
   changeAddAnnexTarget?: Prisma.ChangeAddAnnexUncheckedUpdateOneWithoutTargetAnnexNestedInput
   changeModifyTextAnnex?: Prisma.ChangeModifyTextAnnexUncheckedUpdateOneWithoutTargetAnnexNestedInput
   changeAddArticle?: Prisma.ChangeAddArticleUncheckedUpdateOneWithoutTargetAnnexNestedInput
-  articleCreateDocument?: Prisma.ArticleCreateDocumentUncheckedUpdateOneWithoutAnnexToApproveNestedInput
 }
 
 export type ReferenceAnnexUpsertWithoutChangeAddAnnexTargetInput = {
@@ -1037,13 +922,12 @@ export type ReferenceAnnexUpdateWithoutChangeAddAnnexTargetInput = {
   annexNumber?: Prisma.IntFieldUpdateOperationsInput | number
   reference?: Prisma.ReferenceUpdateOneRequiredWithoutAnnexNestedInput
   annex?: Prisma.AnnexUpdateOneWithoutReferencedByNestedInput
-  changeApplyModificationsAnnex?: Prisma.ChangeApplyModificationsAnnexUpdateOneWithoutAnnexToApplyNestedInput
+  changeApproveAnnex?: Prisma.ChangeApproveAnnexUpdateOneWithoutAnnexToApproveNestedInput
   changeReplaceAnnexTarget?: Prisma.ChangeReplaceAnnexUpdateOneWithoutTargetAnnexNestedInput
   changeReplaceAnnexNewReference?: Prisma.ChangeReplaceAnnexUpdateOneWithoutNewAnnexReferenceNestedInput
   changeAddAnnexAnnexToAdd?: Prisma.ChangeAddAnnexUpdateOneWithoutAnnexToAddNestedInput
   changeModifyTextAnnex?: Prisma.ChangeModifyTextAnnexUpdateOneWithoutTargetAnnexNestedInput
   changeAddArticle?: Prisma.ChangeAddArticleUpdateOneWithoutTargetAnnexNestedInput
-  articleCreateDocument?: Prisma.ArticleCreateDocumentUpdateOneWithoutAnnexToApproveNestedInput
 }
 
 export type ReferenceAnnexUncheckedUpdateWithoutChangeAddAnnexTargetInput = {
@@ -1053,13 +937,12 @@ export type ReferenceAnnexUncheckedUpdateWithoutChangeAddAnnexTargetInput = {
   resNumber?: Prisma.IntFieldUpdateOperationsInput | number
   year?: Prisma.IntFieldUpdateOperationsInput | number
   annexNumber?: Prisma.IntFieldUpdateOperationsInput | number
-  changeApplyModificationsAnnex?: Prisma.ChangeApplyModificationsAnnexUncheckedUpdateOneWithoutAnnexToApplyNestedInput
+  changeApproveAnnex?: Prisma.ChangeApproveAnnexUncheckedUpdateOneWithoutAnnexToApproveNestedInput
   changeReplaceAnnexTarget?: Prisma.ChangeReplaceAnnexUncheckedUpdateOneWithoutTargetAnnexNestedInput
   changeReplaceAnnexNewReference?: Prisma.ChangeReplaceAnnexUncheckedUpdateOneWithoutNewAnnexReferenceNestedInput
   changeAddAnnexAnnexToAdd?: Prisma.ChangeAddAnnexUncheckedUpdateOneWithoutAnnexToAddNestedInput
   changeModifyTextAnnex?: Prisma.ChangeModifyTextAnnexUncheckedUpdateOneWithoutTargetAnnexNestedInput
   changeAddArticle?: Prisma.ChangeAddArticleUncheckedUpdateOneWithoutTargetAnnexNestedInput
-  articleCreateDocument?: Prisma.ArticleCreateDocumentUncheckedUpdateOneWithoutAnnexToApproveNestedInput
 }
 
 export type ReferenceAnnexCreateWithoutChangeModifyTextAnnexInput = {
@@ -1069,13 +952,12 @@ export type ReferenceAnnexCreateWithoutChangeModifyTextAnnexInput = {
   annexNumber: number
   reference: Prisma.ReferenceCreateNestedOneWithoutAnnexInput
   annex?: Prisma.AnnexCreateNestedOneWithoutReferencedByInput
-  changeApplyModificationsAnnex?: Prisma.ChangeApplyModificationsAnnexCreateNestedOneWithoutAnnexToApplyInput
+  changeApproveAnnex?: Prisma.ChangeApproveAnnexCreateNestedOneWithoutAnnexToApproveInput
   changeReplaceAnnexTarget?: Prisma.ChangeReplaceAnnexCreateNestedOneWithoutTargetAnnexInput
   changeReplaceAnnexNewReference?: Prisma.ChangeReplaceAnnexCreateNestedOneWithoutNewAnnexReferenceInput
   changeAddAnnexTarget?: Prisma.ChangeAddAnnexCreateNestedOneWithoutTargetAnnexInput
   changeAddAnnexAnnexToAdd?: Prisma.ChangeAddAnnexCreateNestedOneWithoutAnnexToAddInput
   changeAddArticle?: Prisma.ChangeAddArticleCreateNestedOneWithoutTargetAnnexInput
-  articleCreateDocument?: Prisma.ArticleCreateDocumentCreateNestedOneWithoutAnnexToApproveInput
 }
 
 export type ReferenceAnnexUncheckedCreateWithoutChangeModifyTextAnnexInput = {
@@ -1085,13 +967,12 @@ export type ReferenceAnnexUncheckedCreateWithoutChangeModifyTextAnnexInput = {
   resNumber: number
   year: number
   annexNumber: number
-  changeApplyModificationsAnnex?: Prisma.ChangeApplyModificationsAnnexUncheckedCreateNestedOneWithoutAnnexToApplyInput
+  changeApproveAnnex?: Prisma.ChangeApproveAnnexUncheckedCreateNestedOneWithoutAnnexToApproveInput
   changeReplaceAnnexTarget?: Prisma.ChangeReplaceAnnexUncheckedCreateNestedOneWithoutTargetAnnexInput
   changeReplaceAnnexNewReference?: Prisma.ChangeReplaceAnnexUncheckedCreateNestedOneWithoutNewAnnexReferenceInput
   changeAddAnnexTarget?: Prisma.ChangeAddAnnexUncheckedCreateNestedOneWithoutTargetAnnexInput
   changeAddAnnexAnnexToAdd?: Prisma.ChangeAddAnnexUncheckedCreateNestedOneWithoutAnnexToAddInput
   changeAddArticle?: Prisma.ChangeAddArticleUncheckedCreateNestedOneWithoutTargetAnnexInput
-  articleCreateDocument?: Prisma.ArticleCreateDocumentUncheckedCreateNestedOneWithoutAnnexToApproveInput
 }
 
 export type ReferenceAnnexCreateOrConnectWithoutChangeModifyTextAnnexInput = {
@@ -1117,13 +998,12 @@ export type ReferenceAnnexUpdateWithoutChangeModifyTextAnnexInput = {
   annexNumber?: Prisma.IntFieldUpdateOperationsInput | number
   reference?: Prisma.ReferenceUpdateOneRequiredWithoutAnnexNestedInput
   annex?: Prisma.AnnexUpdateOneWithoutReferencedByNestedInput
-  changeApplyModificationsAnnex?: Prisma.ChangeApplyModificationsAnnexUpdateOneWithoutAnnexToApplyNestedInput
+  changeApproveAnnex?: Prisma.ChangeApproveAnnexUpdateOneWithoutAnnexToApproveNestedInput
   changeReplaceAnnexTarget?: Prisma.ChangeReplaceAnnexUpdateOneWithoutTargetAnnexNestedInput
   changeReplaceAnnexNewReference?: Prisma.ChangeReplaceAnnexUpdateOneWithoutNewAnnexReferenceNestedInput
   changeAddAnnexTarget?: Prisma.ChangeAddAnnexUpdateOneWithoutTargetAnnexNestedInput
   changeAddAnnexAnnexToAdd?: Prisma.ChangeAddAnnexUpdateOneWithoutAnnexToAddNestedInput
   changeAddArticle?: Prisma.ChangeAddArticleUpdateOneWithoutTargetAnnexNestedInput
-  articleCreateDocument?: Prisma.ArticleCreateDocumentUpdateOneWithoutAnnexToApproveNestedInput
 }
 
 export type ReferenceAnnexUncheckedUpdateWithoutChangeModifyTextAnnexInput = {
@@ -1133,13 +1013,12 @@ export type ReferenceAnnexUncheckedUpdateWithoutChangeModifyTextAnnexInput = {
   resNumber?: Prisma.IntFieldUpdateOperationsInput | number
   year?: Prisma.IntFieldUpdateOperationsInput | number
   annexNumber?: Prisma.IntFieldUpdateOperationsInput | number
-  changeApplyModificationsAnnex?: Prisma.ChangeApplyModificationsAnnexUncheckedUpdateOneWithoutAnnexToApplyNestedInput
+  changeApproveAnnex?: Prisma.ChangeApproveAnnexUncheckedUpdateOneWithoutAnnexToApproveNestedInput
   changeReplaceAnnexTarget?: Prisma.ChangeReplaceAnnexUncheckedUpdateOneWithoutTargetAnnexNestedInput
   changeReplaceAnnexNewReference?: Prisma.ChangeReplaceAnnexUncheckedUpdateOneWithoutNewAnnexReferenceNestedInput
   changeAddAnnexTarget?: Prisma.ChangeAddAnnexUncheckedUpdateOneWithoutTargetAnnexNestedInput
   changeAddAnnexAnnexToAdd?: Prisma.ChangeAddAnnexUncheckedUpdateOneWithoutAnnexToAddNestedInput
   changeAddArticle?: Prisma.ChangeAddArticleUncheckedUpdateOneWithoutTargetAnnexNestedInput
-  articleCreateDocument?: Prisma.ArticleCreateDocumentUncheckedUpdateOneWithoutAnnexToApproveNestedInput
 }
 
 export type ReferenceAnnexCreateWithoutChangeAddArticleInput = {
@@ -1149,13 +1028,12 @@ export type ReferenceAnnexCreateWithoutChangeAddArticleInput = {
   annexNumber: number
   reference: Prisma.ReferenceCreateNestedOneWithoutAnnexInput
   annex?: Prisma.AnnexCreateNestedOneWithoutReferencedByInput
-  changeApplyModificationsAnnex?: Prisma.ChangeApplyModificationsAnnexCreateNestedOneWithoutAnnexToApplyInput
+  changeApproveAnnex?: Prisma.ChangeApproveAnnexCreateNestedOneWithoutAnnexToApproveInput
   changeReplaceAnnexTarget?: Prisma.ChangeReplaceAnnexCreateNestedOneWithoutTargetAnnexInput
   changeReplaceAnnexNewReference?: Prisma.ChangeReplaceAnnexCreateNestedOneWithoutNewAnnexReferenceInput
   changeAddAnnexTarget?: Prisma.ChangeAddAnnexCreateNestedOneWithoutTargetAnnexInput
   changeAddAnnexAnnexToAdd?: Prisma.ChangeAddAnnexCreateNestedOneWithoutAnnexToAddInput
   changeModifyTextAnnex?: Prisma.ChangeModifyTextAnnexCreateNestedOneWithoutTargetAnnexInput
-  articleCreateDocument?: Prisma.ArticleCreateDocumentCreateNestedOneWithoutAnnexToApproveInput
 }
 
 export type ReferenceAnnexUncheckedCreateWithoutChangeAddArticleInput = {
@@ -1165,13 +1043,12 @@ export type ReferenceAnnexUncheckedCreateWithoutChangeAddArticleInput = {
   resNumber: number
   year: number
   annexNumber: number
-  changeApplyModificationsAnnex?: Prisma.ChangeApplyModificationsAnnexUncheckedCreateNestedOneWithoutAnnexToApplyInput
+  changeApproveAnnex?: Prisma.ChangeApproveAnnexUncheckedCreateNestedOneWithoutAnnexToApproveInput
   changeReplaceAnnexTarget?: Prisma.ChangeReplaceAnnexUncheckedCreateNestedOneWithoutTargetAnnexInput
   changeReplaceAnnexNewReference?: Prisma.ChangeReplaceAnnexUncheckedCreateNestedOneWithoutNewAnnexReferenceInput
   changeAddAnnexTarget?: Prisma.ChangeAddAnnexUncheckedCreateNestedOneWithoutTargetAnnexInput
   changeAddAnnexAnnexToAdd?: Prisma.ChangeAddAnnexUncheckedCreateNestedOneWithoutAnnexToAddInput
   changeModifyTextAnnex?: Prisma.ChangeModifyTextAnnexUncheckedCreateNestedOneWithoutTargetAnnexInput
-  articleCreateDocument?: Prisma.ArticleCreateDocumentUncheckedCreateNestedOneWithoutAnnexToApproveInput
 }
 
 export type ReferenceAnnexCreateOrConnectWithoutChangeAddArticleInput = {
@@ -1197,13 +1074,12 @@ export type ReferenceAnnexUpdateWithoutChangeAddArticleInput = {
   annexNumber?: Prisma.IntFieldUpdateOperationsInput | number
   reference?: Prisma.ReferenceUpdateOneRequiredWithoutAnnexNestedInput
   annex?: Prisma.AnnexUpdateOneWithoutReferencedByNestedInput
-  changeApplyModificationsAnnex?: Prisma.ChangeApplyModificationsAnnexUpdateOneWithoutAnnexToApplyNestedInput
+  changeApproveAnnex?: Prisma.ChangeApproveAnnexUpdateOneWithoutAnnexToApproveNestedInput
   changeReplaceAnnexTarget?: Prisma.ChangeReplaceAnnexUpdateOneWithoutTargetAnnexNestedInput
   changeReplaceAnnexNewReference?: Prisma.ChangeReplaceAnnexUpdateOneWithoutNewAnnexReferenceNestedInput
   changeAddAnnexTarget?: Prisma.ChangeAddAnnexUpdateOneWithoutTargetAnnexNestedInput
   changeAddAnnexAnnexToAdd?: Prisma.ChangeAddAnnexUpdateOneWithoutAnnexToAddNestedInput
   changeModifyTextAnnex?: Prisma.ChangeModifyTextAnnexUpdateOneWithoutTargetAnnexNestedInput
-  articleCreateDocument?: Prisma.ArticleCreateDocumentUpdateOneWithoutAnnexToApproveNestedInput
 }
 
 export type ReferenceAnnexUncheckedUpdateWithoutChangeAddArticleInput = {
@@ -1213,16 +1089,15 @@ export type ReferenceAnnexUncheckedUpdateWithoutChangeAddArticleInput = {
   resNumber?: Prisma.IntFieldUpdateOperationsInput | number
   year?: Prisma.IntFieldUpdateOperationsInput | number
   annexNumber?: Prisma.IntFieldUpdateOperationsInput | number
-  changeApplyModificationsAnnex?: Prisma.ChangeApplyModificationsAnnexUncheckedUpdateOneWithoutAnnexToApplyNestedInput
+  changeApproveAnnex?: Prisma.ChangeApproveAnnexUncheckedUpdateOneWithoutAnnexToApproveNestedInput
   changeReplaceAnnexTarget?: Prisma.ChangeReplaceAnnexUncheckedUpdateOneWithoutTargetAnnexNestedInput
   changeReplaceAnnexNewReference?: Prisma.ChangeReplaceAnnexUncheckedUpdateOneWithoutNewAnnexReferenceNestedInput
   changeAddAnnexTarget?: Prisma.ChangeAddAnnexUncheckedUpdateOneWithoutTargetAnnexNestedInput
   changeAddAnnexAnnexToAdd?: Prisma.ChangeAddAnnexUncheckedUpdateOneWithoutAnnexToAddNestedInput
   changeModifyTextAnnex?: Prisma.ChangeModifyTextAnnexUncheckedUpdateOneWithoutTargetAnnexNestedInput
-  articleCreateDocument?: Prisma.ArticleCreateDocumentUncheckedUpdateOneWithoutAnnexToApproveNestedInput
 }
 
-export type ReferenceAnnexCreateWithoutChangeApplyModificationsAnnexInput = {
+export type ReferenceAnnexCreateWithoutChangeApproveAnnexInput = {
   initial: string
   resNumber: number
   year: number
@@ -1235,10 +1110,9 @@ export type ReferenceAnnexCreateWithoutChangeApplyModificationsAnnexInput = {
   changeAddAnnexAnnexToAdd?: Prisma.ChangeAddAnnexCreateNestedOneWithoutAnnexToAddInput
   changeModifyTextAnnex?: Prisma.ChangeModifyTextAnnexCreateNestedOneWithoutTargetAnnexInput
   changeAddArticle?: Prisma.ChangeAddArticleCreateNestedOneWithoutTargetAnnexInput
-  articleCreateDocument?: Prisma.ArticleCreateDocumentCreateNestedOneWithoutAnnexToApproveInput
 }
 
-export type ReferenceAnnexUncheckedCreateWithoutChangeApplyModificationsAnnexInput = {
+export type ReferenceAnnexUncheckedCreateWithoutChangeApproveAnnexInput = {
   id: string
   annexId?: string | null
   initial: string
@@ -1251,26 +1125,25 @@ export type ReferenceAnnexUncheckedCreateWithoutChangeApplyModificationsAnnexInp
   changeAddAnnexAnnexToAdd?: Prisma.ChangeAddAnnexUncheckedCreateNestedOneWithoutAnnexToAddInput
   changeModifyTextAnnex?: Prisma.ChangeModifyTextAnnexUncheckedCreateNestedOneWithoutTargetAnnexInput
   changeAddArticle?: Prisma.ChangeAddArticleUncheckedCreateNestedOneWithoutTargetAnnexInput
-  articleCreateDocument?: Prisma.ArticleCreateDocumentUncheckedCreateNestedOneWithoutAnnexToApproveInput
 }
 
-export type ReferenceAnnexCreateOrConnectWithoutChangeApplyModificationsAnnexInput = {
+export type ReferenceAnnexCreateOrConnectWithoutChangeApproveAnnexInput = {
   where: Prisma.ReferenceAnnexWhereUniqueInput
-  create: Prisma.XOR<Prisma.ReferenceAnnexCreateWithoutChangeApplyModificationsAnnexInput, Prisma.ReferenceAnnexUncheckedCreateWithoutChangeApplyModificationsAnnexInput>
+  create: Prisma.XOR<Prisma.ReferenceAnnexCreateWithoutChangeApproveAnnexInput, Prisma.ReferenceAnnexUncheckedCreateWithoutChangeApproveAnnexInput>
 }
 
-export type ReferenceAnnexUpsertWithoutChangeApplyModificationsAnnexInput = {
-  update: Prisma.XOR<Prisma.ReferenceAnnexUpdateWithoutChangeApplyModificationsAnnexInput, Prisma.ReferenceAnnexUncheckedUpdateWithoutChangeApplyModificationsAnnexInput>
-  create: Prisma.XOR<Prisma.ReferenceAnnexCreateWithoutChangeApplyModificationsAnnexInput, Prisma.ReferenceAnnexUncheckedCreateWithoutChangeApplyModificationsAnnexInput>
+export type ReferenceAnnexUpsertWithoutChangeApproveAnnexInput = {
+  update: Prisma.XOR<Prisma.ReferenceAnnexUpdateWithoutChangeApproveAnnexInput, Prisma.ReferenceAnnexUncheckedUpdateWithoutChangeApproveAnnexInput>
+  create: Prisma.XOR<Prisma.ReferenceAnnexCreateWithoutChangeApproveAnnexInput, Prisma.ReferenceAnnexUncheckedCreateWithoutChangeApproveAnnexInput>
   where?: Prisma.ReferenceAnnexWhereInput
 }
 
-export type ReferenceAnnexUpdateToOneWithWhereWithoutChangeApplyModificationsAnnexInput = {
+export type ReferenceAnnexUpdateToOneWithWhereWithoutChangeApproveAnnexInput = {
   where?: Prisma.ReferenceAnnexWhereInput
-  data: Prisma.XOR<Prisma.ReferenceAnnexUpdateWithoutChangeApplyModificationsAnnexInput, Prisma.ReferenceAnnexUncheckedUpdateWithoutChangeApplyModificationsAnnexInput>
+  data: Prisma.XOR<Prisma.ReferenceAnnexUpdateWithoutChangeApproveAnnexInput, Prisma.ReferenceAnnexUncheckedUpdateWithoutChangeApproveAnnexInput>
 }
 
-export type ReferenceAnnexUpdateWithoutChangeApplyModificationsAnnexInput = {
+export type ReferenceAnnexUpdateWithoutChangeApproveAnnexInput = {
   initial?: Prisma.StringFieldUpdateOperationsInput | string
   resNumber?: Prisma.IntFieldUpdateOperationsInput | number
   year?: Prisma.IntFieldUpdateOperationsInput | number
@@ -1283,10 +1156,9 @@ export type ReferenceAnnexUpdateWithoutChangeApplyModificationsAnnexInput = {
   changeAddAnnexAnnexToAdd?: Prisma.ChangeAddAnnexUpdateOneWithoutAnnexToAddNestedInput
   changeModifyTextAnnex?: Prisma.ChangeModifyTextAnnexUpdateOneWithoutTargetAnnexNestedInput
   changeAddArticle?: Prisma.ChangeAddArticleUpdateOneWithoutTargetAnnexNestedInput
-  articleCreateDocument?: Prisma.ArticleCreateDocumentUpdateOneWithoutAnnexToApproveNestedInput
 }
 
-export type ReferenceAnnexUncheckedUpdateWithoutChangeApplyModificationsAnnexInput = {
+export type ReferenceAnnexUncheckedUpdateWithoutChangeApproveAnnexInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   annexId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   initial?: Prisma.StringFieldUpdateOperationsInput | string
@@ -1299,7 +1171,6 @@ export type ReferenceAnnexUncheckedUpdateWithoutChangeApplyModificationsAnnexInp
   changeAddAnnexAnnexToAdd?: Prisma.ChangeAddAnnexUncheckedUpdateOneWithoutAnnexToAddNestedInput
   changeModifyTextAnnex?: Prisma.ChangeModifyTextAnnexUncheckedUpdateOneWithoutTargetAnnexNestedInput
   changeAddArticle?: Prisma.ChangeAddArticleUncheckedUpdateOneWithoutTargetAnnexNestedInput
-  articleCreateDocument?: Prisma.ArticleCreateDocumentUncheckedUpdateOneWithoutAnnexToApproveNestedInput
 }
 
 export type ReferenceAnnexCreateWithoutAnnexInput = {
@@ -1308,14 +1179,13 @@ export type ReferenceAnnexCreateWithoutAnnexInput = {
   year: number
   annexNumber: number
   reference: Prisma.ReferenceCreateNestedOneWithoutAnnexInput
-  changeApplyModificationsAnnex?: Prisma.ChangeApplyModificationsAnnexCreateNestedOneWithoutAnnexToApplyInput
+  changeApproveAnnex?: Prisma.ChangeApproveAnnexCreateNestedOneWithoutAnnexToApproveInput
   changeReplaceAnnexTarget?: Prisma.ChangeReplaceAnnexCreateNestedOneWithoutTargetAnnexInput
   changeReplaceAnnexNewReference?: Prisma.ChangeReplaceAnnexCreateNestedOneWithoutNewAnnexReferenceInput
   changeAddAnnexTarget?: Prisma.ChangeAddAnnexCreateNestedOneWithoutTargetAnnexInput
   changeAddAnnexAnnexToAdd?: Prisma.ChangeAddAnnexCreateNestedOneWithoutAnnexToAddInput
   changeModifyTextAnnex?: Prisma.ChangeModifyTextAnnexCreateNestedOneWithoutTargetAnnexInput
   changeAddArticle?: Prisma.ChangeAddArticleCreateNestedOneWithoutTargetAnnexInput
-  articleCreateDocument?: Prisma.ArticleCreateDocumentCreateNestedOneWithoutAnnexToApproveInput
 }
 
 export type ReferenceAnnexUncheckedCreateWithoutAnnexInput = {
@@ -1324,14 +1194,13 @@ export type ReferenceAnnexUncheckedCreateWithoutAnnexInput = {
   resNumber: number
   year: number
   annexNumber: number
-  changeApplyModificationsAnnex?: Prisma.ChangeApplyModificationsAnnexUncheckedCreateNestedOneWithoutAnnexToApplyInput
+  changeApproveAnnex?: Prisma.ChangeApproveAnnexUncheckedCreateNestedOneWithoutAnnexToApproveInput
   changeReplaceAnnexTarget?: Prisma.ChangeReplaceAnnexUncheckedCreateNestedOneWithoutTargetAnnexInput
   changeReplaceAnnexNewReference?: Prisma.ChangeReplaceAnnexUncheckedCreateNestedOneWithoutNewAnnexReferenceInput
   changeAddAnnexTarget?: Prisma.ChangeAddAnnexUncheckedCreateNestedOneWithoutTargetAnnexInput
   changeAddAnnexAnnexToAdd?: Prisma.ChangeAddAnnexUncheckedCreateNestedOneWithoutAnnexToAddInput
   changeModifyTextAnnex?: Prisma.ChangeModifyTextAnnexUncheckedCreateNestedOneWithoutTargetAnnexInput
   changeAddArticle?: Prisma.ChangeAddArticleUncheckedCreateNestedOneWithoutTargetAnnexInput
-  articleCreateDocument?: Prisma.ArticleCreateDocumentUncheckedCreateNestedOneWithoutAnnexToApproveInput
 }
 
 export type ReferenceAnnexCreateOrConnectWithoutAnnexInput = {
@@ -1378,14 +1247,13 @@ export type ReferenceAnnexCreateWithoutReferenceInput = {
   year: number
   annexNumber: number
   annex?: Prisma.AnnexCreateNestedOneWithoutReferencedByInput
-  changeApplyModificationsAnnex?: Prisma.ChangeApplyModificationsAnnexCreateNestedOneWithoutAnnexToApplyInput
+  changeApproveAnnex?: Prisma.ChangeApproveAnnexCreateNestedOneWithoutAnnexToApproveInput
   changeReplaceAnnexTarget?: Prisma.ChangeReplaceAnnexCreateNestedOneWithoutTargetAnnexInput
   changeReplaceAnnexNewReference?: Prisma.ChangeReplaceAnnexCreateNestedOneWithoutNewAnnexReferenceInput
   changeAddAnnexTarget?: Prisma.ChangeAddAnnexCreateNestedOneWithoutTargetAnnexInput
   changeAddAnnexAnnexToAdd?: Prisma.ChangeAddAnnexCreateNestedOneWithoutAnnexToAddInput
   changeModifyTextAnnex?: Prisma.ChangeModifyTextAnnexCreateNestedOneWithoutTargetAnnexInput
   changeAddArticle?: Prisma.ChangeAddArticleCreateNestedOneWithoutTargetAnnexInput
-  articleCreateDocument?: Prisma.ArticleCreateDocumentCreateNestedOneWithoutAnnexToApproveInput
 }
 
 export type ReferenceAnnexUncheckedCreateWithoutReferenceInput = {
@@ -1394,14 +1262,13 @@ export type ReferenceAnnexUncheckedCreateWithoutReferenceInput = {
   resNumber: number
   year: number
   annexNumber: number
-  changeApplyModificationsAnnex?: Prisma.ChangeApplyModificationsAnnexUncheckedCreateNestedOneWithoutAnnexToApplyInput
+  changeApproveAnnex?: Prisma.ChangeApproveAnnexUncheckedCreateNestedOneWithoutAnnexToApproveInput
   changeReplaceAnnexTarget?: Prisma.ChangeReplaceAnnexUncheckedCreateNestedOneWithoutTargetAnnexInput
   changeReplaceAnnexNewReference?: Prisma.ChangeReplaceAnnexUncheckedCreateNestedOneWithoutNewAnnexReferenceInput
   changeAddAnnexTarget?: Prisma.ChangeAddAnnexUncheckedCreateNestedOneWithoutTargetAnnexInput
   changeAddAnnexAnnexToAdd?: Prisma.ChangeAddAnnexUncheckedCreateNestedOneWithoutAnnexToAddInput
   changeModifyTextAnnex?: Prisma.ChangeModifyTextAnnexUncheckedCreateNestedOneWithoutTargetAnnexInput
   changeAddArticle?: Prisma.ChangeAddArticleUncheckedCreateNestedOneWithoutTargetAnnexInput
-  articleCreateDocument?: Prisma.ArticleCreateDocumentUncheckedCreateNestedOneWithoutAnnexToApproveInput
 }
 
 export type ReferenceAnnexCreateOrConnectWithoutReferenceInput = {
@@ -1426,14 +1293,13 @@ export type ReferenceAnnexUpdateWithoutReferenceInput = {
   year?: Prisma.IntFieldUpdateOperationsInput | number
   annexNumber?: Prisma.IntFieldUpdateOperationsInput | number
   annex?: Prisma.AnnexUpdateOneWithoutReferencedByNestedInput
-  changeApplyModificationsAnnex?: Prisma.ChangeApplyModificationsAnnexUpdateOneWithoutAnnexToApplyNestedInput
+  changeApproveAnnex?: Prisma.ChangeApproveAnnexUpdateOneWithoutAnnexToApproveNestedInput
   changeReplaceAnnexTarget?: Prisma.ChangeReplaceAnnexUpdateOneWithoutTargetAnnexNestedInput
   changeReplaceAnnexNewReference?: Prisma.ChangeReplaceAnnexUpdateOneWithoutNewAnnexReferenceNestedInput
   changeAddAnnexTarget?: Prisma.ChangeAddAnnexUpdateOneWithoutTargetAnnexNestedInput
   changeAddAnnexAnnexToAdd?: Prisma.ChangeAddAnnexUpdateOneWithoutAnnexToAddNestedInput
   changeModifyTextAnnex?: Prisma.ChangeModifyTextAnnexUpdateOneWithoutTargetAnnexNestedInput
   changeAddArticle?: Prisma.ChangeAddArticleUpdateOneWithoutTargetAnnexNestedInput
-  articleCreateDocument?: Prisma.ArticleCreateDocumentUpdateOneWithoutAnnexToApproveNestedInput
 }
 
 export type ReferenceAnnexUncheckedUpdateWithoutReferenceInput = {
@@ -1442,14 +1308,13 @@ export type ReferenceAnnexUncheckedUpdateWithoutReferenceInput = {
   resNumber?: Prisma.IntFieldUpdateOperationsInput | number
   year?: Prisma.IntFieldUpdateOperationsInput | number
   annexNumber?: Prisma.IntFieldUpdateOperationsInput | number
-  changeApplyModificationsAnnex?: Prisma.ChangeApplyModificationsAnnexUncheckedUpdateOneWithoutAnnexToApplyNestedInput
+  changeApproveAnnex?: Prisma.ChangeApproveAnnexUncheckedUpdateOneWithoutAnnexToApproveNestedInput
   changeReplaceAnnexTarget?: Prisma.ChangeReplaceAnnexUncheckedUpdateOneWithoutTargetAnnexNestedInput
   changeReplaceAnnexNewReference?: Prisma.ChangeReplaceAnnexUncheckedUpdateOneWithoutNewAnnexReferenceNestedInput
   changeAddAnnexTarget?: Prisma.ChangeAddAnnexUncheckedUpdateOneWithoutTargetAnnexNestedInput
   changeAddAnnexAnnexToAdd?: Prisma.ChangeAddAnnexUncheckedUpdateOneWithoutAnnexToAddNestedInput
   changeModifyTextAnnex?: Prisma.ChangeModifyTextAnnexUncheckedUpdateOneWithoutTargetAnnexNestedInput
   changeAddArticle?: Prisma.ChangeAddArticleUncheckedUpdateOneWithoutTargetAnnexNestedInput
-  articleCreateDocument?: Prisma.ArticleCreateDocumentUncheckedUpdateOneWithoutAnnexToApproveNestedInput
 }
 
 export type ReferenceAnnexCreateManyAnnexInput = {
@@ -1466,14 +1331,13 @@ export type ReferenceAnnexUpdateWithoutAnnexInput = {
   year?: Prisma.IntFieldUpdateOperationsInput | number
   annexNumber?: Prisma.IntFieldUpdateOperationsInput | number
   reference?: Prisma.ReferenceUpdateOneRequiredWithoutAnnexNestedInput
-  changeApplyModificationsAnnex?: Prisma.ChangeApplyModificationsAnnexUpdateOneWithoutAnnexToApplyNestedInput
+  changeApproveAnnex?: Prisma.ChangeApproveAnnexUpdateOneWithoutAnnexToApproveNestedInput
   changeReplaceAnnexTarget?: Prisma.ChangeReplaceAnnexUpdateOneWithoutTargetAnnexNestedInput
   changeReplaceAnnexNewReference?: Prisma.ChangeReplaceAnnexUpdateOneWithoutNewAnnexReferenceNestedInput
   changeAddAnnexTarget?: Prisma.ChangeAddAnnexUpdateOneWithoutTargetAnnexNestedInput
   changeAddAnnexAnnexToAdd?: Prisma.ChangeAddAnnexUpdateOneWithoutAnnexToAddNestedInput
   changeModifyTextAnnex?: Prisma.ChangeModifyTextAnnexUpdateOneWithoutTargetAnnexNestedInput
   changeAddArticle?: Prisma.ChangeAddArticleUpdateOneWithoutTargetAnnexNestedInput
-  articleCreateDocument?: Prisma.ArticleCreateDocumentUpdateOneWithoutAnnexToApproveNestedInput
 }
 
 export type ReferenceAnnexUncheckedUpdateWithoutAnnexInput = {
@@ -1482,14 +1346,13 @@ export type ReferenceAnnexUncheckedUpdateWithoutAnnexInput = {
   resNumber?: Prisma.IntFieldUpdateOperationsInput | number
   year?: Prisma.IntFieldUpdateOperationsInput | number
   annexNumber?: Prisma.IntFieldUpdateOperationsInput | number
-  changeApplyModificationsAnnex?: Prisma.ChangeApplyModificationsAnnexUncheckedUpdateOneWithoutAnnexToApplyNestedInput
+  changeApproveAnnex?: Prisma.ChangeApproveAnnexUncheckedUpdateOneWithoutAnnexToApproveNestedInput
   changeReplaceAnnexTarget?: Prisma.ChangeReplaceAnnexUncheckedUpdateOneWithoutTargetAnnexNestedInput
   changeReplaceAnnexNewReference?: Prisma.ChangeReplaceAnnexUncheckedUpdateOneWithoutNewAnnexReferenceNestedInput
   changeAddAnnexTarget?: Prisma.ChangeAddAnnexUncheckedUpdateOneWithoutTargetAnnexNestedInput
   changeAddAnnexAnnexToAdd?: Prisma.ChangeAddAnnexUncheckedUpdateOneWithoutAnnexToAddNestedInput
   changeModifyTextAnnex?: Prisma.ChangeModifyTextAnnexUncheckedUpdateOneWithoutTargetAnnexNestedInput
   changeAddArticle?: Prisma.ChangeAddArticleUncheckedUpdateOneWithoutTargetAnnexNestedInput
-  articleCreateDocument?: Prisma.ArticleCreateDocumentUncheckedUpdateOneWithoutAnnexToApproveNestedInput
 }
 
 export type ReferenceAnnexUncheckedUpdateManyWithoutAnnexInput = {
@@ -1511,14 +1374,13 @@ export type ReferenceAnnexSelect<ExtArgs extends runtime.Types.Extensions.Intern
   annexNumber?: boolean
   reference?: boolean | Prisma.ReferenceDefaultArgs<ExtArgs>
   annex?: boolean | Prisma.ReferenceAnnex$annexArgs<ExtArgs>
-  changeApplyModificationsAnnex?: boolean | Prisma.ReferenceAnnex$changeApplyModificationsAnnexArgs<ExtArgs>
+  changeApproveAnnex?: boolean | Prisma.ReferenceAnnex$changeApproveAnnexArgs<ExtArgs>
   changeReplaceAnnexTarget?: boolean | Prisma.ReferenceAnnex$changeReplaceAnnexTargetArgs<ExtArgs>
   changeReplaceAnnexNewReference?: boolean | Prisma.ReferenceAnnex$changeReplaceAnnexNewReferenceArgs<ExtArgs>
   changeAddAnnexTarget?: boolean | Prisma.ReferenceAnnex$changeAddAnnexTargetArgs<ExtArgs>
   changeAddAnnexAnnexToAdd?: boolean | Prisma.ReferenceAnnex$changeAddAnnexAnnexToAddArgs<ExtArgs>
   changeModifyTextAnnex?: boolean | Prisma.ReferenceAnnex$changeModifyTextAnnexArgs<ExtArgs>
   changeAddArticle?: boolean | Prisma.ReferenceAnnex$changeAddArticleArgs<ExtArgs>
-  articleCreateDocument?: boolean | Prisma.ReferenceAnnex$articleCreateDocumentArgs<ExtArgs>
 }, ExtArgs["result"]["referenceAnnex"]>
 
 export type ReferenceAnnexSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -1556,14 +1418,13 @@ export type ReferenceAnnexOmit<ExtArgs extends runtime.Types.Extensions.Internal
 export type ReferenceAnnexInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   reference?: boolean | Prisma.ReferenceDefaultArgs<ExtArgs>
   annex?: boolean | Prisma.ReferenceAnnex$annexArgs<ExtArgs>
-  changeApplyModificationsAnnex?: boolean | Prisma.ReferenceAnnex$changeApplyModificationsAnnexArgs<ExtArgs>
+  changeApproveAnnex?: boolean | Prisma.ReferenceAnnex$changeApproveAnnexArgs<ExtArgs>
   changeReplaceAnnexTarget?: boolean | Prisma.ReferenceAnnex$changeReplaceAnnexTargetArgs<ExtArgs>
   changeReplaceAnnexNewReference?: boolean | Prisma.ReferenceAnnex$changeReplaceAnnexNewReferenceArgs<ExtArgs>
   changeAddAnnexTarget?: boolean | Prisma.ReferenceAnnex$changeAddAnnexTargetArgs<ExtArgs>
   changeAddAnnexAnnexToAdd?: boolean | Prisma.ReferenceAnnex$changeAddAnnexAnnexToAddArgs<ExtArgs>
   changeModifyTextAnnex?: boolean | Prisma.ReferenceAnnex$changeModifyTextAnnexArgs<ExtArgs>
   changeAddArticle?: boolean | Prisma.ReferenceAnnex$changeAddArticleArgs<ExtArgs>
-  articleCreateDocument?: boolean | Prisma.ReferenceAnnex$articleCreateDocumentArgs<ExtArgs>
 }
 export type ReferenceAnnexIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   reference?: boolean | Prisma.ReferenceDefaultArgs<ExtArgs>
@@ -1579,14 +1440,13 @@ export type $ReferenceAnnexPayload<ExtArgs extends runtime.Types.Extensions.Inte
   objects: {
     reference: Prisma.$ReferencePayload<ExtArgs>
     annex: Prisma.$AnnexPayload<ExtArgs> | null
-    changeApplyModificationsAnnex: Prisma.$ChangeApplyModificationsAnnexPayload<ExtArgs> | null
+    changeApproveAnnex: Prisma.$ChangeApproveAnnexPayload<ExtArgs> | null
     changeReplaceAnnexTarget: Prisma.$ChangeReplaceAnnexPayload<ExtArgs> | null
     changeReplaceAnnexNewReference: Prisma.$ChangeReplaceAnnexPayload<ExtArgs> | null
     changeAddAnnexTarget: Prisma.$ChangeAddAnnexPayload<ExtArgs> | null
     changeAddAnnexAnnexToAdd: Prisma.$ChangeAddAnnexPayload<ExtArgs> | null
     changeModifyTextAnnex: Prisma.$ChangeModifyTextAnnexPayload<ExtArgs> | null
     changeAddArticle: Prisma.$ChangeAddArticlePayload<ExtArgs> | null
-    articleCreateDocument: Prisma.$ArticleCreateDocumentPayload<ExtArgs> | null
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -1991,14 +1851,13 @@ export interface Prisma__ReferenceAnnexClient<T, Null = never, ExtArgs extends r
   readonly [Symbol.toStringTag]: "PrismaPromise"
   reference<T extends Prisma.ReferenceDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.ReferenceDefaultArgs<ExtArgs>>): Prisma.Prisma__ReferenceClient<runtime.Types.Result.GetResult<Prisma.$ReferencePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   annex<T extends Prisma.ReferenceAnnex$annexArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.ReferenceAnnex$annexArgs<ExtArgs>>): Prisma.Prisma__AnnexClient<runtime.Types.Result.GetResult<Prisma.$AnnexPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
-  changeApplyModificationsAnnex<T extends Prisma.ReferenceAnnex$changeApplyModificationsAnnexArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.ReferenceAnnex$changeApplyModificationsAnnexArgs<ExtArgs>>): Prisma.Prisma__ChangeApplyModificationsAnnexClient<runtime.Types.Result.GetResult<Prisma.$ChangeApplyModificationsAnnexPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+  changeApproveAnnex<T extends Prisma.ReferenceAnnex$changeApproveAnnexArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.ReferenceAnnex$changeApproveAnnexArgs<ExtArgs>>): Prisma.Prisma__ChangeApproveAnnexClient<runtime.Types.Result.GetResult<Prisma.$ChangeApproveAnnexPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   changeReplaceAnnexTarget<T extends Prisma.ReferenceAnnex$changeReplaceAnnexTargetArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.ReferenceAnnex$changeReplaceAnnexTargetArgs<ExtArgs>>): Prisma.Prisma__ChangeReplaceAnnexClient<runtime.Types.Result.GetResult<Prisma.$ChangeReplaceAnnexPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   changeReplaceAnnexNewReference<T extends Prisma.ReferenceAnnex$changeReplaceAnnexNewReferenceArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.ReferenceAnnex$changeReplaceAnnexNewReferenceArgs<ExtArgs>>): Prisma.Prisma__ChangeReplaceAnnexClient<runtime.Types.Result.GetResult<Prisma.$ChangeReplaceAnnexPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   changeAddAnnexTarget<T extends Prisma.ReferenceAnnex$changeAddAnnexTargetArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.ReferenceAnnex$changeAddAnnexTargetArgs<ExtArgs>>): Prisma.Prisma__ChangeAddAnnexClient<runtime.Types.Result.GetResult<Prisma.$ChangeAddAnnexPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   changeAddAnnexAnnexToAdd<T extends Prisma.ReferenceAnnex$changeAddAnnexAnnexToAddArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.ReferenceAnnex$changeAddAnnexAnnexToAddArgs<ExtArgs>>): Prisma.Prisma__ChangeAddAnnexClient<runtime.Types.Result.GetResult<Prisma.$ChangeAddAnnexPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   changeModifyTextAnnex<T extends Prisma.ReferenceAnnex$changeModifyTextAnnexArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.ReferenceAnnex$changeModifyTextAnnexArgs<ExtArgs>>): Prisma.Prisma__ChangeModifyTextAnnexClient<runtime.Types.Result.GetResult<Prisma.$ChangeModifyTextAnnexPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   changeAddArticle<T extends Prisma.ReferenceAnnex$changeAddArticleArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.ReferenceAnnex$changeAddArticleArgs<ExtArgs>>): Prisma.Prisma__ChangeAddArticleClient<runtime.Types.Result.GetResult<Prisma.$ChangeAddArticlePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
-  articleCreateDocument<T extends Prisma.ReferenceAnnex$articleCreateDocumentArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.ReferenceAnnex$articleCreateDocumentArgs<ExtArgs>>): Prisma.Prisma__ArticleCreateDocumentClient<runtime.Types.Result.GetResult<Prisma.$ArticleCreateDocumentPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -2449,22 +2308,22 @@ export type ReferenceAnnex$annexArgs<ExtArgs extends runtime.Types.Extensions.In
 }
 
 /**
- * ReferenceAnnex.changeApplyModificationsAnnex
+ * ReferenceAnnex.changeApproveAnnex
  */
-export type ReferenceAnnex$changeApplyModificationsAnnexArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+export type ReferenceAnnex$changeApproveAnnexArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   /**
-   * Select specific fields to fetch from the ChangeApplyModificationsAnnex
+   * Select specific fields to fetch from the ChangeApproveAnnex
    */
-  select?: Prisma.ChangeApplyModificationsAnnexSelect<ExtArgs> | null
+  select?: Prisma.ChangeApproveAnnexSelect<ExtArgs> | null
   /**
-   * Omit specific fields from the ChangeApplyModificationsAnnex
+   * Omit specific fields from the ChangeApproveAnnex
    */
-  omit?: Prisma.ChangeApplyModificationsAnnexOmit<ExtArgs> | null
+  omit?: Prisma.ChangeApproveAnnexOmit<ExtArgs> | null
   /**
    * Choose, which related nodes to fetch as well
    */
-  include?: Prisma.ChangeApplyModificationsAnnexInclude<ExtArgs> | null
-  where?: Prisma.ChangeApplyModificationsAnnexWhereInput
+  include?: Prisma.ChangeApproveAnnexInclude<ExtArgs> | null
+  where?: Prisma.ChangeApproveAnnexWhereInput
 }
 
 /**
@@ -2579,25 +2438,6 @@ export type ReferenceAnnex$changeAddArticleArgs<ExtArgs extends runtime.Types.Ex
    */
   include?: Prisma.ChangeAddArticleInclude<ExtArgs> | null
   where?: Prisma.ChangeAddArticleWhereInput
-}
-
-/**
- * ReferenceAnnex.articleCreateDocument
- */
-export type ReferenceAnnex$articleCreateDocumentArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  /**
-   * Select specific fields to fetch from the ArticleCreateDocument
-   */
-  select?: Prisma.ArticleCreateDocumentSelect<ExtArgs> | null
-  /**
-   * Omit specific fields from the ArticleCreateDocument
-   */
-  omit?: Prisma.ArticleCreateDocumentOmit<ExtArgs> | null
-  /**
-   * Choose, which related nodes to fetch as well
-   */
-  include?: Prisma.ArticleCreateDocumentInclude<ExtArgs> | null
-  where?: Prisma.ArticleCreateDocumentWhereInput
 }
 
 /**

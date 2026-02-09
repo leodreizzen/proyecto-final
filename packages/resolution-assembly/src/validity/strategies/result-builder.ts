@@ -34,8 +34,8 @@ export class ResultBuilder {
             case "REPLACE_ANNEX":
                 this.buildReplaceAnnex(change, changeNode, structuralParent, contextCoords);
                 break;
-            case "APPLY_MODIFICATIONS_ANNEX":
-                this.buildApplyModificationsAnnex(change, changeNode);
+            case "APPROVE_ANNEX":
+                this.buildApproveAnnex(change, changeNode);
                 break;
         }
     }
@@ -203,11 +203,11 @@ export class ResultBuilder {
         }
     }
 
-    private buildApplyModificationsAnnex(
-        change: ChangeForGraph & { type: "APPLY_MODIFICATIONS_ANNEX" },
+    private buildApproveAnnex(
+        change: ChangeForGraph & { type: "APPROVE_ANNEX" },
         changeNode: ValidityGraphNode
     ) {
-        const ref = change.changeApplyModificationsAnnex.annexToApply;
+        const ref = change.changeApproveAnnex.annexToApprove;
 
         if (!ref.annexId) return; // We assume the referenced annex is always native
 

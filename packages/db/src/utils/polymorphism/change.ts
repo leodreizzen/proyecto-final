@@ -9,7 +9,7 @@ const ChangeConfigMap = {
     ADD_ARTICLE: 'changeAddArticle',
     REPEAL: 'changeRepeal',
     ADVANCED: 'changeAdvanced',
-    APPLY_MODIFICATIONS_ANNEX: "changeApplyModificationsAnnex",
+    APPROVE_ANNEX: "changeApproveAnnex",
     MODIFY_ARTICLE: "changeModifyArticle",
     MODIFY_TEXT_ANNEX: "changeModifyTextAnnex",
     RATIFY_AD_REFERENDUM: "changeRatifyAdReferendum"

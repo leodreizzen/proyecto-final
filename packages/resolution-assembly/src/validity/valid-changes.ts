@@ -6,7 +6,7 @@ import {ChangeContext, ChangeWithContextForAssembly, ChangeWithIDAndContext} fro
 import {ResolutionNaturalID, ResolutionVersion, VersionSpec} from "../definitions/resolutions";
 import {compareChangeWithContext} from "../utils";
 import {stableStringify} from "../utils/serialization";
-import {ChangeDataForAssembly, fetchChangesDataForAssembly} from "../data/changes";
+import {ChangeDataForAssembly, fetchChangesDataForAssembly, fetchChangesRootResolutionIds} from "../data/changes";
 
 export async function getValidChangesAndVersionsForAssembly(resUuid: string, naturalId: ResolutionNaturalID, versionSpec: VersionSpec) {
     const relevantChangeList = await getRelevantChangesList(resUuid);
@@ -17,15 +17,16 @@ export async function getValidChangesAndVersionsForAssembly(resUuid: string, nat
     const filteredChanges = filterChangesByVersionSpec(allChangesWithContext, versionSpec);
 
     const filteredChangeIDs = filteredChanges.map(c => c.id);
-    const validChangesIDs = await getValidChangesIds(filteredChangeIDs, contexts);
+    const {validChangeIds, orphanedAnnexes} = await getValidityResult(filteredChangeIDs, contexts);
 
-    const changesData = await fetchChangesDataForAssembly(validChangesIDs);
+    const changesData = await fetchChangesDataForAssembly(validChangeIds);
     const versions = getVersionsFromChanges(contexts, naturalId);
     const changes = addContextToChanges(changesData, contexts);
 
     return {
         changes,
-        versions
+        versions,
+        orphanedAnnexes,
     }
 }
 
@@ -78,13 +79,70 @@ function filterChangesByVersionSpec(allChanges: ChangeWithIDAndContext[], versio
 }
 
 
-async function getValidChangesIds(changeIds: string[], contexts: Map<string, ChangeContext>): Promise<string[]> {
+async function getValidityResult(changeIds: string[], contexts: Map<string, ChangeContext>): Promise<{
+    validChangeIds: string[],
+    orphanedAnnexes: {
+        id: string,
+        repealedBy: ResolutionNaturalID
+    }[]
+}> {
     const changesDataForGraph = await getChangesDataForValidityGraph(changeIds, contexts);
     const service = new ChangeValidityService();
     service.loadChanges(changesDataForGraph);
-    return service.getValidChanges();
+    const validChanges = service.getValidChanges();
+    const orphanedAnnexes = await getOrphanedAnnexesFromValidityService(service, validChanges, changesDataForGraph);
+
+    return {
+        validChangeIds: validChanges,
+        orphanedAnnexes
+    }
 }
 
+
+async function getOrphanedAnnexesFromValidityService(validityService: ChangeValidityService, validChanges: string[], allChanges: Awaited<ReturnType<typeof getChangesDataForValidityGraph>>){
+    const validChangesSet = new Set(validChanges);
+
+    const orphanAnnexesRepealerChanges = new Map<string, string>; // key => annexId, value => changeId of the change that repeals it
+
+    for (const originalChange of allChanges) {
+        if (validChangesSet.has(originalChange.id))
+            continue;
+
+        let dependentAnnexId: string | null = null;
+        if (originalChange.type === "APPROVE_ANNEX") {
+            dependentAnnexId = originalChange.changeApproveAnnex.annexToApprove.annex?.id ?? null;
+        }
+        else if (originalChange.type === "REPLACE_ANNEX") {
+            dependentAnnexId = originalChange.changeReplaceAnnex.newAnnexReference?.annex?.id ?? null;
+        } else if (originalChange.type === "ADD_ANNEX") {
+            dependentAnnexId = originalChange.changeAddAnnex.annexToAdd.annex?.id ?? null;
+        }
+
+        if (dependentAnnexId) {
+            const repealerId = validityService.getNodeRepealer(dependentAnnexId);
+            if (repealerId) {
+                orphanAnnexesRepealerChanges.set(dependentAnnexId, repealerId);
+            }
+        }
+    }
+
+    const allOrphanedRepealers = Array.from(orphanAnnexesRepealerChanges.values());
+    const repealersResolutions = await fetchChangesRootResolutionIds(allOrphanedRepealers);
+
+    const orphanedAnnexes = [];
+    for (const [annexId, repealerChangeId] of orphanAnnexesRepealerChanges.entries()) {
+        const resolutionId = repealersResolutions.get(repealerChangeId);
+        if (resolutionId) {
+            orphanedAnnexes.push({
+                id: annexId,
+                repealedBy: resolutionId
+            });
+        }
+    }
+
+    return orphanedAnnexes;
+
+}
 
 function getVersionsFromChanges(changes: Map<string, ChangeContext>, thisResolutionId: ResolutionNaturalID): ResolutionVersion[] {
     const allChanges: ChangeWithIDAndContext[] = Array.from(changes.entries()).map(([id, context]) => ({

@@ -87,9 +87,15 @@ type ChangeModifyTextAnnexMapped = Omit<Extract<ChangeAnalysis, { type: "ModifyT
     after: ContentBlock[]
 }
 
+type ChangeApproveAnnex = {
+    type: "ApproveAnnex";
+    annexToApprove: (ChangeAnalysis & { type: "ApplyModificationsAnnex" })["annexToApply"];
+    targetIsDocument: boolean;
+}
+
 export type ChangeMapped = (Exclude<ChangeAnalysis, {
-    type: "AddArticleToResolution" | "AddArticleToAnnex" | "ReplaceArticle" | "ModifyArticle" | "ModifyTextAnnex" | "ReplaceAnnex"
-}> | ChangeAddArticleToResolutionMapped | ChangeAddArticleToAnnexMapped | ChangeReplaceArticleMapped | ChangeReplaceAnnexMapped | ChangeModifyArticleMapped | ChangeModifyTextAnnexMapped);
+    type: "AddArticleToResolution" | "AddArticleToAnnex" | "ReplaceArticle" | "ModifyArticle" | "ModifyTextAnnex" | "ReplaceAnnex" | "ApplyModificationsAnnex"
+}> | ChangeAddArticleToResolutionMapped | ChangeAddArticleToAnnexMapped | ChangeReplaceArticleMapped | ChangeReplaceAnnexMapped | ChangeModifyArticleMapped | ChangeModifyTextAnnexMapped |ChangeApproveAnnex);
 
 
 type ArticleModifier = Extract<ArticleStructure & FullArticleAnalysis, { type: "Modifier" }>;
@@ -144,9 +150,9 @@ export type NewArticle = DistributiveOmit<Article, "number" | "suffix">;
 
 export type NewAnnex = DistributiveOmit<StandaloneAnnex, "number">;
 
-export type Article = DistributiveOmit<ArticleWithMappedChanges, "text" | "tables" | "references"> & {
+export type Article = Exclude<DistributiveOmit<ArticleWithMappedChanges, "text" | "tables" | "references"> & {
     content: ContentBlock[]
-};
+}, {type: "CreateDocument"}>;
 
 export type StandaloneArticle = Article;
 

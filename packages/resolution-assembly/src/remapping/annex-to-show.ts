@@ -17,6 +17,7 @@ export function annexInitialDataToShow(
             throw new Error("Annex text information missing for annex with id " + annex.id);
 
         return {
+            uuid: annex.id,
             type: "TEXT",
             name: annex.name,
             content: mapContentBlocks(annex.annexText.content, validationContext),
@@ -29,6 +30,7 @@ export function annexInitialDataToShow(
         if (!annex.annexWithArticles)
             throw new Error("Annex with articles information missing for annex with id " + annex.id);
         return {
+            uuid: annex.id,
             type: "WITH_ARTICLES",
             name: annex.name,
             initialText: annex.annexWithArticles.initialText,

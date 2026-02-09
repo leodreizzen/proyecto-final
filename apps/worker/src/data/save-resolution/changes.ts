@@ -3,7 +3,7 @@ import {
     ChangeAddAnnexCreateWithoutChangeInput,
     ChangeAddArticleCreateWithoutChangeInput,
     ChangeAdvancedCreateWithoutChangeInput,
-    ChangeApplyModificationsAnnexCreateWithoutChangeInput,
+    ChangeApproveAnnexCreateWithoutChangeInput,
     ChangeCreateWithoutArticleModifierInput,
     ChangeModifyArticleCreateWithoutChangeInput,
     ChangeModifyTextAnnexCreateWithoutChangeInput,
@@ -30,11 +30,11 @@ export function changeCreationInput(change: Parser.Change): ChangeCreateWithoutA
                     create: changeRepealCreationInput(change)
                 }
             };
-        case "ApplyModificationsAnnex":
+        case "ApproveAnnex":
             return {
-                type: "APPLY_MODIFICATIONS_ANNEX",
-                changeApplyModificationsAnnex: {
-                    create: changeApplyModificationsAnnexCreationInput(change)
+                type: "APPROVE_ANNEX",
+                changeApproveAnnex: {
+                    create: changeApproveAnnexCreationInput(change)
                 }
             };
         case "AdvancedChange":
@@ -116,13 +116,14 @@ function changeRepealCreationInput(change: Extract<Parser.Change, {
     }
 }
 
-function changeApplyModificationsAnnexCreationInput(change: Extract<Parser.Change, {
-    type: "ApplyModificationsAnnex"
-}>): ChangeApplyModificationsAnnexCreateWithoutChangeInput {
+function changeApproveAnnexCreationInput(change: Extract<Parser.Change, {
+    type: "ApproveAnnex"
+}>): ChangeApproveAnnexCreateWithoutChangeInput {
     return {
-        annexToApply: {
-            create: annexReferenceCreateInput(change.annexToApply, "CHANGE_APPLY_MODIFICATIONS_ANNEX")
-        }
+        annexToApprove: {
+            create: annexReferenceCreateInput(change.annexToApprove, "CHANGE_APPROVE_ANNEX"),
+        },
+        annexIsDocument: change.targetIsDocument
     }
 }
 

@@ -6,7 +6,10 @@ import {StandaloneAnnex, Article, Resolution, ContentBlock} from "@/parser/types
 import {ResolutionID} from "@/parser/schemas/common";
 import ProgressReporter from "@/util/progress-reporter";
 import {ContentBlockType} from "@repo/db/prisma/client";
+import {fileURLToPath} from "node:url";
 
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 describe("E2E Resolution Parsing", () => {
     function getText(content?: ContentBlock[]): string {
@@ -506,12 +509,19 @@ describe("E2E Resolution Parsing", () => {
         } satisfies DeepPartial<Article>);
 
         expect(parseResData.articles[1]!).toMatchObject({
-            type: "CreateDocument",
-            annexToApprove: {
-                referenceType: 'Annex',
-                resolutionId: {initial: 'CSU', number: 971, year: 2022},
-                annexNumber: 1
-            },
+            type: "Modifier",
+            changes: [
+                {
+                    type: "ApproveAnnex",
+                    annexToApprove: {
+                        referenceType: 'Annex',
+                        resolutionId: {initial: 'CSU', number: 971, year: 2022},
+                        annexNumber: 1
+                    },
+                    targetIsDocument: true
+                }
+            ]
+
         } satisfies DeepPartial<Article>);
     });
 
@@ -783,12 +793,13 @@ describe("E2E Resolution Parsing", () => {
             type: 'Modifier',
             changes: [
                 {
-                    type: 'ApplyModificationsAnnex',
-                    annexToApply: {
+                    type: 'ApproveAnnex',
+                    annexToApprove: {
                         referenceType: 'Annex',
                         resolutionId: {initial: 'CSU', number: 233, year: 2020},
                         annexNumber: 1
                     },
+                    targetIsDocument: false
                 }
             ],
         } satisfies DeepPartial<Article>);
@@ -797,12 +808,13 @@ describe("E2E Resolution Parsing", () => {
             type: 'Modifier',
             changes: [
                 {
-                    type: 'ApplyModificationsAnnex',
-                    annexToApply: {
+                    type: 'ApproveAnnex',
+                    annexToApprove: {
                         referenceType: 'Annex',
                         resolutionId: {initial: 'CSU', number: 233, year: 2020},
                         annexNumber: 2
                     },
+                    targetIsDocument: false
                 }
             ],
         } satisfies DeepPartial<Article>);

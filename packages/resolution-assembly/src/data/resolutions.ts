@@ -1,5 +1,5 @@
 import prisma from "@repo/db/prisma";
-import { ResolutionNaturalID } from "../definitions/resolutions";
+import {ResolutionNaturalID} from "../definitions/resolutions";
 
 export type ResolutionDBDataToShow = NonNullable<Awaited<ReturnType<typeof findResolutionInitialData>>>;
 
@@ -57,9 +57,9 @@ export async function findResolutionInitialData(resolutionId: string) {
     return res;
 }
 
-export async function checkResolutionsExistance(resIds: ResolutionNaturalID[]){
-    return  prisma.resolution.findMany({
-        where: { OR: resIds },
-        select: { initial: true, number: true, year: true }
+export async function checkResolutionsExistance(resIds: ResolutionNaturalID[]) {
+    return prisma.resolution.findMany({
+        where: {OR: resIds},
+        select: {initial: true, number: true, year: true}
     });
 }

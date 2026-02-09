@@ -185,7 +185,7 @@ export type ChangeWhereInput = {
   changeAddAnnex?: Prisma.XOR<Prisma.ChangeAddAnnexNullableScalarRelationFilter, Prisma.ChangeAddAnnexWhereInput> | null
   changeModifyTextAnnex?: Prisma.XOR<Prisma.ChangeModifyTextAnnexNullableScalarRelationFilter, Prisma.ChangeModifyTextAnnexWhereInput> | null
   changeAddArticle?: Prisma.XOR<Prisma.ChangeAddArticleNullableScalarRelationFilter, Prisma.ChangeAddArticleWhereInput> | null
-  changeApplyModificationsAnnex?: Prisma.XOR<Prisma.ChangeApplyModificationsAnnexNullableScalarRelationFilter, Prisma.ChangeApplyModificationsAnnexWhereInput> | null
+  changeApproveAnnex?: Prisma.XOR<Prisma.ChangeApproveAnnexNullableScalarRelationFilter, Prisma.ChangeApproveAnnexWhereInput> | null
 }
 
 export type ChangeOrderByWithRelationInput = {
@@ -204,7 +204,7 @@ export type ChangeOrderByWithRelationInput = {
   changeAddAnnex?: Prisma.ChangeAddAnnexOrderByWithRelationInput
   changeModifyTextAnnex?: Prisma.ChangeModifyTextAnnexOrderByWithRelationInput
   changeAddArticle?: Prisma.ChangeAddArticleOrderByWithRelationInput
-  changeApplyModificationsAnnex?: Prisma.ChangeApplyModificationsAnnexOrderByWithRelationInput
+  changeApproveAnnex?: Prisma.ChangeApproveAnnexOrderByWithRelationInput
   _relevance?: Prisma.ChangeOrderByRelevanceInput
 }
 
@@ -227,7 +227,7 @@ export type ChangeWhereUniqueInput = Prisma.AtLeast<{
   changeAddAnnex?: Prisma.XOR<Prisma.ChangeAddAnnexNullableScalarRelationFilter, Prisma.ChangeAddAnnexWhereInput> | null
   changeModifyTextAnnex?: Prisma.XOR<Prisma.ChangeModifyTextAnnexNullableScalarRelationFilter, Prisma.ChangeModifyTextAnnexWhereInput> | null
   changeAddArticle?: Prisma.XOR<Prisma.ChangeAddArticleNullableScalarRelationFilter, Prisma.ChangeAddArticleWhereInput> | null
-  changeApplyModificationsAnnex?: Prisma.XOR<Prisma.ChangeApplyModificationsAnnexNullableScalarRelationFilter, Prisma.ChangeApplyModificationsAnnexWhereInput> | null
+  changeApproveAnnex?: Prisma.XOR<Prisma.ChangeApproveAnnexNullableScalarRelationFilter, Prisma.ChangeApproveAnnexWhereInput> | null
 }, "id">
 
 export type ChangeOrderByWithAggregationInput = {
@@ -264,7 +264,7 @@ export type ChangeCreateInput = {
   changeAddAnnex?: Prisma.ChangeAddAnnexCreateNestedOneWithoutChangeInput
   changeModifyTextAnnex?: Prisma.ChangeModifyTextAnnexCreateNestedOneWithoutChangeInput
   changeAddArticle?: Prisma.ChangeAddArticleCreateNestedOneWithoutChangeInput
-  changeApplyModificationsAnnex?: Prisma.ChangeApplyModificationsAnnexCreateNestedOneWithoutChangeInput
+  changeApproveAnnex?: Prisma.ChangeApproveAnnexCreateNestedOneWithoutChangeInput
 }
 
 export type ChangeUncheckedCreateInput = {
@@ -281,7 +281,7 @@ export type ChangeUncheckedCreateInput = {
   changeAddAnnex?: Prisma.ChangeAddAnnexUncheckedCreateNestedOneWithoutChangeInput
   changeModifyTextAnnex?: Prisma.ChangeModifyTextAnnexUncheckedCreateNestedOneWithoutChangeInput
   changeAddArticle?: Prisma.ChangeAddArticleUncheckedCreateNestedOneWithoutChangeInput
-  changeApplyModificationsAnnex?: Prisma.ChangeApplyModificationsAnnexUncheckedCreateNestedOneWithoutChangeInput
+  changeApproveAnnex?: Prisma.ChangeApproveAnnexUncheckedCreateNestedOneWithoutChangeInput
 }
 
 export type ChangeUpdateInput = {
@@ -298,7 +298,7 @@ export type ChangeUpdateInput = {
   changeAddAnnex?: Prisma.ChangeAddAnnexUpdateOneWithoutChangeNestedInput
   changeModifyTextAnnex?: Prisma.ChangeModifyTextAnnexUpdateOneWithoutChangeNestedInput
   changeAddArticle?: Prisma.ChangeAddArticleUpdateOneWithoutChangeNestedInput
-  changeApplyModificationsAnnex?: Prisma.ChangeApplyModificationsAnnexUpdateOneWithoutChangeNestedInput
+  changeApproveAnnex?: Prisma.ChangeApproveAnnexUpdateOneWithoutChangeNestedInput
 }
 
 export type ChangeUncheckedUpdateInput = {
@@ -315,7 +315,7 @@ export type ChangeUncheckedUpdateInput = {
   changeAddAnnex?: Prisma.ChangeAddAnnexUncheckedUpdateOneWithoutChangeNestedInput
   changeModifyTextAnnex?: Prisma.ChangeModifyTextAnnexUncheckedUpdateOneWithoutChangeNestedInput
   changeAddArticle?: Prisma.ChangeAddArticleUncheckedUpdateOneWithoutChangeNestedInput
-  changeApplyModificationsAnnex?: Prisma.ChangeApplyModificationsAnnexUncheckedUpdateOneWithoutChangeNestedInput
+  changeApproveAnnex?: Prisma.ChangeApproveAnnexUncheckedUpdateOneWithoutChangeNestedInput
 }
 
 export type ChangeCreateManyInput = {
@@ -593,18 +593,18 @@ export type ChangeUpdateOneRequiredWithoutChangeRepealNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.ChangeUpdateToOneWithWhereWithoutChangeRepealInput, Prisma.ChangeUpdateWithoutChangeRepealInput>, Prisma.ChangeUncheckedUpdateWithoutChangeRepealInput>
 }
 
-export type ChangeCreateNestedOneWithoutChangeApplyModificationsAnnexInput = {
-  create?: Prisma.XOR<Prisma.ChangeCreateWithoutChangeApplyModificationsAnnexInput, Prisma.ChangeUncheckedCreateWithoutChangeApplyModificationsAnnexInput>
-  connectOrCreate?: Prisma.ChangeCreateOrConnectWithoutChangeApplyModificationsAnnexInput
+export type ChangeCreateNestedOneWithoutChangeApproveAnnexInput = {
+  create?: Prisma.XOR<Prisma.ChangeCreateWithoutChangeApproveAnnexInput, Prisma.ChangeUncheckedCreateWithoutChangeApproveAnnexInput>
+  connectOrCreate?: Prisma.ChangeCreateOrConnectWithoutChangeApproveAnnexInput
   connect?: Prisma.ChangeWhereUniqueInput
 }
 
-export type ChangeUpdateOneRequiredWithoutChangeApplyModificationsAnnexNestedInput = {
-  create?: Prisma.XOR<Prisma.ChangeCreateWithoutChangeApplyModificationsAnnexInput, Prisma.ChangeUncheckedCreateWithoutChangeApplyModificationsAnnexInput>
-  connectOrCreate?: Prisma.ChangeCreateOrConnectWithoutChangeApplyModificationsAnnexInput
-  upsert?: Prisma.ChangeUpsertWithoutChangeApplyModificationsAnnexInput
+export type ChangeUpdateOneRequiredWithoutChangeApproveAnnexNestedInput = {
+  create?: Prisma.XOR<Prisma.ChangeCreateWithoutChangeApproveAnnexInput, Prisma.ChangeUncheckedCreateWithoutChangeApproveAnnexInput>
+  connectOrCreate?: Prisma.ChangeCreateOrConnectWithoutChangeApproveAnnexInput
+  upsert?: Prisma.ChangeUpsertWithoutChangeApproveAnnexInput
   connect?: Prisma.ChangeWhereUniqueInput
-  update?: Prisma.XOR<Prisma.XOR<Prisma.ChangeUpdateToOneWithWhereWithoutChangeApplyModificationsAnnexInput, Prisma.ChangeUpdateWithoutChangeApplyModificationsAnnexInput>, Prisma.ChangeUncheckedUpdateWithoutChangeApplyModificationsAnnexInput>
+  update?: Prisma.XOR<Prisma.XOR<Prisma.ChangeUpdateToOneWithWhereWithoutChangeApproveAnnexInput, Prisma.ChangeUpdateWithoutChangeApproveAnnexInput>, Prisma.ChangeUncheckedUpdateWithoutChangeApproveAnnexInput>
 }
 
 export type ChangeCreateWithoutArticleModifierInput = {
@@ -620,7 +620,7 @@ export type ChangeCreateWithoutArticleModifierInput = {
   changeAddAnnex?: Prisma.ChangeAddAnnexCreateNestedOneWithoutChangeInput
   changeModifyTextAnnex?: Prisma.ChangeModifyTextAnnexCreateNestedOneWithoutChangeInput
   changeAddArticle?: Prisma.ChangeAddArticleCreateNestedOneWithoutChangeInput
-  changeApplyModificationsAnnex?: Prisma.ChangeApplyModificationsAnnexCreateNestedOneWithoutChangeInput
+  changeApproveAnnex?: Prisma.ChangeApproveAnnexCreateNestedOneWithoutChangeInput
 }
 
 export type ChangeUncheckedCreateWithoutArticleModifierInput = {
@@ -636,7 +636,7 @@ export type ChangeUncheckedCreateWithoutArticleModifierInput = {
   changeAddAnnex?: Prisma.ChangeAddAnnexUncheckedCreateNestedOneWithoutChangeInput
   changeModifyTextAnnex?: Prisma.ChangeModifyTextAnnexUncheckedCreateNestedOneWithoutChangeInput
   changeAddArticle?: Prisma.ChangeAddArticleUncheckedCreateNestedOneWithoutChangeInput
-  changeApplyModificationsAnnex?: Prisma.ChangeApplyModificationsAnnexUncheckedCreateNestedOneWithoutChangeInput
+  changeApproveAnnex?: Prisma.ChangeApproveAnnexUncheckedCreateNestedOneWithoutChangeInput
 }
 
 export type ChangeCreateOrConnectWithoutArticleModifierInput = {
@@ -688,7 +688,7 @@ export type ChangeCreateWithoutChangeModifyArticleInput = {
   changeAddAnnex?: Prisma.ChangeAddAnnexCreateNestedOneWithoutChangeInput
   changeModifyTextAnnex?: Prisma.ChangeModifyTextAnnexCreateNestedOneWithoutChangeInput
   changeAddArticle?: Prisma.ChangeAddArticleCreateNestedOneWithoutChangeInput
-  changeApplyModificationsAnnex?: Prisma.ChangeApplyModificationsAnnexCreateNestedOneWithoutChangeInput
+  changeApproveAnnex?: Prisma.ChangeApproveAnnexCreateNestedOneWithoutChangeInput
 }
 
 export type ChangeUncheckedCreateWithoutChangeModifyArticleInput = {
@@ -704,7 +704,7 @@ export type ChangeUncheckedCreateWithoutChangeModifyArticleInput = {
   changeAddAnnex?: Prisma.ChangeAddAnnexUncheckedCreateNestedOneWithoutChangeInput
   changeModifyTextAnnex?: Prisma.ChangeModifyTextAnnexUncheckedCreateNestedOneWithoutChangeInput
   changeAddArticle?: Prisma.ChangeAddArticleUncheckedCreateNestedOneWithoutChangeInput
-  changeApplyModificationsAnnex?: Prisma.ChangeApplyModificationsAnnexUncheckedCreateNestedOneWithoutChangeInput
+  changeApproveAnnex?: Prisma.ChangeApproveAnnexUncheckedCreateNestedOneWithoutChangeInput
 }
 
 export type ChangeCreateOrConnectWithoutChangeModifyArticleInput = {
@@ -736,7 +736,7 @@ export type ChangeUpdateWithoutChangeModifyArticleInput = {
   changeAddAnnex?: Prisma.ChangeAddAnnexUpdateOneWithoutChangeNestedInput
   changeModifyTextAnnex?: Prisma.ChangeModifyTextAnnexUpdateOneWithoutChangeNestedInput
   changeAddArticle?: Prisma.ChangeAddArticleUpdateOneWithoutChangeNestedInput
-  changeApplyModificationsAnnex?: Prisma.ChangeApplyModificationsAnnexUpdateOneWithoutChangeNestedInput
+  changeApproveAnnex?: Prisma.ChangeApproveAnnexUpdateOneWithoutChangeNestedInput
 }
 
 export type ChangeUncheckedUpdateWithoutChangeModifyArticleInput = {
@@ -752,7 +752,7 @@ export type ChangeUncheckedUpdateWithoutChangeModifyArticleInput = {
   changeAddAnnex?: Prisma.ChangeAddAnnexUncheckedUpdateOneWithoutChangeNestedInput
   changeModifyTextAnnex?: Prisma.ChangeModifyTextAnnexUncheckedUpdateOneWithoutChangeNestedInput
   changeAddArticle?: Prisma.ChangeAddArticleUncheckedUpdateOneWithoutChangeNestedInput
-  changeApplyModificationsAnnex?: Prisma.ChangeApplyModificationsAnnexUncheckedUpdateOneWithoutChangeNestedInput
+  changeApproveAnnex?: Prisma.ChangeApproveAnnexUncheckedUpdateOneWithoutChangeNestedInput
 }
 
 export type ChangeCreateWithoutChangeReplaceArticleInput = {
@@ -768,7 +768,7 @@ export type ChangeCreateWithoutChangeReplaceArticleInput = {
   changeAddAnnex?: Prisma.ChangeAddAnnexCreateNestedOneWithoutChangeInput
   changeModifyTextAnnex?: Prisma.ChangeModifyTextAnnexCreateNestedOneWithoutChangeInput
   changeAddArticle?: Prisma.ChangeAddArticleCreateNestedOneWithoutChangeInput
-  changeApplyModificationsAnnex?: Prisma.ChangeApplyModificationsAnnexCreateNestedOneWithoutChangeInput
+  changeApproveAnnex?: Prisma.ChangeApproveAnnexCreateNestedOneWithoutChangeInput
 }
 
 export type ChangeUncheckedCreateWithoutChangeReplaceArticleInput = {
@@ -784,7 +784,7 @@ export type ChangeUncheckedCreateWithoutChangeReplaceArticleInput = {
   changeAddAnnex?: Prisma.ChangeAddAnnexUncheckedCreateNestedOneWithoutChangeInput
   changeModifyTextAnnex?: Prisma.ChangeModifyTextAnnexUncheckedCreateNestedOneWithoutChangeInput
   changeAddArticle?: Prisma.ChangeAddArticleUncheckedCreateNestedOneWithoutChangeInput
-  changeApplyModificationsAnnex?: Prisma.ChangeApplyModificationsAnnexUncheckedCreateNestedOneWithoutChangeInput
+  changeApproveAnnex?: Prisma.ChangeApproveAnnexUncheckedCreateNestedOneWithoutChangeInput
 }
 
 export type ChangeCreateOrConnectWithoutChangeReplaceArticleInput = {
@@ -816,7 +816,7 @@ export type ChangeUpdateWithoutChangeReplaceArticleInput = {
   changeAddAnnex?: Prisma.ChangeAddAnnexUpdateOneWithoutChangeNestedInput
   changeModifyTextAnnex?: Prisma.ChangeModifyTextAnnexUpdateOneWithoutChangeNestedInput
   changeAddArticle?: Prisma.ChangeAddArticleUpdateOneWithoutChangeNestedInput
-  changeApplyModificationsAnnex?: Prisma.ChangeApplyModificationsAnnexUpdateOneWithoutChangeNestedInput
+  changeApproveAnnex?: Prisma.ChangeApproveAnnexUpdateOneWithoutChangeNestedInput
 }
 
 export type ChangeUncheckedUpdateWithoutChangeReplaceArticleInput = {
@@ -832,7 +832,7 @@ export type ChangeUncheckedUpdateWithoutChangeReplaceArticleInput = {
   changeAddAnnex?: Prisma.ChangeAddAnnexUncheckedUpdateOneWithoutChangeNestedInput
   changeModifyTextAnnex?: Prisma.ChangeModifyTextAnnexUncheckedUpdateOneWithoutChangeNestedInput
   changeAddArticle?: Prisma.ChangeAddArticleUncheckedUpdateOneWithoutChangeNestedInput
-  changeApplyModificationsAnnex?: Prisma.ChangeApplyModificationsAnnexUncheckedUpdateOneWithoutChangeNestedInput
+  changeApproveAnnex?: Prisma.ChangeApproveAnnexUncheckedUpdateOneWithoutChangeNestedInput
 }
 
 export type ChangeCreateWithoutChangeAdvancedInput = {
@@ -848,7 +848,7 @@ export type ChangeCreateWithoutChangeAdvancedInput = {
   changeAddAnnex?: Prisma.ChangeAddAnnexCreateNestedOneWithoutChangeInput
   changeModifyTextAnnex?: Prisma.ChangeModifyTextAnnexCreateNestedOneWithoutChangeInput
   changeAddArticle?: Prisma.ChangeAddArticleCreateNestedOneWithoutChangeInput
-  changeApplyModificationsAnnex?: Prisma.ChangeApplyModificationsAnnexCreateNestedOneWithoutChangeInput
+  changeApproveAnnex?: Prisma.ChangeApproveAnnexCreateNestedOneWithoutChangeInput
 }
 
 export type ChangeUncheckedCreateWithoutChangeAdvancedInput = {
@@ -864,7 +864,7 @@ export type ChangeUncheckedCreateWithoutChangeAdvancedInput = {
   changeAddAnnex?: Prisma.ChangeAddAnnexUncheckedCreateNestedOneWithoutChangeInput
   changeModifyTextAnnex?: Prisma.ChangeModifyTextAnnexUncheckedCreateNestedOneWithoutChangeInput
   changeAddArticle?: Prisma.ChangeAddArticleUncheckedCreateNestedOneWithoutChangeInput
-  changeApplyModificationsAnnex?: Prisma.ChangeApplyModificationsAnnexUncheckedCreateNestedOneWithoutChangeInput
+  changeApproveAnnex?: Prisma.ChangeApproveAnnexUncheckedCreateNestedOneWithoutChangeInput
 }
 
 export type ChangeCreateOrConnectWithoutChangeAdvancedInput = {
@@ -885,7 +885,7 @@ export type ChangeCreateWithoutResolvedForChangeAdvancedInput = {
   changeAddAnnex?: Prisma.ChangeAddAnnexCreateNestedOneWithoutChangeInput
   changeModifyTextAnnex?: Prisma.ChangeModifyTextAnnexCreateNestedOneWithoutChangeInput
   changeAddArticle?: Prisma.ChangeAddArticleCreateNestedOneWithoutChangeInput
-  changeApplyModificationsAnnex?: Prisma.ChangeApplyModificationsAnnexCreateNestedOneWithoutChangeInput
+  changeApproveAnnex?: Prisma.ChangeApproveAnnexCreateNestedOneWithoutChangeInput
 }
 
 export type ChangeUncheckedCreateWithoutResolvedForChangeAdvancedInput = {
@@ -901,7 +901,7 @@ export type ChangeUncheckedCreateWithoutResolvedForChangeAdvancedInput = {
   changeAddAnnex?: Prisma.ChangeAddAnnexUncheckedCreateNestedOneWithoutChangeInput
   changeModifyTextAnnex?: Prisma.ChangeModifyTextAnnexUncheckedCreateNestedOneWithoutChangeInput
   changeAddArticle?: Prisma.ChangeAddArticleUncheckedCreateNestedOneWithoutChangeInput
-  changeApplyModificationsAnnex?: Prisma.ChangeApplyModificationsAnnexUncheckedCreateNestedOneWithoutChangeInput
+  changeApproveAnnex?: Prisma.ChangeApproveAnnexUncheckedCreateNestedOneWithoutChangeInput
 }
 
 export type ChangeCreateOrConnectWithoutResolvedForChangeAdvancedInput = {
@@ -938,7 +938,7 @@ export type ChangeUpdateWithoutChangeAdvancedInput = {
   changeAddAnnex?: Prisma.ChangeAddAnnexUpdateOneWithoutChangeNestedInput
   changeModifyTextAnnex?: Prisma.ChangeModifyTextAnnexUpdateOneWithoutChangeNestedInput
   changeAddArticle?: Prisma.ChangeAddArticleUpdateOneWithoutChangeNestedInput
-  changeApplyModificationsAnnex?: Prisma.ChangeApplyModificationsAnnexUpdateOneWithoutChangeNestedInput
+  changeApproveAnnex?: Prisma.ChangeApproveAnnexUpdateOneWithoutChangeNestedInput
 }
 
 export type ChangeUncheckedUpdateWithoutChangeAdvancedInput = {
@@ -954,7 +954,7 @@ export type ChangeUncheckedUpdateWithoutChangeAdvancedInput = {
   changeAddAnnex?: Prisma.ChangeAddAnnexUncheckedUpdateOneWithoutChangeNestedInput
   changeModifyTextAnnex?: Prisma.ChangeModifyTextAnnexUncheckedUpdateOneWithoutChangeNestedInput
   changeAddArticle?: Prisma.ChangeAddArticleUncheckedUpdateOneWithoutChangeNestedInput
-  changeApplyModificationsAnnex?: Prisma.ChangeApplyModificationsAnnexUncheckedUpdateOneWithoutChangeNestedInput
+  changeApproveAnnex?: Prisma.ChangeApproveAnnexUncheckedUpdateOneWithoutChangeNestedInput
 }
 
 export type ChangeUpsertWithWhereUniqueWithoutResolvedForChangeAdvancedInput = {
@@ -986,7 +986,7 @@ export type ChangeCreateWithoutChangeRatifyAdReferendumInput = {
   changeAddAnnex?: Prisma.ChangeAddAnnexCreateNestedOneWithoutChangeInput
   changeModifyTextAnnex?: Prisma.ChangeModifyTextAnnexCreateNestedOneWithoutChangeInput
   changeAddArticle?: Prisma.ChangeAddArticleCreateNestedOneWithoutChangeInput
-  changeApplyModificationsAnnex?: Prisma.ChangeApplyModificationsAnnexCreateNestedOneWithoutChangeInput
+  changeApproveAnnex?: Prisma.ChangeApproveAnnexCreateNestedOneWithoutChangeInput
 }
 
 export type ChangeUncheckedCreateWithoutChangeRatifyAdReferendumInput = {
@@ -1002,7 +1002,7 @@ export type ChangeUncheckedCreateWithoutChangeRatifyAdReferendumInput = {
   changeAddAnnex?: Prisma.ChangeAddAnnexUncheckedCreateNestedOneWithoutChangeInput
   changeModifyTextAnnex?: Prisma.ChangeModifyTextAnnexUncheckedCreateNestedOneWithoutChangeInput
   changeAddArticle?: Prisma.ChangeAddArticleUncheckedCreateNestedOneWithoutChangeInput
-  changeApplyModificationsAnnex?: Prisma.ChangeApplyModificationsAnnexUncheckedCreateNestedOneWithoutChangeInput
+  changeApproveAnnex?: Prisma.ChangeApproveAnnexUncheckedCreateNestedOneWithoutChangeInput
 }
 
 export type ChangeCreateOrConnectWithoutChangeRatifyAdReferendumInput = {
@@ -1034,7 +1034,7 @@ export type ChangeUpdateWithoutChangeRatifyAdReferendumInput = {
   changeAddAnnex?: Prisma.ChangeAddAnnexUpdateOneWithoutChangeNestedInput
   changeModifyTextAnnex?: Prisma.ChangeModifyTextAnnexUpdateOneWithoutChangeNestedInput
   changeAddArticle?: Prisma.ChangeAddArticleUpdateOneWithoutChangeNestedInput
-  changeApplyModificationsAnnex?: Prisma.ChangeApplyModificationsAnnexUpdateOneWithoutChangeNestedInput
+  changeApproveAnnex?: Prisma.ChangeApproveAnnexUpdateOneWithoutChangeNestedInput
 }
 
 export type ChangeUncheckedUpdateWithoutChangeRatifyAdReferendumInput = {
@@ -1050,7 +1050,7 @@ export type ChangeUncheckedUpdateWithoutChangeRatifyAdReferendumInput = {
   changeAddAnnex?: Prisma.ChangeAddAnnexUncheckedUpdateOneWithoutChangeNestedInput
   changeModifyTextAnnex?: Prisma.ChangeModifyTextAnnexUncheckedUpdateOneWithoutChangeNestedInput
   changeAddArticle?: Prisma.ChangeAddArticleUncheckedUpdateOneWithoutChangeNestedInput
-  changeApplyModificationsAnnex?: Prisma.ChangeApplyModificationsAnnexUncheckedUpdateOneWithoutChangeNestedInput
+  changeApproveAnnex?: Prisma.ChangeApproveAnnexUncheckedUpdateOneWithoutChangeNestedInput
 }
 
 export type ChangeCreateWithoutChangeReplaceAnnexInput = {
@@ -1066,7 +1066,7 @@ export type ChangeCreateWithoutChangeReplaceAnnexInput = {
   changeAddAnnex?: Prisma.ChangeAddAnnexCreateNestedOneWithoutChangeInput
   changeModifyTextAnnex?: Prisma.ChangeModifyTextAnnexCreateNestedOneWithoutChangeInput
   changeAddArticle?: Prisma.ChangeAddArticleCreateNestedOneWithoutChangeInput
-  changeApplyModificationsAnnex?: Prisma.ChangeApplyModificationsAnnexCreateNestedOneWithoutChangeInput
+  changeApproveAnnex?: Prisma.ChangeApproveAnnexCreateNestedOneWithoutChangeInput
 }
 
 export type ChangeUncheckedCreateWithoutChangeReplaceAnnexInput = {
@@ -1082,7 +1082,7 @@ export type ChangeUncheckedCreateWithoutChangeReplaceAnnexInput = {
   changeAddAnnex?: Prisma.ChangeAddAnnexUncheckedCreateNestedOneWithoutChangeInput
   changeModifyTextAnnex?: Prisma.ChangeModifyTextAnnexUncheckedCreateNestedOneWithoutChangeInput
   changeAddArticle?: Prisma.ChangeAddArticleUncheckedCreateNestedOneWithoutChangeInput
-  changeApplyModificationsAnnex?: Prisma.ChangeApplyModificationsAnnexUncheckedCreateNestedOneWithoutChangeInput
+  changeApproveAnnex?: Prisma.ChangeApproveAnnexUncheckedCreateNestedOneWithoutChangeInput
 }
 
 export type ChangeCreateOrConnectWithoutChangeReplaceAnnexInput = {
@@ -1114,7 +1114,7 @@ export type ChangeUpdateWithoutChangeReplaceAnnexInput = {
   changeAddAnnex?: Prisma.ChangeAddAnnexUpdateOneWithoutChangeNestedInput
   changeModifyTextAnnex?: Prisma.ChangeModifyTextAnnexUpdateOneWithoutChangeNestedInput
   changeAddArticle?: Prisma.ChangeAddArticleUpdateOneWithoutChangeNestedInput
-  changeApplyModificationsAnnex?: Prisma.ChangeApplyModificationsAnnexUpdateOneWithoutChangeNestedInput
+  changeApproveAnnex?: Prisma.ChangeApproveAnnexUpdateOneWithoutChangeNestedInput
 }
 
 export type ChangeUncheckedUpdateWithoutChangeReplaceAnnexInput = {
@@ -1130,7 +1130,7 @@ export type ChangeUncheckedUpdateWithoutChangeReplaceAnnexInput = {
   changeAddAnnex?: Prisma.ChangeAddAnnexUncheckedUpdateOneWithoutChangeNestedInput
   changeModifyTextAnnex?: Prisma.ChangeModifyTextAnnexUncheckedUpdateOneWithoutChangeNestedInput
   changeAddArticle?: Prisma.ChangeAddArticleUncheckedUpdateOneWithoutChangeNestedInput
-  changeApplyModificationsAnnex?: Prisma.ChangeApplyModificationsAnnexUncheckedUpdateOneWithoutChangeNestedInput
+  changeApproveAnnex?: Prisma.ChangeApproveAnnexUncheckedUpdateOneWithoutChangeNestedInput
 }
 
 export type ChangeCreateWithoutChangeAddAnnexInput = {
@@ -1146,7 +1146,7 @@ export type ChangeCreateWithoutChangeAddAnnexInput = {
   changeReplaceAnnex?: Prisma.ChangeReplaceAnnexCreateNestedOneWithoutChangeInput
   changeModifyTextAnnex?: Prisma.ChangeModifyTextAnnexCreateNestedOneWithoutChangeInput
   changeAddArticle?: Prisma.ChangeAddArticleCreateNestedOneWithoutChangeInput
-  changeApplyModificationsAnnex?: Prisma.ChangeApplyModificationsAnnexCreateNestedOneWithoutChangeInput
+  changeApproveAnnex?: Prisma.ChangeApproveAnnexCreateNestedOneWithoutChangeInput
 }
 
 export type ChangeUncheckedCreateWithoutChangeAddAnnexInput = {
@@ -1162,7 +1162,7 @@ export type ChangeUncheckedCreateWithoutChangeAddAnnexInput = {
   changeReplaceAnnex?: Prisma.ChangeReplaceAnnexUncheckedCreateNestedOneWithoutChangeInput
   changeModifyTextAnnex?: Prisma.ChangeModifyTextAnnexUncheckedCreateNestedOneWithoutChangeInput
   changeAddArticle?: Prisma.ChangeAddArticleUncheckedCreateNestedOneWithoutChangeInput
-  changeApplyModificationsAnnex?: Prisma.ChangeApplyModificationsAnnexUncheckedCreateNestedOneWithoutChangeInput
+  changeApproveAnnex?: Prisma.ChangeApproveAnnexUncheckedCreateNestedOneWithoutChangeInput
 }
 
 export type ChangeCreateOrConnectWithoutChangeAddAnnexInput = {
@@ -1194,7 +1194,7 @@ export type ChangeUpdateWithoutChangeAddAnnexInput = {
   changeReplaceAnnex?: Prisma.ChangeReplaceAnnexUpdateOneWithoutChangeNestedInput
   changeModifyTextAnnex?: Prisma.ChangeModifyTextAnnexUpdateOneWithoutChangeNestedInput
   changeAddArticle?: Prisma.ChangeAddArticleUpdateOneWithoutChangeNestedInput
-  changeApplyModificationsAnnex?: Prisma.ChangeApplyModificationsAnnexUpdateOneWithoutChangeNestedInput
+  changeApproveAnnex?: Prisma.ChangeApproveAnnexUpdateOneWithoutChangeNestedInput
 }
 
 export type ChangeUncheckedUpdateWithoutChangeAddAnnexInput = {
@@ -1210,7 +1210,7 @@ export type ChangeUncheckedUpdateWithoutChangeAddAnnexInput = {
   changeReplaceAnnex?: Prisma.ChangeReplaceAnnexUncheckedUpdateOneWithoutChangeNestedInput
   changeModifyTextAnnex?: Prisma.ChangeModifyTextAnnexUncheckedUpdateOneWithoutChangeNestedInput
   changeAddArticle?: Prisma.ChangeAddArticleUncheckedUpdateOneWithoutChangeNestedInput
-  changeApplyModificationsAnnex?: Prisma.ChangeApplyModificationsAnnexUncheckedUpdateOneWithoutChangeNestedInput
+  changeApproveAnnex?: Prisma.ChangeApproveAnnexUncheckedUpdateOneWithoutChangeNestedInput
 }
 
 export type ChangeCreateWithoutChangeModifyTextAnnexInput = {
@@ -1226,7 +1226,7 @@ export type ChangeCreateWithoutChangeModifyTextAnnexInput = {
   changeReplaceAnnex?: Prisma.ChangeReplaceAnnexCreateNestedOneWithoutChangeInput
   changeAddAnnex?: Prisma.ChangeAddAnnexCreateNestedOneWithoutChangeInput
   changeAddArticle?: Prisma.ChangeAddArticleCreateNestedOneWithoutChangeInput
-  changeApplyModificationsAnnex?: Prisma.ChangeApplyModificationsAnnexCreateNestedOneWithoutChangeInput
+  changeApproveAnnex?: Prisma.ChangeApproveAnnexCreateNestedOneWithoutChangeInput
 }
 
 export type ChangeUncheckedCreateWithoutChangeModifyTextAnnexInput = {
@@ -1242,7 +1242,7 @@ export type ChangeUncheckedCreateWithoutChangeModifyTextAnnexInput = {
   changeReplaceAnnex?: Prisma.ChangeReplaceAnnexUncheckedCreateNestedOneWithoutChangeInput
   changeAddAnnex?: Prisma.ChangeAddAnnexUncheckedCreateNestedOneWithoutChangeInput
   changeAddArticle?: Prisma.ChangeAddArticleUncheckedCreateNestedOneWithoutChangeInput
-  changeApplyModificationsAnnex?: Prisma.ChangeApplyModificationsAnnexUncheckedCreateNestedOneWithoutChangeInput
+  changeApproveAnnex?: Prisma.ChangeApproveAnnexUncheckedCreateNestedOneWithoutChangeInput
 }
 
 export type ChangeCreateOrConnectWithoutChangeModifyTextAnnexInput = {
@@ -1274,7 +1274,7 @@ export type ChangeUpdateWithoutChangeModifyTextAnnexInput = {
   changeReplaceAnnex?: Prisma.ChangeReplaceAnnexUpdateOneWithoutChangeNestedInput
   changeAddAnnex?: Prisma.ChangeAddAnnexUpdateOneWithoutChangeNestedInput
   changeAddArticle?: Prisma.ChangeAddArticleUpdateOneWithoutChangeNestedInput
-  changeApplyModificationsAnnex?: Prisma.ChangeApplyModificationsAnnexUpdateOneWithoutChangeNestedInput
+  changeApproveAnnex?: Prisma.ChangeApproveAnnexUpdateOneWithoutChangeNestedInput
 }
 
 export type ChangeUncheckedUpdateWithoutChangeModifyTextAnnexInput = {
@@ -1290,7 +1290,7 @@ export type ChangeUncheckedUpdateWithoutChangeModifyTextAnnexInput = {
   changeReplaceAnnex?: Prisma.ChangeReplaceAnnexUncheckedUpdateOneWithoutChangeNestedInput
   changeAddAnnex?: Prisma.ChangeAddAnnexUncheckedUpdateOneWithoutChangeNestedInput
   changeAddArticle?: Prisma.ChangeAddArticleUncheckedUpdateOneWithoutChangeNestedInput
-  changeApplyModificationsAnnex?: Prisma.ChangeApplyModificationsAnnexUncheckedUpdateOneWithoutChangeNestedInput
+  changeApproveAnnex?: Prisma.ChangeApproveAnnexUncheckedUpdateOneWithoutChangeNestedInput
 }
 
 export type ChangeCreateWithoutChangeAddArticleInput = {
@@ -1306,7 +1306,7 @@ export type ChangeCreateWithoutChangeAddArticleInput = {
   changeReplaceAnnex?: Prisma.ChangeReplaceAnnexCreateNestedOneWithoutChangeInput
   changeAddAnnex?: Prisma.ChangeAddAnnexCreateNestedOneWithoutChangeInput
   changeModifyTextAnnex?: Prisma.ChangeModifyTextAnnexCreateNestedOneWithoutChangeInput
-  changeApplyModificationsAnnex?: Prisma.ChangeApplyModificationsAnnexCreateNestedOneWithoutChangeInput
+  changeApproveAnnex?: Prisma.ChangeApproveAnnexCreateNestedOneWithoutChangeInput
 }
 
 export type ChangeUncheckedCreateWithoutChangeAddArticleInput = {
@@ -1322,7 +1322,7 @@ export type ChangeUncheckedCreateWithoutChangeAddArticleInput = {
   changeReplaceAnnex?: Prisma.ChangeReplaceAnnexUncheckedCreateNestedOneWithoutChangeInput
   changeAddAnnex?: Prisma.ChangeAddAnnexUncheckedCreateNestedOneWithoutChangeInput
   changeModifyTextAnnex?: Prisma.ChangeModifyTextAnnexUncheckedCreateNestedOneWithoutChangeInput
-  changeApplyModificationsAnnex?: Prisma.ChangeApplyModificationsAnnexUncheckedCreateNestedOneWithoutChangeInput
+  changeApproveAnnex?: Prisma.ChangeApproveAnnexUncheckedCreateNestedOneWithoutChangeInput
 }
 
 export type ChangeCreateOrConnectWithoutChangeAddArticleInput = {
@@ -1354,7 +1354,7 @@ export type ChangeUpdateWithoutChangeAddArticleInput = {
   changeReplaceAnnex?: Prisma.ChangeReplaceAnnexUpdateOneWithoutChangeNestedInput
   changeAddAnnex?: Prisma.ChangeAddAnnexUpdateOneWithoutChangeNestedInput
   changeModifyTextAnnex?: Prisma.ChangeModifyTextAnnexUpdateOneWithoutChangeNestedInput
-  changeApplyModificationsAnnex?: Prisma.ChangeApplyModificationsAnnexUpdateOneWithoutChangeNestedInput
+  changeApproveAnnex?: Prisma.ChangeApproveAnnexUpdateOneWithoutChangeNestedInput
 }
 
 export type ChangeUncheckedUpdateWithoutChangeAddArticleInput = {
@@ -1370,7 +1370,7 @@ export type ChangeUncheckedUpdateWithoutChangeAddArticleInput = {
   changeReplaceAnnex?: Prisma.ChangeReplaceAnnexUncheckedUpdateOneWithoutChangeNestedInput
   changeAddAnnex?: Prisma.ChangeAddAnnexUncheckedUpdateOneWithoutChangeNestedInput
   changeModifyTextAnnex?: Prisma.ChangeModifyTextAnnexUncheckedUpdateOneWithoutChangeNestedInput
-  changeApplyModificationsAnnex?: Prisma.ChangeApplyModificationsAnnexUncheckedUpdateOneWithoutChangeNestedInput
+  changeApproveAnnex?: Prisma.ChangeApproveAnnexUncheckedUpdateOneWithoutChangeNestedInput
 }
 
 export type ChangeCreateWithoutChangeRepealInput = {
@@ -1386,7 +1386,7 @@ export type ChangeCreateWithoutChangeRepealInput = {
   changeAddAnnex?: Prisma.ChangeAddAnnexCreateNestedOneWithoutChangeInput
   changeModifyTextAnnex?: Prisma.ChangeModifyTextAnnexCreateNestedOneWithoutChangeInput
   changeAddArticle?: Prisma.ChangeAddArticleCreateNestedOneWithoutChangeInput
-  changeApplyModificationsAnnex?: Prisma.ChangeApplyModificationsAnnexCreateNestedOneWithoutChangeInput
+  changeApproveAnnex?: Prisma.ChangeApproveAnnexCreateNestedOneWithoutChangeInput
 }
 
 export type ChangeUncheckedCreateWithoutChangeRepealInput = {
@@ -1402,7 +1402,7 @@ export type ChangeUncheckedCreateWithoutChangeRepealInput = {
   changeAddAnnex?: Prisma.ChangeAddAnnexUncheckedCreateNestedOneWithoutChangeInput
   changeModifyTextAnnex?: Prisma.ChangeModifyTextAnnexUncheckedCreateNestedOneWithoutChangeInput
   changeAddArticle?: Prisma.ChangeAddArticleUncheckedCreateNestedOneWithoutChangeInput
-  changeApplyModificationsAnnex?: Prisma.ChangeApplyModificationsAnnexUncheckedCreateNestedOneWithoutChangeInput
+  changeApproveAnnex?: Prisma.ChangeApproveAnnexUncheckedCreateNestedOneWithoutChangeInput
 }
 
 export type ChangeCreateOrConnectWithoutChangeRepealInput = {
@@ -1434,7 +1434,7 @@ export type ChangeUpdateWithoutChangeRepealInput = {
   changeAddAnnex?: Prisma.ChangeAddAnnexUpdateOneWithoutChangeNestedInput
   changeModifyTextAnnex?: Prisma.ChangeModifyTextAnnexUpdateOneWithoutChangeNestedInput
   changeAddArticle?: Prisma.ChangeAddArticleUpdateOneWithoutChangeNestedInput
-  changeApplyModificationsAnnex?: Prisma.ChangeApplyModificationsAnnexUpdateOneWithoutChangeNestedInput
+  changeApproveAnnex?: Prisma.ChangeApproveAnnexUpdateOneWithoutChangeNestedInput
 }
 
 export type ChangeUncheckedUpdateWithoutChangeRepealInput = {
@@ -1450,10 +1450,10 @@ export type ChangeUncheckedUpdateWithoutChangeRepealInput = {
   changeAddAnnex?: Prisma.ChangeAddAnnexUncheckedUpdateOneWithoutChangeNestedInput
   changeModifyTextAnnex?: Prisma.ChangeModifyTextAnnexUncheckedUpdateOneWithoutChangeNestedInput
   changeAddArticle?: Prisma.ChangeAddArticleUncheckedUpdateOneWithoutChangeNestedInput
-  changeApplyModificationsAnnex?: Prisma.ChangeApplyModificationsAnnexUncheckedUpdateOneWithoutChangeNestedInput
+  changeApproveAnnex?: Prisma.ChangeApproveAnnexUncheckedUpdateOneWithoutChangeNestedInput
 }
 
-export type ChangeCreateWithoutChangeApplyModificationsAnnexInput = {
+export type ChangeCreateWithoutChangeApproveAnnexInput = {
   id?: string
   type: $Enums.ChangeType
   articleModifier: Prisma.ArticleModifierCreateNestedOneWithoutChangesInput
@@ -1469,7 +1469,7 @@ export type ChangeCreateWithoutChangeApplyModificationsAnnexInput = {
   changeAddArticle?: Prisma.ChangeAddArticleCreateNestedOneWithoutChangeInput
 }
 
-export type ChangeUncheckedCreateWithoutChangeApplyModificationsAnnexInput = {
+export type ChangeUncheckedCreateWithoutChangeApproveAnnexInput = {
   id?: string
   articleModifierId: string
   resolvedForChangeAdvancedId?: string | null
@@ -1485,23 +1485,23 @@ export type ChangeUncheckedCreateWithoutChangeApplyModificationsAnnexInput = {
   changeAddArticle?: Prisma.ChangeAddArticleUncheckedCreateNestedOneWithoutChangeInput
 }
 
-export type ChangeCreateOrConnectWithoutChangeApplyModificationsAnnexInput = {
+export type ChangeCreateOrConnectWithoutChangeApproveAnnexInput = {
   where: Prisma.ChangeWhereUniqueInput
-  create: Prisma.XOR<Prisma.ChangeCreateWithoutChangeApplyModificationsAnnexInput, Prisma.ChangeUncheckedCreateWithoutChangeApplyModificationsAnnexInput>
+  create: Prisma.XOR<Prisma.ChangeCreateWithoutChangeApproveAnnexInput, Prisma.ChangeUncheckedCreateWithoutChangeApproveAnnexInput>
 }
 
-export type ChangeUpsertWithoutChangeApplyModificationsAnnexInput = {
-  update: Prisma.XOR<Prisma.ChangeUpdateWithoutChangeApplyModificationsAnnexInput, Prisma.ChangeUncheckedUpdateWithoutChangeApplyModificationsAnnexInput>
-  create: Prisma.XOR<Prisma.ChangeCreateWithoutChangeApplyModificationsAnnexInput, Prisma.ChangeUncheckedCreateWithoutChangeApplyModificationsAnnexInput>
+export type ChangeUpsertWithoutChangeApproveAnnexInput = {
+  update: Prisma.XOR<Prisma.ChangeUpdateWithoutChangeApproveAnnexInput, Prisma.ChangeUncheckedUpdateWithoutChangeApproveAnnexInput>
+  create: Prisma.XOR<Prisma.ChangeCreateWithoutChangeApproveAnnexInput, Prisma.ChangeUncheckedCreateWithoutChangeApproveAnnexInput>
   where?: Prisma.ChangeWhereInput
 }
 
-export type ChangeUpdateToOneWithWhereWithoutChangeApplyModificationsAnnexInput = {
+export type ChangeUpdateToOneWithWhereWithoutChangeApproveAnnexInput = {
   where?: Prisma.ChangeWhereInput
-  data: Prisma.XOR<Prisma.ChangeUpdateWithoutChangeApplyModificationsAnnexInput, Prisma.ChangeUncheckedUpdateWithoutChangeApplyModificationsAnnexInput>
+  data: Prisma.XOR<Prisma.ChangeUpdateWithoutChangeApproveAnnexInput, Prisma.ChangeUncheckedUpdateWithoutChangeApproveAnnexInput>
 }
 
-export type ChangeUpdateWithoutChangeApplyModificationsAnnexInput = {
+export type ChangeUpdateWithoutChangeApproveAnnexInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   type?: Prisma.EnumChangeTypeFieldUpdateOperationsInput | $Enums.ChangeType
   articleModifier?: Prisma.ArticleModifierUpdateOneRequiredWithoutChangesNestedInput
@@ -1517,7 +1517,7 @@ export type ChangeUpdateWithoutChangeApplyModificationsAnnexInput = {
   changeAddArticle?: Prisma.ChangeAddArticleUpdateOneWithoutChangeNestedInput
 }
 
-export type ChangeUncheckedUpdateWithoutChangeApplyModificationsAnnexInput = {
+export type ChangeUncheckedUpdateWithoutChangeApproveAnnexInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   articleModifierId?: Prisma.StringFieldUpdateOperationsInput | string
   resolvedForChangeAdvancedId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1552,7 +1552,7 @@ export type ChangeUpdateWithoutArticleModifierInput = {
   changeAddAnnex?: Prisma.ChangeAddAnnexUpdateOneWithoutChangeNestedInput
   changeModifyTextAnnex?: Prisma.ChangeModifyTextAnnexUpdateOneWithoutChangeNestedInput
   changeAddArticle?: Prisma.ChangeAddArticleUpdateOneWithoutChangeNestedInput
-  changeApplyModificationsAnnex?: Prisma.ChangeApplyModificationsAnnexUpdateOneWithoutChangeNestedInput
+  changeApproveAnnex?: Prisma.ChangeApproveAnnexUpdateOneWithoutChangeNestedInput
 }
 
 export type ChangeUncheckedUpdateWithoutArticleModifierInput = {
@@ -1568,7 +1568,7 @@ export type ChangeUncheckedUpdateWithoutArticleModifierInput = {
   changeAddAnnex?: Prisma.ChangeAddAnnexUncheckedUpdateOneWithoutChangeNestedInput
   changeModifyTextAnnex?: Prisma.ChangeModifyTextAnnexUncheckedUpdateOneWithoutChangeNestedInput
   changeAddArticle?: Prisma.ChangeAddArticleUncheckedUpdateOneWithoutChangeNestedInput
-  changeApplyModificationsAnnex?: Prisma.ChangeApplyModificationsAnnexUncheckedUpdateOneWithoutChangeNestedInput
+  changeApproveAnnex?: Prisma.ChangeApproveAnnexUncheckedUpdateOneWithoutChangeNestedInput
 }
 
 export type ChangeUncheckedUpdateManyWithoutArticleModifierInput = {
@@ -1596,7 +1596,7 @@ export type ChangeUpdateWithoutResolvedForChangeAdvancedInput = {
   changeAddAnnex?: Prisma.ChangeAddAnnexUpdateOneWithoutChangeNestedInput
   changeModifyTextAnnex?: Prisma.ChangeModifyTextAnnexUpdateOneWithoutChangeNestedInput
   changeAddArticle?: Prisma.ChangeAddArticleUpdateOneWithoutChangeNestedInput
-  changeApplyModificationsAnnex?: Prisma.ChangeApplyModificationsAnnexUpdateOneWithoutChangeNestedInput
+  changeApproveAnnex?: Prisma.ChangeApproveAnnexUpdateOneWithoutChangeNestedInput
 }
 
 export type ChangeUncheckedUpdateWithoutResolvedForChangeAdvancedInput = {
@@ -1612,7 +1612,7 @@ export type ChangeUncheckedUpdateWithoutResolvedForChangeAdvancedInput = {
   changeAddAnnex?: Prisma.ChangeAddAnnexUncheckedUpdateOneWithoutChangeNestedInput
   changeModifyTextAnnex?: Prisma.ChangeModifyTextAnnexUncheckedUpdateOneWithoutChangeNestedInput
   changeAddArticle?: Prisma.ChangeAddArticleUncheckedUpdateOneWithoutChangeNestedInput
-  changeApplyModificationsAnnex?: Prisma.ChangeApplyModificationsAnnexUncheckedUpdateOneWithoutChangeNestedInput
+  changeApproveAnnex?: Prisma.ChangeApproveAnnexUncheckedUpdateOneWithoutChangeNestedInput
 }
 
 export type ChangeUncheckedUpdateManyWithoutResolvedForChangeAdvancedInput = {
@@ -1639,7 +1639,7 @@ export type ChangeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs =
   changeAddAnnex?: boolean | Prisma.Change$changeAddAnnexArgs<ExtArgs>
   changeModifyTextAnnex?: boolean | Prisma.Change$changeModifyTextAnnexArgs<ExtArgs>
   changeAddArticle?: boolean | Prisma.Change$changeAddArticleArgs<ExtArgs>
-  changeApplyModificationsAnnex?: boolean | Prisma.Change$changeApplyModificationsAnnexArgs<ExtArgs>
+  changeApproveAnnex?: boolean | Prisma.Change$changeApproveAnnexArgs<ExtArgs>
 }, ExtArgs["result"]["change"]>
 
 export type ChangeSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -1680,7 +1680,7 @@ export type ChangeInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs 
   changeAddAnnex?: boolean | Prisma.Change$changeAddAnnexArgs<ExtArgs>
   changeModifyTextAnnex?: boolean | Prisma.Change$changeModifyTextAnnexArgs<ExtArgs>
   changeAddArticle?: boolean | Prisma.Change$changeAddArticleArgs<ExtArgs>
-  changeApplyModificationsAnnex?: boolean | Prisma.Change$changeApplyModificationsAnnexArgs<ExtArgs>
+  changeApproveAnnex?: boolean | Prisma.Change$changeApproveAnnexArgs<ExtArgs>
 }
 export type ChangeIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   articleModifier?: boolean | Prisma.ArticleModifierDefaultArgs<ExtArgs>
@@ -1705,7 +1705,7 @@ export type $ChangePayload<ExtArgs extends runtime.Types.Extensions.InternalArgs
     changeAddAnnex: Prisma.$ChangeAddAnnexPayload<ExtArgs> | null
     changeModifyTextAnnex: Prisma.$ChangeModifyTextAnnexPayload<ExtArgs> | null
     changeAddArticle: Prisma.$ChangeAddArticlePayload<ExtArgs> | null
-    changeApplyModificationsAnnex: Prisma.$ChangeApplyModificationsAnnexPayload<ExtArgs> | null
+    changeApproveAnnex: Prisma.$ChangeApproveAnnexPayload<ExtArgs> | null
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -2117,7 +2117,7 @@ export interface Prisma__ChangeClient<T, Null = never, ExtArgs extends runtime.T
   changeAddAnnex<T extends Prisma.Change$changeAddAnnexArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Change$changeAddAnnexArgs<ExtArgs>>): Prisma.Prisma__ChangeAddAnnexClient<runtime.Types.Result.GetResult<Prisma.$ChangeAddAnnexPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   changeModifyTextAnnex<T extends Prisma.Change$changeModifyTextAnnexArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Change$changeModifyTextAnnexArgs<ExtArgs>>): Prisma.Prisma__ChangeModifyTextAnnexClient<runtime.Types.Result.GetResult<Prisma.$ChangeModifyTextAnnexPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   changeAddArticle<T extends Prisma.Change$changeAddArticleArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Change$changeAddArticleArgs<ExtArgs>>): Prisma.Prisma__ChangeAddArticleClient<runtime.Types.Result.GetResult<Prisma.$ChangeAddArticlePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
-  changeApplyModificationsAnnex<T extends Prisma.Change$changeApplyModificationsAnnexArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Change$changeApplyModificationsAnnexArgs<ExtArgs>>): Prisma.Prisma__ChangeApplyModificationsAnnexClient<runtime.Types.Result.GetResult<Prisma.$ChangeApplyModificationsAnnexPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+  changeApproveAnnex<T extends Prisma.Change$changeApproveAnnexArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Change$changeApproveAnnexArgs<ExtArgs>>): Prisma.Prisma__ChangeApproveAnnexClient<runtime.Types.Result.GetResult<Prisma.$ChangeApproveAnnexPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -2737,22 +2737,22 @@ export type Change$changeAddArticleArgs<ExtArgs extends runtime.Types.Extensions
 }
 
 /**
- * Change.changeApplyModificationsAnnex
+ * Change.changeApproveAnnex
  */
-export type Change$changeApplyModificationsAnnexArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+export type Change$changeApproveAnnexArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   /**
-   * Select specific fields to fetch from the ChangeApplyModificationsAnnex
+   * Select specific fields to fetch from the ChangeApproveAnnex
    */
-  select?: Prisma.ChangeApplyModificationsAnnexSelect<ExtArgs> | null
+  select?: Prisma.ChangeApproveAnnexSelect<ExtArgs> | null
   /**
-   * Omit specific fields from the ChangeApplyModificationsAnnex
+   * Omit specific fields from the ChangeApproveAnnex
    */
-  omit?: Prisma.ChangeApplyModificationsAnnexOmit<ExtArgs> | null
+  omit?: Prisma.ChangeApproveAnnexOmit<ExtArgs> | null
   /**
    * Choose, which related nodes to fetch as well
    */
-  include?: Prisma.ChangeApplyModificationsAnnexInclude<ExtArgs> | null
-  where?: Prisma.ChangeApplyModificationsAnnexWhereInput
+  include?: Prisma.ChangeApproveAnnexInclude<ExtArgs> | null
+  where?: Prisma.ChangeApproveAnnexWhereInput
 }
 
 /**

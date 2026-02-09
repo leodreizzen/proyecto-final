@@ -50,6 +50,10 @@ export class ChangeValidityService {
         return validChanges;
     }
 
+    getNodeRepealer(coords: string): string | null {
+        return this.validityGraph.getNodeRepealer(coords)?.id ?? null;
+    }
+
 
     private processChanges(changes: ChangeForGraph[]) {
         for (const change of changes) {
@@ -141,7 +145,6 @@ export class ChangeValidityService {
                 return null;
         }
     }
-
 
     private getContextCoordsForBuild(change: ChangeForGraph, victimDesc: TargetDescriptor | null): NodeCoordinates | null {
         if (victimDesc) return victimDesc.coords;

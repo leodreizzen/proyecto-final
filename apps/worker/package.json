@@ -8,6 +8,7 @@
     "build": "node build.js",
     "script": "node run-script.js",
     "python-setup": "python3 python_setup.py",
+    "test-llmparse": "NODE_OPTIONS=--experimental-vm-modules pnpm exec jest",
     "lint": "eslint --max-warnings 0 .",
     "dev": "nodemon"
   },

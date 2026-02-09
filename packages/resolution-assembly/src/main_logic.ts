@@ -29,7 +29,7 @@ export async function getAssembledResolution(resolutionId: string, versionSpec: 
     }
 
     const id: ResolutionNaturalID = { initial: resolution.initial, number: resolution.number, year: resolution.year };
-    const { changes, versions } = await getValidChangesAndVersionsForAssembly(resolutionId, id, versionSpec);
+    const { changes, versions, orphanedAnnexes } = await getValidChangesAndVersionsForAssembly(resolutionId, id, versionSpec);
 
     const resolutionReferences = collectReferencesFromResolution(resolution);
     const changesReferences = collectReferencesFromChanges(changes);
@@ -40,7 +40,7 @@ export async function getAssembledResolution(resolutionId: string, versionSpec: 
 
     const dataToShow = getInitialDataToShow(resolution, validationContext);
 
-    const { updatedResolution: finalResolution, inapplicableChanges } = applyChangesToResolution(dataToShow, changes, validationContext);
+    const { updatedResolution: finalResolution, inapplicableChanges } = applyChangesToResolution(dataToShow, changes, validationContext, orphanedAnnexes);
     sortResolution(finalResolution);
 
     versions.unshift({
@@ -81,8 +81,8 @@ function getInitialDataToShow(resolution: ResolutionDBDataToShow, validationCont
     }
 }
 
-function applyChangesToResolution(resolution: ResolutionToShow, changes: ChangeWithContextForAssembly[], validationContext: ValidationContext): { updatedResolution: ResolutionToShow, inapplicableChanges: InapplicableChange[] } {
-    const applier = new ResolutionChangeApplier(resolution, validationContext);
+function applyChangesToResolution(resolution: ResolutionToShow, changes: ChangeWithContextForAssembly[], validationContext: ValidationContext, orphanedAnnexes: {id: string, repealedBy: ResolutionNaturalID}[] ): { updatedResolution: ResolutionToShow, inapplicableChanges: InapplicableChange[]} {
+    const applier = new ResolutionChangeApplier(resolution, validationContext, orphanedAnnexes);
     applier.applyChanges(changes);
     return {
         updatedResolution: applier.getUpdatedResolution(),

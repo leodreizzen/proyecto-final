@@ -105,15 +105,14 @@ model Article {
   newContentFrom         ChangeReplaceArticle? @relation(fields: [newContentFromChangeId], references: [id], onDelete: Cascade)
   newContentFromChangeId String?               @unique @db.Uuid
 
-  number                Int?
-  suffix                Int?
-  content               ContentBlock[]
-  type                  ArticleType
-  articleNormative      ArticleNormative?
-  articleModifier       ArticleModifier?
-  articleCreateDocument ArticleCreateDocument?
-  articleFormality      ArticleFormality?
-  referencedBy          ReferenceArticle[]
+  number           Int?
+  suffix           Int?
+  content          ContentBlock[]
+  type             ArticleType
+  articleNormative ArticleNormative?
+  articleModifier  ArticleModifier?
+  articleFormality ArticleFormality?
+  referencedBy     ReferenceArticle[]
 
   // Check: Ensures article belongs to exactly one parent (Resolution, Annex, Chapter, ChangeAddArticle, or ChangeReplaceArticle)
   // Check: "number" > 0
@@ -144,16 +143,6 @@ model ArticleModifier {
   changes Change[]
 }
 
-model ArticleCreateDocument {
-  id      String  @id @db.Uuid
-  article Article @relation(fields: [id], references: [id], onDelete: Cascade)
-
-  annexToApprove            ReferenceAnnex @relation(fields: [annexToApproveReferenceId], references: [id])
-  annexToApproveReferenceId String         @unique @db.Uuid
-
-  // Trigger: Cleanup references when deleted
-}
-
 model ArticleFormality {
   id      String  @id @db.Uuid
   article Article @relation(fields: [id], references: [id], onDelete: Cascade)
@@ -168,17 +157,17 @@ model Change {
   resolvedForChangeAdvanced   ChangeAdvanced? @relation(name: "resolved_for_change_advanced", fields: [resolvedForChangeAdvancedId], references: [id], onDelete: Cascade)
   resolvedForChangeAdvancedId String?         @db.Uuid
 
-  type                          ChangeType
-  changeModifyArticle           ChangeModifyArticle?
-  changeReplaceArticle          ChangeReplaceArticle?
-  changeAdvanced                ChangeAdvanced?
-  changeRepeal                  ChangeRepeal?
-  changeRatifyAdReferendum      ChangeRatifyAdReferendum?
-  changeReplaceAnnex            ChangeReplaceAnnex?
-  changeAddAnnex                ChangeAddAnnex?
-  changeModifyTextAnnex         ChangeModifyTextAnnex?
-  changeAddArticle              ChangeAddArticle?
-  changeApplyModificationsAnnex ChangeApplyModificationsAnnex?
+  type                     ChangeType
+  changeModifyArticle      ChangeModifyArticle?
+  changeReplaceArticle     ChangeReplaceArticle?
+  changeAdvanced           ChangeAdvanced?
+  changeRepeal             ChangeRepeal?
+  changeRatifyAdReferendum ChangeRatifyAdReferendum?
+  changeReplaceAnnex       ChangeReplaceAnnex?
+  changeAddAnnex           ChangeAddAnnex?
+  changeModifyTextAnnex    ChangeModifyTextAnnex?
+  changeAddArticle         ChangeAddArticle?
+  changeApproveAnnex       ChangeApproveAnnex?
 
   // Trigger when concrete type is created: Checks that the type matches the associated model
   @@index([articleModifierId])
@@ -317,11 +306,12 @@ model ChangeRepeal {
   @@index([targetReferenceId])
 }
 
-model ChangeApplyModificationsAnnex {
-  id             String         @id @db.Uuid
-  change         Change         @relation(fields: [id], references: [id], onDelete: Cascade)
-  annexToApply   ReferenceAnnex @relation(fields: [annexToApplyId], references: [id])
-  annexToApplyId String         @unique @db.Uuid
+model ChangeApproveAnnex {
+  id               String         @id @db.Uuid
+  change           Change         @relation(fields: [id], references: [id], onDelete: Cascade)
+  annexToApprove   ReferenceAnnex @relation(fields: [annexToApproveId], references: [id])
+  annexToApproveId String         @unique @db.Uuid
+  annexIsDocument  Boolean
 
   // Trigger: Cleanup references when deleted
 }
@@ -329,7 +319,6 @@ model ChangeApplyModificationsAnnex {
 enum ArticleType {
   NORMATIVE
   MODIFIER
-  CREATE_DOCUMENT
   FORMALITY
 }
 
@@ -343,7 +332,7 @@ enum ChangeType {
   MODIFY_TEXT_ANNEX
   ADD_ARTICLE
   ADD_ANNEX
-  APPLY_MODIFICATIONS_ANNEX
+  APPROVE_ANNEX
 }
 
 model Annex {
@@ -555,14 +544,13 @@ model ReferenceAnnex {
   year        Int
   annexNumber Int
 
-  changeApplyModificationsAnnex  ChangeApplyModificationsAnnex?
-  changeReplaceAnnexTarget       ChangeReplaceAnnex?            @relation(name: "replaceAnnex_targetAnnex")
-  changeReplaceAnnexNewReference ChangeReplaceAnnex?            @relation(name: "replaceAnnex_newAnnexReference")
-  changeAddAnnexTarget           ChangeAddAnnex?                @relation(name: "addAnnex_targetAnnex")
-  changeAddAnnexAnnexToAdd       ChangeAddAnnex?                @relation(name: "addAnnex_annexToAdd")
+  changeApproveAnnex             ChangeApproveAnnex?
+  changeReplaceAnnexTarget       ChangeReplaceAnnex?    @relation(name: "replaceAnnex_targetAnnex")
+  changeReplaceAnnexNewReference ChangeReplaceAnnex?    @relation(name: "replaceAnnex_newAnnexReference")
+  changeAddAnnexTarget           ChangeAddAnnex?        @relation(name: "addAnnex_targetAnnex")
+  changeAddAnnexAnnexToAdd       ChangeAddAnnex?        @relation(name: "addAnnex_annexToAdd")
   changeModifyTextAnnex          ChangeModifyTextAnnex?
   changeAddArticle               ChangeAddArticle?
-  articleCreateDocument          ArticleCreateDocument?
 
   // Trigger: Automatically seeks and links to the concrete Annex based on metadata
   // Trigger: Cleanup parent "Reference" row when this record is deleted
@@ -616,15 +604,13 @@ enum ReferenceSourceType {
   CHANGE_ADD_ANNEX
   CHANGE_REPLACE_ANNEX
   CHANGE_MODIFY_TEXT_ANNEX
-  CHANGE_APPLY_MODIFICATIONS_ANNEX
+  CHANGE_APPROVE_ANNEX
 
   CHANGE_ADD_ARTICLE
   CHANGE_MODIFY_ARTICLE
   CHANGE_REPLACE_ARTICLE
 
   CHANGE_RATIFY_AD_REFERENDUM
-
-  ARTICLE_CREATE_DOCUMENT
 }
 
 model ResolutionUpload {
@@ -856,9 +842,6 @@ model SearchableContent {
 
   createdAt DateTime @default(now())
 
-  @@index([mainText(ops: raw("gin_trgm_ops"))], type: Gin)
-  @@index([embedding]) // hnsw
-
   // checks:
   // type = recital => recitalNumber is not null, rest IS null
   // type = consideration => considerationNumber is not null, rest IS null
@@ -866,6 +849,9 @@ model SearchableContent {
   // type = text_annex => annexNumber is not null, rest IS null
 
   // unique indexes in migration to prevent duplicates
+
+  @@index([mainText(ops: raw("gin_trgm_ops"))], type: Gin)
+  @@index([embedding]) // hnsw
 }
 
 enum IndexType {
