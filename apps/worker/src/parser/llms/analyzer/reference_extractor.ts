@@ -22,7 +22,7 @@ export async function _extractReferences(resolution: ResolutionStructure, firstA
             type: "json_object"
         },
         reasoning_effort: "medium",
-        max_completion_tokens: 25000,
+        max_completion_tokens: 40000,
         messages: [
             {
                 role: "developer",
