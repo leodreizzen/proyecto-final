@@ -3,7 +3,6 @@ import {queryClient} from "@/lib/actions/queryClient";
 import {
     maintenanceKeys,
     pendingUploadsQuery,
-    recentFinishedUploadsQuery,
     resolutionKeys,
     uploadKeys, userKeys
 } from "@/lib/queries/admin/queries";
