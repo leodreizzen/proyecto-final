@@ -12,6 +12,51 @@ import {LLMConsistencyValidationError} from "@/parser/llms/errors";
 import {withLlmConsistencyRetry} from "@/util/llm/retries";
 import ProgressReporter from "@/util/progress-reporter";
 import {validateAnalysisChangesTableReferences} from "@/parser/llms/validation/table_validator";
+import {ResolutionReferencesAnalysis} from "@/parser/schemas/references/schemas";
+
+function emptyReferenceAnalysis(resolution: ResolutionStructure): ResolutionReferencesAnalysis {
+    return {
+        annexes: resolution.annexes.map(annex => {
+            if (annex.type === "TextOrTables"){
+                return {
+                    type: "TextOrTables" as const,
+                    references: [],
+                    number: annex.number
+                }
+            } else {
+                return {
+                    type: "WithArticles" as const,
+                    articles: annex.articles.map(article => ({
+                        number: article.number,
+                        suffix: article.suffix,
+                        references: []
+                    })),
+                    chapters: annex.chapters.map(chapter => ({
+                        articles: chapter.articles.map(article => ({
+                            number: article.number,
+                            suffix: article.suffix,
+                            references: []
+                        }))
+                    }))
+                }
+            }
+        }),
+            articles: resolution.articles.map(article => ({
+            number: article.number,
+            suffix: article.suffix,
+            references: []
+        })),
+            recitals: resolution.recitals.map((recital, index) => ({
+            number: index + 1,
+            references: []
+        })),
+            considerations: resolution.considerations.map((consideration, index) => ({
+            number: index + 1,
+            references: []
+        }))
+    }
+}
+
 
 export async function analyzeFullResolution(resolution: ResolutionStructure, firstAttempt: boolean, reporter: ProgressReporter): Promise<ResultWithData<FullResolutionAnalysis, ParseResolutionError>> {
     const mainResolutionReporter = reporter.addSubreporter("analyzeMainResolution", 60);
@@ -56,17 +101,36 @@ export async function analyzeFullResolution(resolution: ResolutionStructure, fir
 
     const annexes = annexResults.map(result => (result as typeof result & { success: true }).data);
 
-    const referenceAnalysisResult = await withLlmConsistencyRetry(async (ctx) => {
-        const referenceAnalysisPromise = extractReferences(resolution, firstAttempt && ctx.attempt === 1);
-        const referenceAnalysisResult = await referenceAnalysisPromise;
-        const consistencyValidationRes = validateReferenceConsistency(mainResolutionAnalysis, annexes, referenceAnalysisResult);
-        if (!consistencyValidationRes.success) {
-            console.error(JSON.stringify(consistencyValidationRes.error));
-            throw new LLMConsistencyValidationError(consistencyValidationRes.error);
+    let totalArticles = resolution.articles.length;
+    resolution.annexes.forEach((annex, index) =>{
+        if (annex.type === "WithArticles") {
+            totalArticles += annex.articles.length;
+            annex.chapters.forEach(chapter => {
+                totalArticles += chapter.articles.length;
+            })
         }
-        referencesReporter.reportProgress(1);
-        return referenceAnalysisResult;
-    })
+    });
+
+    let referenceAnalysisResult: ResolutionReferencesAnalysis;
+
+    if (totalArticles > 20) {
+        referenceAnalysisResult = emptyReferenceAnalysis(resolution); // disable reference extraction for large resolutions
+    } else {
+        referenceAnalysisResult = await withLlmConsistencyRetry(async (ctx) => {
+            const referenceAnalysisPromise = extractReferences(resolution, firstAttempt && ctx.attempt === 1);
+            const referenceAnalysisResult = await referenceAnalysisPromise;
+            const consistencyValidationRes = validateReferenceConsistency(mainResolutionAnalysis, annexes, referenceAnalysisResult);
+            if (!consistencyValidationRes.success) {
+                console.error(JSON.stringify(consistencyValidationRes.error));
+                throw new LLMConsistencyValidationError(consistencyValidationRes.error);
+            }
+            referencesReporter.reportProgress(1);
+            return referenceAnalysisResult;
+        })
+
+    }
+
+
 
     const analysis = merge({
         ...mainResolutionAnalysis,
