@@ -113,7 +113,7 @@ export async function analyzeFullResolution(resolution: ResolutionStructure, fir
 
     let referenceAnalysisResult: ResolutionReferencesAnalysis;
 
-    if (totalArticles > 20) {
+    if (totalArticles > 20 || false) {
         referenceAnalysisResult = emptyReferenceAnalysis(resolution); // disable reference extraction for large resolutions
     } else {
         referenceAnalysisResult = await withLlmConsistencyRetry(async (ctx) => {
