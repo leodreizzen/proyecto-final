@@ -40,7 +40,7 @@ export async function _analyzeMainResolution(resolution: ResolutionStructure, fi
 
     const resolutionJSON = JSON.stringify(filteredResolution, null, 2);
     const LLMResult = await structuredLLMCall({
-        model: "gemini-2.5-flash",
+        model: "gemini-3-flash-preview",
         response_format: {
             type: "json_object"
         },

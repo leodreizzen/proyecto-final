@@ -39,7 +39,7 @@ export async function _analyzeAnnex(input: AnalyzeAnnexInput, firstAttempt: bool
     console.log("calling anenex analyzer model...");
     const annexJSON = JSON.stringify(input, null, 2);
     const LLMResult = await structuredLLMCall({
-        model: "gemini-2.5-flash",
+        model: "gemini-3-flash-preview",
         response_format: {
             type: "json_object"
         },

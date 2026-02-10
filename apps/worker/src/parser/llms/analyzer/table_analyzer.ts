@@ -19,7 +19,7 @@ export async function _analyze_tables(tables: TableStructure[], firstAttempt: bo
     }
     console.log("calling table analyzer model...");
     const LLMResult = await structuredLLMCall({
-            model: "gemini-2.5-flash-lite",
+            model: "gemini-3-flash-preview",
             response_format: {
                 type: "json_object"
             },
