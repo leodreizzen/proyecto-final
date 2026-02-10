@@ -51,6 +51,9 @@ export function pathForResolution(resId: {
             }
         }
         if (typeof resId.articleNumber === "number") {
+            if (prefix !== "#") {
+                prefix += "-";
+            }
             prefix += "art";
             fragment += getArticleId(prefix, {
                 type: "defined",
