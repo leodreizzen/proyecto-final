@@ -133,10 +133,19 @@ DirtyScope(entity_id, entity_type, res_init, res_num, res_year, annex_num, chap_
             TRUE AS should_expand
         FROM "v_ImpactMap" im
                  LEFT JOIN "v_ResolvedReferences" ref
-                           ON coords_match(
+                            ON (
+                                coords_match(
                                       im.res_init, im.res_num, im.res_year, im.annex_num, im.chap_num, im.art_num, im.art_suf,
                                       ref.res_init, ref.res_num, ref.res_year, ref.annex_num, ref.chap_num, ref.art_num, ref.art_suf
-                              ) AND ref.target_type = im.target_type
+                                ) 
+                                OR (
+                                    im.chap_num IS NULL AND ref.chap_num IS NOT NULL AND im.target_type = 'ARTICLE'
+                                    AND coords_match(
+                                          im.res_init, im.res_num, im.res_year, im.annex_num, NULL, im.art_num, im.art_suf,
+                                          ref.res_init, ref.res_num, ref.res_year, ref.annex_num, NULL, ref.art_num, ref.art_suf
+                                    )
+                                )
+                            ) AND ref.target_type = im.target_type
         WHERE
             scope.entity_id IS NOT NULL
           AND im.change_id = scope.entity_id

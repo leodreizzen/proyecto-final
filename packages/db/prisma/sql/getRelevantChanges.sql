@@ -41,7 +41,12 @@ FROM ChangeDiscovery scope
     FROM "v_ImpactMap" im
     WHERE scope.res_num IS NOT NULL -- Guard
     AND im.res_num = scope.res_num AND im.res_year = scope.res_year AND im.res_init IS NOT DISTINCT FROM scope.res_init
-    AND im.annex_num IS NOT DISTINCT FROM scope.annex_num AND im.chap_num IS NOT DISTINCT FROM scope.chap_num AND im.art_num IS NOT DISTINCT FROM scope.art_num AND im.art_suf IS NOT DISTINCT FROM scope.art_suf
+    AND im.annex_num IS NOT DISTINCT FROM scope.annex_num 
+    AND (
+        im.chap_num IS NOT DISTINCT FROM scope.chap_num 
+        OR (im.chap_num IS NULL AND scope.chap_num IS NOT NULL AND im.target_type = 'ARTICLE')
+    )
+    AND im.art_num IS NOT DISTINCT FROM scope.art_num AND im.art_suf IS NOT DISTINCT FROM scope.art_suf
     AND (im.impact_type = 'STRUCTURAL' OR (im.impact_type = 'CONTENT' AND scope.is_main_tree))
 
     UNION ALL
