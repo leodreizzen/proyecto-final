@@ -70,14 +70,27 @@ class ConcreteResolutionSlot extends ResolutionSlot {
         super();
     }
 
-    get relevant() { return true; }
-    get exists() { return true; }
-    get() { return this.getter(); }
-    set(value: ResolutionToShow, _: ResolutionID) { this.setter(value); } 
+    get relevant() {
+        return true;
+    }
+
+    get exists() {
+        return true;
+    }
+
+    get() {
+        return this.getter();
+    }
+
+    set(value: ResolutionToShow, _: ResolutionID) {
+        this.setter(value);
+    }
+
     repeal(by: ResolutionID) {
         const obj = this.getter();
         if (obj) obj.repealedBy = by;
     }
+
     ratify(by: ResolutionID) {
         const obj = this.getter();
         obj.ratifiedBy = by;
@@ -90,13 +103,30 @@ class ConcreteResolutionSlot extends ResolutionSlot {
 }
 
 class IrrelevantResolutionSlot extends ResolutionSlot {
-    get relevant() { return false; }
-    get exists() { return false; }
-    get() { return undefined; }
-    set(_: ResolutionToShow, __: ResolutionID) {}
-    repeal(_: ResolutionID) {}
-    ratify(_: ResolutionID) {}
-    modify(_before: ContentBlock[], _after: ContentBlock[], _by: ResolutionID) { return false; }
+    get relevant() {
+        return false;
+    }
+
+    get exists() {
+        return false;
+    }
+
+    get() {
+        return undefined;
+    }
+
+    set(_: ResolutionToShow, __: ResolutionID) {
+    }
+
+    repeal(_: ResolutionID) {
+    }
+
+    ratify(_: ResolutionID) {
+    }
+
+    modify(_before: ContentBlock[], _after: ContentBlock[], _by: ResolutionID) {
+        return false;
+    }
 }
 
 type CollectionItem = {
@@ -110,7 +140,9 @@ abstract class BaseCollectionSlot<T extends CollectionItem> extends Slot<T> {
         super();
     }
 
-    get relevant() { return true; }
+    get relevant() {
+        return true;
+    }
 
     get exists() {
         return this.container.some(item => this.matches(item));
@@ -150,6 +182,7 @@ abstract class BaseCollectionSlot<T extends CollectionItem> extends Slot<T> {
     }
 
     protected abstract matches(item: T): boolean;
+
     protected abstract patch(item: T): void;
 }
 
@@ -157,6 +190,7 @@ class ArticleSlot extends BaseCollectionSlot<ArticleToShow> {
     constructor(
         container: ArticleToShow[],
         private index: ArticleIndex,
+        private secondaryContainersGetter?: () => ArticleToShow[][]
     ) {
         super(container);
     }
@@ -173,12 +207,64 @@ class ArticleSlot extends BaseCollectionSlot<ArticleToShow> {
         item.index = this.index;
     }
 
+    get exists() {
+        if (super.exists) return true;
+        if (this.secondaryContainersGetter) {
+            return this.secondaryContainersGetter().some(container =>
+                container.some(item => this.matches(item))
+            );
+        }
+        return false;
+    }
+
+    get() {
+        const primary = super.get();
+        if (primary) return primary;
+
+        if (this.secondaryContainersGetter) {
+            for (const container of this.secondaryContainersGetter()) {
+                const found = container.find(item => this.matches(item));
+                if (found) return found;
+            }
+        }
+        return undefined;
+    }
+
+    set(value: ArticleToShow, by: ResolutionID) {
+        this.patch(value);
+
+        // Try to update in primary if exists
+        if (super.exists) {
+            super.set(value, by);
+            return;
+        }
+
+        // Try to find and update in secondary containers
+        if (this.secondaryContainersGetter) {
+            const secondaryContainers = this.secondaryContainersGetter();
+            for (const container of secondaryContainers) {
+                const index = container.findIndex(item => this.matches(item));
+                if (index !== -1) {
+                    // Update valid existing item in secondary container
+                    const existing = container[index]!;
+                    value.addedBy = existing.addedBy;
+                    value.modifiedBy = existing.modifiedBy ? [...existing.modifiedBy, by] : [by];
+                    container[index] = value;
+                    return;
+                }
+            }
+        }
+
+        // If not found anywhere, add to primary (default behavior of super.set when not found)
+        super.set(value, by);
+    }
+
     modify(before: ContentBlock[], after: ContentBlock[], by: ResolutionID): boolean {
         const item = this.get();
         if (!item) return false;
 
-        const { blocks, success } = applyModifications(item.content, before, after);
-        
+        const {blocks, success} = applyModifications(item.content, before, after);
+
         if (success) {
             item.content = blocks;
             item.modifiedBy = item.modifiedBy ? [...item.modifiedBy, by] : [by];
@@ -210,8 +296,8 @@ class AnnexSlot extends BaseCollectionSlot<AnnexToShow> {
         const item = this.get();
         if (!item || item.type !== "TEXT") return false;
 
-        const { blocks, success } = applyModifications(item.content, before, after);
-        
+        const {blocks, success} = applyModifications(item.content, before, after);
+
         if (success) {
             item.content = blocks;
             item.modifiedBy = item.modifiedBy ? [...item.modifiedBy, by] : [by];
@@ -241,7 +327,10 @@ export class ResolutionChangeApplier {
     private inapplicableChanges: ChangeWithContextForAssembly[] = [];
     private generatedCounter = 0;
 
-    constructor(private resolution: ResolutionToShow, private validationContext: ValidationContext, orphanedAnnexes: {id: string, repealedBy: ResolutionID}[]) {
+    constructor(private resolution: ResolutionToShow, private validationContext: ValidationContext, orphanedAnnexes: {
+        id: string,
+        repealedBy: ResolutionID
+    }[]) {
         resolution.annexes.forEach(annex => {
             const orphannedEntry = orphanedAnnexes.find(o => o.id === annex.uuid);
             if (orphannedEntry) {
@@ -302,7 +391,7 @@ export class ResolutionChangeApplier {
                 break;
             default: {
                 const _exhaustiveCheck: never = change;
-                console.error(`Failed to apply change ${(change as {id: string}).id}: Unknown change type`);
+                console.error(`Failed to apply change ${(change as { id: string }).id}: Unknown change type`);
                 this.inapplicableChanges.push(change);
             }
         }
@@ -366,7 +455,7 @@ export class ResolutionChangeApplier {
         if (changeAddArticle.targetResolution) {
             slot = this.getArticleSlot(
                 changeAddArticle.targetResolution,
-                { articleIndex: index }
+                {articleIndex: index}
             );
         } else if (changeAddArticle.targetAnnex) {
             slot = this.getArticleSlot(
@@ -416,7 +505,7 @@ export class ResolutionChangeApplier {
         const convertedArticle = articleInitialDataToShow(articleToAdd, {
             index: index
         }, this.validationContext);
-        
+
         slot.set(convertedArticle, change.context.rootResolution);
     }
 
@@ -501,10 +590,10 @@ export class ResolutionChangeApplier {
         }
 
         const convertedArticle = articleInitialDataToShow(newContent, {
-            index: { 
-                type: "defined", 
-                number: targetRef.articleNumber, 
-                suffix: targetRef.articleSuffix 
+            index: {
+                type: "defined",
+                number: targetRef.articleNumber,
+                suffix: targetRef.articleSuffix
             }
         }, this.validationContext);
 
@@ -551,7 +640,7 @@ export class ResolutionChangeApplier {
             return;
         }
         const convertedAnnex = annexInitialDataToShow(newContent, {
-            index: { type: "defined", number: targetRef.annexNumber }
+            index: {type: "defined", number: targetRef.annexNumber}
         }, this.validationContext);
 
         slot.set(convertedAnnex, change.context.rootResolution);
@@ -717,6 +806,7 @@ export class ResolutionChangeApplier {
         }
 
         let container: ArticleToShow[];
+        let secondaryContainersGetter: (() => ArticleToShow[][]) | undefined;
 
         if (coords.annexNumber !== null && coords.annexNumber !== undefined) {
             const annex = this.resolution.annexes.find(a => a.index.type === "defined" && a.index.number === coords.annexNumber);
@@ -729,12 +819,21 @@ export class ResolutionChangeApplier {
                 container = chapter.articles;
             } else {
                 container = annex.standaloneArticles;
+
+                // Only for annex-level articles (no chapter defined in reference), we check chapters as valid secondary locations
+                secondaryContainersGetter = () => {
+                    const freshAnnex = this.resolution.annexes.find(a => a.index.type === "defined" && a.index.number === coords.annexNumber);
+                    if (freshAnnex && freshAnnex.type === "WITH_ARTICLES") {
+                        return freshAnnex.chapters.map(c => c.articles);
+                    }
+                    return [];
+                };
             }
         } else {
             container = this.resolution.articles;
         }
 
-        return new ArticleSlot(container, coords.articleIndex);
+        return new ArticleSlot(container, coords.articleIndex, secondaryContainersGetter);
     }
 
 

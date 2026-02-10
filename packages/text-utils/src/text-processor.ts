@@ -114,7 +114,6 @@ function expandRangeIterative(
 export function findFuzzyRange(originalText: string, searchString: string): { start: number, end: number } | null {
     const originalTokens = tokenize(originalText);
     const searchTokens = tokenize(searchString);
-
     if (searchTokens.length === 0) return null;
 
     // Sliding window search for token sequence
@@ -164,7 +163,7 @@ export function applyTextModification(originalText: string, searchString: string
 
     // Fuzzy match
     const targetRange = findFuzzyRange(originalText, searchString);
-    
+
     if (!targetRange) {
         // Fallback: If searchString is effectively the whole text (normalized), replace everything
         const normalizedOriginal = normalizeForToken(originalText);

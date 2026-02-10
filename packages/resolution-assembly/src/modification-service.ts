@@ -12,7 +12,6 @@ export function applyModifications(
     const workingBlocks = normalizeBlocks(structuredClone(currentBlocks));
     const normalizedBefore = normalizeBlocks(beforeBlocks);
     const normalizedAfter = normalizeBlocks(afterBlocks);
-
     // Initial validation
     if (normalizedBefore.length !== normalizedAfter.length) {
         console.error("Before and After blocks length mismatch after normalization");
