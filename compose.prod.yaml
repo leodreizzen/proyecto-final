@@ -106,8 +106,10 @@ services:
     volumes:
       - certs_data:/etc/letsencrypt
     depends_on:
-      - web
-      - garage
+      web:
+        condition: service_healthy
+      garage:
+        condition: service_healthy
     environment:
       CERTBOT_EMAIL: ${CERTBOT_EMAIL}
       DOMAIN: ${DOMAIN}
