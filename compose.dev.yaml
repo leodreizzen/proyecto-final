@@ -247,3 +247,4 @@ volumes:
   worker-venv:
   pnpm-store:
   ai-modules:
+  resolution-assembly-modules:
