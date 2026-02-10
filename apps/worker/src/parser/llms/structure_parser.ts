@@ -30,7 +30,7 @@ export async function parseResolutionStructure(fileContent: string, firstAttempt
 async function _parseResolutionStructure(fileContent: string, firstAttempt: boolean): Promise<ParseResolutionStructureResult> {
     console.log("calling structure parser model...");
     const res = await structuredLLMCall({
-            model: "gemini-2.5-flash-lite",
+            model: "gemini-3-flash-preview",
             response_format: {
                 type: "json_object"
             },
