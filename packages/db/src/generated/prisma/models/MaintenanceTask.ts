@@ -44,6 +44,7 @@ export type MaintenanceTaskMinAggregateOutputType = {
   order: number | null
   createdAt: Date | null
   updatedAt: Date | null
+  deletedAt: Date | null
 }
 
 export type MaintenanceTaskMaxAggregateOutputType = {
@@ -56,6 +57,7 @@ export type MaintenanceTaskMaxAggregateOutputType = {
   order: number | null
   createdAt: Date | null
   updatedAt: Date | null
+  deletedAt: Date | null
 }
 
 export type MaintenanceTaskCountAggregateOutputType = {
@@ -69,6 +71,7 @@ export type MaintenanceTaskCountAggregateOutputType = {
   order: number
   createdAt: number
   updatedAt: number
+  deletedAt: number
   _all: number
 }
 
@@ -91,6 +94,7 @@ export type MaintenanceTaskMinAggregateInputType = {
   order?: true
   createdAt?: true
   updatedAt?: true
+  deletedAt?: true
 }
 
 export type MaintenanceTaskMaxAggregateInputType = {
@@ -103,6 +107,7 @@ export type MaintenanceTaskMaxAggregateInputType = {
   order?: true
   createdAt?: true
   updatedAt?: true
+  deletedAt?: true
 }
 
 export type MaintenanceTaskCountAggregateInputType = {
@@ -116,6 +121,7 @@ export type MaintenanceTaskCountAggregateInputType = {
   order?: true
   createdAt?: true
   updatedAt?: true
+  deletedAt?: true
   _all?: true
 }
 
@@ -216,6 +222,7 @@ export type MaintenanceTaskGroupByOutputType = {
   order: number
   createdAt: Date
   updatedAt: Date
+  deletedAt: Date | null
   _count: MaintenanceTaskCountAggregateOutputType | null
   _avg: MaintenanceTaskAvgAggregateOutputType | null
   _sum: MaintenanceTaskSumAggregateOutputType | null
@@ -252,6 +259,7 @@ export type MaintenanceTaskWhereInput = {
   order?: Prisma.IntFilter<"MaintenanceTask"> | number
   createdAt?: Prisma.DateTimeFilter<"MaintenanceTask"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"MaintenanceTask"> | Date | string
+  deletedAt?: Prisma.DateTimeNullableFilter<"MaintenanceTask"> | Date | string | null
   resolution?: Prisma.XOR<Prisma.ResolutionScalarRelationFilter, Prisma.ResolutionWhereInput>
 }
 
@@ -266,6 +274,7 @@ export type MaintenanceTaskOrderByWithRelationInput = {
   order?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+  deletedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   resolution?: Prisma.ResolutionOrderByWithRelationInput
   _relevance?: Prisma.MaintenanceTaskOrderByRelevanceInput
 }
@@ -285,6 +294,7 @@ export type MaintenanceTaskWhereUniqueInput = Prisma.AtLeast<{
   order?: Prisma.IntFilter<"MaintenanceTask"> | number
   createdAt?: Prisma.DateTimeFilter<"MaintenanceTask"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"MaintenanceTask"> | Date | string
+  deletedAt?: Prisma.DateTimeNullableFilter<"MaintenanceTask"> | Date | string | null
   resolution?: Prisma.XOR<Prisma.ResolutionScalarRelationFilter, Prisma.ResolutionWhereInput>
 }, "id" | "resolutionId_type_triggerEventId">
 
@@ -299,6 +309,7 @@ export type MaintenanceTaskOrderByWithAggregationInput = {
   order?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+  deletedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   _count?: Prisma.MaintenanceTaskCountOrderByAggregateInput
   _avg?: Prisma.MaintenanceTaskAvgOrderByAggregateInput
   _max?: Prisma.MaintenanceTaskMaxOrderByAggregateInput
@@ -320,6 +331,7 @@ export type MaintenanceTaskScalarWhereWithAggregatesInput = {
   order?: Prisma.IntWithAggregatesFilter<"MaintenanceTask"> | number
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"MaintenanceTask"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"MaintenanceTask"> | Date | string
+  deletedAt?: Prisma.DateTimeNullableWithAggregatesFilter<"MaintenanceTask"> | Date | string | null
 }
 
 export type MaintenanceTaskCreateInput = {
@@ -332,6 +344,7 @@ export type MaintenanceTaskCreateInput = {
   order?: number
   createdAt?: Date | string
   updatedAt?: Date | string
+  deletedAt?: Date | string | null
   resolution: Prisma.ResolutionCreateNestedOneWithoutMaintenanceTasksInput
 }
 
@@ -346,6 +359,7 @@ export type MaintenanceTaskUncheckedCreateInput = {
   order?: number
   createdAt?: Date | string
   updatedAt?: Date | string
+  deletedAt?: Date | string | null
 }
 
 export type MaintenanceTaskUpdateInput = {
@@ -358,6 +372,7 @@ export type MaintenanceTaskUpdateInput = {
   order?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   resolution?: Prisma.ResolutionUpdateOneRequiredWithoutMaintenanceTasksNestedInput
 }
 
@@ -372,6 +387,7 @@ export type MaintenanceTaskUncheckedUpdateInput = {
   order?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
 }
 
 export type MaintenanceTaskCreateManyInput = {
@@ -385,6 +401,7 @@ export type MaintenanceTaskCreateManyInput = {
   order?: number
   createdAt?: Date | string
   updatedAt?: Date | string
+  deletedAt?: Date | string | null
 }
 
 export type MaintenanceTaskUpdateManyMutationInput = {
@@ -397,6 +414,7 @@ export type MaintenanceTaskUpdateManyMutationInput = {
   order?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
 }
 
 export type MaintenanceTaskUncheckedUpdateManyInput = {
@@ -410,6 +428,7 @@ export type MaintenanceTaskUncheckedUpdateManyInput = {
   order?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
 }
 
 export type MaintenanceTaskListRelationFilter = {
@@ -445,6 +464,7 @@ export type MaintenanceTaskCountOrderByAggregateInput = {
   order?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+  deletedAt?: Prisma.SortOrder
 }
 
 export type MaintenanceTaskAvgOrderByAggregateInput = {
@@ -461,6 +481,7 @@ export type MaintenanceTaskMaxOrderByAggregateInput = {
   order?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+  deletedAt?: Prisma.SortOrder
 }
 
 export type MaintenanceTaskMinOrderByAggregateInput = {
@@ -473,6 +494,7 @@ export type MaintenanceTaskMinOrderByAggregateInput = {
   order?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+  deletedAt?: Prisma.SortOrder
 }
 
 export type MaintenanceTaskSumOrderByAggregateInput = {
@@ -539,6 +561,7 @@ export type MaintenanceTaskCreateWithoutResolutionInput = {
   order?: number
   createdAt?: Date | string
   updatedAt?: Date | string
+  deletedAt?: Date | string | null
 }
 
 export type MaintenanceTaskUncheckedCreateWithoutResolutionInput = {
@@ -551,6 +574,7 @@ export type MaintenanceTaskUncheckedCreateWithoutResolutionInput = {
   order?: number
   createdAt?: Date | string
   updatedAt?: Date | string
+  deletedAt?: Date | string | null
 }
 
 export type MaintenanceTaskCreateOrConnectWithoutResolutionInput = {
@@ -593,6 +617,7 @@ export type MaintenanceTaskScalarWhereInput = {
   order?: Prisma.IntFilter<"MaintenanceTask"> | number
   createdAt?: Prisma.DateTimeFilter<"MaintenanceTask"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"MaintenanceTask"> | Date | string
+  deletedAt?: Prisma.DateTimeNullableFilter<"MaintenanceTask"> | Date | string | null
 }
 
 export type MaintenanceTaskCreateManyResolutionInput = {
@@ -605,6 +630,7 @@ export type MaintenanceTaskCreateManyResolutionInput = {
   order?: number
   createdAt?: Date | string
   updatedAt?: Date | string
+  deletedAt?: Date | string | null
 }
 
 export type MaintenanceTaskUpdateWithoutResolutionInput = {
@@ -617,6 +643,7 @@ export type MaintenanceTaskUpdateWithoutResolutionInput = {
   order?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
 }
 
 export type MaintenanceTaskUncheckedUpdateWithoutResolutionInput = {
@@ -629,6 +656,7 @@ export type MaintenanceTaskUncheckedUpdateWithoutResolutionInput = {
   order?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
 }
 
 export type MaintenanceTaskUncheckedUpdateManyWithoutResolutionInput = {
@@ -641,6 +669,7 @@ export type MaintenanceTaskUncheckedUpdateManyWithoutResolutionInput = {
   order?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
 }
 
 
@@ -656,6 +685,7 @@ export type MaintenanceTaskSelect<ExtArgs extends runtime.Types.Extensions.Inter
   order?: boolean
   createdAt?: boolean
   updatedAt?: boolean
+  deletedAt?: boolean
   resolution?: boolean | Prisma.ResolutionDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["maintenanceTask"]>
 
@@ -670,6 +700,7 @@ export type MaintenanceTaskSelectCreateManyAndReturn<ExtArgs extends runtime.Typ
   order?: boolean
   createdAt?: boolean
   updatedAt?: boolean
+  deletedAt?: boolean
   resolution?: boolean | Prisma.ResolutionDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["maintenanceTask"]>
 
@@ -684,6 +715,7 @@ export type MaintenanceTaskSelectUpdateManyAndReturn<ExtArgs extends runtime.Typ
   order?: boolean
   createdAt?: boolean
   updatedAt?: boolean
+  deletedAt?: boolean
   resolution?: boolean | Prisma.ResolutionDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["maintenanceTask"]>
 
@@ -698,9 +730,10 @@ export type MaintenanceTaskSelectScalar = {
   order?: boolean
   createdAt?: boolean
   updatedAt?: boolean
+  deletedAt?: boolean
 }
 
-export type MaintenanceTaskOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "type" | "status" | "resolutionId" | "triggerEventId" | "payload" | "errorMsg" | "order" | "createdAt" | "updatedAt", ExtArgs["result"]["maintenanceTask"]>
+export type MaintenanceTaskOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "type" | "status" | "resolutionId" | "triggerEventId" | "payload" | "errorMsg" | "order" | "createdAt" | "updatedAt" | "deletedAt", ExtArgs["result"]["maintenanceTask"]>
 export type MaintenanceTaskInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   resolution?: boolean | Prisma.ResolutionDefaultArgs<ExtArgs>
 }
@@ -727,6 +760,7 @@ export type $MaintenanceTaskPayload<ExtArgs extends runtime.Types.Extensions.Int
     order: number
     createdAt: Date
     updatedAt: Date
+    deletedAt: Date | null
   }, ExtArgs["result"]["maintenanceTask"]>
   composites: {}
 }
@@ -1161,6 +1195,7 @@ export interface MaintenanceTaskFieldRefs {
   readonly order: Prisma.FieldRef<"MaintenanceTask", 'Int'>
   readonly createdAt: Prisma.FieldRef<"MaintenanceTask", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"MaintenanceTask", 'DateTime'>
+  readonly deletedAt: Prisma.FieldRef<"MaintenanceTask", 'DateTime'>
 }
     
 

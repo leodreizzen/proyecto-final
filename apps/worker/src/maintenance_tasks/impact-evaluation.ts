@@ -7,7 +7,11 @@ import {
 import prisma, {TransactionPrismaClient} from "@repo/db/prisma";
 import {getAffectedResolutions} from "@repo/db/prisma/sql/getAffectedResolutions";
 import {scheduleAdvancedChangesTask, scheduleEmbeddingsTask} from "@repo/jobs/maintenance/queue";
-import {publishMaintenanceTaskUpdate, publishNewMaintenanceTasks} from "@repo/pubsub/publish/maintenance_tasks";
+import {
+    publishDeletedMaintenanceTasks,
+    publishMaintenanceTaskUpdate,
+    publishNewMaintenanceTasks
+} from "@repo/pubsub/publish/maintenance_tasks";
 import {filterResolutionsImpactedByAdvancedChanges} from "@/data/advanced_changes/filter";
 import {EvaluateImpactPayloadSchema, EvaluateImpactPayload} from "@repo/jobs/maintenance/schemas";
 import * as util from "node:util";
@@ -63,6 +67,10 @@ export async function processEvaluateImpactJob(jobId: string) {
             ...jobsToCreate.embeddingTasks.map(t => t.id)
         ];
         await publishNewMaintenanceTasks(allNewTaskIds);
+        const allDeletedTaskIds = jobsToCreate.deletedTaskIds;
+        if (allDeletedTaskIds.length > 0) {
+            await publishDeletedMaintenanceTasks(allDeletedTaskIds);
+        }
     }
     await publishMaintenanceTaskUpdate(jobId, ["status", ...(ok? ["errorMsg" as const]: [])]); // either COMPLETED or FAILED
 }
@@ -108,6 +116,7 @@ async function createTasksForImpactedResolutions(
     const impactedResolutionIds = impactedWithDepth.map(r => r.id);
     const embeddingTasks = [];
     const advancedChangesTasks = [];
+    const deletedTaskIds = [];
 
     // logic: filter changes targeting impactedResolutionIds
     // Source must be in impactedResolutionIds (meaning caused by this group)
@@ -125,15 +134,20 @@ async function createTasksForImpactedResolutions(
         const embeddingTask = await upsertEmbeddingsTask(impactedId, eventId, depth, tx);
         if (embeddingTask.created) {
             embeddingTasks.push({id: embeddingTask.id, resolutionId: impactedId, depth});
+            if (embeddingTask.deletedTaskIds.length > 0) {
+                deletedTaskIds.push(...embeddingTask.deletedTaskIds);
+            }
         }
 
         if (filteredAdvanced.has(impactedId)) {
             const advancedChangesTask = await upsertAdvancedChangesTask(impactedId, eventId, depth, tx);
-            if (advancedChangesTask.created)
+            if (advancedChangesTask.created) {
                 advancedChangesTasks.push({id: advancedChangesTask.id, resolutionId: impactedId, depth});
+                deletedTaskIds.push(...advancedChangesTask.deletedTaskIds);
+            }
         }
     }
-    return {embeddingTasks: embeddingTasks, advancedChangesTasks: advancedChangesTasks};
+    return {embeddingTasks: embeddingTasks, advancedChangesTasks: advancedChangesTasks, deletedTaskIds};
 }
 
 

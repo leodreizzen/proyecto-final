@@ -83,7 +83,8 @@ export async function fetchMaintenanceTasks({
         where: {
             status: statusCondition,
             resolutionId: resolutionId ?? undefined,
-            ...searchCondition
+            ...searchCondition,
+            deletedAt: null
         },
         include: {
             resolution: {
@@ -111,6 +112,7 @@ export async function countFailedTasks(): Promise<number> {
     return prisma.maintenanceTask.count({
         where: {
             status: "FAILED",
+            deletedAt: null
         },
     });
 }
@@ -121,7 +123,8 @@ export async function countPendingTasks(): Promise<number> {
         where: {
             status: {
                 in: ["PENDING", "PROCESSING"]
-            }
+            },
+            deletedAt: null
         },
     });
 }
@@ -138,8 +141,9 @@ export async function retryMaintenanceTask(id: string): Promise<void> {
     const task = await prisma.$transaction(async tx => {
         const task = await tx.maintenanceTask.findUnique({
             where: {
-                id: id
-            }
+                id: id,
+                deletedAt: null
+            },
         });
 
         if (!task) {
@@ -166,7 +170,8 @@ export async function retryMaintenanceTask(id: string): Promise<void> {
 
         return await tx.maintenanceTask.update({
             where: {
-                id: id
+                id: id,
+                deletedAt: null
             },
             data: {
                 status: "PENDING",

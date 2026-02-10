@@ -27,10 +27,10 @@ export async function deleteResolution(params: z.infer<typeof DeleteSchema>): Pr
 
             await deleteMaintenanceTasksById(deletedTaskIds)
 
-            const createdTasks = await createImpactTasksBeforeDeletion(id, tx);
+            const {createdTasks, deletedTaskIds: deletedOldtaskIds} = await createImpactTasksBeforeDeletion(id, tx);
 
             await deleteResolutionById(id, tx);
-            return {deletedTaskIds, createdTasks};
+            return {deletedTaskIds: [...deletedTaskIds, ...deletedOldtaskIds], createdTasks};
         });
 
         await Promise.all(deletedTaskIds.map(async taskId => {
@@ -65,12 +65,19 @@ export async function deleteResolution(params: z.infer<typeof DeleteSchema>): Pr
 async function createImpactTasksBeforeDeletion(resolutionId: string, tx: TransactionPrismaClient) {
     const eventId = `delete_res_${resolutionId}_${Date.now()}`;
     const impacted = await getDirectlyAffectedResolutionIds(resolutionId, tx);
-    const tasks = [];
+    const createdTasks = [];
+    const deletedTaskIds = [];
     for (const impactedResolutionId of impacted) {
         const task = await upsertImpactEvaluationTask(impactedResolutionId, eventId, {}, tx);
         if (task.created) {
-            tasks.push({taskId: task.id, resolutionId: impactedResolutionId});
+            createdTasks.push({taskId: task.id, resolutionId: impactedResolutionId});
+            if (task.deletedTaskIds.length > 0) {
+                deletedTaskIds.push(...task.deletedTaskIds);
+            }
         }
     }
-    return tasks;
+    return {
+        createdTasks: createdTasks,
+        deletedTaskIds: deletedTaskIds
+    };
 }

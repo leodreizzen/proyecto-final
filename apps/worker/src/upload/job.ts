@@ -10,7 +10,7 @@ import {updateUploadStatus} from "@repo/jobs/resolutions/mutations";
 import ProgressReporter from "@/util/progress-reporter";
 import {publishUploadStatus} from "@repo/pubsub/publish/uploads";
 import {publishNewResolution} from "@repo/pubsub/publish/resolutions";
-import {publishNewMaintenanceTasks} from "@repo/pubsub/publish/maintenance_tasks";
+import {publishDeletedMaintenanceTasks, publishNewMaintenanceTasks} from "@repo/pubsub/publish/maintenance_tasks";
 import {upsertImpactEvaluationTask} from "@repo/jobs/maintenance/mutations";
 import {scheduleImpactTask} from "@repo/jobs/maintenance/queue";
 
@@ -61,6 +61,9 @@ export async function processResolutionUpload(job: Job, progressReporter: Progre
         if (task.created) {
             await scheduleImpactTask(task.id, savedResolution.id)
             await publishNewMaintenanceTasks([task.id]);
+            if (task.deletedTaskIds.length > 0 ) {
+                await publishDeletedMaintenanceTasks(task.deletedTaskIds);
+            }
         }
         await publishUploadStatus(uploadId, {status: "COMPLETED"});
         saveDataReporter.reportProgress(1);

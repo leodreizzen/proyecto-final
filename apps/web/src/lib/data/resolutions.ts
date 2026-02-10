@@ -49,7 +49,8 @@ export async function fetchResolutionsWithStatus(cursor: string | null, query?: 
                 where: {
                     status: {
                         in: ["FAILED", "PARTIAL_FAILURE", "PENDING", "PROCESSING"]
-                    }
+                    },
+                    deletedAt: null
                 },
                 select: {
                     id: true,
@@ -118,7 +119,8 @@ export async function countResolutions(): Promise<ResolutionCounts> {
         where: {
             status: {
                 in: ["FAILED", "PARTIAL_FAILURE"]
-            }
+            },
+            deletedAt: null
         }
     });
     const pendingTasksCount = await countPendingTasks();

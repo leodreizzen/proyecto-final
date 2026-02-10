@@ -795,6 +795,8 @@ model MaintenanceTask {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
+  deletedAt DateTime?
+
   // Composite unique index for deduplication per event
   @@unique([resolutionId, type, triggerEventId])
   // Check: can only have errorMsg if status is FAILED

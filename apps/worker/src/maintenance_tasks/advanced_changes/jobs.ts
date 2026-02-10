@@ -17,6 +17,7 @@ import {
     TaskMetadataSchema
 } from "@repo/jobs/maintenance/schemas";
 import {scheduleImpactTask} from "@repo/jobs/maintenance/queue";
+import {publishDeletedMaintenanceTasks, publishNewMaintenanceTasks} from "@repo/pubsub/publish/maintenance_tasks";
 
 export async function processAdvancedChangesJob(jobId: string) {
     console.log(`Starting advanced changes analysis for maintenance task ${jobId}`);
@@ -129,6 +130,10 @@ export async function processAdvancedChangesJob(jobId: string) {
                 const upsertRes = await upsertImpactEvaluationTask(task.resolutionId, eventId, cutoffPayload);
                 if (upsertRes.created) {
                     await scheduleImpactTask(upsertRes.id, task.resolutionId);
+                    await publishNewMaintenanceTasks([upsertRes.id]);
+                    if (upsertRes.deletedTaskIds.length > 0) {
+                        await publishDeletedMaintenanceTasks(upsertRes.deletedTaskIds);
+                    }
                 }
 
             }

@@ -4,9 +4,11 @@ import prisma, {TransactionPrismaClient} from "@repo/db/prisma";
 export async function findMaintenanceTask(id: string, tx: TransactionPrismaClient = prisma) {
     return tx.maintenanceTask.findUnique({
         where: {
-            id, status: {
+            id,
+            status: {
                 in: ["PENDING", "PROCESSING"]
-            }
+            },
+            deletedAt: null
         },
     })
 }
@@ -23,6 +25,7 @@ export async function findOldUnfinishedMaintenanceTasks() {
             status: {
                 notIn: ["COMPLETED", "FAILED", "PARTIAL_FAILURE"]
             },
+            deletedAt: null
         },
     });
 }
