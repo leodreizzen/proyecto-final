@@ -1,5 +1,5 @@
 import "server-only";
-import {generateText, LanguageModelMiddleware} from "ai";
+import {APICallError, generateText, LanguageModelMiddleware} from "ai";
 
 import type {
     LanguageModelV3Message,
@@ -96,8 +96,9 @@ export async function moderateMessage(message: string, prompt: LanguageModelV3Pr
     const tagSuffix = crypto.randomBytes(4).toString("hex").slice(0, 8);
 
     const contentForModeration = formatContentForModeration(prompt, message, tagSuffix);
-    try {
-        for (let attempt = 0; attempt < 4; attempt++) {
+    const maxAttempts = 4;
+    for (let attempt = 0; attempt < maxAttempts; attempt++) {
+        try {
             const reponse = await generateText({
                 model,
                 system: moderationSystemPrompt(partial, tagSuffix),
@@ -111,12 +112,15 @@ export async function moderateMessage(message: string, prompt: LanguageModelV3Pr
                 await new Promise(resolve => setTimeout(resolve, 1000));
                 continue //retry
             }
-
             return reponse.text === "SAFE";
+        } catch (error) {
+            console.error("Error during moderation:", error);
+            if (APICallError.isInstance(error) && error.statusCode === 429 && attempt === maxAttempts - 1) {
+                console.warn("Rate limit hit during moderation on last attempt, treating content as safe to avoid false positives due to moderation unavailability.");
+                return true;
+            }
+
         }
-    } catch (error) {
-        console.error("Error during moderation:", error);
-        return false; // treat the content as unsafe
     }
 
     console.error("Moderation failed after multiple attempts, treating content as unsafe.");
