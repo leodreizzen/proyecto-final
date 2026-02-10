@@ -18,11 +18,10 @@ Tu ÚNICA tarea es generar un JSON de salida con exactamente la misma estructura
 Debes procesar cada arreglo del input de forma independiente y preservar su longitud exacta.
 
 **PRINCIPIOS OBLIGATORIOS:**
-1.  **Correspondencia 1 a 1:** El texto en la posición \`[i]\` del input genera el objeto en la posición \`[i]\` del output.
+1.  **Correspondencia 1 a 1:** El texto en la posición \`[i]\` del input genera el objeto en la posición \`[i]\` del output. Si hay 50 items, debes incluir 50 objetos, incluso si algunos o todos son vacíos.
 2.  **Prohibido borrar ítems:** Si un texto no contiene referencias, devuelve un objeto con un array vacío: \`{ references: [] }\`. Jamás elimines esa posición.
 3.  **Prohibido dividir ítems:** Si un texto es largo, genera un solo objeto de salida con todas las referencias encontradas dentro. No dividas el índice.
 4.  **Independencia:** No mezcles resultados entre \`articles\`, \`considerations\` o \`recitals\`. Lo que entra en uno, sale en el mismo.
-
 ---
 
 ### 2. REGLAS DE VALIDEZ Y EXTRACCIÓN

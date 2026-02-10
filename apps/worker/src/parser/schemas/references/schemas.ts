@@ -83,9 +83,15 @@ export type TextReference = z.infer<typeof TextReferenceSchema>;
 
 const ArticleReferencesSchema = z.object({
     references: z.array(TextReferenceSchema).describe("Referencias encontradas en el artículo"),
+    number: z.number().describe("Número del artículo dentro de la resolución, anexo o capítulo. Copiar de los datos de entrada"),
+    suffix: z.string().optional().nullable().overwrite(s => {
+        if (s === undefined) return null;
+        return s;
+    }).describe("Sufijo del artículo, ej. 'bis'; opcional"),
 }).meta({title: "AnalisisArticulo"});
 export const AnnexReferencesSchema = z.discriminatedUnion("type", [
         z.object({
+            number: z.number().describe("Número del anexo dentro de la resolución. Copiar de los datos de entrada"),
             type: z.literal("TextOrTables"),
             references: z.array(TextReferenceSchema).describe("Referencias encontradas en el anexo"),
         }).meta({title: "AnalisisAnexoTextoOTablas"}),
@@ -102,10 +108,12 @@ export const AnnexReferencesSchema = z.discriminatedUnion("type", [
 export const ResolutionReferencesSchema = z.object({
     recitals: z.array(z.object({
             references: z.array(TextReferenceSchema).describe("Referencias encontradas en los vistos"),
+            number: z.number().describe("Número del visto dentro de la resolución, al igual que en los de entrada"),
         }).meta({title: "AnalisisVisto"})
     ).describe("Análisis de los vistos presentes en la resolución. Incluir un objeto por cada uno, aunque no tengan información relevante"),
     considerations: z.array(z.object({
             references: z.array(TextReferenceSchema).describe("Referencias encontradas en los considerandos"),
+            number: z.number().describe("Número del considerando dentro de la resolución, al igual que en los de entrada"),
         }).meta({title: "AnalisisConsiderando"})
     ).describe("Análisis de los considerandos presentes en la resolución. Incluir un objeto por cada uno, aunque no tengan información relevante"),
 

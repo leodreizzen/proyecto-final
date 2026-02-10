@@ -17,7 +17,7 @@ export async function _extractReferences(resolution: ResolutionStructure, firstA
     // TODO ALLOW REFUSAL
     console.log("calling reference extractor model...");
     const LLMResult = await structuredLLMCall({
-        model: "gemini-2.5-flash",
+        model: "gemini-3-flash-preview",
         response_format: {
             type: "json_object"
         },
