@@ -102,7 +102,7 @@ export async function analyzeFullResolution(resolution: ResolutionStructure, fir
     const annexes = annexResults.map(result => (result as typeof result & { success: true }).data);
 
     let totalArticles = resolution.articles.length;
-    resolution.annexes.forEach((annex, index) =>{
+    resolution.annexes.forEach((annex) =>{
         if (annex.type === "WithArticles") {
             totalArticles += annex.articles.length;
             annex.chapters.forEach(chapter => {
