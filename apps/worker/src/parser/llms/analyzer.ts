@@ -17,7 +17,7 @@ import {ResolutionReferencesAnalysis} from "@/parser/schemas/references/schemas"
 function emptyReferenceAnalysis(resolution: ResolutionStructure): ResolutionReferencesAnalysis {
     return {
         annexes: resolution.annexes.map(annex => {
-            if (annex.type === "TextOrTables"){
+            if (annex.type === "TextOrTables") {
                 return {
                     type: "TextOrTables" as const,
                     references: [],
@@ -41,16 +41,16 @@ function emptyReferenceAnalysis(resolution: ResolutionStructure): ResolutionRefe
                 }
             }
         }),
-            articles: resolution.articles.map(article => ({
+        articles: resolution.articles.map(article => ({
             number: article.number,
             suffix: article.suffix,
             references: []
         })),
-            recitals: resolution.recitals.map((recital, index) => ({
+        recitals: resolution.recitals.map((recital, index) => ({
             number: index + 1,
             references: []
         })),
-            considerations: resolution.considerations.map((consideration, index) => ({
+        considerations: resolution.considerations.map((consideration, index) => ({
             number: index + 1,
             references: []
         }))
@@ -102,7 +102,7 @@ export async function analyzeFullResolution(resolution: ResolutionStructure, fir
     const annexes = annexResults.map(result => (result as typeof result & { success: true }).data);
 
     let totalArticles = resolution.articles.length;
-    resolution.annexes.forEach((annex) =>{
+    resolution.annexes.forEach((annex) => {
         if (annex.type === "WithArticles") {
             totalArticles += annex.articles.length;
             annex.chapters.forEach(chapter => {
@@ -113,9 +113,7 @@ export async function analyzeFullResolution(resolution: ResolutionStructure, fir
 
     let referenceAnalysisResult: ResolutionReferencesAnalysis;
 
-    if (totalArticles > 20 || false) {
-        referenceAnalysisResult = emptyReferenceAnalysis(resolution); // disable reference extraction for large resolutions
-    } else {
+    try {
         referenceAnalysisResult = await withLlmConsistencyRetry(async (ctx) => {
             const referenceAnalysisPromise = extractReferences(resolution, firstAttempt && ctx.attempt === 1);
             const referenceAnalysisResult = await referenceAnalysisPromise;
@@ -127,9 +125,12 @@ export async function analyzeFullResolution(resolution: ResolutionStructure, fir
             referencesReporter.reportProgress(1);
             return referenceAnalysisResult;
         })
-
+    } catch (e) {
+        if (totalArticles > 25) {
+            referenceAnalysisResult = emptyReferenceAnalysis(resolution);
+        } else
+            throw e;
     }
-
 
 
     const analysis = merge({
