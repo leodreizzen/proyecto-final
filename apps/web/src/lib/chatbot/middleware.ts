@@ -99,7 +99,7 @@ export async function moderateMessage(message: string, prompt: LanguageModelV3Pr
     const maxAttempts = 4;
     for (let attempt = 0; attempt < maxAttempts; attempt++) {
         try {
-            const reponse = await generateText({
+            const response = await generateText({
                 model,
                 system: moderationSystemPrompt(partial, tagSuffix),
                 messages: [{
@@ -108,11 +108,20 @@ export async function moderateMessage(message: string, prompt: LanguageModelV3Pr
                 }]
             })
 
-            if (reponse.text == "") {
+            if (response.text == "") {
                 await new Promise(resolve => setTimeout(resolve, 1000));
                 continue //retry
             }
-            return reponse.text === "SAFE";
+            const responseFormatted = response.text.trim().toUpperCase();
+            if (responseFormatted !== "SAFE")
+                console.log("Moderation response:" + response.text);
+            if (responseFormatted === "SAFE"){
+                return true;
+            }
+            else if (responseFormatted === "UNSAFE") {
+                return false
+            }
+            // else retry
         } catch (error) {
             console.error("Error during moderation:", error);
             if (APICallError.isInstance(error) && error.statusCode === 429 && attempt === maxAttempts - 1) {
@@ -123,7 +132,7 @@ export async function moderateMessage(message: string, prompt: LanguageModelV3Pr
         }
     }
 
-    console.error("Moderation failed after multiple attempts, treating content as unsafe.");
+    console.error("Moderation failed after multiple attempts, treating content as safe.");
 
     return false;
 }
