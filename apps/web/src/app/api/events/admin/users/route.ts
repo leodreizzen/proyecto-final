@@ -21,7 +21,7 @@ export async function GET() {
             eventBus.on("user", eventListener)
             keepAliveInterval = setInterval(() => {
                 controller.enqueue(encoder.encode(': keep-alive\n\n'));
-            }, 30000);
+            }, 15_000);
         },
         cancel() {
             if(eventListener)
