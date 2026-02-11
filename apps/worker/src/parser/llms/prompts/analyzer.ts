@@ -169,6 +169,11 @@ Cuando vayas a poner el texto de un cambio (por ejemplo, en el before/after de u
 `;
 
 
+const implicitAnnexRule = `
+**REGLA DE ANEXOS NO MENCIONADOS**: Si la resolución contiene anexos pero no están mencionados (directa o indirectamente) en el cuerpo de la resolución, NO los consideres para el análisis. Si un cambio debería referenciarlos pero no los menciona directa o indirectamente, considera marcarlos como cambios avanzados.
+Se considera mención indirecta cuando se usan frases como "El anexo", "Anexo de la presente", "El anexo correspondiente" o similares. También si se refiere a él por el nombre, y eso está explícito en alguna parte del texto del artículo modificador.
+`
+
 
 export const resolutionAnalyzerSystemPrompt = `
 Eres un experto en interpretar resoluciones legislativas y cambios legales. Tu tarea es analizar una resolución y dar como salida un JSON con los campos pedidos.
@@ -208,6 +213,8 @@ La resolución fue parseada a JSON con otro LLM. Debes hacer lo siguiente:
     - Debes incluir en tu respuesta la misma cantidad de artículos que en el JSON de entrada. Bajo ninguna circuntancia puedes omitir o agregar artículos.
  
     ${commonAnalyzerRules}
+    
+    ${implicitAnnexRule}
 A continuación se incluyen los tipos esperados de salida. TODOS los campos son obligatorios, salvo que se especifique lo contrario. Si no tienes nada para poner en un campo de arreglo, pon un arreglo vacío, pero no omitas el campo.
 `;
 
@@ -234,6 +241,8 @@ Recibirás algunos datos adicionales como un resumen de la resolución, su id, e
 Se incluyen los artículos de la resolución principal (resolutionArticles). Estos se pueden usar como contexto para entender referencias cruzadas, pero NO debes incluirlos en tu respuesta.
 # Reglas importantes: 
 ${commonAnalyzerRules}
+
+${implicitAnnexRule}
 #Sobre los anexos:
     - Respeta el número de anexo que te pasen en la entrada.
     - Debes mantener el tipo de anexo que te pasen (TextOrTables o WithArticles). No lo cambies.
