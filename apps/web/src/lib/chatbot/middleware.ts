@@ -127,6 +127,8 @@ export async function moderateMessage(message: string, prompt: LanguageModelV3Pr
             if (APICallError.isInstance(error) && error.statusCode === 429 && attempt === maxAttempts - 1) {
                 console.warn("Rate limit hit during moderation on last attempt, treating content as safe to avoid false positives due to moderation unavailability.");
                 return true;
+            } else {
+                await new Promise(resolve => setTimeout(resolve, 1500));
             }
 
         }

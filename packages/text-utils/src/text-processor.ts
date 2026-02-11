@@ -122,8 +122,6 @@ function expandRangeIterative(
  * @param b - The second string to compare.
  * @returns The integer distance between the two strings.
  * 
- * Time Complexity: O(a.length * b.length)
- * Space Complexity: O(a.length * b.length)
  */
 function levenshteinDistance(a: string, b: string): number {
     const matrix: number[][] = [];
@@ -240,6 +238,7 @@ function stripArticleHeader(text: string): { text: string, stripped: boolean } {
     return { text, stripped: false };
 }
 
+
 export function applyTextModification(originalText: string, searchString: string, replacementString: string): ModificationResult | null {
     // 1. Try to strip "Artículo Xº:" from search string
     const strippedSearchResult = stripArticleHeader(searchString);
@@ -296,5 +295,17 @@ export function applyTextModification(originalText: string, searchString: string
             end: targetRange.end
         }
     };
+}
+
+
+/**
+ * Removes table placeholders like {{tabla 1}} or {{tabla1}} from text.
+ * Replaces them with empty strings.
+ */
+export function removeTablePlaceholders(text: string): string {
+    // Regex matches {{tabla 1}} or {{tabla1}} (case insensitive)
+    // Copied from logic in other packages
+    const regex = /\{\{\s*tabla\s*(\d+)\s*\}\}/gi;
+    return text.replace(regex, "");
 }
 
